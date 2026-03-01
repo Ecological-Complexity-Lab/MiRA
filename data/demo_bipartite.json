@@ -1,0 +1,475 @@
+{
+    "nodes": [
+        {
+            "node_id": 1,
+            "node_name": "Rose",
+            "node_type": "plant"
+        },
+        {
+            "node_id": 2,
+            "node_name": "Lavender",
+            "node_type": "plant"
+        },
+        {
+            "node_id": 3,
+            "node_name": "Sunflower",
+            "node_type": "plant"
+        },
+        {
+            "node_id": 4,
+            "node_name": "Clover",
+            "node_type": "plant"
+        },
+        {
+            "node_id": 5,
+            "node_name": "Daisy",
+            "node_type": "plant"
+        },
+        {
+            "node_id": 6,
+            "node_name": "Honeybee",
+            "node_type": "pollinator"
+        },
+        {
+            "node_id": 7,
+            "node_name": "Bumblebee",
+            "node_type": "pollinator"
+        },
+        {
+            "node_id": 8,
+            "node_name": "Butterfly",
+            "node_type": "pollinator"
+        },
+        {
+            "node_id": 9,
+            "node_name": "Hoverfly",
+            "node_type": "pollinator"
+        },
+        {
+            "node_id": 10,
+            "node_name": "Beetle",
+            "node_type": "pollinator"
+        },
+        {
+            "node_id": 11,
+            "node_name": "Moth",
+            "node_type": "pollinator"
+        }
+    ],
+    "layers": [
+        {
+            "layer_id": 1,
+            "layer_name": "pollination",
+            "bipartite": true,
+            "season": "summer"
+        },
+        {
+            "layer_id": 2,
+            "layer_name": "seed_dispersal",
+            "bipartite": true,
+            "season": "autumn"
+        }
+    ],
+    "extended": [
+        {
+            "layer_from": "pollination",
+            "node_from": "Rose",
+            "layer_to": "pollination",
+            "node_to": "Honeybee",
+            "weight": 5
+        },
+        {
+            "layer_from": "pollination",
+            "node_from": "Rose",
+            "layer_to": "pollination",
+            "node_to": "Bumblebee",
+            "weight": 3
+        },
+        {
+            "layer_from": "pollination",
+            "node_from": "Rose",
+            "layer_to": "pollination",
+            "node_to": "Butterfly",
+            "weight": 2
+        },
+        {
+            "layer_from": "pollination",
+            "node_from": "Lavender",
+            "layer_to": "pollination",
+            "node_to": "Honeybee",
+            "weight": 4
+        },
+        {
+            "layer_from": "pollination",
+            "node_from": "Lavender",
+            "layer_to": "pollination",
+            "node_to": "Bumblebee",
+            "weight": 4
+        },
+        {
+            "layer_from": "pollination",
+            "node_from": "Lavender",
+            "layer_to": "pollination",
+            "node_to": "Hoverfly",
+            "weight": 2
+        },
+        {
+            "layer_from": "pollination",
+            "node_from": "Lavender",
+            "layer_to": "pollination",
+            "node_to": "Moth",
+            "weight": 1
+        },
+        {
+            "layer_from": "pollination",
+            "node_from": "Sunflower",
+            "layer_to": "pollination",
+            "node_to": "Honeybee",
+            "weight": 5
+        },
+        {
+            "layer_from": "pollination",
+            "node_from": "Sunflower",
+            "layer_to": "pollination",
+            "node_to": "Butterfly",
+            "weight": 3
+        },
+        {
+            "layer_from": "pollination",
+            "node_from": "Sunflower",
+            "layer_to": "pollination",
+            "node_to": "Beetle",
+            "weight": 1
+        },
+        {
+            "layer_from": "pollination",
+            "node_from": "Clover",
+            "layer_to": "pollination",
+            "node_to": "Bumblebee",
+            "weight": 5
+        },
+        {
+            "layer_from": "pollination",
+            "node_from": "Clover",
+            "layer_to": "pollination",
+            "node_to": "Honeybee",
+            "weight": 2
+        },
+        {
+            "layer_from": "pollination",
+            "node_from": "Clover",
+            "layer_to": "pollination",
+            "node_to": "Hoverfly",
+            "weight": 3
+        },
+        {
+            "layer_from": "pollination",
+            "node_from": "Daisy",
+            "layer_to": "pollination",
+            "node_to": "Butterfly",
+            "weight": 4
+        },
+        {
+            "layer_from": "pollination",
+            "node_from": "Daisy",
+            "layer_to": "pollination",
+            "node_to": "Hoverfly",
+            "weight": 2
+        },
+        {
+            "layer_from": "pollination",
+            "node_from": "Daisy",
+            "layer_to": "pollination",
+            "node_to": "Beetle",
+            "weight": 1
+        },
+        {
+            "layer_from": "pollination",
+            "node_from": "Daisy",
+            "layer_to": "pollination",
+            "node_to": "Moth",
+            "weight": 2
+        },
+        {
+            "layer_from": "seed_dispersal",
+            "node_from": "Rose",
+            "layer_to": "seed_dispersal",
+            "node_to": "Beetle",
+            "weight": 3
+        },
+        {
+            "layer_from": "seed_dispersal",
+            "node_from": "Rose",
+            "layer_to": "seed_dispersal",
+            "node_to": "Bumblebee",
+            "weight": 1
+        },
+        {
+            "layer_from": "seed_dispersal",
+            "node_from": "Lavender",
+            "layer_to": "seed_dispersal",
+            "node_to": "Hoverfly",
+            "weight": 2
+        },
+        {
+            "layer_from": "seed_dispersal",
+            "node_from": "Lavender",
+            "layer_to": "seed_dispersal",
+            "node_to": "Moth",
+            "weight": 3
+        },
+        {
+            "layer_from": "seed_dispersal",
+            "node_from": "Sunflower",
+            "layer_to": "seed_dispersal",
+            "node_to": "Beetle",
+            "weight": 4
+        },
+        {
+            "layer_from": "seed_dispersal",
+            "node_from": "Sunflower",
+            "layer_to": "seed_dispersal",
+            "node_to": "Honeybee",
+            "weight": 2
+        },
+        {
+            "layer_from": "seed_dispersal",
+            "node_from": "Clover",
+            "layer_to": "seed_dispersal",
+            "node_to": "Bumblebee",
+            "weight": 3
+        },
+        {
+            "layer_from": "seed_dispersal",
+            "node_from": "Clover",
+            "layer_to": "seed_dispersal",
+            "node_to": "Butterfly",
+            "weight": 2
+        },
+        {
+            "layer_from": "seed_dispersal",
+            "node_from": "Daisy",
+            "layer_to": "seed_dispersal",
+            "node_to": "Moth",
+            "weight": 4
+        },
+        {
+            "layer_from": "seed_dispersal",
+            "node_from": "Daisy",
+            "layer_to": "seed_dispersal",
+            "node_to": "Hoverfly",
+            "weight": 1
+        },
+        {
+            "layer_from": "pollination",
+            "node_from": "Rose",
+            "layer_to": "seed_dispersal",
+            "node_to": "Rose",
+            "weight": 1
+        },
+        {
+            "layer_from": "pollination",
+            "node_from": "Lavender",
+            "layer_to": "seed_dispersal",
+            "node_to": "Lavender",
+            "weight": 1
+        },
+        {
+            "layer_from": "pollination",
+            "node_from": "Sunflower",
+            "layer_to": "seed_dispersal",
+            "node_to": "Sunflower",
+            "weight": 1
+        },
+        {
+            "layer_from": "pollination",
+            "node_from": "Clover",
+            "layer_to": "seed_dispersal",
+            "node_to": "Clover",
+            "weight": 1
+        },
+        {
+            "layer_from": "pollination",
+            "node_from": "Daisy",
+            "layer_to": "seed_dispersal",
+            "node_to": "Daisy",
+            "weight": 1
+        },
+        {
+            "layer_from": "pollination",
+            "node_from": "Honeybee",
+            "layer_to": "seed_dispersal",
+            "node_to": "Honeybee",
+            "weight": 1
+        },
+        {
+            "layer_from": "pollination",
+            "node_from": "Bumblebee",
+            "layer_to": "seed_dispersal",
+            "node_to": "Bumblebee",
+            "weight": 1
+        },
+        {
+            "layer_from": "pollination",
+            "node_from": "Butterfly",
+            "layer_to": "seed_dispersal",
+            "node_to": "Butterfly",
+            "weight": 1
+        },
+        {
+            "layer_from": "pollination",
+            "node_from": "Hoverfly",
+            "layer_to": "seed_dispersal",
+            "node_to": "Hoverfly",
+            "weight": 1
+        },
+        {
+            "layer_from": "pollination",
+            "node_from": "Beetle",
+            "layer_to": "seed_dispersal",
+            "node_to": "Beetle",
+            "weight": 1
+        },
+        {
+            "layer_from": "pollination",
+            "node_from": "Moth",
+            "layer_to": "seed_dispersal",
+            "node_to": "Moth",
+            "weight": 1
+        }
+    ],
+    "state_nodes": [
+        {
+            "layer_id": 1,
+            "node_id": 1,
+            "layer_name": "pollination",
+            "node_name": "Rose"
+        },
+        {
+            "layer_id": 1,
+            "node_id": 2,
+            "layer_name": "pollination",
+            "node_name": "Lavender"
+        },
+        {
+            "layer_id": 1,
+            "node_id": 3,
+            "layer_name": "pollination",
+            "node_name": "Sunflower"
+        },
+        {
+            "layer_id": 1,
+            "node_id": 4,
+            "layer_name": "pollination",
+            "node_name": "Clover"
+        },
+        {
+            "layer_id": 1,
+            "node_id": 5,
+            "layer_name": "pollination",
+            "node_name": "Daisy"
+        },
+        {
+            "layer_id": 1,
+            "node_id": 6,
+            "layer_name": "pollination",
+            "node_name": "Honeybee"
+        },
+        {
+            "layer_id": 1,
+            "node_id": 7,
+            "layer_name": "pollination",
+            "node_name": "Bumblebee"
+        },
+        {
+            "layer_id": 1,
+            "node_id": 8,
+            "layer_name": "pollination",
+            "node_name": "Butterfly"
+        },
+        {
+            "layer_id": 1,
+            "node_id": 9,
+            "layer_name": "pollination",
+            "node_name": "Hoverfly"
+        },
+        {
+            "layer_id": 1,
+            "node_id": 10,
+            "layer_name": "pollination",
+            "node_name": "Beetle"
+        },
+        {
+            "layer_id": 1,
+            "node_id": 11,
+            "layer_name": "pollination",
+            "node_name": "Moth"
+        },
+        {
+            "layer_id": 2,
+            "node_id": 1,
+            "layer_name": "seed_dispersal",
+            "node_name": "Rose"
+        },
+        {
+            "layer_id": 2,
+            "node_id": 2,
+            "layer_name": "seed_dispersal",
+            "node_name": "Lavender"
+        },
+        {
+            "layer_id": 2,
+            "node_id": 3,
+            "layer_name": "seed_dispersal",
+            "node_name": "Sunflower"
+        },
+        {
+            "layer_id": 2,
+            "node_id": 4,
+            "layer_name": "seed_dispersal",
+            "node_name": "Clover"
+        },
+        {
+            "layer_id": 2,
+            "node_id": 5,
+            "layer_name": "seed_dispersal",
+            "node_name": "Daisy"
+        },
+        {
+            "layer_id": 2,
+            "node_id": 6,
+            "layer_name": "seed_dispersal",
+            "node_name": "Honeybee"
+        },
+        {
+            "layer_id": 2,
+            "node_id": 7,
+            "layer_name": "seed_dispersal",
+            "node_name": "Bumblebee"
+        },
+        {
+            "layer_id": 2,
+            "node_id": 8,
+            "layer_name": "seed_dispersal",
+            "node_name": "Butterfly"
+        },
+        {
+            "layer_id": 2,
+            "node_id": 9,
+            "layer_name": "seed_dispersal",
+            "node_name": "Hoverfly"
+        },
+        {
+            "layer_id": 2,
+            "node_id": 10,
+            "layer_name": "seed_dispersal",
+            "node_name": "Beetle"
+        },
+        {
+            "layer_id": 2,
+            "node_id": 11,
+            "layer_name": "seed_dispersal",
+            "node_name": "Moth"
+        }
+    ]
+}

@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Robustness Game</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface2: #242836;
+      --border: #2e3345;
+      --text: #e4e6ef;
+      --text-dim: #8b8fa7;
+      --accent: #6c63ff;
+      --accent-glow: rgba(108, 99, 255, 0.25);
+      --green: #34d399;
+      --green-dim: rgba(52, 211, 153, 0.15);
+      --red: #f87171;
+      --red-dim: rgba(248, 113, 113, 0.15);
+      --orange: #fbbf24;
+      --plant-color: #34d399;
+      --pol-color: #f472b6;
+      --link-color: rgba(255, 255, 255, 0.18);
+      --link-highlight: rgba(108, 99, 255, 0.55);
+      --radius: 12px;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 32px 24px 64px;
+    }
+
+    /* ─── Header ─── */
+    header {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+
+    .header-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .header-bee {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 0 16px rgba(108, 99, 255, 0.3);
+    }
+
+    header h1 {
+      font-size: 2.4rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent), var(--pol-color));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
+
+    header p {
+      margin-top: 8px;
+      color: var(--text-dim);
+      font-size: 1.05rem;
+    }
+
+    /* ─── Top Row ─── */
+    .top-row {
+      display: flex;
+      gap: 28px;
+      align-items: flex-start;
+    }
+
+    .grid-panel {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .info-panel {
+      width: 260px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* ─── Card ─── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+
+    .card-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-dim);
+      margin-bottom: 12px;
+    }
+
+    /* ─── Grid Table ─── */
+    .grid-wrapper {
+      overflow-x: auto;
+    }
+
+    table.eco-grid {
+      border-collapse: separate;
+      border-spacing: 3px;
+      width: 100%;
+    }
+
+    table.eco-grid th {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--text-dim);
+      padding: 4px 0;
+      text-align: center;
+    }
+
+    table.eco-grid th.row-header {
+      text-align: right;
+      padding-right: 6px;
+      min-width: 44px;
+    }
+
+    table.eco-grid td {
+      width: 38px;
+      height: 38px;
+      text-align: center;
+      vertical-align: middle;
+      font-size: 0.9rem;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+    }
+
+    table.eco-grid td.cell-0 {
+      background: var(--surface2);
+      color: #444964;
+    }
+
+    table.eco-grid td.cell-1 {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    table.eco-grid td:hover {
+      transform: scale(1.12);
+      z-index: 2;
+      position: relative;
+    }
+
+    /* ─── Counter ─── */
+    .counter {
+      font-size: 2rem;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .counter small {
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--text-dim);
+    }
+
+    .counter.ok {
+      color: var(--green);
+    }
+
+    .counter.over {
+      color: var(--red);
+    }
+
+    .counter.under {
+      color: var(--text);
+    }
+
+    /* ─── Status ─── */
+    .status-text {
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: var(--text-dim);
+      min-height: 42px;
+    }
+
+    .status-text.warn {
+      color: var(--red);
+    }
+
+    /* ─── Settings Card ─── */
+    .settings-card {
+      text-align: center;
+    }
+
+    .settings-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .settings-field {
+      flex: 1;
+      text-align: center;
+    }
+
+    .settings-field label {
+      display: block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-dim);
+      margin-bottom: 4px;
+    }
+
+    .settings-field input[type=number] {
+      width: 100%;
+      padding: 6px 4px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--surface2);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-align: center;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .settings-field input[type=number]:focus {
+      border-color: var(--accent);
+    }
+
+    /* hide number spinners */
+    .settings-field input[type=number]::-webkit-inner-spin-button,
+    .settings-field input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .settings-field input[type=number] {
+      -moz-appearance: textfield;
+    }
+
+    .connectance-value {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 2px;
+    }
+
+    .connectance-links {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      margin-bottom: 10px;
+    }
+
+    input[type=range] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: var(--surface2);
+      outline: none;
+      cursor: pointer;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent-glow);
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+
+    input[type=range]::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    input[type=range]::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent-glow);
+      border: none;
+      cursor: pointer;
+    }
+
+    /* ─── Reset Button ─── */
+    .btn-reset {
+      width: 100%;
+      padding: 10px 0;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface2);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .btn-reset:hover {
+      background: var(--border);
+      border-color: var(--accent);
+    }
+
+    /* (bee image moved to header) */
+
+    /* ─── Auto-fill Buttons ─── */
+    .autofill-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .btn-fill {
+      flex: 1;
+      padding: 7px 0;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--surface2);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .btn-fill:hover {
+      background: var(--border);
+      border-color: var(--accent);
+    }
+
+    /* ─── Bottom Row ─── */
+    .bottom-row {
+      display: flex;
+      gap: 28px;
+      margin-top: 28px;
+    }
+
+    .bottom-row .card {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .bottom-row canvas {
+      width: 100%;
+      height: 340px;
+      display: block;
+      border-radius: 8px;
+    }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 800px) {
+
+      .top-row,
+      .bottom-row {
+        flex-direction: column;
+      }
+
+      .info-panel {
+        width: 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+
+      .info-panel .card {
+        flex: 1;
+        min-width: 160px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <div class="header-row">
+        <img class="header-bee" src="bee.png" alt="Bee">
+        <h1>Robustness Game</h1>
+        <img class="header-bee" src="bee.png" alt="Bee">
+      </div>
+      <p id="subtitle">Distribute <strong>30</strong> interactions as you like to find a robustness score as high as
+        possible.</p>
+    </header>
+
+    <!-- TOP ROW -->
+    <div class="top-row">
+      <div class="grid-panel card">
+        <div class="card-title">Network to test</div>
+        <div class="grid-wrapper">
+          <table class="eco-grid" id="ecoGrid"></table>
+        </div>
+      </div>
+
+      <div class="info-panel">
+        <div class="card settings-card">
+          <div class="card-title">Network Settings</div>
+          <div class="settings-row">
+            <div class="settings-field">
+              <label>Plants (rows)</label>
+              <input type="number" id="inputPlants" min="2" max="30" value="10">
+            </div>
+            <div class="settings-field">
+              <label>Pollinators (cols)</label>
+              <input type="number" id="inputPollinators" min="2" max="30" value="10">
+            </div>
+          </div>
+          <div class="card-title" style="margin-top:8px">Connectance</div>
+          <div class="connectance-value" id="connectanceValue">0.30</div>
+          <div class="connectance-links" id="connectanceLinks">30 links out of 100</div>
+          <input type="range" id="connectanceSlider" min="0.05" max="1" step="0.05" value="0.30">
+        </div>
+        <div class="card">
+          <div class="card-title">Interactions</div>
+          <div class="counter under" id="counter">0<small>/30</small></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Status</div>
+          <div class="status-text" id="statusText">Add an interaction by clicking a cell to toggle it to 1.</div>
+        </div>
+        <button class="btn-reset" id="btnReset">Reset Network</button>
+        <div class="autofill-row">
+          <button class="btn-fill" id="btnNested">Nested</button>
+          <button class="btn-fill" id="btnModular">Modular</button>
+          <button class="btn-fill" id="btnRandom">Random</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTTOM ROW -->
+    <div class="bottom-row">
+      <div class="card">
+        <div class="card-title">Network layout</div>
+        <canvas id="networkCanvas"></canvas>
+      </div>
+      <div class="card">
+        <div class="card-title">Robustness score</div>
+        <canvas id="scoreCanvas"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ──────────────────────────────────────────────
+    //  Dynamic dimensions
+    // ──────────────────────────────────────────────
+    let nRows = 10;  // plants  (rows in grid)
+    let nCols = 10;  // pollinators (columns in grid)
+    let totalPossible = nRows * nCols;
+    let maxInteractions = 30;
+
+    // ──────────────────────────────────────────────
+    //  State: nRows×nCols matrix of 0/1
+    // ──────────────────────────────────────────────
+    let matrix = Array.from({ length: nRows }, () => Array(nCols).fill(0));
+
+    // ──────────────────────────────────────────────
+    //  DOM refs
+    // ──────────────────────────────────────────────
+    const gridTable = document.getElementById('ecoGrid');
+    const counterEl = document.getElementById('counter');
+    const statusEl = document.getElementById('statusText');
+    const btnReset = document.getElementById('btnReset');
+    const netCanvas = document.getElementById('networkCanvas');
+    const scoreCanvas = document.getElementById('scoreCanvas');
+    const subtitleEl = document.getElementById('subtitle');
+    const connSlider = document.getElementById('connectanceSlider');
+    const connValueEl = document.getElementById('connectanceValue');
+    const connLinksEl = document.getElementById('connectanceLinks');
+    const inputPlants = document.getElementById('inputPlants');
+    const inputPols = document.getElementById('inputPollinators');
+
+    // ──────────────────────────────────────────────
+    //  Build HTML grid
+    // ──────────────────────────────────────────────
+    function buildGrid() {
+      let html = '<thead><tr><th></th>';
+      for (let c = 0; c < nCols; c++) html += `<th>A${c + 1}</th>`;
+      html += '</tr></thead><tbody>';
+      for (let r = 0; r < nRows; r++) {
+        html += `<tr><th class="row-header">P${r + 1}</th>`;
+        for (let c = 0; c < nCols; c++) {
+          html += `<td id="cell-${r}-${c}" class="cell-0" data-r="${r}" data-c="${c}">0</td>`;
+        }
+        html += '</tr>';
+      }
+      html += '</tbody>';
+      gridTable.innerHTML = html;
+    }
+
+    // ──────────────────────────────────────────────
+    //  Update single cell appearance
+    // ──────────────────────────────────────────────
+    function refreshCell(r, c) {
+      const td = document.getElementById(`cell-${r}-${c}`);
+      const v = matrix[r][c];
+      td.textContent = v;
+      td.className = v ? 'cell-1' : 'cell-0';
+    }
+
+    // ──────────────────────────────────────────────
+    //  Count interactions
+    // ──────────────────────────────────────────────
+    function countInteractions() {
+      let n = 0;
+      for (let r = 0; r < nRows; r++)
+        for (let c = 0; c < nCols; c++)
+          if (matrix[r][c]) n++;
+      return n;
+    }
+
+    // ──────────────────────────────────────────────
+    //  Update counter & status text
+    // ──────────────────────────────────────────────
+    function updateInfo() {
+      const n = countInteractions();
+      const max = maxInteractions;
+      counterEl.innerHTML = `${n}<small>/${max}</small>`;
+      counterEl.className = 'counter ' + (n === max ? 'ok' : n > max ? 'over' : 'under');
+
+      if (n === 0) {
+        statusEl.textContent = 'Add an interaction by clicking a cell to toggle it to 1.';
+        statusEl.className = 'status-text';
+      } else if (n === max) {
+        statusEl.textContent = `There are exactly ${max} interactions in the network, good job!`;
+        statusEl.className = 'status-text';
+      } else if (n > max) {
+        statusEl.textContent = `There are more than ${max} interactions, please remove some of them.`;
+        statusEl.className = 'status-text warn';
+      } else {
+        statusEl.textContent = `Make sure there are exactly ${max} interactions.`;
+        statusEl.className = 'status-text';
+      }
+
+      drawNetwork();
+      drawScorePlot();
+    }
+
+    // ──────────────────────────────────────────────
+    //  Grid click handler
+    // ──────────────────────────────────────────────
+    gridTable.addEventListener('click', (e) => {
+      const td = e.target;
+      if (td.tagName !== 'TD') return;
+      const r = +td.dataset.r;
+      const c = +td.dataset.c;
+      matrix[r][c] = matrix[r][c] ? 0 : 1;
+      refreshCell(r, c);
+      updateInfo();
+    });
+
+    // ──────────────────────────────────────────────
+    //  Reset
+    // ──────────────────────────────────────────────
+    btnReset.addEventListener('click', resetGrid);
+
+    function resetGrid() {
+      matrix = Array.from({ length: nRows }, () => Array(nCols).fill(0));
+      buildGrid();
+      updateInfo();
+    }
+
+    // ──────────────────────────────────────────────
+    //  Connectance slider
+    // ──────────────────────────────────────────────
+    function updateConnectance() {
+      const conn = parseFloat(connSlider.value);
+      maxInteractions = Math.round(conn * totalPossible);
+      connValueEl.textContent = conn.toFixed(2);
+      connLinksEl.textContent = `${maxInteractions} links out of ${totalPossible}`;
+      subtitleEl.innerHTML = `Distribute <strong>${maxInteractions}</strong> interactions as you like to find a robustness score as high as possible.`;
+    }
+
+    connSlider.addEventListener('input', () => {
+      updateConnectance();
+      resetGrid();
+    });
+
+    // ──────────────────────────────────────────────
+    //  Dimension inputs (plants & pollinators)
+    // ──────────────────────────────────────────────
+    function applyDimensions() {
+      let newRows = parseInt(inputPlants.value) || 2;   // plants = rows
+      let newCols = parseInt(inputPols.value) || 2;     // pollinators = cols
+      newRows = Math.max(2, Math.min(30, newRows));
+      newCols = Math.max(2, Math.min(30, newCols));
+      inputPlants.value = newRows;
+      inputPols.value = newCols;
+      nRows = newRows;
+      nCols = newCols;
+      totalPossible = nRows * nCols;
+      updateConnectance();
+      resetGrid();
+    }
+    inputPlants.addEventListener('change', applyDimensions);
+    inputPols.addEventListener('change', applyDimensions);
+
+    // ══════════════════════════════════════════════
+    //  GAME LOGIC  (ported from R)
+    // ══════════════════════════════════════════════
+
+    function colSums(m) {
+      const cols = m[0].length;
+      const sums = Array(cols).fill(0);
+      for (let r = 0; r < m.length; r++)
+        for (let c = 0; c < cols; c++)
+          sums[c] += m[r][c];
+      return sums;
+    }
+
+    function rowSums(m) {
+      return m.map(row => row.reduce((a, b) => a + b, 0));
+    }
+
+    function transpose(m) {
+      const rows = m.length, cols = m[0].length;
+      return Array.from({ length: cols }, (_, c) =>
+        Array.from({ length: rows }, (_, r) => m[r][c])
+      );
+    }
+
+    // ── Auto-fill generators ──
+    function generateNested(rows, cols, numLinks) {
+      const mat = Array.from({ length: rows }, () => Array(cols).fill(0));
+      // Fill cells ordered by distance from top-left corner (triangular)
+      const cells = [];
+      for (let r = 0; r < rows; r++)
+        for (let c = 0; c < cols; c++)
+          cells.push([r, c]);
+      cells.sort((a, b) => {
+        const sa = a[0] + a[1], sb = b[0] + b[1];
+        return sa !== sb ? sa - sb : a[0] - b[0];
+      });
+      for (let i = 0; i < Math.min(numLinks, cells.length); i++)
+        mat[cells[i][0]][cells[i][1]] = 1;
+      return mat;
+    }
+
+    function generateModular(rows, cols, numLinks) {
+      const mat = Array.from({ length: rows }, () => Array(cols).fill(0));
+      const numMod = Math.max(2, Math.min(Math.floor(Math.min(rows, cols) / 2), 3));
+      const modCells = [];
+      for (let m = 0; m < numMod; m++) {
+        const r0 = Math.round(m * rows / numMod);
+        const r1 = Math.round((m + 1) * rows / numMod);
+        const c0 = Math.round(m * cols / numMod);
+        const c1 = Math.round((m + 1) * cols / numMod);
+        for (let r = r0; r < r1; r++)
+          for (let c = c0; c < c1; c++)
+            modCells.push([r, c]);
+      }
+      // Fill block-diagonal cells first
+      for (let i = 0; i < Math.min(numLinks, modCells.length); i++)
+        mat[modCells[i][0]][modCells[i][1]] = 1;
+      // If more links needed, add random outside
+      if (numLinks > modCells.length) {
+        const filled = new Set(modCells.map(([r, c]) => `${r},${c}`));
+        const outside = [];
+        for (let r = 0; r < rows; r++)
+          for (let c = 0; c < cols; c++)
+            if (!filled.has(`${r},${c}`)) outside.push([r, c]);
+        const shuffled = shuffleArray(outside);
+        for (let i = 0; i < Math.min(numLinks - modCells.length, shuffled.length); i++)
+          mat[shuffled[i][0]][shuffled[i][1]] = 1;
+      }
+      return mat;
+    }
+
+    function generateRandom(rows, cols, numLinks) {
+      const mat = Array.from({ length: rows }, () => Array(cols).fill(0));
+      const cells = [];
+      for (let r = 0; r < rows; r++)
+        for (let c = 0; c < cols; c++)
+          cells.push([r, c]);
+      const shuffled = shuffleArray(cells);
+      for (let i = 0; i < Math.min(numLinks, shuffled.length); i++)
+        mat[shuffled[i][0]][shuffled[i][1]] = 1;
+      return mat;
+    }
+
+    function applyPreset(generator) {
+      matrix = generator(nRows, nCols, maxInteractions);
+      buildGrid();
+      // Set cell classes from matrix
+      for (let r = 0; r < nRows; r++)
+        for (let c = 0; c < nCols; c++) refreshCell(r, c);
+      updateInfo();
+    }
+
+    document.getElementById('btnNested').addEventListener('click', () => applyPreset(generateNested));
+    document.getElementById('btnModular').addEventListener('click', () => applyPreset(generateModular));
+    document.getElementById('btnRandom').addEventListener('click', () => applyPreset(generateRandom));
+
+    function deepCopy(m) {
+      return m.map(r => [...r]);
+    }
+
+    // Remove column x (set it to all zeros)
+    function singleExtinct(m, colIdx) {
+      for (let r = 0; r < m.length; r++) m[r][colIdx] = 0;
+    }
+
+    // Count rows with all zeros (secondary extinctions)
+    function recordSecondaryExtinctions(m) {
+      let count = 0;
+      for (let r = 0; r < m.length; r++) {
+        if (m[r].every(v => v === 0)) count++;
+      }
+      return count;
+    }
+
+    // Run extinction simulation: remove columns in given order
+    function extinct(mat, extinctionSequence) {
+      const m = deepCopy(mat);
+      const numExtinct = [0];
+      for (const colIdx of extinctionSequence) {
+        singleExtinct(m, colIdx);
+        numExtinct.push(recordSecondaryExtinctions(m));
+      }
+      const nCols = mat[0].length;
+      const nRows = mat.length;
+      const results = [];
+      for (let i = 0; i <= nCols; i++) {
+        results.push({
+          numRemoved: i,
+          numExtinct: numExtinct[i],
+          propRemoved: i / nCols,
+          propRemain: 1 - numExtinct[i] / nRows,
+        });
+      }
+      return results;
+    }
+
+    // Compute robustness: area under curve via trapezoidal rule
+    function computeRobustness(results) {
+      let area = 0;
+      for (let i = 1; i < results.length; i++) {
+        const dx = results[i].propRemoved - results[i - 1].propRemoved;
+        const avgY = (results[i].propRemain + results[i - 1].propRemain) / 2;
+        area += dx * avgY;
+      }
+      return area;
+    }
+
+    // ══════════════════════════════════════════════
+    //  CANVAS DRAWING
+    // ══════════════════════════════════════════════
+
+    function setCanvasSize(canvas) {
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      const ctx = canvas.getContext('2d');
+      ctx.scale(dpr, dpr);
+      return { ctx, w: rect.width, h: rect.height };
+    }
+
+    // ── Bipartite Network ──
+    function drawNetwork() {
+      const { ctx, w, h } = setCanvasSize(netCanvas);
+      ctx.clearRect(0, 0, w, h);
+
+      const n = countInteractions();
+      if (n === 0 || n > maxInteractions) {
+        ctx.fillStyle = '#555';
+        ctx.font = '500 14px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(n === 0 ? 'Add interactions to see the network' : 'Remove excess interactions', w / 2, h / 2);
+        return;
+      }
+
+      const padX = 40, topY = 55, botY = h - 40;
+
+      // Positions: plants (rows) at top, pollinators (cols) at bottom
+      const plantPos = (i) => nRows > 1 ? padX + i * ((w - 2 * padX) / (nRows - 1)) : w / 2;
+      const polPos = (i) => nCols > 1 ? padX + i * ((w - 2 * padX) / (nCols - 1)) : w / 2;
+
+      // Draw links
+      for (let r = 0; r < nRows; r++) {
+        for (let c = 0; c < nCols; c++) {
+          if (!matrix[r][c]) continue;
+          const gradient = ctx.createLinearGradient(plantPos(r), topY, polPos(c), botY);
+          gradient.addColorStop(0, 'rgba(52,211,153,0.35)');
+          gradient.addColorStop(1, 'rgba(244,114,182,0.35)');
+          ctx.strokeStyle = gradient;
+          ctx.lineWidth = 1.8;
+          ctx.beginPath();
+          ctx.moveTo(plantPos(r), topY);
+          ctx.lineTo(polPos(c), botY);
+          ctx.stroke();
+        }
+      }
+
+      // Labels
+      ctx.fillStyle = '#8b8fa7';
+      ctx.font = '600 11px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Plants', w / 2, 18);
+      ctx.fillText('Pollinators', w / 2, h - 8);
+
+      // Draw plant nodes (top) – plants are rows
+      const plantDeg = rowSums(matrix);
+      const nodeFont = nCols > 15 || nRows > 15 ? '700 7px Inter, sans-serif' : '700 9px Inter, sans-serif';
+      const nr = nCols > 15 || nRows > 15 ? 8 : 12;
+      for (let r = 0; r < nRows; r++) {
+        ctx.beginPath();
+        ctx.arc(plantPos(r), topY, nr, 0, Math.PI * 2);
+        ctx.fillStyle = plantDeg[r] > 0 ? '#34d399' : '#2e3345';
+        ctx.fill();
+        ctx.fillStyle = plantDeg[r] > 0 ? '#0f1117' : '#555';
+        ctx.font = nodeFont;
+        ctx.fillText('P' + (r + 1), plantPos(r), topY + 3.5);
+      }
+
+      // Draw pollinator nodes (bottom) – pollinators are cols
+      const polDeg = colSums(matrix);
+      for (let c = 0; c < nCols; c++) {
+        ctx.beginPath();
+        ctx.arc(polPos(c), botY, nr, 0, Math.PI * 2);
+        ctx.fillStyle = polDeg[c] > 0 ? '#f472b6' : '#2e3345';
+        ctx.fill();
+        ctx.fillStyle = polDeg[c] > 0 ? '#0f1117' : '#555';
+        ctx.font = nodeFont;
+        ctx.fillText('A' + (c + 1), polPos(c), botY + 3.5);
+      }
+    }
+
+    // ── Shuffle helper ──
+    function shuffleArray(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    // ── Extinction Curve Plot (3 curves) ──
+    function drawScorePlot() {
+      const { ctx, w, h } = setCanvasSize(scoreCanvas);
+      ctx.clearRect(0, 0, w, h);
+
+      const n = countInteractions();
+      if (n === 0 || n > maxInteractions) {
+        ctx.fillStyle = '#555';
+        ctx.font = '500 14px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(n === 0 ? 'Add interactions to see the score' : 'Remove excess interactions', w / 2, h / 2);
+        return;
+      }
+
+      // Transpose: extinct() removes columns, so transpose to remove plants (rows)
+      const mt = transpose(matrix);
+      // Plant degrees = colSums of transposed = rowSums of original
+      const pd = colSums(mt);
+      const indices = [...Array(nRows).keys()]; // one per plant
+      const orderLeastFirst = [...indices].sort((a, b) => pd[a] - pd[b]);
+      const orderMostFirst = [...indices].sort((a, b) => pd[b] - pd[a]);
+      const orderRandom = shuffleArray(indices);
+
+      const curves = [
+        { order: orderMostFirst, label: 'Most → Least', color: '#f87171', fill: 'rgba(248,113,113,0.10)' },
+        { order: orderLeastFirst, label: 'Least → Most', color: '#34d399', fill: 'rgba(52,211,153,0.10)' },
+        { order: orderRandom, label: 'Random', color: '#fbbf24', fill: 'rgba(251,191,36,0.08)' },
+      ];
+
+      // Run simulations on transposed matrix
+      for (const c of curves) {
+        c.results = extinct(mt, c.order);
+        c.score = computeRobustness(c.results);
+      }
+
+      // Plot area
+      const pad = { top: 22, right: 28, bottom: 48, left: 54 };
+      const pw = w - pad.left - pad.right;
+      const ph = h - pad.top - pad.bottom;
+      const toX = (v) => pad.left + v * pw;
+      const toY = (v) => pad.top + (1 - v) * ph;
+
+      // Grid lines
+      ctx.strokeStyle = '#2e3345';
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 5; i++) {
+        const v = i / 5;
+        ctx.beginPath(); ctx.moveTo(toX(0), toY(v)); ctx.lineTo(toX(1), toY(v)); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(toX(v), toY(0)); ctx.lineTo(toX(v), toY(1)); ctx.stroke();
+      }
+
+      // Axis labels
+      ctx.fillStyle = '#8b8fa7';
+      ctx.font = '500 11px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      for (let i = 0; i <= 5; i++) {
+        const v = (i / 5).toFixed(1);
+        ctx.fillText(v, toX(i / 5), toY(0) + 18);
+        ctx.textAlign = 'right';
+        ctx.fillText(v, pad.left - 8, toY(i / 5) + 4);
+        ctx.textAlign = 'center';
+      }
+      ctx.fillText('Proportion removed', w / 2, h - 6);
+      ctx.save();
+      ctx.translate(14, h / 2);
+      ctx.rotate(-Math.PI / 2);
+      ctx.fillText('Proportion remaining', 0, 0);
+      ctx.restore();
+
+      // Draw each curve (filled area + line + points)
+      for (const c of curves) {
+        const res = c.results;
+
+        // Filled area under curve
+        ctx.beginPath();
+        ctx.moveTo(toX(res[0].propRemoved), toY(res[0].propRemain));
+        for (let i = 1; i < res.length; i++) {
+          ctx.lineTo(toX(res[i].propRemoved), toY(res[i].propRemain));
+        }
+        ctx.lineTo(toX(res[res.length - 1].propRemoved), toY(0));
+        ctx.lineTo(toX(res[0].propRemoved), toY(0));
+        ctx.closePath();
+        ctx.fillStyle = c.fill;
+        ctx.fill();
+
+        // Line
+        ctx.beginPath();
+        ctx.moveTo(toX(res[0].propRemoved), toY(res[0].propRemain));
+        for (let i = 1; i < res.length; i++) {
+          ctx.lineTo(toX(res[i].propRemoved), toY(res[i].propRemain));
+        }
+        ctx.strokeStyle = c.color;
+        ctx.lineWidth = 2.5;
+        ctx.lineJoin = 'round';
+        ctx.stroke();
+
+        // Points
+        for (const pt of res) {
+          ctx.beginPath();
+          ctx.arc(toX(pt.propRemoved), toY(pt.propRemain), 4, 0, Math.PI * 2);
+          ctx.fillStyle = c.color;
+          ctx.fill();
+          ctx.strokeStyle = '#1a1d27';
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+        }
+      }
+
+      // Legend (top-right corner)
+      const legX = w - pad.right - 8;
+      const legY = pad.top + 10;
+      const lineH = 18;
+      ctx.textAlign = 'right';
+      for (let i = 0; i < curves.length; i++) {
+        const c = curves[i];
+        const y = legY + i * lineH;
+        // colored dot
+        ctx.beginPath();
+        ctx.arc(legX - ctx.measureText(`${c.label}: ${(100 * c.score).toFixed(1)}`).width - 10, y, 4, 0, Math.PI * 2);
+        ctx.fillStyle = c.color;
+        ctx.fill();
+        // text
+        ctx.fillStyle = '#e4e6ef';
+        ctx.font = '600 11px Inter, sans-serif';
+        ctx.fillText(`${c.label}: ${(100 * c.score).toFixed(1)}`, legX, y + 4);
+      }
+    }
+
+    // ──────────────────────────────────────────────
+    //  Resize handler
+    // ──────────────────────────────────────────────
+    window.addEventListener('resize', () => {
+      drawNetwork();
+      drawScorePlot();
+    });
+
+    // ──────────────────────────────────────────────
+    //  Init
+    // ──────────────────────────────────────────────
+    buildGrid();
+    updateInfo();
+  </script>
+</body>
+
+</html>
