@@ -21,10 +21,13 @@ const loadDemoBtn = document.getElementById('loadDemoBtn');
 const demoSelect = document.getElementById('demoSelect');
 const fileInput = document.getElementById('fileInput');
 const nodeColorSelect = document.getElementById('nodeColorSelect');
+const nodeSizeSelect = document.getElementById('nodeSizeSelect');
 const linkColorSelect = document.getElementById('linkColorSelect');
 const showLabelsCheckbox = document.getElementById('showLabelsCheckbox');
+const transformNodesCheckbox = document.getElementById('transformNodesCheckbox');
 const showLayerNamesCheckbox = document.getElementById('showLayerNamesCheckbox');
 const showSetNamesCheckbox = document.getElementById('showSetNamesCheckbox');
+const bipartiteNestedCheckbox = document.getElementById('bipartiteNestedCheckbox');
 const showInterlayerCheckbox = document.getElementById('showInterlayerCheckbox');
 const layoutSelect = document.getElementById('layoutSelect');
 const nodeSizeSlider = document.getElementById('nodeSizeSlider');
@@ -56,6 +59,7 @@ resizeCanvas();
 // ---- Init Renderer ----
 renderer = new Renderer(canvas);
 renderer.showLabels = false;
+renderer.transformNodes = transformNodesCheckbox.checked;
 
 // ---- Interaction ----
 const interaction = new InteractionHandler(canvas, renderer, {
@@ -121,11 +125,22 @@ function loadData(json) {
             );
         }
 
+        // Show or hide the Bipartite layout option in the dropdown
+        const hasAnyBipartite = hasExplicitBipartite || hasAutoDetected;
+        const bipartiteOption = layoutSelect.querySelector('option[value="bipartite"]');
+        if (bipartiteOption) {
+            bipartiteOption.style.display = hasAnyBipartite ? '' : 'none';
+        }
+
         // Set layout type
         if (useBipartiteLayout) {
             layout.layoutType = 'bipartite';
             layoutSelect.value = 'bipartite';
         } else {
+            // If they had bipartite selected from a previous network, but this one isn't, default to circle
+            if (layoutSelect.value === 'bipartite' && !hasAnyBipartite) {
+                layoutSelect.value = 'circle';
+            }
             layout.layoutType = layoutSelect.value;
         }
 
@@ -155,8 +170,12 @@ function loadData(json) {
         populateDropdowns();
 
 
+        populateDropdowns();
+
+
         // Enable dropdowns
         nodeColorSelect.disabled = false;
+        nodeSizeSelect.disabled = false;
         linkColorSelect.disabled = false;
     } catch (err) {
         console.error('Failed to load data:', err);
@@ -184,6 +203,12 @@ showLabelsCheckbox.addEventListener('change', () => {
     renderer.render();
 });
 
+// ---- Toggle Transform Nodes ----
+transformNodesCheckbox.addEventListener('change', () => {
+    renderer.transformNodes = transformNodesCheckbox.checked;
+    renderer.render();
+});
+
 // ---- Toggle Layer Names ----
 showLayerNamesCheckbox.addEventListener('change', () => {
     renderer.showLayerNames = showLayerNamesCheckbox.checked;
@@ -194,6 +219,16 @@ showLayerNamesCheckbox.addEventListener('change', () => {
 showSetNamesCheckbox.addEventListener('change', () => {
     renderer.showSetNames = showSetNamesCheckbox.checked;
     renderer.render();
+});
+
+// ---- Toggle Bipartite Nested Sorting ----
+bipartiteNestedCheckbox.addEventListener('change', () => {
+    layout.bipartiteNested = bipartiteNestedCheckbox.checked;
+    if (layout.layoutType === 'bipartite' && model) {
+        positions = layout.computeLayout(model);
+        renderer.setData(model, positions);
+        renderer.render();
+    }
 });
 
 // ---- Toggle Interlayer Links ----
@@ -282,6 +317,36 @@ function populateDropdowns() {
         nodeColorSelect.appendChild(opt);
     }
 
+    // Node size options
+    nodeSizeSelect.innerHTML = '<option value="">Uniform (slider)</option>';
+    // We only want continuous numeric attributes. This is a heuristic check on the first element.
+    const addContAttr = (source, attr, entities) => {
+        // Find first non-null
+        let sample = null;
+        for (const e of entities) {
+            if (e[attr] !== undefined && e[attr] !== null) {
+                sample = e[attr];
+                break;
+            }
+        }
+        if (typeof sample === 'number') {
+            const opt = document.createElement('option');
+            opt.value = `${source}:${attr}`;
+            opt.textContent = `${source === 'node' ? 'Node' : 'State'}: ${attr}`;
+            nodeSizeSelect.appendChild(opt);
+        }
+    };
+
+    for (const attr of model.nodeAttributeNames) {
+        addContAttr('node', attr, model.nodes);
+    }
+    for (const attr of Object.keys(model.stateNodes[0] || {})) {
+        if (!['layer_name', 'node_name', 'layer_id', 'node_id'].includes(attr)) {
+            addContAttr('state', attr, model.stateNodes);
+        }
+    }
+
+
     // Link color options
     linkColorSelect.innerHTML = '<option value="">Type (default)</option>';
     for (const attr of model.linkAttributeNames) {
@@ -297,10 +362,68 @@ nodeColorSelect.addEventListener('change', () => {
     renderer.render();
 });
 
+nodeSizeSelect.addEventListener('change', () => {
+    updateNodeSizes();
+    renderer.render();
+});
+
 linkColorSelect.addEventListener('change', () => {
     updateLinkColors();
     renderer.render();
 });
+
+function updateNodeSizes() {
+    const val = nodeSizeSelect.value;
+    if (!val || !model) {
+        renderer.nodeSizeFn = null;
+        return;
+    }
+
+    const [source, attrName] = val.split(':');
+    let minVal = Infinity, maxVal = -Infinity;
+
+    if (source === 'node') {
+        for (const n of model.nodes) {
+            const v = n[attrName];
+            if (typeof v === 'number') {
+                if (v < minVal) minVal = v;
+                if (v > maxVal) maxVal = v;
+            }
+        }
+    } else {
+        for (const sn of model.stateNodes) {
+            const v = sn[attrName];
+            if (typeof v === 'number') {
+                if (v < minVal) minVal = v;
+                if (v > maxVal) maxVal = v;
+            }
+        }
+    }
+
+    // Scale function: maps [minVal, maxVal] -> [0.3, 2.0]
+    // If all values are the same, just return 1.0 (uniform)
+    const range = maxVal - minVal;
+    const computeScale = (val) => {
+        if (typeof val !== 'number') return 1.0;
+        if (range === 0) return 1.0;
+        const normalized = (val - minVal) / range; // 0.0 to 1.0
+        return 0.3 + (normalized * 1.7); // 0.3x smallest to 2.0x largest
+    };
+
+    if (source === 'node') {
+        renderer.nodeSizeFn = (layerName, nodeName) => {
+            const node = model.nodesByName.get(nodeName);
+            return node ? computeScale(node[attrName]) : 1.0;
+        };
+    } else if (source === 'state') {
+        renderer.nodeSizeFn = (layerName, nodeName) => {
+            const key = `${layerName}::${nodeName}`;
+            const sn = model.stateNodeMap.get(key);
+            return sn ? computeScale(sn[attrName]) : 1.0;
+        };
+    }
+}
+
 
 function updateNodeColors() {
     const val = nodeColorSelect.value;

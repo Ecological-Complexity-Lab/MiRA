@@ -58,6 +58,59 @@ export function parseMultilayerData(json) {
     nodesPerLayer.get(sn.layer_name).add(sn.node_name);
   }
 
+  // ---- Compute Network Statistics (Degree, Strength) ----
+  // Initialize to 0
+  for (const sn of json.state_nodes) {
+    sn.degree = 0;
+    sn.strength = 0;
+    sn.in_degree = 0;
+    sn.out_degree = 0;
+    sn.in_strength = 0;
+    sn.out_strength = 0;
+  }
+
+  // Iterate over all links (O(E) time - very fast for sparse networks)
+  for (const link of json.extended) {
+    const fromKey = `${link.layer_from}::${link.node_from}`;
+    const toKey = `${link.layer_to}::${link.node_to}`;
+    const snFrom = stateNodeMap.get(fromKey);
+    const snTo = stateNodeMap.get(toKey);
+    const w = link.weight !== undefined ? link.weight : 1;
+
+    if (snFrom) {
+      snFrom.degree += 1;
+      snFrom.strength += w;
+      if (link.directed) {
+        snFrom.out_degree += 1;
+        snFrom.out_strength += w;
+      }
+    }
+
+    if (snTo) {
+      // Prevent double counting if it's a self-loop
+      if (fromKey !== toKey) {
+        snTo.degree += 1;
+        snTo.strength += w;
+      }
+      if (link.directed) {
+        snTo.in_degree += 1;
+        snTo.in_strength += w;
+      }
+    }
+  }
+
+  // If the network is entirely undirected, we can remove the in/out metrics
+  // to avoid cluttering the attribute lists with zeros.
+  const isDirected = json.extended.some(l => l.directed);
+  if (!isDirected) {
+    for (const sn of json.state_nodes) {
+      delete sn.in_degree;
+      delete sn.out_degree;
+      delete sn.in_strength;
+      delete sn.out_strength;
+    }
+  }
+
   // Extract attribute names for color mapping
   const nodeAttributeNames = extractExtraAttributes(json.nodes, ['node_id', 'node_name']);
   const stateNodeAttributeNames = extractExtraAttributes(json.state_nodes, ['layer_id', 'node_id', 'layer_name', 'node_name']);

@@ -21,12 +21,14 @@ export class ForceLayout {
         this.maxDisplacement = options.maxDisplacement || 15;
         this.layerWidth = options.layerWidth || 350;
         this.layerHeight = options.layerHeight || 250;
+        this.temperature = options.temperature || 10; // Added temperature option
 
         // Layout algorithm: 'fruchterman' | 'kamada_kawai' | 'circle' | 'grid' | 'random' | 'bipartite'
         this.layoutType = options.layoutType || 'fruchterman';
 
         // Bipartite info from data model (set by app.js)
         this.bipartiteInfo = null; // Map<layerName, { isBipartite, setA, setB, ... }>
+        this.bipartiteNested = options.bipartiteNested || false; // toggle for nested sorting by degree
     }
 
     /**
@@ -63,7 +65,7 @@ export class ForceLayout {
             let layerPos;
             switch (this.layoutType) {
                 case 'bipartite':
-                    layerPos = this._layoutBipartite(nodeArray, bpInfo);
+                    layerPos = this._layoutBipartite(nodeArray, bpInfo, layerName, model);
                     break;
                 case 'circle':
                     layerPos = this._layoutCircle(nodeArray);
@@ -417,8 +419,9 @@ export class ForceLayout {
      * Bipartite layout — two horizontal rows of nodes.
      * Set A nodes on top row, Set B nodes on bottom row.
      * If bipartite info is not available, falls back to a single-row layout.
+     * If this.bipartiteNested is true, clusters high-degree nodes.
      */
-    _layoutBipartite(nodeArray, bpInfo) {
+    _layoutBipartite(nodeArray, bpInfo, layerName, model) {
         const result = new Map();
         const pad = 15;
 
@@ -441,8 +444,21 @@ export class ForceLayout {
         const botY = this.layerHeight * 0.82;
 
         // Separate nodes into two arrays preserving original order
-        const aNodes = nodeArray.filter(n => setA.has(n));
-        const bNodes = nodeArray.filter(n => setB.has(n));
+        let aNodes = nodeArray.filter(n => setA.has(n));
+        let bNodes = nodeArray.filter(n => setB.has(n));
+
+        // Nested sorting: Sort descending by degree so hubs pull to the left
+        if (this.bipartiteNested && model && model.stateNodeMap) {
+            const sortByDegree = (a, b) => {
+                const snA = model.stateNodeMap.get(`${layerName}::${a}`);
+                const snB = model.stateNodeMap.get(`${layerName}::${b}`);
+                const degA = snA ? (snA.degree || 0) : 0;
+                const degB = snB ? (snB.degree || 0) : 0;
+                return degB - degA;
+            };
+            aNodes.sort(sortByDegree);
+            bNodes.sort(sortByDegree);
+        }
 
         // Place Set A nodes along top row
         aNodes.forEach((name, i) => {

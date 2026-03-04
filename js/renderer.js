@@ -26,6 +26,7 @@ export class Renderer {
         this.nodeRadius = options.nodeRadius || 10;
         this.nodeStrokeWidth = 2;
         this.showLabels = true;
+        this.transformNodes = false;
         this.showInterlayerLinks = true;
         this.showLayerNames = options.showLayerNames || false;
         this.showSetNames = options.showSetNames || false;
@@ -52,6 +53,7 @@ export class Renderer {
 
         // Color-by functions
         this.nodeColorFn = null;
+        this.nodeSizeFn = null;
         this.linkColorFn = null;
 
         // Bipartite support
@@ -535,9 +537,34 @@ export class Renderer {
         const useBipartiteColors = bpInfo && bpInfo.isBipartite;
 
 
+        // Calculate transformation matrix for nodes if enabled
+        let ta = 1, tb = 0, tc = 0, td = 1;
+        if (this.transformNodes) {
+            if (this.stackMode === 'vertical') {
+                ta = 1;
+                tb = 0;
+                tc = Math.cos(this.skewX) * 0.65;
+                td = Math.sin(this.skewY) * 0.85;
+            } else {
+                ta = Math.cos(this.skewX);
+                tb = Math.sin(this.skewX) * Math.sin(this.skewY);
+                tc = 0;
+                td = Math.cos(this.skewY);
+            }
+        }
+
         for (const [nodeName, pos] of layerPos) {
             const sp = this.project(pos.x, pos.y, layerIndex);
-            const r = this.nodeRadius * this.scale;
+
+            // Apply Size By function if present
+            let sizeMultiplier = 1.0;
+            if (this.nodeSizeFn) {
+                sizeMultiplier = this.nodeSizeFn(layer.layer_name, nodeName);
+            }
+            let r = this.nodeRadius * this.scale * sizeMultiplier;
+
+            // Defend against negative radii (can happen if normalized mapping has edge cases)
+            if (r < 0) r = 0;
 
             // Determine color
             let fillColor = this.colorMapper.getNodeLayerColor(layerIndex);
@@ -556,19 +583,29 @@ export class Renderer {
 
             // Glow effect for hovered/selected
             if (isHovered || isSelected) {
+                ctx.save();
+                ctx.translate(sp.x, sp.y);
+                if (this.transformNodes) ctx.transform(ta, tb, tc, td, 0, 0);
+
                 ctx.beginPath();
-                ctx.arc(sp.x, sp.y, r + 6, 0, Math.PI * 2);
+                ctx.arc(0, 0, r + 6, 0, Math.PI * 2);
                 ctx.fillStyle = isSelected
                     ? 'rgba(250, 204, 21, 0.25)'
                     : 'rgba(0,0,0,0.08)';
                 ctx.fill();
+                ctx.restore();
             }
 
             // Node circle
+            ctx.save();
+            ctx.translate(sp.x, sp.y);
+            if (this.transformNodes) ctx.transform(ta, tb, tc, td, 0, 0);
+
             ctx.beginPath();
-            ctx.arc(sp.x, sp.y, r, 0, Math.PI * 2);
+            ctx.arc(0, 0, r, 0, Math.PI * 2);
             ctx.fillStyle = fillColor;
             ctx.fill();
+
             ctx.strokeStyle = isSelected
                 ? '#facc15'
                 : isHovered
@@ -576,6 +613,8 @@ export class Renderer {
                     : 'rgba(0,0,0,0.2)';
             ctx.lineWidth = isSelected ? 2.5 : this.nodeStrokeWidth;
             ctx.stroke();
+
+            ctx.restore();
 
             // Label
             if (this.showLabels) {

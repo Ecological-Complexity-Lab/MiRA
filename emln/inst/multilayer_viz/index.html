@@ -64,23 +64,14 @@
           <label style="font-size:11px;color:#666;">Layer Spacing</label>
           <input type="range" id="layerSpacingSlider" min="100" max="600" value="300" class="slider">
         </div>
-      </div>
-    </details>
-
-    <!-- 3. Nodes -->
-    <details class="control-section" id="sectionNodes">
-      <summary>Nodes</summary>
-      <div class="section-body">
-        <div class="checkbox-row">
-          <label class="checkbox-label">
-            <input type="checkbox" id="showLabelsCheckbox">
-            <span>Node Labels</span>
-          </label>
-        </div>
         <div class="checkbox-row" id="setNamesContainer" style="display:none;">
-          <label class="checkbox-label">
+          <label class="checkbox-label" style="display:block;">
             <input type="checkbox" id="showSetNamesCheckbox">
             <span>Set Names</span>
+          </label>
+          <label class="checkbox-label" style="display:block; margin-top: 4px;">
+            <input type="checkbox" id="bipartiteNestedCheckbox">
+            <span>Nested Sorting</span>
           </label>
         </div>
         <div style="margin-top:6px;">
@@ -94,17 +85,43 @@
             <option value="random">Random</option>
           </select>
         </div>
-        <div style="margin-top:8px;">
-          <label style="font-size:11px;color:#666;">Color By</label>
-          <select id="nodeColorSelect" class="styled-select" disabled>
-            <option value="">Layer (default)</option>
-          </select>
-        </div>
-        <div style="margin-top:8px;">
-          <label style="font-size:11px;color:#666;">Node Size</label>
-          <input type="range" id="nodeSizeSlider" min="3" max="25" value="10" class="slider">
-        </div>
       </div>
+    </details>
+
+    <!-- 3. Nodes -->
+    <details class="control-section" id="sectionNodes">
+      <summary>Nodes</summary>
+      <div class="section-body">
+        <div class="checkbox-row">
+          <label class="checkbox-label">
+            <input type="checkbox" id="showLabelsCheckbox">
+            <span>Node Labels</span>
+          </label>
+          <div class="checkbox-row" style="margin-top: 6px;">
+            <label class="checkbox-label">
+              <input type="checkbox" id="transformNodesCheckbox"
+                title="Shapes nodes to match 3D layer perspective (may impact performance on large networks)">
+              <span>Transform Nodes</span>
+            </label>
+          </div>
+
+          <div style="margin-top:8px;">
+            <label style="font-size:11px;color:#666;">Color By</label>
+            <select id="nodeColorSelect" class="styled-select" disabled>
+              <option value="">Layer (default)</option>
+            </select>
+          </div>
+          <div style="margin-top:8px;">
+            <label style="font-size:11px;color:#666;">Size By</label>
+            <select id="nodeSizeSelect" class="styled-select" disabled>
+              <option value="">Uniform (slider)</option>
+            </select>
+          </div>
+          <div style="margin-top:8px;">
+            <label style="font-size:11px;color:#666;">Base Size</label>
+            <input type="range" id="nodeSizeSlider" min="3" max="25" value="10" class="slider">
+          </div>
+        </div>
     </details>
 
     <!-- 4. Links -->
