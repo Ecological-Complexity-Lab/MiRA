@@ -505,3 +505,222 @@ function hideTooltip() {
     }
 })();
 
+// ---- Screenshot Export ----
+const captureBtn = document.getElementById('captureBtn');
+const exportDialog = document.getElementById('exportDialog');
+const exportCancelBtn = document.getElementById('exportCancelBtn');
+
+captureBtn.addEventListener('click', () => {
+    exportDialog.style.display = 'flex';
+});
+
+exportCancelBtn.addEventListener('click', () => {
+    exportDialog.style.display = 'none';
+});
+
+// Close on overlay click
+exportDialog.addEventListener('click', (e) => {
+    if (e.target === exportDialog) exportDialog.style.display = 'none';
+});
+
+// Format buttons
+exportDialog.querySelectorAll('[data-format]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+        const format = btn.dataset.format;
+        exportDialog.style.display = 'none';
+        await exportScreenshot(format);
+    });
+});
+
+async function exportScreenshot(format) {
+    if (format === 'pdf') {
+        // Vector PDF — handled entirely by _exportPDF
+        await _exportPDF();
+        return;
+    }
+
+    // Raster export (PNG / JPG)
+    const srcCanvas = document.getElementById('networkCanvas');
+    const scale = 2; // 2x for high-quality export
+
+    // Check grid preference
+    const includeGrid = document.getElementById('exportGridCheckbox').checked;
+    const prevShowGrid = renderer.showGrid;
+    renderer.showGrid = includeGrid;
+    renderer.render();
+
+    const w = srcCanvas.width;
+    const h = srcCanvas.height;
+
+    const offscreen = document.createElement('canvas');
+    offscreen.width = w * scale;
+    offscreen.height = h * scale;
+    const ctx = offscreen.getContext('2d');
+
+    // White background
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, offscreen.width, offscreen.height);
+
+    // Draw the network canvas scaled up
+    ctx.drawImage(srcCanvas, 0, 0, offscreen.width, offscreen.height);
+
+    // Restore grid setting
+    renderer.showGrid = prevShowGrid;
+    renderer.render();
+
+    // Draw branding watermark in bottom-right
+    _drawBranding(ctx, offscreen.width, offscreen.height, scale);
+
+    const mimeType = format === 'jpg' ? 'image/jpeg' : 'image/png';
+    const quality = format === 'jpg' ? 0.92 : undefined;
+
+    if (window.showSaveFilePicker) {
+        try {
+            const handle = await window.showSaveFilePicker({
+                suggestedName: `multilayer_network.${format}`,
+                types: [{
+                    description: `${format.toUpperCase()} Image`,
+                    accept: { [mimeType]: [`.${format}`] },
+                }],
+            });
+            const writable = await handle.createWritable();
+            const blob = await new Promise(resolve => offscreen.toBlob(resolve, mimeType, quality));
+            await writable.write(blob);
+            await writable.close();
+        } catch (err) {
+            if (err.name !== 'AbortError') console.error('Save File Picker failed:', err);
+        }
+    } else {
+        // Fallback for browsers without File System Access API
+        const dataUrl = offscreen.toDataURL(mimeType, quality);
+        const link = document.createElement('a');
+        link.download = `multilayer_network.${format}`;
+        link.href = dataUrl;
+        link.click();
+    }
+}
+
+function _drawBranding(ctx, canvasW, canvasH, scale) {
+    const padding = 12 * scale;
+    const boxH = 28 * scale;
+    const fontSize = 13 * scale;
+    const text = 'Multilayer Viz';
+
+    ctx.font = `600 ${fontSize}px Inter, system-ui, sans-serif`;
+    const textW = ctx.measureText(text).width;
+    const boxW = textW + 24 * scale;
+
+    const x = canvasW - boxW - padding;
+    const y = canvasH - boxH - padding;
+
+    // Background
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+    ctx.strokeStyle = 'rgba(0, 0, 0, 0.1)';
+    ctx.lineWidth = 1 * scale;
+
+    ctx.beginPath();
+    if (ctx.roundRect) {
+        ctx.roundRect(x, y, boxW, boxH, 8 * scale);
+    } else {
+        // Plain rectangle fallback (for jsPDF context2d which lacks roundRect and arcTo)
+        ctx.rect(x, y, boxW, boxH);
+    }
+    ctx.fill();
+    ctx.stroke();
+
+    // Text
+    ctx.fillStyle = '#1a1a2e';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(text, x + 12 * scale, y + boxH / 2);
+}
+
+async function _exportPDF() {
+    // Dynamically load jsPDF if not already loaded
+    if (!window.jspdf) {
+        try {
+            const script = document.createElement('script');
+            script.src = 'https://unpkg.com/jspdf@2.5.2/dist/jspdf.umd.min.js';
+            document.head.appendChild(script);
+            await new Promise((resolve, reject) => {
+                script.onload = resolve;
+                script.onerror = () => reject(new Error('Failed to load jsPDF library'));
+            });
+        } catch (err) {
+            alert('Could not load PDF library. Please check your internet connection and try again.');
+            console.error(err);
+            return;
+        }
+    }
+
+    try {
+        const { jsPDF } = window.jspdf;
+
+        const srcCanvas = document.getElementById('networkCanvas');
+        // High-DPI scale for sharp output (4x = ~300 DPI for typical screens)
+        const scale = 4;
+
+        // Temporarily adjust renderer for export
+        const includeGrid = document.getElementById('exportGridCheckbox').checked;
+        const prevShowGrid = renderer.showGrid;
+        renderer.showGrid = includeGrid;
+        renderer.render();
+
+        const w = srcCanvas.width;
+        const h = srcCanvas.height;
+
+        // Render to a high-res offscreen canvas
+        const offscreen = document.createElement('canvas');
+        offscreen.width = w * scale;
+        offscreen.height = h * scale;
+        const ctx = offscreen.getContext('2d');
+
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, offscreen.width, offscreen.height);
+        ctx.drawImage(srcCanvas, 0, 0, offscreen.width, offscreen.height);
+
+        // Restore renderer
+        renderer.showGrid = prevShowGrid;
+        renderer.render();
+
+        // Add branding
+        _drawBranding(ctx, offscreen.width, offscreen.height, scale);
+
+        // Create PDF at the original CSS-pixel page size
+        const isLandscape = w > h;
+        const pdf = new jsPDF({
+            orientation: isLandscape ? 'landscape' : 'portrait',
+            unit: 'px',
+            format: [w, h],
+            hotfixes: ['px_scaling']
+        });
+
+        // Embed the high-res image — fills the page, but is 4x resolution
+        const imgData = offscreen.toDataURL('image/png');
+        pdf.addImage(imgData, 'PNG', 0, 0, w, h, undefined, 'FAST');
+
+        // Save
+        if (window.showSaveFilePicker) {
+            try {
+                const handle = await window.showSaveFilePicker({
+                    suggestedName: 'multilayer_network.pdf',
+                    types: [{
+                        description: 'PDF Document',
+                        accept: { 'application/pdf': ['.pdf'] },
+                    }],
+                });
+                const writable = await handle.createWritable();
+                const blob = pdf.output('blob');
+                await writable.write(blob);
+                await writable.close();
+            } catch (err) {
+                if (err.name !== 'AbortError') console.error('Save failed:', err);
+            }
+        } else {
+            pdf.save('multilayer_network.pdf');
+        }
+    } catch (err) {
+        alert('PDF export failed: ' + err.message);
+        console.error(err);
+    }
+}
+

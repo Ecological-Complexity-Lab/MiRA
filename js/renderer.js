@@ -213,16 +213,23 @@ export class Renderer {
         const ctx = this.ctx;
         const w = this.canvas.width;
         const h = this.canvas.height;
-
-        // Clear
         ctx.clearRect(0, 0, w, h);
+        this.renderToContext(ctx, w, h);
+    }
 
+    /**
+     * Render the full visualization to an arbitrary Canvas2D-compatible context.
+     * Used by render() for on-screen drawing and by PDF export for vector output.
+     */
+    renderToContext(ctx, w, h) {
         // Background
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(0, 0, w, h);
 
         // Subtle grid
-        this._drawGrid(ctx, w, h);
+        if (this.showGrid !== false) {
+            this._drawGrid(ctx, w, h);
+        }
 
         if (!this.model || !this.positions) {
             this._drawPlaceholder(ctx, w, h);

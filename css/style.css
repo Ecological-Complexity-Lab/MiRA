@@ -1,5 +1,5 @@
 /* ============================================
-   style.css — Dark-mode UI for multilayer visualizer
+   style.css — UI for multilayer visualizer
    ============================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
@@ -47,51 +47,73 @@ body {
     opacity 0.3s ease;
 }
 
-/* ---- Control Panel (top-left) ---- */
-#controlPanel {
-  top: 16px;
-  left: 16px;
-  padding: 18px 20px;
-  min-width: 220px;
+/* ============================================
+   Collapsible Control Panels (top-left)
+   ============================================ */
+#controlPanels {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 240px;
 }
 
-#controlPanel h2 {
-  font-size: 15px;
-  font-weight: 600;
-  color: #1a1a2e;
-  margin-bottom: 14px;
-  letter-spacing: -0.01em;
+.control-section {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  transition: box-shadow 0.2s ease;
+}
+
+.control-section[open] {
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+}
+
+.control-section summary {
   display: flex;
   align-items: center;
-  gap: 8px;
-}
-
-#controlPanel h2::before {
-  content: '';
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #6366f1, #818cf8);
-  box-shadow: 0 0 8px rgba(99, 102, 241, 0.3);
-}
-
-.control-group {
-  margin-bottom: 14px;
-}
-
-.control-group:last-child {
-  margin-bottom: 0;
-}
-
-.control-group label {
-  display: block;
-  font-size: 11px;
-  font-weight: 500;
-  color: rgba(0, 0, 0, 0.6);
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #1a1a2e;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  margin-bottom: 5px;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+  transition: background 0.15s ease;
+}
+
+.control-section summary::-webkit-details-marker {
+  display: none;
+}
+
+.control-section summary::before {
+  content: '▸';
+  display: inline-block;
+  margin-right: 8px;
+  font-size: 10px;
+  color: rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s ease;
+}
+
+.control-section[open] summary::before {
+  transform: rotate(90deg);
+}
+
+.control-section summary:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.section-body {
+  padding: 4px 14px 12px;
 }
 
 /* ---- Buttons ---- */
@@ -100,13 +122,13 @@ body {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 8px 14px;
+  padding: 7px 12px;
   border: 1px solid rgba(0, 0, 0, 0.12);
   border-radius: 8px;
   background: rgba(0, 0, 0, 0.04);
   color: #1a1a2e;
   font-family: inherit;
-  font-size: 12.5px;
+  font-size: 12px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.15s ease;
@@ -145,13 +167,13 @@ body {
 /* ---- Select (dropdown) ---- */
 .styled-select {
   width: 100%;
-  padding: 7px 10px;
+  padding: 6px 10px;
   border: 1px solid rgba(0, 0, 0, 0.12);
   border-radius: 8px;
   background: rgba(0, 0, 0, 0.03);
   color: #1a1a2e;
   font-family: inherit;
-  font-size: 12.5px;
+  font-size: 12px;
   cursor: pointer;
   appearance: none;
   -webkit-appearance: none;
@@ -159,6 +181,7 @@ body {
   background-repeat: no-repeat;
   background-position: right 8px center;
   transition: border-color 0.15s ease;
+  margin-top: 3px;
 }
 
 .styled-select:hover {
@@ -187,31 +210,86 @@ body {
   cursor: pointer;
 }
 
-/* ---- Zoom Controls ---- */
+/* ============================================
+   Bottom-left: Zoom & Hints
+   ============================================ */
+#bottomPanel {
+  bottom: 12px;
+  left: 12px;
+  padding: 10px 14px;
+}
+
 .zoom-controls {
   display: flex;
   gap: 4px;
 }
 
 .zoom-btn {
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   padding: 0;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   border-radius: 6px;
 }
 
 .interaction-hints {
   display: flex;
-  gap: 10px;
+  flex-wrap: wrap;
+  gap: 8px;
   margin-top: 6px;
   font-size: 10px;
   color: rgba(0, 0, 0, 0.4);
   letter-spacing: 0.02em;
 }
 
-/* ---- Info Panel (right side) ---- */
+/* ============================================
+   Bottom-right: Branding
+   ============================================ */
+#brandingPanel {
+  position: fixed;
+  bottom: 12px;
+  right: 12px;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+}
+
+.branding-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a1a2e;
+  letter-spacing: -0.01em;
+}
+
+.branding-link {
+  display: flex;
+  align-items: center;
+  color: rgba(0, 0, 0, 0.45);
+  transition: color 0.15s ease;
+}
+
+.branding-link:hover {
+  color: #1a1a2e;
+}
+
+.branding-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  object-fit: contain;
+}
+
+/* ============================================
+   Info Panel (right side)
+   ============================================ */
 #infoPanel {
   top: 16px;
   right: 16px;
@@ -316,62 +394,6 @@ body {
   color: #1a1a2e;
 }
 
-/* ---- Legend ---- */
-#legendPanel {
-  bottom: 16px;
-  left: 16px;
-  padding: 12px 16px;
-  max-width: 300px;
-}
-
-#legendPanel h4 {
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: rgba(0, 0, 0, 0.5);
-  margin-bottom: 6px;
-}
-
-.legend-items {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 11.5px;
-  color: rgba(0, 0, 0, 0.7);
-}
-
-.legend-swatch {
-  width: 10px;
-  height: 10px;
-  border-radius: 3px;
-  flex-shrink: 0;
-}
-
-.legend-line {
-  width: 20px;
-  height: 2px;
-  flex-shrink: 0;
-}
-
-.legend-line.dashed {
-  background: repeating-linear-gradient(90deg,
-      rgba(30, 100, 220, 0.7) 0,
-      rgba(30, 100, 220, 0.7) 4px,
-      transparent 4px,
-      transparent 8px);
-}
-
-.legend-line.solid {
-  background: rgba(0, 0, 0, 0.7);
-}
-
 /* ---- Scrollbar ---- */
 #infoPanel::-webkit-scrollbar {
   width: 4px;
@@ -382,7 +404,7 @@ body {
 }
 
 #infoPanel::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.08);
   border-radius: 2px;
 }
 
@@ -395,7 +417,7 @@ body {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 12.5px;
+  font-size: 12px;
   color: #1a1a2e;
   cursor: pointer;
 }
@@ -418,8 +440,8 @@ body {
 .toggle-btn {
   border: none;
   border-radius: 0;
-  padding: 5px 12px;
-  font-size: 11.5px;
+  padding: 5px 10px;
+  font-size: 11px;
   background: rgba(0, 0, 0, 0.03);
   color: rgba(0, 0, 0, 0.55);
   transition: all 0.15s ease;
@@ -438,7 +460,7 @@ body {
   border: none;
 }
 
-.toggle-btn + .toggle-btn {
+.toggle-btn+.toggle-btn {
   border-left: 1px solid rgba(0, 0, 0, 0.1);
 }
 
@@ -474,13 +496,6 @@ body {
   border: none;
 }
 
-/* ---- Separator ---- */
-.separator {
-  height: 1px;
-  background: rgba(0, 0, 0, 0.08);
-  margin: 12px 0;
-}
-
 /* ---- Tooltip (for hover info) ---- */
 #tooltip {
   position: fixed;
@@ -501,4 +516,54 @@ body {
 
 #tooltip.visible {
   opacity: 1;
+}
+
+/* ============================================
+   Export Dialog
+   ============================================ */
+.dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dialog-box {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 14px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  padding: 24px 28px;
+  min-width: 260px;
+  text-align: center;
+}
+
+.dialog-box h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a2e;
+  margin-bottom: 6px;
+}
+
+.dialog-box p {
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.5);
+  margin-bottom: 16px;
+}
+
+.dialog-options {
+  margin-bottom: 14px;
+  text-align: left;
+}
+
+.dialog-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
 }

@@ -101,17 +101,18 @@ export function parseMultilayerData(json) {
 function detectBipartiteLayers(layers, nodes, intralayerLinks, nodesPerLayer, nodesByName) {
   const info = new Map();
 
-  // Check if nodes have a "node_type" attribute
+  // Check if nodes have a "node_type" or "type" attribute
   const nodeTypeValues = new Map(); // nodeName -> node_type value
   let hasNodeType = false;
   for (const node of nodes) {
-    if (node.node_type !== undefined && node.node_type !== null) {
-      nodeTypeValues.set(node.node_name, node.node_type);
+    const typeValue = node.node_type !== undefined ? node.node_type : node.type;
+    if (typeValue !== undefined && typeValue !== null) {
+      nodeTypeValues.set(node.node_name, typeValue);
       hasNodeType = true;
     }
   }
 
-  // Collect distinct node_type values
+  // Collect distinct type values
   const distinctTypes = hasNodeType ? [...new Set(nodeTypeValues.values())] : [];
 
   for (const layer of layers) {
