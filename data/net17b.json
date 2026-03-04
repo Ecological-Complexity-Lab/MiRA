@@ -5315,1297 +5315,1513 @@
       "layer_id": 1,
       "node_id": 1,
       "layer_name": "layer_1",
-      "node_name": "Cereus_sp."
+      "node_name": "Cereus_sp.",
+      "module": "Module 4"
     },
     {
       "layer_id": 1,
       "node_id": 2,
       "layer_name": "layer_1",
-      "node_name": "Chamaesyce_recurva"
+      "node_name": "Chamaesyce_recurva",
+      "module": "Module 3"
     },
     {
       "layer_id": 1,
       "node_id": 3,
       "layer_name": "layer_1",
-      "node_name": "Galactia_striata"
+      "node_name": "Galactia_striata",
+      "module": "Module 5"
     },
     {
       "layer_id": 1,
       "node_id": 4,
       "layer_name": "layer_1",
-      "node_name": "Opuntia_megasperma"
+      "node_name": "Opuntia_megasperma",
+      "module": "Module 4"
     },
     {
       "layer_id": 1,
       "node_id": 5,
       "layer_name": "layer_1",
-      "node_name": "Polyscias_guilfoylei"
+      "node_name": "Polyscias_guilfoylei",
+      "module": "Module 2"
     },
     {
       "layer_id": 1,
       "node_id": 6,
       "layer_name": "layer_1",
-      "node_name": "Psidium_guajava"
+      "node_name": "Psidium_guajava",
+      "module": "Module 4"
     },
     {
       "layer_id": 1,
       "node_id": 7,
       "layer_name": "layer_1",
-      "node_name": "Rubus_niveus"
+      "node_name": "Rubus_niveus",
+      "module": "Module 2"
     },
     {
       "layer_id": 1,
       "node_id": 8,
       "layer_name": "layer_1",
-      "node_name": "Alternanthera_echinocephala"
+      "node_name": "Alternanthera_echinocephala",
+      "module": "Module 3"
     },
     {
       "layer_id": 1,
       "node_id": 9,
       "layer_name": "layer_1",
-      "node_name": "Ceiba_pentandra"
+      "node_name": "Ceiba_pentandra",
+      "module": "Module 5"
     },
     {
       "layer_id": 1,
       "node_id": 10,
       "layer_name": "layer_1",
-      "node_name": "Hypericum_thesiifolium"
+      "node_name": "Hypericum_thesiifolium",
+      "module": "Module 1"
     },
     {
       "layer_id": 1,
       "node_id": 11,
       "layer_name": "layer_1",
-      "node_name": "Impatiens_balsamina"
+      "node_name": "Impatiens_balsamina",
+      "module": "Module 1"
     },
     {
       "layer_id": 1,
       "node_id": 12,
       "layer_name": "layer_1",
-      "node_name": "Lantana_peduncularis"
+      "node_name": "Lantana_peduncularis",
+      "module": "Module 5"
     },
     {
       "layer_id": 1,
       "node_id": 13,
       "layer_name": "layer_1",
-      "node_name": "Mentzelia_aspera"
+      "node_name": "Mentzelia_aspera",
+      "module": "Module 2"
     },
     {
       "layer_id": 1,
       "node_id": 14,
       "layer_name": "layer_1",
-      "node_name": "Nolana_galapagensis"
+      "node_name": "Nolana_galapagensis",
+      "module": "Module 2"
     },
     {
       "layer_id": 1,
       "node_id": 15,
       "layer_name": "layer_1",
-      "node_name": "Passiflora_foetida"
+      "node_name": "Passiflora_foetida",
+      "module": "Module 2"
     },
     {
       "layer_id": 1,
       "node_id": 16,
       "layer_name": "layer_1",
-      "node_name": "Passiflora_suberosa"
+      "node_name": "Passiflora_suberosa",
+      "module": "Module 2"
     },
     {
       "layer_id": 1,
       "node_id": 17,
       "layer_name": "layer_1",
-      "node_name": "Plumbago_scandens"
+      "node_name": "Plumbago_scandens",
+      "module": "Module 5"
     },
     {
       "layer_id": 1,
       "node_id": 18,
       "layer_name": "layer_1",
-      "node_name": "Psidium_sp."
+      "node_name": "Psidium_sp.",
+      "module": "Module 4"
     },
     {
       "layer_id": 1,
       "node_id": 19,
       "layer_name": "layer_1",
-      "node_name": "Rhynchosia_minima"
+      "node_name": "Rhynchosia_minima",
+      "module": "Module 2"
     },
     {
       "layer_id": 1,
       "node_id": 20,
       "layer_name": "layer_1",
-      "node_name": "Scalesia_sp"
+      "node_name": "Scalesia_sp",
+      "module": "Module 4"
     },
     {
       "layer_id": 1,
       "node_id": 21,
       "layer_name": "layer_1",
-      "node_name": "Syzygium_jambos"
+      "node_name": "Syzygium_jambos",
+      "module": "Module 1"
     },
     {
       "layer_id": 1,
       "node_id": 22,
       "layer_name": "layer_1",
-      "node_name": "Cardiospermum_galapageium"
+      "node_name": "Cardiospermum_galapageium",
+      "module": "Module 2"
     },
     {
       "layer_id": 1,
       "node_id": 23,
       "layer_name": "layer_1",
-      "node_name": "Brassica_sp."
+      "node_name": "Brassica_sp.",
+      "module": "Module 4"
     },
     {
       "layer_id": 1,
       "node_id": 24,
       "layer_name": "layer_1",
-      "node_name": "Calandrinia_galapagosa"
+      "node_name": "Calandrinia_galapagosa",
+      "module": "Module 4"
     },
     {
       "layer_id": 1,
       "node_id": 25,
       "layer_name": "layer_1",
-      "node_name": "Cleome_viscosa"
+      "node_name": "Cleome_viscosa",
+      "module": "Module 4"
     },
     {
       "layer_id": 1,
       "node_id": 26,
       "layer_name": "layer_1",
-      "node_name": "Croton_scouleri"
+      "node_name": "Croton_scouleri",
+      "module": "Module 3"
     },
     {
       "layer_id": 1,
       "node_id": 27,
       "layer_name": "layer_1",
-      "node_name": "Eragrostis_ciliaris"
+      "node_name": "Eragrostis_ciliaris",
+      "module": "Module 1"
     },
     {
       "layer_id": 1,
       "node_id": 28,
       "layer_name": "layer_1",
-      "node_name": "Gen._sp.3"
+      "node_name": "Gen._sp.3",
+      "module": "Module 2"
     },
     {
       "layer_id": 1,
       "node_id": 29,
       "layer_name": "layer_1",
-      "node_name": "Gossypium_darwinii"
+      "node_name": "Gossypium_darwinii",
+      "module": "Module 4"
     },
     {
       "layer_id": 1,
       "node_id": 30,
       "layer_name": "layer_1",
-      "node_name": "Passiflora_sp.1"
+      "node_name": "Passiflora_sp.1",
+      "module": "Module 5"
     },
     {
       "layer_id": 1,
       "node_id": 31,
       "layer_name": "layer_1",
-      "node_name": "Pectis_linifolia"
+      "node_name": "Pectis_linifolia",
+      "module": "Module 2"
     },
     {
       "layer_id": 1,
       "node_id": 32,
       "layer_name": "layer_1",
-      "node_name": "Sesuvium_portulacastrum"
+      "node_name": "Sesuvium_portulacastrum",
+      "module": "Module 2"
     },
     {
       "layer_id": 1,
       "node_id": 33,
       "layer_name": "layer_1",
-      "node_name": "Chamaesyce_punctulata"
+      "node_name": "Chamaesyce_punctulata",
+      "module": "Module 2"
     },
     {
       "layer_id": 1,
       "node_id": 34,
       "layer_name": "layer_1",
-      "node_name": "Cordia_leucophlyctis"
+      "node_name": "Cordia_leucophlyctis",
+      "module": "Module 4"
     },
     {
       "layer_id": 1,
       "node_id": 35,
       "layer_name": "layer_1",
-      "node_name": "Cressa_truxillensis"
+      "node_name": "Cressa_truxillensis",
+      "module": "Module 1"
     },
     {
       "layer_id": 1,
       "node_id": 36,
       "layer_name": "layer_1",
-      "node_name": "Dianthus_caryophyllus"
+      "node_name": "Dianthus_caryophyllus",
+      "module": "Module 3"
     },
     {
       "layer_id": 1,
       "node_id": 37,
       "layer_name": "layer_1",
-      "node_name": "Evolvulus_convolvuloides"
+      "node_name": "Evolvulus_convolvuloides",
+      "module": "Module 1"
     },
     {
       "layer_id": 1,
       "node_id": 38,
       "layer_name": "layer_1",
-      "node_name": "Gen._sp.2"
+      "node_name": "Gen._sp.2",
+      "module": "Module 4"
     },
     {
       "layer_id": 1,
       "node_id": 39,
       "layer_name": "layer_1",
-      "node_name": "Hibiscus_sp."
+      "node_name": "Hibiscus_sp.",
+      "module": "Module 5"
     },
     {
       "layer_id": 1,
       "node_id": 40,
       "layer_name": "layer_1",
-      "node_name": "Hippomane_mancinella"
+      "node_name": "Hippomane_mancinella",
+      "module": "Module 5"
     },
     {
       "layer_id": 1,
       "node_id": 41,
       "layer_name": "layer_1",
-      "node_name": "Luffa_cylindrica"
+      "node_name": "Luffa_cylindrica",
+      "module": "Module 3"
     },
     {
       "layer_id": 1,
       "node_id": 42,
       "layer_name": "layer_1",
-      "node_name": "Miconia_robinsoniana"
+      "node_name": "Miconia_robinsoniana",
+      "module": "Module 4"
     },
     {
       "layer_id": 1,
       "node_id": 43,
       "layer_name": "layer_1",
-      "node_name": "Passiflora_ligularis"
+      "node_name": "Passiflora_ligularis",
+      "module": "Module 1"
     },
     {
       "layer_id": 1,
       "node_id": 44,
       "layer_name": "layer_1",
-      "node_name": "Scalesia_incisa"
+      "node_name": "Scalesia_incisa",
+      "module": "Module 3"
     },
     {
       "layer_id": 1,
       "node_id": 45,
       "layer_name": "layer_1",
-      "node_name": "Senna_septemtrionalis"
+      "node_name": "Senna_septemtrionalis",
+      "module": "Module 5"
     },
     {
       "layer_id": 1,
       "node_id": 46,
       "layer_name": "layer_1",
-      "node_name": "Waltheria_ovata"
+      "node_name": "Waltheria_ovata",
+      "module": "Module 3"
     },
     {
       "layer_id": 1,
       "node_id": 47,
       "layer_name": "layer_1",
-      "node_name": "Gen._sp.1"
+      "node_name": "Gen._sp.1",
+      "module": "Module 2"
     },
     {
       "layer_id": 1,
       "node_id": 48,
       "layer_name": "layer_1",
-      "node_name": "Chiococca_alba"
+      "node_name": "Chiococca_alba",
+      "module": "Module 5"
     },
     {
       "layer_id": 1,
       "node_id": 49,
       "layer_name": "layer_1",
-      "node_name": "Physalis_pubescens"
+      "node_name": "Physalis_pubescens",
+      "module": "Module 5"
     },
     {
       "layer_id": 3,
       "node_id": 11,
       "layer_name": "layer_3",
-      "node_name": "Impatiens_balsamina"
+      "node_name": "Impatiens_balsamina",
+      "module": "Module 3"
     },
     {
       "layer_id": 3,
       "node_id": 13,
       "layer_name": "layer_3",
-      "node_name": "Mentzelia_aspera"
+      "node_name": "Mentzelia_aspera",
+      "module": "Module 4"
     },
     {
       "layer_id": 3,
       "node_id": 14,
       "layer_name": "layer_3",
-      "node_name": "Nolana_galapagensis"
+      "node_name": "Nolana_galapagensis",
+      "module": "Module 2"
     },
     {
       "layer_id": 3,
       "node_id": 6,
       "layer_name": "layer_3",
-      "node_name": "Psidium_guajava"
+      "node_name": "Psidium_guajava",
+      "module": "Module 4"
     },
     {
       "layer_id": 3,
       "node_id": 21,
       "layer_name": "layer_3",
-      "node_name": "Syzygium_jambos"
+      "node_name": "Syzygium_jambos",
+      "module": "Module 1"
     },
     {
       "layer_id": 3,
       "node_id": 50,
       "layer_name": "layer_3",
-      "node_name": "Acacia_rorudiana"
+      "node_name": "Acacia_rorudiana",
+      "module": "Module 4"
     },
     {
       "layer_id": 3,
       "node_id": 8,
       "layer_name": "layer_3",
-      "node_name": "Alternanthera_echinocephala"
+      "node_name": "Alternanthera_echinocephala",
+      "module": "Module 5"
     },
     {
       "layer_id": 3,
       "node_id": 23,
       "layer_name": "layer_3",
-      "node_name": "Brassica_sp."
+      "node_name": "Brassica_sp.",
+      "module": "Module 1"
     },
     {
       "layer_id": 3,
       "node_id": 51,
       "layer_name": "layer_3",
-      "node_name": "Bursera_graveolens"
+      "node_name": "Bursera_graveolens",
+      "module": "Module 4"
     },
     {
       "layer_id": 3,
       "node_id": 22,
       "layer_name": "layer_3",
-      "node_name": "Cardiospermum_galapageium"
+      "node_name": "Cardiospermum_galapageium",
+      "module": "Module 5"
     },
     {
       "layer_id": 3,
       "node_id": 52,
       "layer_name": "layer_3",
-      "node_name": "Carica_x_heilbornii"
+      "node_name": "Carica_x_heilbornii",
+      "module": "Module 4"
     },
     {
       "layer_id": 3,
       "node_id": 53,
       "layer_name": "layer_3",
-      "node_name": "Chamaesyce_ophthalmica"
+      "node_name": "Chamaesyce_ophthalmica",
+      "module": "Module 4"
     },
     {
       "layer_id": 3,
       "node_id": 2,
       "layer_name": "layer_3",
-      "node_name": "Chamaesyce_recurva"
+      "node_name": "Chamaesyce_recurva",
+      "module": "Module 2"
     },
     {
       "layer_id": 3,
       "node_id": 25,
       "layer_name": "layer_3",
-      "node_name": "Cleome_viscosa"
+      "node_name": "Cleome_viscosa",
+      "module": "Module 4"
     },
     {
       "layer_id": 3,
       "node_id": 26,
       "layer_name": "layer_3",
-      "node_name": "Croton_scouleri"
+      "node_name": "Croton_scouleri",
+      "module": "Module 1"
     },
     {
       "layer_id": 3,
       "node_id": 3,
       "layer_name": "layer_3",
-      "node_name": "Galactia_striata"
+      "node_name": "Galactia_striata",
+      "module": "Module 5"
     },
     {
       "layer_id": 3,
       "node_id": 40,
       "layer_name": "layer_3",
-      "node_name": "Hippomane_mancinella"
+      "node_name": "Hippomane_mancinella",
+      "module": "Module 1"
     },
     {
       "layer_id": 3,
       "node_id": 54,
       "layer_name": "layer_3",
-      "node_name": "Maytenus_octogona"
+      "node_name": "Maytenus_octogona",
+      "module": "Module 4"
     },
     {
       "layer_id": 3,
       "node_id": 55,
       "layer_name": "layer_3",
-      "node_name": "Opuntia_echios"
+      "node_name": "Opuntia_echios",
+      "module": "Module 5"
     },
     {
       "layer_id": 3,
       "node_id": 56,
       "layer_name": "layer_3",
-      "node_name": "Passiflora_colinvauxii"
+      "node_name": "Passiflora_colinvauxii",
+      "module": "Module 4"
     },
     {
       "layer_id": 3,
       "node_id": 16,
       "layer_name": "layer_3",
-      "node_name": "Passiflora_suberosa"
+      "node_name": "Passiflora_suberosa",
+      "module": "Module 5"
     },
     {
       "layer_id": 3,
       "node_id": 5,
       "layer_name": "layer_3",
-      "node_name": "Polyscias_guilfoylei"
+      "node_name": "Polyscias_guilfoylei",
+      "module": "Module 2"
     },
     {
       "layer_id": 3,
       "node_id": 19,
       "layer_name": "layer_3",
-      "node_name": "Rhynchosia_minima"
+      "node_name": "Rhynchosia_minima",
+      "module": "Module 1"
     },
     {
       "layer_id": 3,
       "node_id": 57,
       "layer_name": "layer_3",
-      "node_name": "Scalesia_affinis"
+      "node_name": "Scalesia_affinis",
+      "module": "Module 4"
     },
     {
       "layer_id": 3,
       "node_id": 58,
       "layer_name": "layer_3",
-      "node_name": "Tiquilia_darwinii"
+      "node_name": "Tiquilia_darwinii",
+      "module": "Module 3"
     },
     {
       "layer_id": 3,
       "node_id": 59,
       "layer_name": "layer_3",
-      "node_name": "Casuarina_equisetifolia"
+      "node_name": "Casuarina_equisetifolia",
+      "module": "Module 4"
     },
     {
       "layer_id": 3,
       "node_id": 60,
       "layer_name": "layer_3",
-      "node_name": "Cryptocarpus_pyriformis"
+      "node_name": "Cryptocarpus_pyriformis",
+      "module": "Module 4"
     },
     {
       "layer_id": 3,
       "node_id": 61,
       "layer_name": "layer_3",
-      "node_name": "Dalechampia_scandens"
+      "node_name": "Dalechampia_scandens",
+      "module": "Module 5"
     },
     {
       "layer_id": 3,
       "node_id": 27,
       "layer_name": "layer_3",
-      "node_name": "Eragrostis_ciliaris"
+      "node_name": "Eragrostis_ciliaris",
+      "module": "Module 1"
     },
     {
       "layer_id": 3,
       "node_id": 62,
       "layer_name": "layer_3",
-      "node_name": "Ipomoea_sp."
+      "node_name": "Ipomoea_sp.",
+      "module": "Module 5"
     },
     {
       "layer_id": 3,
       "node_id": 63,
       "layer_name": "layer_3",
-      "node_name": "Jasminocereus_thouarsii"
+      "node_name": "Jasminocereus_thouarsii",
+      "module": "Module 2"
     },
     {
       "layer_id": 3,
       "node_id": 64,
       "layer_name": "layer_3",
-      "node_name": "Opuntia_ficus-indica"
+      "node_name": "Opuntia_ficus-indica",
+      "module": "Module 5"
     },
     {
       "layer_id": 3,
       "node_id": 65,
       "layer_name": "layer_3",
-      "node_name": "Passiflora_sp"
+      "node_name": "Passiflora_sp",
+      "module": "Module 3"
     },
     {
       "layer_id": 3,
       "node_id": 17,
       "layer_name": "layer_3",
-      "node_name": "Plumbago_scandens"
+      "node_name": "Plumbago_scandens",
+      "module": "Module 4"
     },
     {
       "layer_id": 3,
       "node_id": 66,
       "layer_name": "layer_3",
-      "node_name": "Psidium_galapageium"
+      "node_name": "Psidium_galapageium",
+      "module": "Module 2"
     },
     {
       "layer_id": 3,
       "node_id": 67,
       "layer_name": "layer_3",
-      "node_name": "Russelia_equisetiformis"
+      "node_name": "Russelia_equisetiformis",
+      "module": "Module 3"
     },
     {
       "layer_id": 3,
       "node_id": 68,
       "layer_name": "layer_3",
-      "node_name": "Tournefortia_pubescens"
+      "node_name": "Tournefortia_pubescens",
+      "module": "Module 2"
     },
     {
       "layer_id": 3,
       "node_id": 69,
       "layer_name": "layer_3",
-      "node_name": "Cereus_peruvianus"
+      "node_name": "Cereus_peruvianus",
+      "module": "Module 2"
     },
     {
       "layer_id": 3,
       "node_id": 34,
       "layer_name": "layer_3",
-      "node_name": "Cordia_leucophlyctis"
+      "node_name": "Cordia_leucophlyctis",
+      "module": "Module 3"
     },
     {
       "layer_id": 3,
       "node_id": 37,
       "layer_name": "layer_3",
-      "node_name": "Evolvulus_convolvuloides"
+      "node_name": "Evolvulus_convolvuloides",
+      "module": "Module 1"
     },
     {
       "layer_id": 3,
       "node_id": 70,
       "layer_name": "layer_3",
-      "node_name": "Hylocereus_polyrhizus"
+      "node_name": "Hylocereus_polyrhizus",
+      "module": "Module 5"
     },
     {
       "layer_id": 3,
       "node_id": 71,
       "layer_name": "layer_3",
-      "node_name": "Iochroma_ellipticum"
+      "node_name": "Iochroma_ellipticum",
+      "module": "Module 5"
     },
     {
       "layer_id": 3,
       "node_id": 12,
       "layer_name": "layer_3",
-      "node_name": "Lantana_peduncularis"
+      "node_name": "Lantana_peduncularis",
+      "module": "Module 4"
     },
     {
       "layer_id": 3,
       "node_id": 15,
       "layer_name": "layer_3",
-      "node_name": "Passiflora_foetida"
+      "node_name": "Passiflora_foetida",
+      "module": "Module 1"
     },
     {
       "layer_id": 3,
       "node_id": 43,
       "layer_name": "layer_3",
-      "node_name": "Passiflora_ligularis"
+      "node_name": "Passiflora_ligularis",
+      "module": "Module 4"
     },
     {
       "layer_id": 3,
       "node_id": 72,
       "layer_name": "layer_3",
-      "node_name": "Pernettya_howellii"
+      "node_name": "Pernettya_howellii",
+      "module": "Module 2"
     },
     {
       "layer_id": 3,
       "node_id": 73,
       "layer_name": "layer_3",
-      "node_name": "Senna_occidentalis"
+      "node_name": "Senna_occidentalis",
+      "module": "Module 5"
     },
     {
       "layer_id": 3,
       "node_id": 74,
       "layer_name": "layer_3",
-      "node_name": "Vallesia_glabra"
+      "node_name": "Vallesia_glabra",
+      "module": "Module 4"
     },
     {
       "layer_id": 3,
       "node_id": 75,
       "layer_name": "layer_3",
-      "node_name": "Blainvillea_dichotoma"
+      "node_name": "Blainvillea_dichotoma",
+      "module": "Module 3"
     },
     {
       "layer_id": 3,
       "node_id": 76,
       "layer_name": "layer_3",
-      "node_name": "Alternanthera_filifolia"
+      "node_name": "Alternanthera_filifolia",
+      "module": "Module 1"
     },
     {
       "layer_id": 3,
       "node_id": 77,
       "layer_name": "layer_3",
-      "node_name": "Cassia_grandis"
+      "node_name": "Cassia_grandis",
+      "module": "Module 5"
     },
     {
       "layer_id": 3,
       "node_id": 78,
       "layer_name": "layer_3",
-      "node_name": "Brassica_oleracea"
+      "node_name": "Brassica_oleracea",
+      "module": "Module 1"
     },
     {
       "layer_id": 3,
       "node_id": 9,
       "layer_name": "layer_3",
-      "node_name": "Ceiba_pentandra"
+      "node_name": "Ceiba_pentandra",
+      "module": "Module 2"
     },
     {
       "layer_id": 3,
       "node_id": 79,
       "layer_name": "layer_3",
-      "node_name": "Hippobroma_longiflora"
+      "node_name": "Hippobroma_longiflora",
+      "module": "Module 5"
     },
     {
       "layer_id": 3,
       "node_id": 80,
       "layer_name": "layer_3",
-      "node_name": "Sarcostemma_angustissimum"
+      "node_name": "Sarcostemma_angustissimum",
+      "module": "Module 3"
     },
     {
       "layer_id": 3,
       "node_id": 81,
       "layer_name": "layer_3",
-      "node_name": "Opuntia_sp."
+      "node_name": "Opuntia_sp.",
+      "module": "Module 5"
     },
     {
       "layer_id": 3,
       "node_id": 29,
       "layer_name": "layer_3",
-      "node_name": "Gossypium_darwinii"
+      "node_name": "Gossypium_darwinii",
+      "module": "Module 3"
     },
     {
       "layer_id": 2,
       "node_id": 82,
       "layer_name": "layer_2",
-      "node_name": "Boerhavia_coccinea"
+      "node_name": "Boerhavia_coccinea",
+      "module": "Module 4"
     },
     {
       "layer_id": 2,
       "node_id": 48,
       "layer_name": "layer_2",
-      "node_name": "Chiococca_alba"
+      "node_name": "Chiococca_alba",
+      "module": "Module 3"
     },
     {
       "layer_id": 2,
       "node_id": 83,
       "layer_name": "layer_2",
-      "node_name": "Cyperaceae_cf._Eleocharis_sp.1"
+      "node_name": "Cyperaceae_cf._Eleocharis_sp.1",
+      "module": "Module 4"
     },
     {
       "layer_id": 2,
       "node_id": 84,
       "layer_name": "layer_2",
-      "node_name": "Desmodium_incanum"
+      "node_name": "Desmodium_incanum",
+      "module": "Module 4"
     },
     {
       "layer_id": 2,
       "node_id": 85,
       "layer_name": "layer_2",
-      "node_name": "Desmodium_procumbens"
+      "node_name": "Desmodium_procumbens",
+      "module": "Module 4"
     },
     {
       "layer_id": 2,
       "node_id": 86,
       "layer_name": "layer_2",
-      "node_name": "Elecharis_maculosa"
+      "node_name": "Elecharis_maculosa",
+      "module": "Module 4"
     },
     {
       "layer_id": 2,
       "node_id": 87,
       "layer_name": "layer_2",
-      "node_name": "Eragrostis_sp."
+      "node_name": "Eragrostis_sp.",
+      "module": "Module 1"
     },
     {
       "layer_id": 2,
       "node_id": 88,
       "layer_name": "layer_2",
-      "node_name": "Erichloa_pacifica"
+      "node_name": "Erichloa_pacifica",
+      "module": "Module 1"
     },
     {
       "layer_id": 2,
       "node_id": 89,
       "layer_name": "layer_2",
-      "node_name": "Fimbristylis_dichotoma"
+      "node_name": "Fimbristylis_dichotoma",
+      "module": "Module 3"
     },
     {
       "layer_id": 2,
       "node_id": 90,
       "layer_name": "layer_2",
-      "node_name": "Hypoxis_decumbens"
+      "node_name": "Hypoxis_decumbens",
+      "module": "Module 3"
     },
     {
       "layer_id": 2,
       "node_id": 91,
       "layer_name": "layer_2",
-      "node_name": "Lantana_camara"
+      "node_name": "Lantana_camara",
+      "module": "Module 1"
     },
     {
       "layer_id": 2,
       "node_id": 92,
       "layer_name": "layer_2",
-      "node_name": "Ludwigia_leptocarpa"
+      "node_name": "Ludwigia_leptocarpa",
+      "module": "Module 3"
     },
     {
       "layer_id": 2,
       "node_id": 54,
       "layer_name": "layer_2",
-      "node_name": "Maytenus_octogona"
+      "node_name": "Maytenus_octogona",
+      "module": "Module 4"
     },
     {
       "layer_id": 2,
       "node_id": 13,
       "layer_name": "layer_2",
-      "node_name": "Mentzelia_aspera"
+      "node_name": "Mentzelia_aspera",
+      "module": "Module 5"
     },
     {
       "layer_id": 2,
       "node_id": 42,
       "layer_name": "layer_2",
-      "node_name": "Miconia_robinsoniana"
+      "node_name": "Miconia_robinsoniana",
+      "module": "Module 3"
     },
     {
       "layer_id": 2,
       "node_id": 93,
       "layer_name": "layer_2",
-      "node_name": "Oxalis_sp.1"
+      "node_name": "Oxalis_sp.1",
+      "module": "Module 2"
     },
     {
       "layer_id": 2,
       "node_id": 94,
       "layer_name": "layer_2",
-      "node_name": "Paspalum_conjugatum"
+      "node_name": "Paspalum_conjugatum",
+      "module": "Module 5"
     },
     {
       "layer_id": 2,
       "node_id": 15,
       "layer_name": "layer_2",
-      "node_name": "Passiflora_foetida"
+      "node_name": "Passiflora_foetida",
+      "module": "Module 5"
     },
     {
       "layer_id": 2,
       "node_id": 95,
       "layer_name": "layer_2",
-      "node_name": "Pennisetum_purpureum"
+      "node_name": "Pennisetum_purpureum",
+      "module": "Module 2"
     },
     {
       "layer_id": 2,
       "node_id": 96,
       "layer_name": "layer_2",
-      "node_name": "Poaceae"
+      "node_name": "Poaceae",
+      "module": "Module 3"
     },
     {
       "layer_id": 2,
       "node_id": 97,
       "layer_name": "layer_2",
-      "node_name": "Polygonum_galapagense"
+      "node_name": "Polygonum_galapagense",
+      "module": "Module 2"
     },
     {
       "layer_id": 2,
       "node_id": 98,
       "layer_name": "layer_2",
-      "node_name": "Portulaca_oleracea"
+      "node_name": "Portulaca_oleracea",
+      "module": "Module 4"
     },
     {
       "layer_id": 2,
       "node_id": 6,
       "layer_name": "layer_2",
-      "node_name": "Psidium_guajava"
+      "node_name": "Psidium_guajava",
+      "module": "Module 5"
     },
     {
       "layer_id": 2,
       "node_id": 7,
       "layer_name": "layer_2",
-      "node_name": "Rubus_niveus"
+      "node_name": "Rubus_niveus",
+      "module": "Module 5"
     },
     {
       "layer_id": 2,
       "node_id": 99,
       "layer_name": "layer_2",
-      "node_name": "Scutia_spicata"
+      "node_name": "Scutia_spicata",
+      "module": "Module 3"
     },
     {
       "layer_id": 2,
       "node_id": 100,
       "layer_name": "layer_2",
-      "node_name": "Seed_13"
+      "node_name": "Seed_13",
+      "module": "Module 5"
     },
     {
       "layer_id": 2,
       "node_id": 101,
       "layer_name": "layer_2",
-      "node_name": "Seed_27"
+      "node_name": "Seed_27",
+      "module": "Module 2"
     },
     {
       "layer_id": 2,
       "node_id": 102,
       "layer_name": "layer_2",
-      "node_name": "Seed_56"
+      "node_name": "Seed_56",
+      "module": "Module 1"
     },
     {
       "layer_id": 2,
       "node_id": 103,
       "layer_name": "layer_2",
-      "node_name": "Solanum_americanum"
+      "node_name": "Solanum_americanum",
+      "module": "Module 3"
     },
     {
       "layer_id": 2,
       "node_id": 104,
       "layer_name": "layer_2",
-      "node_name": "Talinum_paniculatum"
+      "node_name": "Talinum_paniculatum",
+      "module": "Module 3"
     },
     {
       "layer_id": 2,
       "node_id": 105,
       "layer_name": "layer_2",
-      "node_name": "Tournefortia_psilostachya"
+      "node_name": "Tournefortia_psilostachya",
+      "module": "Module 5"
     },
     {
       "layer_id": 2,
       "node_id": 68,
       "layer_name": "layer_2",
-      "node_name": "Tournefortia_pubescens"
+      "node_name": "Tournefortia_pubescens",
+      "module": "Module 5"
     },
     {
       "layer_id": 2,
       "node_id": 74,
       "layer_name": "layer_2",
-      "node_name": "Vallesia_glabra"
+      "node_name": "Vallesia_glabra",
+      "module": "Module 1"
     },
     {
       "layer_id": 2,
       "node_id": 106,
       "layer_name": "layer_2",
-      "node_name": "Zanthoxylum_fagara"
+      "node_name": "Zanthoxylum_fagara",
+      "module": "Module 1"
     },
     {
       "layer_id": 4,
       "node_id": 51,
       "layer_name": "layer_4",
-      "node_name": "Bursera_graveolens"
+      "node_name": "Bursera_graveolens",
+      "module": "Module 2"
     },
     {
       "layer_id": 4,
       "node_id": 107,
       "layer_name": "layer_4",
-      "node_name": "Capsicum_frutescens"
+      "node_name": "Capsicum_frutescens",
+      "module": "Module 4"
     },
     {
       "layer_id": 4,
       "node_id": 108,
       "layer_name": "layer_4",
-      "node_name": "cf._Malvaceae"
+      "node_name": "cf._Malvaceae",
+      "module": "Module 4"
     },
     {
       "layer_id": 4,
       "node_id": 48,
       "layer_name": "layer_4",
-      "node_name": "Chiococca_alba"
+      "node_name": "Chiococca_alba",
+      "module": "Module 1"
     },
     {
       "layer_id": 4,
       "node_id": 34,
       "layer_name": "layer_4",
-      "node_name": "Cordia_leucophlyctis"
+      "node_name": "Cordia_leucophlyctis",
+      "module": "Module 1"
     },
     {
       "layer_id": 4,
       "node_id": 109,
       "layer_name": "layer_4",
-      "node_name": "Cordia_lutea"
+      "node_name": "Cordia_lutea",
+      "module": "Module 4"
     },
     {
       "layer_id": 4,
       "node_id": 83,
       "layer_name": "layer_4",
-      "node_name": "Cyperaceae_cf._Eleocharis_sp.1"
+      "node_name": "Cyperaceae_cf._Eleocharis_sp.1",
+      "module": "Module 1"
     },
     {
       "layer_id": 4,
       "node_id": 84,
       "layer_name": "layer_4",
-      "node_name": "Desmodium_incanum"
+      "node_name": "Desmodium_incanum",
+      "module": "Module 2"
     },
     {
       "layer_id": 4,
       "node_id": 85,
       "layer_name": "layer_4",
-      "node_name": "Desmodium_procumbens"
+      "node_name": "Desmodium_procumbens",
+      "module": "Module 3"
     },
     {
       "layer_id": 4,
       "node_id": 87,
       "layer_name": "layer_4",
-      "node_name": "Eragrostis_sp."
+      "node_name": "Eragrostis_sp.",
+      "module": "Module 4"
     },
     {
       "layer_id": 4,
       "node_id": 88,
       "layer_name": "layer_4",
-      "node_name": "Erichloa_pacifica"
+      "node_name": "Erichloa_pacifica",
+      "module": "Module 1"
     },
     {
       "layer_id": 4,
       "node_id": 12,
       "layer_name": "layer_4",
-      "node_name": "Lantana_peduncularis"
+      "node_name": "Lantana_peduncularis",
+      "module": "Module 3"
     },
     {
       "layer_id": 4,
       "node_id": 13,
       "layer_name": "layer_4",
-      "node_name": "Mentzelia_aspera"
+      "node_name": "Mentzelia_aspera",
+      "module": "Module 4"
     },
     {
       "layer_id": 4,
       "node_id": 42,
       "layer_name": "layer_4",
-      "node_name": "Miconia_robinsoniana"
+      "node_name": "Miconia_robinsoniana",
+      "module": "Module 5"
     },
     {
       "layer_id": 4,
       "node_id": 110,
       "layer_name": "layer_4",
-      "node_name": "Momordica_charantia"
+      "node_name": "Momordica_charantia",
+      "module": "Module 4"
     },
     {
       "layer_id": 4,
       "node_id": 55,
       "layer_name": "layer_4",
-      "node_name": "Opuntia_echios"
+      "node_name": "Opuntia_echios",
+      "module": "Module 2"
     },
     {
       "layer_id": 4,
       "node_id": 93,
       "layer_name": "layer_4",
-      "node_name": "Oxalis_sp.1"
+      "node_name": "Oxalis_sp.1",
+      "module": "Module 5"
     },
     {
       "layer_id": 4,
       "node_id": 111,
       "layer_name": "layer_4",
-      "node_name": "Panicum_sp."
+      "node_name": "Panicum_sp.",
+      "module": "Module 2"
     },
     {
       "layer_id": 4,
       "node_id": 94,
       "layer_name": "layer_4",
-      "node_name": "Paspalum_conjugatum"
+      "node_name": "Paspalum_conjugatum",
+      "module": "Module 3"
     },
     {
       "layer_id": 4,
       "node_id": 112,
       "layer_name": "layer_4",
-      "node_name": "Pilea_baurii"
+      "node_name": "Pilea_baurii",
+      "module": "Module 1"
     },
     {
       "layer_id": 4,
       "node_id": 96,
       "layer_name": "layer_4",
-      "node_name": "Poaceae"
+      "node_name": "Poaceae",
+      "module": "Module 2"
     },
     {
       "layer_id": 4,
       "node_id": 97,
       "layer_name": "layer_4",
-      "node_name": "Polygonum_galapagense"
+      "node_name": "Polygonum_galapagense",
+      "module": "Module 2"
     },
     {
       "layer_id": 4,
       "node_id": 98,
       "layer_name": "layer_4",
-      "node_name": "Portulaca_oleracea"
+      "node_name": "Portulaca_oleracea",
+      "module": "Module 1"
     },
     {
       "layer_id": 4,
       "node_id": 7,
       "layer_name": "layer_4",
-      "node_name": "Rubus_niveus"
+      "node_name": "Rubus_niveus",
+      "module": "Module 1"
     },
     {
       "layer_id": 4,
       "node_id": 99,
       "layer_name": "layer_4",
-      "node_name": "Scutia_spicata"
+      "node_name": "Scutia_spicata",
+      "module": "Module 4"
     },
     {
       "layer_id": 4,
       "node_id": 113,
       "layer_name": "layer_4",
-      "node_name": "Seed_01"
+      "node_name": "Seed_01",
+      "module": "Module 2"
     },
     {
       "layer_id": 4,
       "node_id": 101,
       "layer_name": "layer_4",
-      "node_name": "Seed_27"
+      "node_name": "Seed_27",
+      "module": "Module 3"
     },
     {
       "layer_id": 4,
       "node_id": 102,
       "layer_name": "layer_4",
-      "node_name": "Seed_56"
+      "node_name": "Seed_56",
+      "module": "Module 2"
     },
     {
       "layer_id": 4,
       "node_id": 114,
       "layer_name": "layer_4",
-      "node_name": "Sida_spinosa"
+      "node_name": "Sida_spinosa",
+      "module": "Module 5"
     },
     {
       "layer_id": 4,
       "node_id": 104,
       "layer_name": "layer_4",
-      "node_name": "Talinum_paniculatum"
+      "node_name": "Talinum_paniculatum",
+      "module": "Module 1"
     },
     {
       "layer_id": 4,
       "node_id": 105,
       "layer_name": "layer_4",
-      "node_name": "Tournefortia_psilostachya"
+      "node_name": "Tournefortia_psilostachya",
+      "module": "Module 5"
     },
     {
       "layer_id": 4,
       "node_id": 68,
       "layer_name": "layer_4",
-      "node_name": "Tournefortia_pubescens"
+      "node_name": "Tournefortia_pubescens",
+      "module": "Module 4"
     },
     {
       "layer_id": 4,
       "node_id": 115,
       "layer_name": "layer_4",
-      "node_name": "Tournefortia_rufo-sericea"
+      "node_name": "Tournefortia_rufo-sericea",
+      "module": "Module 3"
     },
     {
       "layer_id": 4,
       "node_id": 116,
       "layer_name": "layer_4",
-      "node_name": "Tradescantia_fluminensis"
+      "node_name": "Tradescantia_fluminensis",
+      "module": "Module 2"
     },
     {
       "layer_id": 4,
       "node_id": 74,
       "layer_name": "layer_4",
-      "node_name": "Vallesia_glabra"
+      "node_name": "Vallesia_glabra",
+      "module": "Module 4"
     },
     {
       "layer_id": 4,
       "node_id": 106,
       "layer_name": "layer_4",
-      "node_name": "Zanthoxylum_fagara"
+      "node_name": "Zanthoxylum_fagara",
+      "module": "Module 3"
     },
     {
       "layer_id": 1,
       "node_id": 117,
       "layer_name": "layer_1",
-      "node_name": "Camarhynchus_pallidus"
+      "node_name": "Camarhynchus_pallidus",
+      "module": "Module 2"
     },
     {
       "layer_id": 1,
       "node_id": 118,
       "layer_name": "layer_1",
-      "node_name": "Camarhynchus_parvulus"
+      "node_name": "Camarhynchus_parvulus",
+      "module": "Module 1"
     },
     {
       "layer_id": 1,
       "node_id": 119,
       "layer_name": "layer_1",
-      "node_name": "Certhidea_fusca"
+      "node_name": "Certhidea_fusca",
+      "module": "Module 2"
     },
     {
       "layer_id": 1,
       "node_id": 120,
       "layer_name": "layer_1",
-      "node_name": "Geospiza_fortis"
+      "node_name": "Geospiza_fortis",
+      "module": "Module 3"
     },
     {
       "layer_id": 1,
       "node_id": 121,
       "layer_name": "layer_1",
-      "node_name": "Geospiza_fuliginosa"
+      "node_name": "Geospiza_fuliginosa",
+      "module": "Module 4"
     },
     {
       "layer_id": 1,
       "node_id": 122,
       "layer_name": "layer_1",
-      "node_name": "Geospiza_magnirostris"
+      "node_name": "Geospiza_magnirostris",
+      "module": "Module 5"
     },
     {
       "layer_id": 1,
       "node_id": 123,
       "layer_name": "layer_1",
-      "node_name": "Mimus_melanotis"
+      "node_name": "Mimus_melanotis",
+      "module": "Module 1"
     },
     {
       "layer_id": 1,
       "node_id": 124,
       "layer_name": "layer_1",
-      "node_name": "Myiarchus_magnirostris"
+      "node_name": "Myiarchus_magnirostris",
+      "module": "Module 1"
     },
     {
       "layer_id": 1,
       "node_id": 125,
       "layer_name": "layer_1",
-      "node_name": "Setophaga_petechia"
+      "node_name": "Setophaga_petechia",
+      "module": "Module 4"
     },
     {
       "layer_id": 3,
       "node_id": 118,
       "layer_name": "layer_3",
-      "node_name": "Camarhynchus_parvulus"
+      "node_name": "Camarhynchus_parvulus",
+      "module": "Module 3"
     },
     {
       "layer_id": 3,
       "node_id": 120,
       "layer_name": "layer_3",
-      "node_name": "Geospiza_fortis"
+      "node_name": "Geospiza_fortis",
+      "module": "Module 5"
     },
     {
       "layer_id": 3,
       "node_id": 121,
       "layer_name": "layer_3",
-      "node_name": "Geospiza_fuliginosa"
+      "node_name": "Geospiza_fuliginosa",
+      "module": "Module 4"
     },
     {
       "layer_id": 3,
       "node_id": 128,
       "layer_name": "layer_3",
-      "node_name": "Mimus_parvulus"
+      "node_name": "Mimus_parvulus",
+      "module": "Module 1"
     },
     {
       "layer_id": 3,
       "node_id": 124,
       "layer_name": "layer_3",
-      "node_name": "Myiarchus_magnirostris"
+      "node_name": "Myiarchus_magnirostris",
+      "module": "Module 4"
     },
     {
       "layer_id": 3,
       "node_id": 125,
       "layer_name": "layer_3",
-      "node_name": "Setophaga_petechia"
+      "node_name": "Setophaga_petechia",
+      "module": "Module 5"
     },
     {
       "layer_id": 3,
       "node_id": 117,
       "layer_name": "layer_3",
-      "node_name": "Camarhynchus_pallidus"
+      "node_name": "Camarhynchus_pallidus",
+      "module": "Module 1"
     },
     {
       "layer_id": 3,
       "node_id": 126,
       "layer_name": "layer_3",
-      "node_name": "Certhidea_olivacea"
+      "node_name": "Certhidea_olivacea",
+      "module": "Module 2"
     },
     {
       "layer_id": 3,
       "node_id": 122,
       "layer_name": "layer_3",
-      "node_name": "Geospiza_magnirostris"
+      "node_name": "Geospiza_magnirostris",
+      "module": "Module 1"
     },
     {
       "layer_id": 3,
       "node_id": 127,
       "layer_name": "layer_3",
-      "node_name": "Geospiza_scandens"
+      "node_name": "Geospiza_scandens",
+      "module": "Module 5"
     },
     {
       "layer_id": 3,
       "node_id": 129,
       "layer_name": "layer_3",
-      "node_name": "Platyspiza_crassirostris"
+      "node_name": "Platyspiza_crassirostris",
+      "module": "Module 2"
     },
     {
       "layer_id": 2,
       "node_id": 125,
       "layer_name": "layer_2",
-      "node_name": "Setophaga_petechia"
+      "node_name": "Setophaga_petechia",
+      "module": "Module 2"
     },
     {
       "layer_id": 2,
       "node_id": 123,
       "layer_name": "layer_2",
-      "node_name": "Mimus_melanotis"
+      "node_name": "Mimus_melanotis",
+      "module": "Module 2"
     },
     {
       "layer_id": 2,
       "node_id": 121,
       "layer_name": "layer_2",
-      "node_name": "Geospiza_fuliginosa"
+      "node_name": "Geospiza_fuliginosa",
+      "module": "Module 4"
     },
     {
       "layer_id": 2,
       "node_id": 122,
       "layer_name": "layer_2",
-      "node_name": "Geospiza_magnirostris"
+      "node_name": "Geospiza_magnirostris",
+      "module": "Module 4"
     },
     {
       "layer_id": 2,
       "node_id": 117,
       "layer_name": "layer_2",
-      "node_name": "Camarhynchus_pallidus"
+      "node_name": "Camarhynchus_pallidus",
+      "module": "Module 5"
     },
     {
       "layer_id": 2,
       "node_id": 118,
       "layer_name": "layer_2",
-      "node_name": "Camarhynchus_parvulus"
+      "node_name": "Camarhynchus_parvulus",
+      "module": "Module 2"
     },
     {
       "layer_id": 2,
       "node_id": 120,
       "layer_name": "layer_2",
-      "node_name": "Geospiza_fortis"
+      "node_name": "Geospiza_fortis",
+      "module": "Module 1"
     },
     {
       "layer_id": 2,
       "node_id": 124,
       "layer_name": "layer_2",
-      "node_name": "Myiarchus_magnirostris"
+      "node_name": "Myiarchus_magnirostris",
+      "module": "Module 3"
     },
     {
       "layer_id": 2,
       "node_id": 119,
       "layer_name": "layer_2",
-      "node_name": "Certhidea_fusca"
+      "node_name": "Certhidea_fusca",
+      "module": "Module 4"
     },
     {
       "layer_id": 4,
       "node_id": 127,
       "layer_name": "layer_4",
-      "node_name": "Geospiza_scandens"
+      "node_name": "Geospiza_scandens",
+      "module": "Module 5"
     },
     {
       "layer_id": 4,
       "node_id": 128,
       "layer_name": "layer_4",
-      "node_name": "Mimus_parvulus"
+      "node_name": "Mimus_parvulus",
+      "module": "Module 5"
     },
     {
       "layer_id": 4,
       "node_id": 124,
       "layer_name": "layer_4",
-      "node_name": "Myiarchus_magnirostris"
+      "node_name": "Myiarchus_magnirostris",
+      "module": "Module 5"
     },
     {
       "layer_id": 4,
       "node_id": 120,
       "layer_name": "layer_4",
-      "node_name": "Geospiza_fortis"
+      "node_name": "Geospiza_fortis",
+      "module": "Module 5"
     },
     {
       "layer_id": 4,
       "node_id": 121,
       "layer_name": "layer_4",
-      "node_name": "Geospiza_fuliginosa"
+      "node_name": "Geospiza_fuliginosa",
+      "module": "Module 4"
     },
     {
       "layer_id": 4,
       "node_id": 122,
       "layer_name": "layer_4",
-      "node_name": "Geospiza_magnirostris"
+      "node_name": "Geospiza_magnirostris",
+      "module": "Module 3"
     },
     {
       "layer_id": 4,
       "node_id": 125,
       "layer_name": "layer_4",
-      "node_name": "Setophaga_petechia"
+      "node_name": "Setophaga_petechia",
+      "module": "Module 4"
     },
     {
       "layer_id": 4,
       "node_id": 118,
       "layer_name": "layer_4",
-      "node_name": "Camarhynchus_parvulus"
+      "node_name": "Camarhynchus_parvulus",
+      "module": "Module 3"
     },
     {
       "layer_id": 4,
       "node_id": 117,
       "layer_name": "layer_4",
-      "node_name": "Camarhynchus_pallidus"
+      "node_name": "Camarhynchus_pallidus",
+      "module": "Module 1"
     },
     {
       "layer_id": 4,
       "node_id": 126,
       "layer_name": "layer_4",
-      "node_name": "Certhidea_olivacea"
+      "node_name": "Certhidea_olivacea",
+      "module": "Module 4"
     },
     {
       "layer_id": 4,
       "node_id": 129,
       "layer_name": "layer_4",
-      "node_name": "Platyspiza_crassirostris"
+      "node_name": "Platyspiza_crassirostris",
+      "module": "Module 3"
     }
   ]
 }

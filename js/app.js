@@ -76,6 +76,13 @@ const interaction = new InteractionHandler(canvas, renderer, {
     onLayerSelect: (layerIndex) => {
         showLayerInfo(layerIndex);
     },
+    onLinkSelect: (hit) => {
+        if (hit) {
+            showLinkInfo(hit);
+        } else {
+            hideNodeInfo();
+        }
+    }
 });
 
 // ---- Load Data ----
@@ -137,6 +144,9 @@ function loadData(json) {
         // Pass bipartite info to renderer
         renderer.bipartiteInfo = model.bipartiteInfo;
         renderer.layoutType = layout.layoutType;
+
+        // Show/hide "Set Names" checkbox based on layout
+        document.getElementById('setNamesContainer').style.display = layout.layoutType === 'bipartite' ? '' : 'none';
 
         renderer.setData(model, positions);
         renderer.centerView();
@@ -219,6 +229,10 @@ layoutSelect.addEventListener('change', () => {
     positions = layout.computeLayout(model);
     renderer.setData(model, positions);
     renderer.layoutType = layout.layoutType;
+
+    // Show/hide "Set Names" checkbox based on layout
+    document.getElementById('setNamesContainer').style.display = layout.layoutType === 'bipartite' ? '' : 'none';
+
     renderer.render();
 });
 
@@ -430,6 +444,35 @@ function showNodeInfo(hit) {
         }
         html += '</ul></div>';
     }
+
+    infoContent.innerHTML = html;
+    infoPanel.classList.add('visible');
+}
+
+function showLinkInfo(link) {
+    if (!model) return;
+
+    infoTitle.textContent = link.isInterlayer ? 'Interlayer Link' : 'Intralayer Link';
+
+    let html = '<div class="info-section"><h4>Link Attributes</h4>';
+
+    // Core attributes
+    html += `<div class="info-row"><span class="info-key">From</span><span class="info-value">${link.node_from} (${link.layer_from})</span></div>`;
+    html += `<div class="info-row"><span class="info-key">To</span><span class="info-value">${link.node_to} (${link.layer_to})</span></div>`;
+    html += `<div class="info-row"><span class="info-key">Weight</span><span class="info-value">${link.weight ?? 1}</span></div>`;
+
+    // Extra attributes
+    const extraAttrs = Object.entries(link)
+        .filter(([k]) => !['layer_from', 'node_from', 'layer_to', 'node_to', 'weight', 'isInterlayer'].includes(k));
+
+    if (extraAttrs.length > 0) {
+        html += '<h4 style="margin-top: 12px;">Additional Properties</h4>';
+        for (const [key, value] of extraAttrs) {
+            html += `<div class="info-row"><span class="info-key">${key}</span><span class="info-value">${value ?? 'N/A'}</span></div>`;
+        }
+    }
+
+    html += '</div>';
 
     infoContent.innerHTML = html;
     infoPanel.classList.add('visible');

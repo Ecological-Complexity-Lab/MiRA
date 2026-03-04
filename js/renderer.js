@@ -175,6 +175,89 @@ export class Renderer {
     }
 
     /**
+     * Hit test: find link near screen position (sx, sy)
+     */
+    hitTestLink(sx, sy) {
+        if (!this.model || !this.positions) return null;
+        const threshold = 6; // pixels distance to register a hit
+
+        let closestLink = null;
+        let minDist = Infinity;
+
+        // Helper: distance from point (px, py) to line segment (A, B)
+        const distToSegment = (px, py, A, B) => {
+            const l2 = (A.x - B.x) ** 2 + (A.y - B.y) ** 2;
+            if (l2 === 0) return Math.sqrt((px - A.x) ** 2 + (py - A.y) ** 2);
+            let t = ((px - A.x) * (B.x - A.x) + (py - A.y) * (B.y - A.y)) / l2;
+            t = Math.max(0, Math.min(1, t));
+            const vx = A.x + t * (B.x - A.x);
+            const vy = A.y + t * (B.y - A.y);
+            return Math.sqrt((px - vx) ** 2 + (py - vy) ** 2);
+        };
+
+        // 1. Check Interlayer links (curved) - tested first as they are drawn on top
+        if (this.showInterlayerLinks) {
+            for (const link of this.model.interlayerLinks) {
+                const fromScreen = this.getNodeScreenPos(link.layer_from, link.node_from);
+                const toScreen = this.getNodeScreenPos(link.layer_to, link.node_to);
+                if (!fromScreen || !toScreen) continue;
+
+                // Reconstruct the curve control point exactly as in _drawInterlayerLinks
+                const mx = (fromScreen.x + toScreen.x) / 2;
+                const my = (fromScreen.y + toScreen.y) / 2;
+                const dx = toScreen.x - fromScreen.x;
+                const dy = toScreen.y - fromScreen.y;
+                const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+                const curvature = dist * 0.35;
+                const cpx = mx + (dy / dist) * curvature;
+                const cpy = my - (dx / dist) * curvature;
+
+                // Sample curve at 10 intervals to find distance to the pointer
+                let prevP = fromScreen;
+                for (let i = 1; i <= 10; i++) {
+                    const t = i / 10;
+                    const mt = 1 - t;
+                    const px = mt * mt * fromScreen.x + 2 * mt * t * cpx + t * t * toScreen.x;
+                    const py = mt * mt * fromScreen.y + 2 * mt * t * cpy + t * t * toScreen.y;
+                    const pCurrent = { x: px, y: py };
+                    const d = distToSegment(sx, sy, prevP, pCurrent);
+                    if (d < minDist && d <= threshold) {
+                        minDist = d;
+                        closestLink = { ...link, isInterlayer: true };
+                    }
+                    prevP = pCurrent;
+                }
+            }
+        }
+
+        // 2. Check Intralayer links (straight lines) - back-to-front
+        for (let i = this.model.layers.length - 1; i >= 0; i--) {
+            const layer = this.model.layers[i];
+            const links = this.model.intralayerLinks.filter(l => l.layer_from === layer.layer_name);
+            const layerPos = this.positions.get(layer.layer_name);
+            if (!layerPos) continue;
+
+            for (const link of links) {
+                const fromPos = layerPos.get(link.node_from);
+                const toPos = layerPos.get(link.node_to);
+                if (!fromPos || !toPos) continue;
+
+                const from = this.project(fromPos.x, fromPos.y, i);
+                const to = this.project(toPos.x, toPos.y, i);
+
+                const d = distToSegment(sx, sy, from, to);
+                if (d < minDist && d <= threshold) {
+                    minDist = d;
+                    closestLink = { ...link, isInterlayer: false };
+                }
+            }
+        }
+
+        return closestLink;
+    }
+
+
+    /**
      * Hit test: find which layer polygon contains the screen point (sx, sy).
      * Uses a ray-casting point-in-polygon test on the 4 projected corners.
      * Returns the layerIndex (front layers tested first), or -1 if none.
@@ -510,6 +593,21 @@ export class Renderer {
     }
 
     _isLinkHighlighted(link) {
+        // Direct link highlight
+        if (this.hoveredLink && this.hoveredLink.node_from === link.node_from &&
+            this.hoveredLink.node_to === link.node_to &&
+            this.hoveredLink.layer_from === link.layer_from &&
+            this.hoveredLink.layer_to === link.layer_to) {
+            return true;
+        }
+        if (this.selectedLink && this.selectedLink.node_from === link.node_from &&
+            this.selectedLink.node_to === link.node_to &&
+            this.selectedLink.layer_from === link.layer_from &&
+            this.selectedLink.layer_to === link.layer_to) {
+            return true;
+        }
+
+        // Highlight based on node hover/selection
         const target = this.hoveredNode || this.selectedNode;
         if (!target) return false;
         return (

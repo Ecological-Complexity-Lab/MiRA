@@ -90,12 +90,26 @@ export class InteractionHandler {
             }
 
             // Check if clicking a node first
-            const hit = this.renderer.hitTestNode(mx, my);
+            let hit = this.renderer.hitTestNode(mx, my);
             if (hit) {
                 this.renderer.selectedNode = hit;
+                this.renderer.selectedLink = null;
                 this.renderer.selectedLayer = null;
                 if (this.callbacks.onNodeSelect) {
                     this.callbacks.onNodeSelect(hit);
+                }
+                this.renderer.render();
+                return;
+            }
+
+            // Check if clicking a link
+            let linkHit = this.renderer.hitTestLink(mx, my);
+            if (linkHit) {
+                this.renderer.selectedNode = null;
+                this.renderer.selectedLink = linkHit;
+                this.renderer.selectedLayer = null;
+                if (this.callbacks.onLinkSelect) {
+                    this.callbacks.onLinkSelect(linkHit);
                 }
                 this.renderer.render();
                 return;
@@ -136,12 +150,12 @@ export class InteractionHandler {
                 const mx = e.clientX - rect.left;
                 const my = e.clientY - rect.top;
 
-                // Don't fire layer select if a node was clicked
-                const hit = this.renderer.hitTestNode(mx, my);
-                if (!hit) {
+                // Don't fire layer select if a node or link was clicked
+                if (!this.renderer.hitTestNode(mx, my) && !this.renderer.hitTestLink(mx, my)) {
                     const layerIdx = this.renderer.hitTestLayer(mx, my);
                     if (layerIdx >= 0) {
                         this.renderer.selectedNode = null;
+                        this.renderer.selectedLink = null;
                         this.renderer.selectedLayer = layerIdx;
                         if (this.callbacks.onLayerSelect) {
                             this.callbacks.onLayerSelect(layerIdx);
@@ -194,22 +208,38 @@ export class InteractionHandler {
             }
 
             // Hover detection
-            const hit = this.renderer.hitTestNode(mx, my);
-            const prevHovered = this.renderer.hoveredNode;
-            this.renderer.hoveredNode = hit;
+            const prevHoveredNode = this.renderer.hoveredNode;
+            const prevHoveredLink = this.renderer.hoveredLink;
 
-            if (hit) {
+            const hitNode = this.renderer.hitTestNode(mx, my);
+            let hitLink = null;
+            if (!hitNode) {
+                hitLink = this.renderer.hitTestLink(mx, my);
+            }
+
+            this.renderer.hoveredNode = hitNode;
+            this.renderer.hoveredLink = hitLink;
+
+            if (hitNode || hitLink) {
                 this.canvas.style.cursor = 'pointer';
             } else {
                 this.canvas.style.cursor = 'grab';
             }
 
             // Only re-render if hover state changed
-            const changed = (hit?.layerName !== prevHovered?.layerName) ||
-                (hit?.nodeName !== prevHovered?.nodeName);
+            let changed = false;
+            if (hitNode !== prevHoveredNode) {
+                if (!hitNode || !prevHoveredNode || hitNode.layerName !== prevHoveredNode.layerName || hitNode.nodeName !== prevHoveredNode.nodeName) {
+                    changed = true;
+                }
+            }
+            if (hitLink !== prevHoveredLink) {
+                changed = true;
+            }
+
             if (changed) {
                 if (this.callbacks.onNodeHover) {
-                    this.callbacks.onNodeHover(hit);
+                    this.callbacks.onNodeHover(hitNode);
                 }
                 this.renderer.render();
             }
@@ -221,6 +251,7 @@ export class InteractionHandler {
             this.isDraggingLayer = false;
             this.dragLayerIndex = -1;
             this.renderer.hoveredNode = null;
+            this.renderer.hoveredLink = null;
             this.canvas.style.cursor = 'grab';
             this.renderer.render();
         });
@@ -230,11 +261,14 @@ export class InteractionHandler {
             const rect = this.canvas.getBoundingClientRect();
             const mx = e.clientX - rect.left;
             const my = e.clientY - rect.top;
-            const hit = this.renderer.hitTestNode(mx, my);
-            if (!hit) {
+            if (!this.renderer.hitTestNode(mx, my) && !this.renderer.hitTestLink(mx, my)) {
                 this.renderer.selectedNode = null;
+                this.renderer.selectedLink = null;
                 if (this.callbacks.onNodeSelect) {
                     this.callbacks.onNodeSelect(null);
+                }
+                if (this.callbacks.onLinkSelect) {
+                    this.callbacks.onLinkSelect(null);
                 }
                 this.renderer.render();
             }
