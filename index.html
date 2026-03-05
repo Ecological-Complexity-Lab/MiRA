@@ -106,10 +106,21 @@
             </label>
           </div>
 
-          <div style="margin-top:8px;">
+          <div style="margin-top:8px;" id="colorByContainer">
             <label style="font-size:11px;color:#666;">Color By</label>
             <select id="nodeColorSelect" class="styled-select" disabled>
               <option value="">Layer (default)</option>
+            </select>
+          </div>
+          <div style="margin-top:8px; display:none;" id="bipartiteColorByContainer">
+            <label style="font-size:11px;color:#666;" id="bipartiteColorLabelA">Color By Set A</label>
+            <select id="nodeColorSelectSetA" class="styled-select" disabled>
+              <option value="">Set Default</option>
+            </select>
+            <label style="font-size:11px;color:#666; margin-top:6px; display:block;" id="bipartiteColorLabelB">Color By
+              Set B</label>
+            <select id="nodeColorSelectSetB" class="styled-select" disabled>
+              <option value="">Set Default</option>
             </select>
           </div>
           <div style="margin-top:8px;">

@@ -21,6 +21,12 @@ const loadDemoBtn = document.getElementById('loadDemoBtn');
 const demoSelect = document.getElementById('demoSelect');
 const fileInput = document.getElementById('fileInput');
 const nodeColorSelect = document.getElementById('nodeColorSelect');
+const nodeColorSelectSetA = document.getElementById('nodeColorSelectSetA');
+const nodeColorSelectSetB = document.getElementById('nodeColorSelectSetB');
+const colorByContainer = document.getElementById('colorByContainer');
+const bipartiteColorByContainer = document.getElementById('bipartiteColorByContainer');
+const bipartiteColorLabelA = document.getElementById('bipartiteColorLabelA');
+const bipartiteColorLabelB = document.getElementById('bipartiteColorLabelB');
 const nodeSizeSelect = document.getElementById('nodeSizeSelect');
 const linkColorSelect = document.getElementById('linkColorSelect');
 const showLabelsCheckbox = document.getElementById('showLabelsCheckbox');
@@ -160,21 +166,23 @@ function loadData(json) {
         renderer.bipartiteInfo = model.bipartiteInfo;
         renderer.layoutType = layout.layoutType;
 
-        // Show/hide "Set Names" checkbox based on layout
-        document.getElementById('setNamesContainer').style.display = layout.layoutType === 'bipartite' ? '' : 'none';
+        // Show/hide UI elements based on layout
+        const isBipartiteLayout = layout.layoutType === 'bipartite';
+        document.getElementById('setNamesContainer').style.display = isBipartiteLayout ? '' : 'none';
+        colorByContainer.style.display = isBipartiteLayout ? 'none' : '';
+        bipartiteColorByContainer.style.display = isBipartiteLayout ? '' : 'none';
+
+        populateDropdowns();
+        updateNodeColors(); // Ensure node colors match current selection/layout
 
         renderer.setData(model, positions);
         renderer.centerView();
         renderer.render();
 
-        populateDropdowns();
-
-
-        populateDropdowns();
-
-
         // Enable dropdowns
         nodeColorSelect.disabled = false;
+        nodeColorSelectSetA.disabled = false;
+        nodeColorSelectSetB.disabled = false;
         nodeSizeSelect.disabled = false;
         linkColorSelect.disabled = false;
     } catch (err) {
@@ -265,9 +273,13 @@ layoutSelect.addEventListener('change', () => {
     renderer.setData(model, positions);
     renderer.layoutType = layout.layoutType;
 
-    // Show/hide "Set Names" checkbox based on layout
-    document.getElementById('setNamesContainer').style.display = layout.layoutType === 'bipartite' ? '' : 'none';
+    // Show/hide UI elements based on layout
+    const isBipartiteLayout = layout.layoutType === 'bipartite';
+    document.getElementById('setNamesContainer').style.display = isBipartiteLayout ? '' : 'none';
+    colorByContainer.style.display = isBipartiteLayout ? 'none' : '';
+    bipartiteColorByContainer.style.display = isBipartiteLayout ? '' : 'none';
 
+    updateNodeColors();
     renderer.render();
 });
 
@@ -317,6 +329,52 @@ function populateDropdowns() {
         nodeColorSelect.appendChild(opt);
     }
 
+    // Bipartite node color options
+    nodeColorSelectSetA.innerHTML = '<option value="">Set Default</option>';
+    nodeColorSelectSetB.innerHTML = '<option value="">Set Default</option>';
+
+    const setA_nodeAttrs = new Set();
+    const setA_stateAttrs = new Set();
+    const setB_nodeAttrs = new Set();
+    const setB_stateAttrs = new Set();
+    let hasBipartite = false;
+    let labelA = "Set A", labelB = "Set B";
+
+    for (const [layerName, info] of model.bipartiteInfo) {
+        if (!info.isBipartite) continue;
+        hasBipartite = true;
+        labelA = info.setALabel || labelA;
+        labelB = info.setBLabel || labelB;
+        for (const nodeName of info.setA) {
+            const pn = model.nodesByName.get(nodeName);
+            if (pn) Object.keys(pn).forEach(k => { if (k !== 'node_id' && k !== 'node_name') setA_nodeAttrs.add(k); });
+            const sn = model.stateNodeMap.get(`${layerName}::${nodeName}`);
+            if (sn) Object.keys(sn).forEach(k => { if (!['layer_id', 'node_id', 'layer_name', 'node_name', 'degree', 'strength', 'in_degree', 'out_degree', 'in_strength', 'out_strength'].includes(k)) setA_stateAttrs.add(k); });
+        }
+        for (const nodeName of info.setB) {
+            const pn = model.nodesByName.get(nodeName);
+            if (pn) Object.keys(pn).forEach(k => { if (k !== 'node_id' && k !== 'node_name') setB_nodeAttrs.add(k); });
+            const sn = model.stateNodeMap.get(`${layerName}::${nodeName}`);
+            if (sn) Object.keys(sn).forEach(k => { if (!['layer_id', 'node_id', 'layer_name', 'node_name', 'degree', 'strength', 'in_degree', 'out_degree', 'in_strength', 'out_strength'].includes(k)) setB_stateAttrs.add(k); });
+        }
+    }
+
+    ['degree', 'strength', 'in_degree', 'out_degree', 'in_strength', 'out_strength'].forEach(attr => {
+        if (model.stateNodeAttributeNames.includes(attr)) {
+            setA_stateAttrs.add(attr);
+            setB_stateAttrs.add(attr);
+        }
+    });
+
+    if (hasBipartite) {
+        bipartiteColorLabelA.textContent = `Color by ${labelA}`;
+        bipartiteColorLabelB.textContent = `Color by ${labelB}`;
+        setA_nodeAttrs.forEach(attr => { const opt = document.createElement('option'); opt.value = `node:${attr}`; opt.textContent = `Node: ${attr}`; nodeColorSelectSetA.appendChild(opt); });
+        setA_stateAttrs.forEach(attr => { const opt = document.createElement('option'); opt.value = `state:${attr}`; opt.textContent = `State: ${attr}`; nodeColorSelectSetA.appendChild(opt); });
+        setB_nodeAttrs.forEach(attr => { const opt = document.createElement('option'); opt.value = `node:${attr}`; opt.textContent = `Node: ${attr}`; nodeColorSelectSetB.appendChild(opt); });
+        setB_stateAttrs.forEach(attr => { const opt = document.createElement('option'); opt.value = `state:${attr}`; opt.textContent = `State: ${attr}`; nodeColorSelectSetB.appendChild(opt); });
+    }
+
     // Node size options
     nodeSizeSelect.innerHTML = '<option value="">Uniform (slider)</option>';
     // We only want continuous numeric attributes. This is a heuristic check on the first element.
@@ -358,6 +416,16 @@ function populateDropdowns() {
 }
 
 nodeColorSelect.addEventListener('change', () => {
+    updateNodeColors();
+    renderer.render();
+});
+
+nodeColorSelectSetA.addEventListener('change', () => {
+    updateNodeColors();
+    renderer.render();
+});
+
+nodeColorSelectSetB.addEventListener('change', () => {
     updateNodeColors();
     renderer.render();
 });
@@ -426,8 +494,67 @@ function updateNodeSizes() {
 
 
 function updateNodeColors() {
+    if (!model) {
+        renderer.nodeColorFn = null;
+        return;
+    }
+
+    if (layout.layoutType === 'bipartite') {
+        const valA = nodeColorSelectSetA.value;
+        const valB = nodeColorSelectSetB.value;
+
+        const getColorFn = (val, isSetA) => {
+            if (!val) return null;
+            const [source, attrName] = val.split(':');
+            let items = [];
+            for (const [layerName, info] of model.bipartiteInfo) {
+                if (!info.isBipartite) continue;
+                const set = isSetA ? info.setA : info.setB;
+                for (const nodeName of set) {
+                    if (source === 'node') {
+                        const n = model.nodesByName.get(nodeName);
+                        if (n) items.push(n);
+                    } else {
+                        const sn = model.stateNodeMap.get(`${layerName}::${nodeName}`);
+                        if (sn) items.push(sn);
+                    }
+                }
+            }
+            return colorMapper.buildColorScale(items, attrName);
+        };
+
+        const colorFnA = getColorFn(valA, true);
+        const colorFnB = getColorFn(valB, false);
+
+        renderer.nodeColorFn = (layerName, nodeName) => {
+            const info = model.bipartiteInfo.get(layerName);
+            const isSetA = info && info.setA.has(nodeName);
+            const isSetB = info && info.setB.has(nodeName);
+
+            if (isSetA) {
+                if (colorFnA) {
+                    const [source, attrName] = valA.split(':');
+                    const obj = source === 'node' ? model.nodesByName.get(nodeName) : model.stateNodeMap.get(`${layerName}::${nodeName}`);
+                    return obj ? colorFnA(obj[attrName]) : '#6b7280';
+                } else {
+                    return colorMapper.getBipartiteNodeColor(true);
+                }
+            } else if (isSetB) {
+                if (colorFnB) {
+                    const [source, attrName] = valB.split(':');
+                    const obj = source === 'node' ? model.nodesByName.get(nodeName) : model.stateNodeMap.get(`${layerName}::${nodeName}`);
+                    return obj ? colorFnB(obj[attrName]) : '#6b7280';
+                } else {
+                    return colorMapper.getBipartiteNodeColor(false);
+                }
+            }
+            return '#6b7280'; // fallback
+        };
+        return;
+    }
+
     const val = nodeColorSelect.value;
-    if (!val || !model) {
+    if (!val) {
         renderer.nodeColorFn = null;
         return;
     }
