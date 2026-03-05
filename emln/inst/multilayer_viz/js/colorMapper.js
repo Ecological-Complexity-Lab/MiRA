@@ -87,25 +87,42 @@ export class ColorMapper {
      * Build a color mapping for a given attribute across a collection of items.
      * Returns a function: value -> color
      */
-    buildColorScale(items, attrName) {
+    buildColorScale(items, attrName, forceType = null) {
         const values = items.map(item => item[attrName]).filter(v => v !== undefined && v !== null);
         const uniqueValues = [...new Set(values)];
 
-        // Check if numeric
-        const allNumeric = values.length > 0 && values.every(v => typeof v === 'number' || !isNaN(Number(v)));
+        // Check if numeric. We allow numbers and string-represented numbers (excluding pure whitespace).
+        const allNumeric = values.length > 0 && values.every(v =>
+            typeof v === 'number' || (typeof v === 'string' && v.trim() !== '' && !isNaN(Number(v)))
+        );
 
-        if (allNumeric && uniqueValues.length > 5) {
-            // Numeric gradient: cool blue → warm orange
+        let useContinuous;
+        if (forceType === 'continuous' && allNumeric) {
+            useContinuous = true;
+        } else if (forceType === 'categorical') {
+            useContinuous = false;
+        } else {
+            // Treat as continuous if all values are numeric, AND (there are more than 2 unique values, 
+            // OR it matches common continuous attribute names)
+            const isContinuousName = /weight|abundance|degree|strength|mass|size|value/i.test(attrName);
+            useContinuous = allNumeric && (uniqueValues.length > 2 || isContinuousName);
+        }
+
+        const canToggle = allNumeric; // We only allow toggling if the variable could theoretically be mapped continuously
+
+        if (useContinuous) {
+            // Numeric gradient
             const nums = values.map(Number);
             const min = Math.min(...nums);
             const max = Math.max(...nums);
             const range = max - min || 1;
 
-            return (value) => {
+            const scaleFn = (value) => {
                 if (value === undefined || value === null) return '#6b7280';
                 const t = (Number(value) - min) / range;
                 return numericGradient(t);
             };
+            return { type: 'continuous', min, max, attrName, scaleFn, canToggle };
         } else {
             // Categorical
             const colorMap = new Map();
@@ -113,25 +130,44 @@ export class ColorMapper {
                 colorMap.set(val, CATEGORICAL_PALETTE[i % CATEGORICAL_PALETTE.length]);
             });
 
-            return (value) => {
+            const scaleFn = (value) => {
                 if (value === undefined || value === null) return '#6b7280';
                 return colorMap.get(value) || '#6b7280';
             };
+            return { type: 'categorical', map: colorMap, attrName, scaleFn, canToggle };
         }
     }
 }
 
 /**
- * Interpolate between two colors for numeric gradients
- * t in [0, 1] → blue (#3b82f6) to orange (#f59e0b)
+ * Interpolate using a multi-stop Viridis-inspired continuous palette
+ * t in [0, 1]
  */
 function numericGradient(t) {
-    // From HSL(217, 91%, 60%) to HSL(38, 92%, 50%)
-    const r1 = 59, g1 = 130, b1 = 246;
-    const r2 = 245, g2 = 158, b2 = 11;
-    const r = Math.round(r1 + (r2 - r1) * t);
-    const g = Math.round(g1 + (g2 - g1) * t);
-    const b = Math.round(b1 + (b2 - b1) * t);
+    // Viridis stops: dark purple -> blue -> green -> yellow
+    const stops = [
+        [68, 1, 84],     // 0.0: #440154
+        [49, 104, 142],  // 0.33: #31688e
+        [53, 183, 121],  // 0.66: #35b779
+        [253, 231, 37]   // 1.0: #fde725
+    ];
+
+    // Clamp t
+    t = Math.max(0, Math.min(1, t));
+    if (t === 1) return `rgb(${stops[3][0]}, ${stops[3][1]}, ${stops[3][2]})`;
+
+    // Find segment
+    const segment = t * (stops.length - 1);
+    const index = Math.floor(segment);
+    const fraction = segment - index;
+
+    const [r1, g1, b1] = stops[index];
+    const [r2, g2, b2] = stops[index + 1];
+
+    const r = Math.round(r1 + (r2 - r1) * fraction);
+    const g = Math.round(g1 + (g2 - g1) * fraction);
+    const b = Math.round(b1 + (b2 - b1) * fraction);
+
     return `rgb(${r}, ${g}, ${b})`;
 }
 

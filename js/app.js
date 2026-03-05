@@ -45,12 +45,13 @@ const expandedLegends = new Set();
 
 // Legend Dragging State
 let isDraggingLegend = false;
+let hasDraggedLegend = false;
 let dragStartX, dragStartY;
 let legendStartLeft, legendStartTop;
 
 legendPanel.addEventListener('mousedown', (e) => {
-    // Only drag if clicking on the background of the legend box or its title
-    if (e.target.tagName.toLowerCase() === 'button' || e.target.closest('button')) return;
+    // Only ignore if clicking on a no-drag button (like minimize or toggle)
+    if (e.target.closest('.legend-no-drag')) return;
 
     // Use current computed bounding box for absolute left/top switch if not already set
     const rect = legendPanel.getBoundingClientRect();
@@ -64,6 +65,7 @@ legendPanel.addEventListener('mousedown', (e) => {
     }
 
     isDraggingLegend = true;
+    hasDraggedLegend = false;
     dragStartX = e.clientX;
     dragStartY = e.clientY;
     legendStartLeft = parseFloat(legendPanel.style.left);
@@ -76,6 +78,11 @@ window.addEventListener('mousemove', (e) => {
     if (!isDraggingLegend) return;
     const dx = e.clientX - dragStartX;
     const dy = e.clientY - dragStartY;
+
+    if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
+        hasDraggedLegend = true;
+    }
+
     legendPanel.style.left = (legendStartLeft + dx) + 'px';
     legendPanel.style.top = (legendStartTop + dy) + 'px';
 });
@@ -906,12 +913,15 @@ function renderScaleLegend(scale, id, titleText) {
     } else {
         const btn = document.createElement('button');
         btn.className = 'btn';
-        btn.style.cssText = 'pointer-events: auto; font-size: 11px; padding: 6px 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); background: rgba(255,255,255,0.95); backdrop-filter: blur(8px); border: 1px solid rgba(0,0,0,0.1); border-radius: 8px; color: #4b5563; font-weight: 600; display: flex; align-items: center; gap: 6px; cursor: pointer; transition: all 0.15s ease;';
+        btn.style.cssText = 'pointer-events: auto; font-size: 11px; padding: 6px 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); background: rgba(255,255,255,0.95); backdrop-filter: blur(8px); border: 1px solid rgba(0,0,0,0.1); border-radius: 8px; color: #4b5563; font-weight: 600; display: flex; align-items: center; gap: 6px; cursor: grab; transition: all 0.15s ease;';
         btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"></path></svg> Expand ${titleText} Legend`;
         btn.onclick = () => {
+            if (hasDraggedLegend) return;
             expandedLegends.add(id);
             renderLegends();
         };
+        btn.onmousedown = () => btn.style.cursor = 'grabbing';
+        btn.onmouseup = () => btn.style.cursor = 'grab';
         btn.onmouseover = () => btn.style.background = '#ffffff';
         btn.onmouseout = () => btn.style.background = 'rgba(255,255,255,0.95)';
         legendPanel.appendChild(btn);
