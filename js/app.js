@@ -42,6 +42,50 @@ const linkColorSelect = document.getElementById('linkColorSelect');
 // Legend Panel and State
 const legendPanel = document.getElementById('legendPanel');
 const expandedLegends = new Set();
+
+// Legend Dragging State
+let isDraggingLegend = false;
+let dragStartX, dragStartY;
+let legendStartLeft, legendStartTop;
+
+legendPanel.addEventListener('mousedown', (e) => {
+    // Only drag if clicking on the background of the legend box or its title
+    if (e.target.tagName.toLowerCase() === 'button' || e.target.closest('button')) return;
+
+    // Use current computed bounding box for absolute left/top switch if not already set
+    const rect = legendPanel.getBoundingClientRect();
+
+    // Switch from bottom/right to absolute window-based left/top positioning
+    if (!legendPanel.style.left || !legendPanel.style.top) {
+        legendPanel.style.right = 'auto';
+        legendPanel.style.bottom = 'auto';
+        legendPanel.style.left = rect.left + 'px';
+        legendPanel.style.top = rect.top + 'px';
+    }
+
+    isDraggingLegend = true;
+    dragStartX = e.clientX;
+    dragStartY = e.clientY;
+    legendStartLeft = parseFloat(legendPanel.style.left);
+    legendStartTop = parseFloat(legendPanel.style.top);
+
+    document.body.style.cursor = 'grabbing';
+});
+
+window.addEventListener('mousemove', (e) => {
+    if (!isDraggingLegend) return;
+    const dx = e.clientX - dragStartX;
+    const dy = e.clientY - dragStartY;
+    legendPanel.style.left = (legendStartLeft + dx) + 'px';
+    legendPanel.style.top = (legendStartTop + dy) + 'px';
+});
+
+window.addEventListener('mouseup', () => {
+    if (isDraggingLegend) {
+        isDraggingLegend = false;
+        document.body.style.cursor = '';
+    }
+});
 const showLabelsCheckbox = document.getElementById('showLabelsCheckbox');
 const transformNodesCheckbox = document.getElementById('transformNodesCheckbox');
 const showLayerNamesCheckbox = document.getElementById('showLayerNamesCheckbox');
@@ -875,6 +919,9 @@ function renderScaleLegend(scale, id, titleText) {
 }
 
 function renderLegends() {
+    // Check if dragging has locked the legend to a left/top spot
+    const hasFixedPosition = Boolean(legendPanel.style.left);
+
     legendPanel.innerHTML = '';
 
     const isBipartite = layout.layoutType === 'bipartite';
@@ -896,7 +943,10 @@ function renderLegends() {
 function createLegendDOM(titleText, scale, id) {
     const wrapper = document.createElement('div');
     wrapper.className = 'legend-box';
-    wrapper.style.cssText = 'background: rgba(255,255,255,0.95); border: 1px solid rgba(0,0,0,0.1); border-radius: 8px; padding: 10px 14px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); font-family: Inter, system-ui, sans-serif; min-width: 140px; pointer-events: auto;';
+    wrapper.style.cssText = 'background: rgba(255,255,255,0.95); border: 1px solid rgba(0,0,0,0.1); border-radius: 8px; padding: 10px 14px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); font-family: Inter, system-ui, sans-serif; min-width: 140px; pointer-events: auto; cursor: grab;';
+
+    wrapper.onmousedown = () => { wrapper.style.cursor = 'grabbing'; };
+    wrapper.onmouseup = () => { wrapper.style.cursor = 'grab'; };
 
     const header = document.createElement('div');
     header.style.cssText = 'display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; gap: 12px; min-height: 16px;';
