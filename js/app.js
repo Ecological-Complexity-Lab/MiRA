@@ -39,13 +39,9 @@ const bipartiteColorLabelB = document.getElementById('bipartiteColorLabelB');
 const nodeSizeSelect = document.getElementById('nodeSizeSelect');
 const linkColorSelect = document.getElementById('linkColorSelect');
 
-// Legend Checkboxes and Panel
-const showNodeColorLegend = document.getElementById('showNodeColorLegend');
-const showNodeColorSetALegend = document.getElementById('showNodeColorSetALegend');
-const showNodeColorSetBLegend = document.getElementById('showNodeColorSetBLegend');
-const showNodeSizeLegend = document.getElementById('showNodeSizeLegend');
-const showLinkColorLegend = document.getElementById('showLinkColorLegend');
+// Legend Panel and State
 const legendPanel = document.getElementById('legendPanel');
+const expandedLegends = new Set();
 const showLabelsCheckbox = document.getElementById('showLabelsCheckbox');
 const transformNodesCheckbox = document.getElementById('transformNodesCheckbox');
 const showLayerNamesCheckbox = document.getElementById('showLayerNamesCheckbox');
@@ -472,10 +468,7 @@ linkColorSelect.addEventListener('change', () => {
     renderer.render();
 });
 
-// Legend Togglers
-[showNodeColorLegend, showNodeColorSetALegend, showNodeColorSetBLegend, showNodeSizeLegend, showLinkColorLegend].forEach(chk => {
-    if (chk) chk.addEventListener('change', renderLegends);
-});
+
 
 function updateNodeSizes() {
     const val = nodeSizeSelect.value;
@@ -861,48 +854,65 @@ function hideTooltip() {
     }
 })();
 
+function renderScaleLegend(scale, id, titleText) {
+    if (!scale) return;
+    if (expandedLegends.has(id)) {
+        const dom = createLegendDOM(titleText, scale, id);
+        legendPanel.appendChild(dom);
+    } else {
+        const btn = document.createElement('button');
+        btn.className = 'btn';
+        btn.style.cssText = 'pointer-events: auto; font-size: 11px; padding: 6px 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); background: rgba(255,255,255,0.95); backdrop-filter: blur(8px); border: 1px solid rgba(0,0,0,0.1); border-radius: 8px; color: #4b5563; font-weight: 600; display: flex; align-items: center; gap: 6px; cursor: pointer; transition: all 0.15s ease;';
+        btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"></path></svg> Expand ${titleText} Legend`;
+        btn.onclick = () => {
+            expandedLegends.add(id);
+            renderLegends();
+        };
+        btn.onmouseover = () => btn.style.background = '#ffffff';
+        btn.onmouseout = () => btn.style.background = 'rgba(255,255,255,0.95)';
+        legendPanel.appendChild(btn);
+    }
+}
+
 function renderLegends() {
     legendPanel.innerHTML = '';
 
     const isBipartite = layout.layoutType === 'bipartite';
 
-    if (!isBipartite && showNodeColorLegend.checked && activeNodeColorScale) {
-        legendPanel.appendChild(createLegendDOM('Node Color: ' + activeNodeColorScale.attrName, activeNodeColorScale));
+    if (!isBipartite) {
+        renderScaleLegend(activeNodeColorScale, 'nodeColor', 'Node Color');
+    } else {
+        const titleA = bipartiteColorLabelA.textContent.replace('Color by ', '').replace('Color By ', '');
+        renderScaleLegend(activeNodeColorScaleA, 'nodeColorA', 'Node Color (' + titleA + ')');
+
+        const titleB = bipartiteColorLabelB.textContent.replace('Color by ', '').replace('Color By ', '');
+        renderScaleLegend(activeNodeColorScaleB, 'nodeColorB', 'Node Color (' + titleB + ')');
     }
-    if (isBipartite && showNodeColorSetALegend.checked && activeNodeColorScaleA) {
-        const title = bipartiteColorLabelA.textContent.replace('Color by ', '');
-        legendPanel.appendChild(createLegendDOM('Node Color (' + title + '): ' + activeNodeColorScaleA.attrName, activeNodeColorScaleA));
-    }
-    if (isBipartite && showNodeColorSetBLegend.checked && activeNodeColorScaleB) {
-        const title = bipartiteColorLabelB.textContent.replace('Color by ', '');
-        legendPanel.appendChild(createLegendDOM('Node Color (' + title + '): ' + activeNodeColorScaleB.attrName, activeNodeColorScaleB));
-    }
-    if (showNodeSizeLegend.checked && activeNodeSizeScale) {
-        legendPanel.appendChild(createLegendDOM('Node Size: ' + activeNodeSizeScale.attrName, activeNodeSizeScale));
-    }
-    if (showLinkColorLegend.checked && activeLinkColorScale) {
-        legendPanel.appendChild(createLegendDOM('Link Color: ' + activeLinkColorScale.attrName, activeLinkColorScale));
-    }
+
+    renderScaleLegend(activeNodeSizeScale, 'nodeSize', 'Node Size');
+    renderScaleLegend(activeLinkColorScale, 'linkColor', 'Link Color');
 }
 
-function createLegendDOM(titleText, scale) {
+function createLegendDOM(titleText, scale, id) {
     const wrapper = document.createElement('div');
     wrapper.className = 'legend-box';
     wrapper.style.cssText = 'background: rgba(255,255,255,0.95); border: 1px solid rgba(0,0,0,0.1); border-radius: 8px; padding: 10px 14px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); font-family: Inter, system-ui, sans-serif; min-width: 140px; pointer-events: auto;';
 
     const header = document.createElement('div');
-    header.style.cssText = 'display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; gap: 8px; height: 16px;';
+    header.style.cssText = 'display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; gap: 12px; min-height: 16px;';
 
     const title = document.createElement('div');
-    title.textContent = titleText;
+    title.textContent = titleText + ': ' + scale.attrName;
     title.style.cssText = 'font-size: 11px; font-weight: 600; color: #1a1a2e; text-transform: uppercase; letter-spacing: 0.5px; flex-grow: 1;';
-    header.appendChild(title);
+
+    const controls = document.createElement('div');
+    controls.style.cssText = 'display: flex; gap: 4px; align-items: center; margin-top: -2px; margin-right: -4px;';
 
     if (scale.canToggle && scale.type !== 'size') {
         const toggleBtn = document.createElement('button');
         toggleBtn.textContent = '⇌';
         toggleBtn.title = 'Switch between Categorical and Continuous palettes';
-        toggleBtn.style.cssText = 'background: none; border: 1px solid #d1d5db; cursor: pointer; color: #4b5563; border-radius: 4px; font-size: 10px; line-height: 1; padding: 1px 4px; font-weight: bold; flex-shrink: 0;';
+        toggleBtn.style.cssText = 'background: none; border: 1px solid rgba(0,0,0,0.12); cursor: pointer; color: #4b5563; border-radius: 4px; font-size: 10px; line-height: 1; padding: 2px 4px; font-weight: bold; display: flex; align-items: center; justify-content: center; height: 18px;';
         toggleBtn.onmouseover = () => toggleBtn.style.background = '#f3f4f6';
         toggleBtn.onmouseout = () => toggleBtn.style.background = 'none';
         toggleBtn.onclick = () => {
@@ -912,9 +922,23 @@ function createLegendDOM(titleText, scale) {
             updateLinkColors();
             renderer.render();
         };
-        header.appendChild(toggleBtn);
+        controls.appendChild(toggleBtn);
     }
 
+    const minBtn = document.createElement('button');
+    minBtn.innerHTML = '✕';
+    minBtn.title = 'Minimize Legend';
+    minBtn.style.cssText = 'background: none; border: none; cursor: pointer; color: #9ca3af; font-size: 12px; line-height: 1; padding: 2px; height: 18px; display: flex; align-items: center; justify-content: center;';
+    minBtn.onmouseover = () => minBtn.style.color = '#4b5563';
+    minBtn.onmouseout = () => minBtn.style.color = '#9ca3af';
+    minBtn.onclick = () => {
+        expandedLegends.delete(id);
+        renderLegends();
+    };
+    controls.appendChild(minBtn);
+
+    header.appendChild(title);
+    header.appendChild(controls);
     wrapper.appendChild(header);
 
     if (scale.type === 'categorical') {
