@@ -29,7 +29,8 @@
           <select id="demoSelect" class="styled-select" style="flex:1;">
             <option value="demo_directed">Directed/Weighted (10)</option>
             <option value="demo_large">Large ER (50)</option>
-            <option value="demo_bipartite">Bipartite (Plant-Poll.)</option>
+            <option value="demo_bipartite">Bipartite (Basic)</option>
+            <option value="demo_bipartite_rich">Bipartite (Rich Demo)</option>
           </select>
           <button id="loadDemoBtn" class="btn btn-primary" style="white-space:nowrap;">Load</button>
         </div>
@@ -99,7 +100,7 @@
           </label>
           <div class="checkbox-row" style="margin-top: 6px;">
             <label class="checkbox-label">
-              <input type="checkbox" id="transformNodesCheckbox"
+              <input type="checkbox" id="transformNodesCheckbox" checked
                 title="Shapes nodes to match 3D layer perspective (may impact performance on large networks)">
               <span>Transform Nodes</span>
             </label>
