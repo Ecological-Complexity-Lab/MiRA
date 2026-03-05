@@ -25,18 +25,10 @@
     <details class="control-section" id="sectionData">
       <summary>Data</summary>
       <div class="section-body">
-        <div class="btn-row">
-          <select id="demoSelect" class="styled-select" style="flex:1;">
-            <option value="demo_directed">Directed/Weighted (10)</option>
-            <option value="demo_large">Large ER (50)</option>
-            <option value="demo_bipartite">Bipartite (Basic)</option>
-            <option value="demo_bipartite_rich">Bipartite (Rich Demo)</option>
-          </select>
-          <button id="loadDemoBtn" class="btn btn-primary" style="white-space:nowrap;">Load</button>
-        </div>
-        <div class="btn-row" style="margin-top:6px;">
-          <div class="file-input-wrapper">
-            <button class="btn" id="uploadLabel">📂 Upload JSON</button>
+        <div class="btn-row" style="flex-direction: column; gap: 8px;">
+          <button id="openDemoDialogBtn" class="btn btn-primary" style="width:100%;">Load Example Data</button>
+          <div class="file-input-wrapper" style="width:100%;">
+            <button class="btn" id="uploadLabel" style="width:100%;">📂 Load User Data (JSON)</button>
             <input type="file" id="fileInput" accept=".json">
           </div>
         </div>
@@ -111,23 +103,40 @@
             <select id="nodeColorSelect" class="styled-select" disabled>
               <option value="">Layer (default)</option>
             </select>
+            <label class="checkbox-label" style="margin-top:4px;">
+              <input type="checkbox" id="showNodeColorLegend">
+              <span style="font-size:11px;">Show Legend</span>
+            </label>
           </div>
           <div style="margin-top:8px; display:none;" id="bipartiteColorByContainer">
             <label style="font-size:11px;color:#666;" id="bipartiteColorLabelA">Color By Set A</label>
             <select id="nodeColorSelectSetA" class="styled-select" disabled>
               <option value="">Set Default</option>
             </select>
+            <label class="checkbox-label" style="margin-top:4px;">
+              <input type="checkbox" id="showNodeColorSetALegend">
+              <span style="font-size:11px;">Show Legend</span>
+            </label>
+
             <label style="font-size:11px;color:#666; margin-top:6px; display:block;" id="bipartiteColorLabelB">Color By
               Set B</label>
             <select id="nodeColorSelectSetB" class="styled-select" disabled>
               <option value="">Set Default</option>
             </select>
+            <label class="checkbox-label" style="margin-top:4px;">
+              <input type="checkbox" id="showNodeColorSetBLegend">
+              <span style="font-size:11px;">Show Legend</span>
+            </label>
           </div>
           <div style="margin-top:8px;">
             <label style="font-size:11px;color:#666;">Size By</label>
             <select id="nodeSizeSelect" class="styled-select" disabled>
               <option value="">Uniform (slider)</option>
             </select>
+            <label class="checkbox-label" style="margin-top:4px;">
+              <input type="checkbox" id="showNodeSizeLegend">
+              <span style="font-size:11px;">Show Legend</span>
+            </label>
           </div>
           <div style="margin-top:8px;">
             <label style="font-size:11px;color:#666;">Base Size</label>
@@ -151,6 +160,10 @@
           <select id="linkColorSelect" class="styled-select" disabled>
             <option value="">Type (default)</option>
           </select>
+          <label class="checkbox-label" style="margin-top:4px;">
+            <input type="checkbox" id="showLinkColorLegend">
+            <span style="font-size:11px;">Show Legend</span>
+          </label>
         </div>
       </div>
     </details>
@@ -194,6 +207,11 @@
     </a>
   </div>
 
+  <!-- Legend Panel (right edge) -->
+  <div id="legendPanel"
+    style="position: absolute; top: 20px; right: 20px; display: flex; flex-direction: column; gap: 12px; max-height: 80vh; overflow-y: auto; pointer-events: none; z-index: 10;">
+  </div>
+
   <!-- Info Panel (shown when a node/layer is selected) -->
   <div id="infoPanel" class="panel">
     <button id="closeInfoBtn" class="close-btn">✕</button>
@@ -217,6 +235,26 @@
         <button class="btn btn-primary" data-format="jpg">JPG</button>
         <button class="btn btn-primary" data-format="pdf">PDF</button>
         <button class="btn" id="exportCancelBtn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Demo selection dialog -->
+  <div id="demoDialog" class="dialog-overlay" style="display:none;">
+    <div class="dialog-box" style="max-width: 300px;">
+      <h4>Example Data</h4>
+      <p>Select a demonstration dataset to load:</p>
+
+      <div class="dialog-buttons" style="flex-direction: column; gap: 8px;">
+        <button class="btn btn-primary demo-dataset-btn" data-file="demo_directed" style="width:100%;">Directed/Weighted
+          (10)</button>
+        <button class="btn btn-primary demo-dataset-btn" data-file="demo_large" style="width:100%;">Large ER
+          (50)</button>
+        <button class="btn btn-primary demo-dataset-btn" data-file="demo_bipartite" style="width:100%;">Bipartite
+          (Basic)</button>
+        <button class="btn btn-primary demo-dataset-btn" data-file="demo_bipartite_bartomeus"
+          style="width:100%;">Bipartite (Bartomeus Modified)</button>
+        <button class="btn" id="demoCancelBtn" style="width:100%; margin-top: 8px;">Cancel</button>
       </div>
     </div>
   </div>

@@ -108,11 +108,12 @@ export class ColorMapper {
             const max = Math.max(...nums);
             const range = max - min || 1;
 
-            return (value) => {
+            const scaleFn = (value) => {
                 if (value === undefined || value === null) return '#6b7280';
                 const t = (Number(value) - min) / range;
                 return numericGradient(t);
             };
+            return { type: 'continuous', min, max, attrName, scaleFn };
         } else {
             // Categorical
             const colorMap = new Map();
@@ -120,10 +121,11 @@ export class ColorMapper {
                 colorMap.set(val, CATEGORICAL_PALETTE[i % CATEGORICAL_PALETTE.length]);
             });
 
-            return (value) => {
+            const scaleFn = (value) => {
                 if (value === undefined || value === null) return '#6b7280';
                 return colorMap.get(value) || '#6b7280';
             };
+            return { type: 'categorical', map: colorMap, attrName, scaleFn };
         }
     }
 }

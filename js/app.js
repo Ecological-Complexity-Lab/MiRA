@@ -15,10 +15,18 @@ let renderer = null;
 let colorMapper = new ColorMapper();
 let layout = new ForceLayout();
 
+// Legend Scales
+let activeNodeColorScale = null;
+let activeNodeColorScaleA = null;
+let activeNodeColorScaleB = null;
+let activeNodeSizeScale = null;
+let activeLinkColorScale = null;
+
 // ---- DOM Elements ----
 const canvas = document.getElementById('networkCanvas');
-const loadDemoBtn = document.getElementById('loadDemoBtn');
-const demoSelect = document.getElementById('demoSelect');
+const openDemoDialogBtn = document.getElementById('openDemoDialogBtn');
+const demoDialog = document.getElementById('demoDialog');
+const demoCancelBtn = document.getElementById('demoCancelBtn');
 const fileInput = document.getElementById('fileInput');
 const nodeColorSelect = document.getElementById('nodeColorSelect');
 const nodeColorSelectSetA = document.getElementById('nodeColorSelectSetA');
@@ -29,6 +37,14 @@ const bipartiteColorLabelA = document.getElementById('bipartiteColorLabelA');
 const bipartiteColorLabelB = document.getElementById('bipartiteColorLabelB');
 const nodeSizeSelect = document.getElementById('nodeSizeSelect');
 const linkColorSelect = document.getElementById('linkColorSelect');
+
+// Legend Checkboxes and Panel
+const showNodeColorLegend = document.getElementById('showNodeColorLegend');
+const showNodeColorSetALegend = document.getElementById('showNodeColorSetALegend');
+const showNodeColorSetBLegend = document.getElementById('showNodeColorSetBLegend');
+const showNodeSizeLegend = document.getElementById('showNodeSizeLegend');
+const showLinkColorLegend = document.getElementById('showLinkColorLegend');
+const legendPanel = document.getElementById('legendPanel');
 const showLabelsCheckbox = document.getElementById('showLabelsCheckbox');
 const transformNodesCheckbox = document.getElementById('transformNodesCheckbox');
 const showLayerNamesCheckbox = document.getElementById('showLayerNamesCheckbox');
@@ -192,17 +208,32 @@ function loadData(json) {
 }
 
 // ---- Load Demo ----
-loadDemoBtn.addEventListener('click', async () => {
-    try {
-        const demoFile = demoSelect.value;
-        const resp = await fetch(`data/${demoFile}.json`);
-        if (!resp.ok) throw new Error('Failed to fetch demo data');
-        const json = await resp.json();
-        loadData(json);
-    } catch (err) {
-        console.error(err);
-        alert('Failed to load demo data. Make sure to serve using a local server.');
-    }
+openDemoDialogBtn.addEventListener('click', () => {
+    demoDialog.style.display = 'flex';
+});
+
+demoCancelBtn.addEventListener('click', () => {
+    demoDialog.style.display = 'none';
+});
+
+demoDialog.addEventListener('click', (e) => {
+    if (e.target === demoDialog) demoDialog.style.display = 'none';
+});
+
+document.querySelectorAll('.demo-dataset-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+        demoDialog.style.display = 'none';
+        try {
+            const demoFile = btn.dataset.file;
+            const resp = await fetch(`data/${demoFile}.json`);
+            if (!resp.ok) throw new Error('Failed to fetch demo data');
+            const json = await resp.json();
+            loadData(json);
+        } catch (err) {
+            console.error(err);
+            alert('Failed to load demo data. Make sure to serve using a local server.');
+        }
+    });
 });
 
 // ---- Toggle Labels ----
@@ -440,6 +471,11 @@ linkColorSelect.addEventListener('change', () => {
     renderer.render();
 });
 
+// Legend Togglers
+[showNodeColorLegend, showNodeColorSetALegend, showNodeColorSetBLegend, showNodeSizeLegend, showLinkColorLegend].forEach(chk => {
+    if (chk) chk.addEventListener('change', renderLegends);
+});
+
 function updateNodeSizes() {
     const val = nodeSizeSelect.value;
     if (!val || !model) {
@@ -471,6 +507,10 @@ function updateNodeSizes() {
     // Scale function: maps [minVal, maxVal] -> [0.3, 2.0]
     // If all values are the same, just return 1.0 (uniform)
     const range = maxVal - minVal;
+
+    // Save scale for legend
+    activeNodeSizeScale = { type: 'size', min: minVal, max: maxVal, attrName };
+
     const computeScale = (val) => {
         if (typeof val !== 'number') return 1.0;
         if (range === 0) return 1.0;
@@ -490,12 +530,19 @@ function updateNodeSizes() {
             return sn ? computeScale(sn[attrName]) : 1.0;
         };
     }
+
+    renderLegends();
 }
 
 
 function updateNodeColors() {
+    activeNodeColorScale = null;
+    activeNodeColorScaleA = null;
+    activeNodeColorScaleB = null;
+
     if (!model) {
         renderer.nodeColorFn = null;
+        renderLegends();
         return;
     }
 
@@ -503,7 +550,7 @@ function updateNodeColors() {
         const valA = nodeColorSelectSetA.value;
         const valB = nodeColorSelectSetB.value;
 
-        const getColorFn = (val, isSetA) => {
+        const getScaleObj = (val, isSetA) => {
             if (!val) return null;
             const [source, attrName] = val.split(':');
             let items = [];
@@ -523,8 +570,11 @@ function updateNodeColors() {
             return colorMapper.buildColorScale(items, attrName);
         };
 
-        const colorFnA = getColorFn(valA, true);
-        const colorFnB = getColorFn(valB, false);
+        const scA = getScaleObj(valA, true);
+        const scB = getScaleObj(valB, false);
+
+        activeNodeColorScaleA = scA;
+        activeNodeColorScaleB = scB;
 
         renderer.nodeColorFn = (layerName, nodeName) => {
             const info = model.bipartiteInfo.get(layerName);
@@ -532,30 +582,32 @@ function updateNodeColors() {
             const isSetB = info && info.setB.has(nodeName);
 
             if (isSetA) {
-                if (colorFnA) {
+                if (scA) {
                     const [source, attrName] = valA.split(':');
                     const obj = source === 'node' ? model.nodesByName.get(nodeName) : model.stateNodeMap.get(`${layerName}::${nodeName}`);
-                    return obj ? colorFnA(obj[attrName]) : '#6b7280';
+                    return obj ? scA.scaleFn(obj[attrName]) : '#6b7280';
                 } else {
                     return colorMapper.getBipartiteNodeColor(true);
                 }
             } else if (isSetB) {
-                if (colorFnB) {
+                if (scB) {
                     const [source, attrName] = valB.split(':');
                     const obj = source === 'node' ? model.nodesByName.get(nodeName) : model.stateNodeMap.get(`${layerName}::${nodeName}`);
-                    return obj ? colorFnB(obj[attrName]) : '#6b7280';
+                    return obj ? scB.scaleFn(obj[attrName]) : '#6b7280';
                 } else {
                     return colorMapper.getBipartiteNodeColor(false);
                 }
             }
             return '#6b7280'; // fallback
         };
+        renderLegends();
         return;
     }
 
     const val = nodeColorSelect.value;
     if (!val) {
         renderer.nodeColorFn = null;
+        renderLegends();
         return;
     }
 
@@ -563,31 +615,39 @@ function updateNodeColors() {
 
     if (source === 'node') {
         // Color by physical node attribute
-        const colorFn = colorMapper.buildColorScale(model.nodes, attrName);
+        const sc = colorMapper.buildColorScale(model.nodes, attrName);
+        activeNodeColorScale = sc;
         renderer.nodeColorFn = (layerName, nodeName) => {
             const node = model.nodesByName.get(nodeName);
-            return node ? colorFn(node[attrName]) : '#6b7280';
+            return node ? sc.scaleFn(node[attrName]) : '#6b7280';
         };
     } else if (source === 'state') {
         // Color by state node attribute
-        const colorFn = colorMapper.buildColorScale(model.stateNodes, attrName);
+        const sc = colorMapper.buildColorScale(model.stateNodes, attrName);
+        activeNodeColorScale = sc;
         renderer.nodeColorFn = (layerName, nodeName) => {
             const key = `${layerName}::${nodeName}`;
             const sn = model.stateNodeMap.get(key);
-            return sn ? colorFn(sn[attrName]) : '#6b7280';
+            return sn ? sc.scaleFn(sn[attrName]) : '#6b7280';
         };
     }
+
+    renderLegends();
 }
 
 function updateLinkColors() {
+    activeLinkColorScale = null;
     const attrName = linkColorSelect.value;
     if (!attrName || !model) {
         renderer.linkColorFn = null;
+        renderLegends();
         return;
     }
 
-    const colorFn = colorMapper.buildColorScale(model.extended, attrName);
-    renderer.linkColorFn = (link) => colorFn(link[attrName]);
+    const sc = colorMapper.buildColorScale(model.extended, attrName);
+    activeLinkColorScale = sc;
+    renderer.linkColorFn = (link) => sc.scaleFn(link[attrName]);
+    renderLegends();
 }
 
 
@@ -789,14 +849,99 @@ function hideTooltip() {
             })
             .then(json => {
                 loadData(json);
-                // Update dropdown to show it's a custom network
-                demoSelect.value = '';
             })
             .catch(err => {
                 console.error('Autoload failed:', err);
             });
     }
 })();
+
+function renderLegends() {
+    legendPanel.innerHTML = '';
+
+    const isBipartite = layout.layoutType === 'bipartite';
+
+    if (!isBipartite && showNodeColorLegend.checked && activeNodeColorScale) {
+        legendPanel.appendChild(createLegendDOM('Node Color: ' + activeNodeColorScale.attrName, activeNodeColorScale));
+    }
+    if (isBipartite && showNodeColorSetALegend.checked && activeNodeColorScaleA) {
+        const title = bipartiteColorLabelA.textContent.replace('Color by ', '');
+        legendPanel.appendChild(createLegendDOM('Node Color (' + title + '): ' + activeNodeColorScaleA.attrName, activeNodeColorScaleA));
+    }
+    if (isBipartite && showNodeColorSetBLegend.checked && activeNodeColorScaleB) {
+        const title = bipartiteColorLabelB.textContent.replace('Color by ', '');
+        legendPanel.appendChild(createLegendDOM('Node Color (' + title + '): ' + activeNodeColorScaleB.attrName, activeNodeColorScaleB));
+    }
+    if (showNodeSizeLegend.checked && activeNodeSizeScale) {
+        legendPanel.appendChild(createLegendDOM('Node Size: ' + activeNodeSizeScale.attrName, activeNodeSizeScale));
+    }
+    if (showLinkColorLegend.checked && activeLinkColorScale) {
+        legendPanel.appendChild(createLegendDOM('Link Color: ' + activeLinkColorScale.attrName, activeLinkColorScale));
+    }
+}
+
+function createLegendDOM(titleText, scale) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'legend-box';
+    wrapper.style.cssText = 'background: rgba(255,255,255,0.95); border: 1px solid rgba(0,0,0,0.1); border-radius: 8px; padding: 10px 14px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); font-family: Inter, system-ui, sans-serif; min-width: 140px; pointer-events: auto;';
+
+    const title = document.createElement('div');
+    title.textContent = titleText;
+    title.style.cssText = 'font-size: 11px; font-weight: 600; color: #1a1a2e; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;';
+    wrapper.appendChild(title);
+
+    if (scale.type === 'categorical') {
+        const list = document.createElement('div');
+        list.style.cssText = 'display: flex; flex-direction: column; gap: 4px;';
+        for (const [val, col] of scale.map.entries()) {
+            const row = document.createElement('div');
+            row.style.cssText = 'display: flex; align-items: center; gap: 6px; font-size: 12px; color: #4b5563;';
+            const swatch = document.createElement('div');
+            swatch.style.cssText = `width: 12px; height: 12px; border-radius: 50%; background: ${col}; flex-shrink: 0;`;
+            const text = document.createElement('span');
+            text.textContent = val;
+            text.style.cssText = 'white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px;';
+            row.appendChild(swatch);
+            row.appendChild(text);
+            list.appendChild(row);
+        }
+        wrapper.appendChild(list);
+    } else if (scale.type === 'continuous' || scale.type === 'size') {
+        const gradWrap = document.createElement('div');
+        gradWrap.style.cssText = 'display: flex; flex-direction: column; gap: 4px;';
+
+        const track = document.createElement('div');
+        if (scale.type === 'continuous') {
+            track.style.cssText = 'height: 12px; border-radius: 6px; background: linear-gradient(to right, rgb(68,1,84), rgb(49,104,142), rgb(53,183,121), rgb(253,231,37));';
+        } else {
+            track.style.cssText = 'height: 24px; position: relative; border-bottom: 1px solid #e5e7eb; display: flex; align-items: flex-end; justify-content: space-between; padding-bottom: 4px;';
+            const dot1 = document.createElement('div');
+            dot1.style.cssText = 'width: 4px; height: 4px; background: #6b7280; border-radius: 50%;';
+            const dot2 = document.createElement('div');
+            dot2.style.cssText = 'width: 12px; height: 12px; background: #6b7280; border-radius: 50%; margin-bottom: -4px; margin-left: 10px;';
+            const dot3 = document.createElement('div');
+            dot3.style.cssText = 'width: 20px; height: 20px; background: #6b7280; border-radius: 50%; margin-bottom: -8px; margin-left: 10px;';
+            track.appendChild(dot1);
+            track.appendChild(dot2);
+            track.appendChild(dot3);
+        }
+
+        const labels = document.createElement('div');
+        labels.style.cssText = 'display: flex; justify-content: space-between; font-size: 11px; color: #6b7280; margin-top: 2px;';
+
+        const fmt = (v) => Number.isInteger(v) ? v : v.toFixed(2);
+        const minSpan = document.createElement('span'); minSpan.textContent = fmt(scale.min);
+        const maxSpan = document.createElement('span'); maxSpan.textContent = fmt(scale.max);
+        labels.appendChild(minSpan);
+        labels.appendChild(maxSpan);
+
+        gradWrap.appendChild(track);
+        gradWrap.appendChild(labels);
+        wrapper.appendChild(gradWrap);
+    }
+
+    return wrapper;
+}
 
 // ---- Screenshot Export ----
 const captureBtn = document.getElementById('captureBtn');
