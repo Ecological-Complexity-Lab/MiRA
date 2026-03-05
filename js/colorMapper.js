@@ -87,7 +87,7 @@ export class ColorMapper {
      * Build a color mapping for a given attribute across a collection of items.
      * Returns a function: value -> color
      */
-    buildColorScale(items, attrName) {
+    buildColorScale(items, attrName, forceType = null) {
         const values = items.map(item => item[attrName]).filter(v => v !== undefined && v !== null);
         const uniqueValues = [...new Set(values)];
 
@@ -96,10 +96,19 @@ export class ColorMapper {
             typeof v === 'number' || (typeof v === 'string' && v.trim() !== '' && !isNaN(Number(v)))
         );
 
-        // Treat as continuous if all values are numeric, AND (there are more than 2 unique values, 
-        // OR it matches common continuous attribute names)
-        const isContinuousName = /weight|abundance|degree|strength|mass|size|value/i.test(attrName);
-        const useContinuous = allNumeric && (uniqueValues.length > 2 || isContinuousName);
+        let useContinuous;
+        if (forceType === 'continuous' && allNumeric) {
+            useContinuous = true;
+        } else if (forceType === 'categorical') {
+            useContinuous = false;
+        } else {
+            // Treat as continuous if all values are numeric, AND (there are more than 2 unique values, 
+            // OR it matches common continuous attribute names)
+            const isContinuousName = /weight|abundance|degree|strength|mass|size|value/i.test(attrName);
+            useContinuous = allNumeric && (uniqueValues.length > 2 || isContinuousName);
+        }
+
+        const canToggle = allNumeric; // We only allow toggling if the variable could theoretically be mapped continuously
 
         if (useContinuous) {
             // Numeric gradient
@@ -113,7 +122,7 @@ export class ColorMapper {
                 const t = (Number(value) - min) / range;
                 return numericGradient(t);
             };
-            return { type: 'continuous', min, max, attrName, scaleFn };
+            return { type: 'continuous', min, max, attrName, scaleFn, canToggle };
         } else {
             // Categorical
             const colorMap = new Map();
@@ -125,7 +134,7 @@ export class ColorMapper {
                 if (value === undefined || value === null) return '#6b7280';
                 return colorMap.get(value) || '#6b7280';
             };
-            return { type: 'categorical', map: colorMap, attrName, scaleFn };
+            return { type: 'categorical', map: colorMap, attrName, scaleFn, canToggle };
         }
     }
 }

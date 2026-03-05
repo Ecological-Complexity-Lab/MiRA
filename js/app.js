@@ -21,6 +21,7 @@ let activeNodeColorScaleA = null;
 let activeNodeColorScaleB = null;
 let activeNodeSizeScale = null;
 let activeLinkColorScale = null;
+const colorScaleOverrides = new Map(); // attrName -> 'categorical' | 'continuous'
 
 // ---- DOM Elements ----
 const canvas = document.getElementById('networkCanvas');
@@ -567,7 +568,8 @@ function updateNodeColors() {
                     }
                 }
             }
-            return colorMapper.buildColorScale(items, attrName);
+            const override = colorScaleOverrides.get(attrName);
+            return colorMapper.buildColorScale(items, attrName, override);
         };
 
         const scA = getScaleObj(valA, true);
@@ -615,7 +617,8 @@ function updateNodeColors() {
 
     if (source === 'node') {
         // Color by physical node attribute
-        const sc = colorMapper.buildColorScale(model.nodes, attrName);
+        const override = colorScaleOverrides.get(attrName);
+        const sc = colorMapper.buildColorScale(model.nodes, attrName, override);
         activeNodeColorScale = sc;
         renderer.nodeColorFn = (layerName, nodeName) => {
             const node = model.nodesByName.get(nodeName);
@@ -623,7 +626,8 @@ function updateNodeColors() {
         };
     } else if (source === 'state') {
         // Color by state node attribute
-        const sc = colorMapper.buildColorScale(model.stateNodes, attrName);
+        const override = colorScaleOverrides.get(attrName);
+        const sc = colorMapper.buildColorScale(model.stateNodes, attrName, override);
         activeNodeColorScale = sc;
         renderer.nodeColorFn = (layerName, nodeName) => {
             const key = `${layerName}::${nodeName}`;
@@ -644,7 +648,8 @@ function updateLinkColors() {
         return;
     }
 
-    const sc = colorMapper.buildColorScale(model.extended, attrName);
+    const override = colorScaleOverrides.get(attrName);
+    const sc = colorMapper.buildColorScale(model.extended, attrName, override);
     activeLinkColorScale = sc;
     renderer.linkColorFn = (link) => sc.scaleFn(link[attrName]);
     renderLegends();
@@ -885,10 +890,32 @@ function createLegendDOM(titleText, scale) {
     wrapper.className = 'legend-box';
     wrapper.style.cssText = 'background: rgba(255,255,255,0.95); border: 1px solid rgba(0,0,0,0.1); border-radius: 8px; padding: 10px 14px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); font-family: Inter, system-ui, sans-serif; min-width: 140px; pointer-events: auto;';
 
+    const header = document.createElement('div');
+    header.style.cssText = 'display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; gap: 8px; height: 16px;';
+
     const title = document.createElement('div');
     title.textContent = titleText;
-    title.style.cssText = 'font-size: 11px; font-weight: 600; color: #1a1a2e; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;';
-    wrapper.appendChild(title);
+    title.style.cssText = 'font-size: 11px; font-weight: 600; color: #1a1a2e; text-transform: uppercase; letter-spacing: 0.5px; flex-grow: 1;';
+    header.appendChild(title);
+
+    if (scale.canToggle && scale.type !== 'size') {
+        const toggleBtn = document.createElement('button');
+        toggleBtn.textContent = '⇌';
+        toggleBtn.title = 'Switch between Categorical and Continuous palettes';
+        toggleBtn.style.cssText = 'background: none; border: 1px solid #d1d5db; cursor: pointer; color: #4b5563; border-radius: 4px; font-size: 10px; line-height: 1; padding: 1px 4px; font-weight: bold; flex-shrink: 0;';
+        toggleBtn.onmouseover = () => toggleBtn.style.background = '#f3f4f6';
+        toggleBtn.onmouseout = () => toggleBtn.style.background = 'none';
+        toggleBtn.onclick = () => {
+            const newType = scale.type === 'continuous' ? 'categorical' : 'continuous';
+            colorScaleOverrides.set(scale.attrName, newType);
+            updateNodeColors();
+            updateLinkColors();
+            renderer.render();
+        };
+        header.appendChild(toggleBtn);
+    }
+
+    wrapper.appendChild(header);
 
     if (scale.type === 'categorical') {
         const list = document.createElement('div');
