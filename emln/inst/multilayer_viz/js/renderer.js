@@ -56,6 +56,9 @@ export class Renderer {
         this.nodeSizeFn = null;
         this.linkColorFn = null;
 
+        this.showMapBackground = false;
+        this.isMapMode = false;
+
         // Bipartite support
         this.bipartiteInfo = null; // Map<layerName, { isBipartite, setA, setB, setALabel, setBLabel }>
         this.layoutType = 'fruchterman'; // Current layout type (needed to know when to render bipartite)
@@ -79,6 +82,37 @@ export class Renderer {
 
         // Per-layer offset (screen-space)
         const lo = this.layerOffsets.get(layerIndex) || { dx: 0, dy: 0 };
+
+        const layer = this.model && this.model.layers[layerIndex] ? this.model.layers[layerIndex] : null;
+        let hasGeo = false;
+        let geoCenter = null;
+        if (this.isMapMode && this.bgMap && layer) {
+            const latVal = layer.latitude !== undefined ? layer.latitude : layer.Latitude;
+            const lngVal = layer.longitude !== undefined ? layer.longitude : layer.Longitude;
+            if (latVal !== undefined && lngVal !== undefined) {
+                const lat = parseFloat(latVal);
+                const lng = parseFloat(lngVal);
+                if (!isNaN(lat) && !isNaN(lng)) {
+                    geoCenter = this.bgMap.latLngToContainerPoint([lat, lng]);
+                    hasGeo = true;
+                }
+            }
+        }
+
+        if (hasGeo) {
+            // Isometric projection applied flat on the container point
+            const shear = Math.cos(this.skewX) * 0.65;
+            const yCompress = Math.sin(this.skewY) * 0.85;
+
+            // Notice we add (lx + ly * shear) scaled by this.scale, centered on geoCenter
+            const sx = (lx + ly * shear) * this.scale;
+            const sy = (ly * yCompress) * this.scale;
+
+            return {
+                x: geoCenter.x + sx + lo.dx,
+                y: geoCenter.y + sy + lo.dy,
+            };
+        }
 
         if (this.stackMode === 'vertical') {
             // Isometric projection: layers are horizontal planes viewed from above,
@@ -300,6 +334,8 @@ export class Renderer {
         const h = this.canvas.height;
         ctx.clearRect(0, 0, w, h);
         this.renderToContext(ctx, w, h);
+
+        if (this.onRender) this.onRender();
     }
 
     /**
@@ -308,11 +344,13 @@ export class Renderer {
      */
     renderToContext(ctx, w, h) {
         // Background
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 0, w, h);
+        if (!this.showMapBackground) {
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, w, h);
+        }
 
         // Subtle grid
-        if (this.showGrid !== false) {
+        if (this.showGrid !== false && !this.showMapBackground) {
             this._drawGrid(ctx, w, h);
         }
 
@@ -328,6 +366,9 @@ export class Renderer {
             const layer = this.model.layers[i];
             const layerPos = this.positions.get(layer.layer_name);
             if (!layerPos) continue;
+
+            // In Map Mode, only render popped-out active map layers
+            if (this.activeMapLayers && !this.activeMapLayers.has(layer.layer_name)) continue;
 
             // Draw layer polygon
             this._drawLayerPolygon(ctx, i, layer);
@@ -484,6 +525,11 @@ export class Renderer {
 
     _drawInterlayerLinks(ctx) {
         for (const link of this.model.interlayerLinks) {
+            // In Map Mode, only render links if BOTH connect to active map layers
+            if (this.activeMapLayers && (!this.activeMapLayers.has(link.layer_from) || !this.activeMapLayers.has(link.layer_to))) {
+                continue;
+            }
+
             const fromScreen = this.getNodeScreenPos(link.layer_from, link.node_from);
             const toScreen = this.getNodeScreenPos(link.layer_to, link.node_to);
             if (!fromScreen || !toScreen) continue;

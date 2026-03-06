@@ -100,7 +100,6 @@ const mapModeBtn = document.getElementById('mapModeBtn');
 const mapOpacityControl = document.getElementById('mapOpacityControl');
 const mapOpacitySlider = document.getElementById('mapOpacitySlider');
 const showMapImageCheckbox = document.getElementById('showMapImageCheckbox');
-const showLocationsCheckbox = document.getElementById('showLocationsCheckbox');
 const showSetNamesCheckbox = document.getElementById('showSetNamesCheckbox');
 const bipartiteNestedCheckbox = document.getElementById('bipartiteNestedCheckbox');
 const showInterlayerCheckbox = document.getElementById('showInterlayerCheckbox');
@@ -159,13 +158,6 @@ renderer.showLabels = false;
 renderer.transformNodes = transformNodesCheckbox.checked;
 renderer.bgMap = bgMap;
 
-// Update tracking close buttons automatically during pan/zoom/drag
-renderer.onRender = () => {
-    if (appMode === 'map') {
-        updateCloseButtons();
-    }
-};
-
 bgMap.on('move', () => {
     if (appMode === 'map') {
         renderMapMarkers();
@@ -211,11 +203,9 @@ function loadData(json) {
         const lats = [];
         const lngs = [];
         model.layers.forEach(layer => {
-            const latVal = layer.latitude !== undefined ? layer.latitude : layer.Latitude;
-            const lngVal = layer.longitude !== undefined ? layer.longitude : layer.Longitude;
-            if (latVal !== undefined && lngVal !== undefined) {
-                const lat = parseFloat(latVal);
-                const lng = parseFloat(lngVal);
+            if (layer.Latitude !== undefined && layer.Longitude !== undefined) {
+                const lat = parseFloat(layer.Latitude);
+                const lng = parseFloat(layer.Longitude);
                 if (!isNaN(lat) && !isNaN(lng)) {
                     lats.push(lat);
                     lngs.push(lng);
@@ -368,14 +358,12 @@ function toggleMapMode() {
 
         activeMapLayers.clear(); // Start with no active layers pop-out
         renderer.showMapBackground = showMapImageCheckbox.checked;
-        renderer.isMapMode = true;
         mapOpacityControl.style.display = 'flex';
     } else {
         mapModeBtn.classList.remove('active');
         mapEl.style.display = 'none';
         activeMapLayers.clear();
         renderer.showMapBackground = false;
-        renderer.isMapMode = false;
         mapOpacityControl.style.display = 'none';
     }
 
@@ -389,11 +377,9 @@ function fitMapToLayers() {
     const lats = [];
     const lngs = [];
     model.layers.forEach(layer => {
-        const latVal = layer.latitude !== undefined ? layer.latitude : layer.Latitude;
-        const lngVal = layer.longitude !== undefined ? layer.longitude : layer.Longitude;
-        if (latVal !== undefined && lngVal !== undefined) {
-            const lat = parseFloat(latVal);
-            const lng = parseFloat(lngVal);
+        if (layer.Latitude !== undefined && layer.Longitude !== undefined) {
+            const lat = parseFloat(layer.Latitude);
+            const lng = parseFloat(layer.Longitude);
             if (!isNaN(lat) && !isNaN(lng)) {
                 lats.push(lat);
                 lngs.push(lng);
@@ -468,20 +454,14 @@ showMapImageCheckbox.addEventListener('change', () => {
     renderer.render();
 });
 
-showLocationsCheckbox.addEventListener('change', () => {
-    mapMarkersOverlay.style.visibility = showLocationsCheckbox.checked ? 'visible' : 'hidden';
-});
-
 function renderMapMarkers() {
     mapMarkersOverlay.innerHTML = '';
     if (appMode !== 'map' || !model || !model.layers) return;
 
     model.layers.forEach(layer => {
-        const latVal = layer.latitude !== undefined ? layer.latitude : layer.Latitude;
-        const lngVal = layer.longitude !== undefined ? layer.longitude : layer.Longitude;
-        if (latVal !== undefined && lngVal !== undefined) {
-            const lat = parseFloat(latVal);
-            const lng = parseFloat(lngVal);
+        if (layer.Latitude !== undefined && layer.Longitude !== undefined) {
+            const lat = parseFloat(layer.Latitude);
+            const lng = parseFloat(layer.Longitude);
             if (!isNaN(lat) && !isNaN(lng)) {
                 const pos = bgMap.latLngToContainerPoint([lat, lng]);
 

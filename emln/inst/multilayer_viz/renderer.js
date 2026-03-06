@@ -57,7 +57,6 @@ export class Renderer {
         this.linkColorFn = null;
 
         this.showMapBackground = false;
-        this.isMapMode = false;
 
         // Bipartite support
         this.bipartiteInfo = null; // Map<layerName, { isBipartite, setA, setB, setALabel, setBLabel }>
@@ -86,16 +85,12 @@ export class Renderer {
         const layer = this.model && this.model.layers[layerIndex] ? this.model.layers[layerIndex] : null;
         let hasGeo = false;
         let geoCenter = null;
-        if (this.isMapMode && this.bgMap && layer) {
-            const latVal = layer.latitude !== undefined ? layer.latitude : layer.Latitude;
-            const lngVal = layer.longitude !== undefined ? layer.longitude : layer.Longitude;
-            if (latVal !== undefined && lngVal !== undefined) {
-                const lat = parseFloat(latVal);
-                const lng = parseFloat(lngVal);
-                if (!isNaN(lat) && !isNaN(lng)) {
-                    geoCenter = this.bgMap.latLngToContainerPoint([lat, lng]);
-                    hasGeo = true;
-                }
+        if (this.showMapBackground && this.bgMap && layer && layer.Latitude !== undefined && layer.Longitude !== undefined) {
+            const lat = parseFloat(layer.Latitude);
+            const lng = parseFloat(layer.Longitude);
+            if (!isNaN(lat) && !isNaN(lng)) {
+                geoCenter = this.bgMap.latLngToContainerPoint([lat, lng]);
+                hasGeo = true;
             }
         }
 
@@ -334,8 +329,6 @@ export class Renderer {
         const h = this.canvas.height;
         ctx.clearRect(0, 0, w, h);
         this.renderToContext(ctx, w, h);
-
-        if (this.onRender) this.onRender();
     }
 
     /**

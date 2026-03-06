@@ -22,6 +22,10 @@ export class InteractionHandler {
         this.dragStartX = 0;
         this.dragStartY = 0;
 
+        // Per-frame delta tracking
+        this.prevX = 0;
+        this.prevY = 0;
+
         // Pan state
         this.panStartOffsetX = 0;
         this.panStartOffsetY = 0;
@@ -46,12 +50,12 @@ export class InteractionHandler {
         // Mouse wheel → zoom
         this.canvas.addEventListener('wheel', (e) => {
             e.preventDefault();
-            const zoomFactor = e.deltaY > 0 ? 0.92 : 1.08;
             const rect = this.canvas.getBoundingClientRect();
             const mx = e.clientX - rect.left;
             const my = e.clientY - rect.top;
 
-            // Zoom toward cursor
+            // Zoom toward cursor (Standard 3D Canvas)
+            const zoomFactor = e.deltaY > 0 ? 0.92 : 1.08;
             const oldScale = this.renderer.scale;
             const newScale = Math.max(0.2, Math.min(5, oldScale * zoomFactor));
 
@@ -73,6 +77,10 @@ export class InteractionHandler {
             // Record start position for drag detection
             this.dragStartX = e.clientX;
             this.dragStartY = e.clientY;
+
+            // Record previous position for delta panning
+            this.prevX = e.clientX;
+            this.prevY = e.clientY;
 
             // Cmd+click (metaKey on Mac) → drag layer
             if (e.metaKey) {
@@ -201,9 +209,17 @@ export class InteractionHandler {
 
             // Panning drag
             if (this.isPanning) {
-                this.renderer.offsetX = this.panStartOffsetX + (e.clientX - this.dragStartX);
-                this.renderer.offsetY = this.panStartOffsetY + (e.clientY - this.dragStartY);
-                this.renderer.render();
+                if (this.renderer.isMapMode && this.renderer.bgMap) {
+                    const dx = e.clientX - this.dragStartX;
+                    const dy = e.clientY - this.dragStartY;
+                    this.renderer.bgMap.panBy([-dx, -dy], { animate: false });
+                    this.dragStartX = e.clientX;
+                    this.dragStartY = e.clientY;
+                } else {
+                    this.renderer.offsetX = this.panStartOffsetX + (e.clientX - this.dragStartX);
+                    this.renderer.offsetY = this.panStartOffsetY + (e.clientY - this.dragStartY);
+                    this.renderer.render();
+                }
                 return;
             }
 
@@ -243,6 +259,9 @@ export class InteractionHandler {
                 }
                 this.renderer.render();
             }
+
+            this.prevX = e.clientX;
+            this.prevY = e.clientY;
         });
 
         this.canvas.addEventListener('mouseleave', () => {

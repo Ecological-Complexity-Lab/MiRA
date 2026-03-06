@@ -209,17 +209,9 @@ export class InteractionHandler {
 
             // Panning drag
             if (this.isPanning) {
-                if (this.renderer.isMapMode && this.renderer.bgMap) {
-                    const dx = e.clientX - this.dragStartX;
-                    const dy = e.clientY - this.dragStartY;
-                    this.renderer.bgMap.panBy([-dx, -dy], { animate: false });
-                    this.dragStartX = e.clientX;
-                    this.dragStartY = e.clientY;
-                } else {
-                    this.renderer.offsetX = this.panStartOffsetX + (e.clientX - this.dragStartX);
-                    this.renderer.offsetY = this.panStartOffsetY + (e.clientY - this.dragStartY);
-                    this.renderer.render();
-                }
+                this.renderer.offsetX = this.panStartOffsetX + (e.clientX - this.dragStartX);
+                this.renderer.offsetY = this.panStartOffsetY + (e.clientY - this.dragStartY);
+                this.renderer.render();
                 return;
             }
 

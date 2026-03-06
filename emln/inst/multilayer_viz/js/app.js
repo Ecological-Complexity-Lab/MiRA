@@ -96,6 +96,11 @@ window.addEventListener('mouseup', () => {
 const showLabelsCheckbox = document.getElementById('showLabelsCheckbox');
 const transformNodesCheckbox = document.getElementById('transformNodesCheckbox');
 const showLayerNamesCheckbox = document.getElementById('showLayerNamesCheckbox');
+const mapModeBtn = document.getElementById('mapModeBtn');
+const mapOpacityControl = document.getElementById('mapOpacityControl');
+const mapOpacitySlider = document.getElementById('mapOpacitySlider');
+const showMapImageCheckbox = document.getElementById('showMapImageCheckbox');
+const showLocationsCheckbox = document.getElementById('showLocationsCheckbox');
 const showSetNamesCheckbox = document.getElementById('showSetNamesCheckbox');
 const bipartiteNestedCheckbox = document.getElementById('bipartiteNestedCheckbox');
 const showInterlayerCheckbox = document.getElementById('showInterlayerCheckbox');
@@ -113,6 +118,28 @@ const infoContent = document.getElementById('infoContent');
 const closeInfoBtn = document.getElementById('closeInfoBtn');
 const tooltip = document.getElementById('tooltip');
 
+// ---- Application State ----
+let appMode = 'network'; // 'network' or 'map'
+let activeMapLayers = new Set();
+const mapMarkersOverlay = document.getElementById('mapMarkersOverlay');
+const layerCloseButtonsContainer = document.getElementById('layerCloseButtons');
+
+// ---- Init Background Map ----
+const mapEl = document.getElementById('backgroundMap');
+const bgMap = L.map('backgroundMap', {
+    zoomControl: false,
+    dragging: true,
+    scrollWheelZoom: true,
+    doubleClickZoom: true,
+    boxZoom: false,
+    keyboard: false,
+    attributionControl: false,
+    zoomSnap: 0 // allow fractional zoom for smooth syncing
+}).setView([42.35, 3.17], 11);
+
+const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    maxZoom: 18
+}).addTo(bgMap);
 
 // ---- Canvas Resize ----
 function resizeCanvas() {
@@ -130,6 +157,22 @@ resizeCanvas();
 renderer = new Renderer(canvas);
 renderer.showLabels = false;
 renderer.transformNodes = transformNodesCheckbox.checked;
+renderer.bgMap = bgMap;
+
+// Update tracking close buttons automatically during pan/zoom/drag
+renderer.onRender = () => {
+    if (appMode === 'map') {
+        updateCloseButtons();
+    }
+};
+
+bgMap.on('move', () => {
+    if (appMode === 'map') {
+        renderMapMarkers();
+        updateCloseButtons();
+        renderer.render();
+    }
+});
 
 // ---- Interaction ----
 const interaction = new InteractionHandler(canvas, renderer, {
@@ -163,6 +206,33 @@ const interaction = new InteractionHandler(canvas, renderer, {
 function loadData(json) {
     try {
         model = parseMultilayerData(json);
+
+        // Center Leaflet Map if geographic data is present
+        const lats = [];
+        const lngs = [];
+        model.layers.forEach(layer => {
+            const latVal = layer.latitude !== undefined ? layer.latitude : layer.Latitude;
+            const lngVal = layer.longitude !== undefined ? layer.longitude : layer.Longitude;
+            if (latVal !== undefined && lngVal !== undefined) {
+                const lat = parseFloat(latVal);
+                const lng = parseFloat(lngVal);
+                if (!isNaN(lat) && !isNaN(lng)) {
+                    lats.push(lat);
+                    lngs.push(lng);
+                }
+            }
+        });
+
+        if (lats.length > 0) {
+            mapModeBtn.style.display = 'inline-flex';
+        } else {
+            mapModeBtn.style.display = 'none';
+        }
+
+        // Reset out of map mode if active when loading a new un-mapped network
+        if (appMode === 'map') {
+            toggleMapMode(); // Switches back to network mode and cleans up markers
+        }
 
         // Pass bipartite info to layout engine
         layout.bipartiteInfo = model.bipartiteInfo;
@@ -284,6 +354,195 @@ document.querySelectorAll('.demo-dataset-btn').forEach(btn => {
     });
 });
 
+// ---- Map Mode Logic ----
+function toggleMapMode() {
+    appMode = appMode === 'network' ? 'map' : 'network';
+
+    if (appMode === 'map') {
+        mapModeBtn.classList.add('active');
+        mapEl.style.display = 'block';
+        bgMap.invalidateSize();
+
+        // Calculate bounds after the map container is visible
+        fitMapToLayers();
+
+        activeMapLayers.clear(); // Start with no active layers pop-out
+        renderer.showMapBackground = showMapImageCheckbox.checked;
+        renderer.isMapMode = true;
+        mapOpacityControl.style.display = 'flex';
+    } else {
+        mapModeBtn.classList.remove('active');
+        mapEl.style.display = 'none';
+        activeMapLayers.clear();
+        renderer.showMapBackground = false;
+        renderer.isMapMode = false;
+        mapOpacityControl.style.display = 'none';
+    }
+
+    updateMapModeViews();
+}
+
+mapModeBtn.addEventListener('click', toggleMapMode);
+
+function fitMapToLayers() {
+    if (!model || !model.layers) return;
+    const lats = [];
+    const lngs = [];
+    model.layers.forEach(layer => {
+        const latVal = layer.latitude !== undefined ? layer.latitude : layer.Latitude;
+        const lngVal = layer.longitude !== undefined ? layer.longitude : layer.Longitude;
+        if (latVal !== undefined && lngVal !== undefined) {
+            const lat = parseFloat(latVal);
+            const lng = parseFloat(lngVal);
+            if (!isNaN(lat) && !isNaN(lng)) {
+                lats.push(lat);
+                lngs.push(lng);
+            }
+        }
+    });
+    if (lats.length > 0) {
+        const minLat = Math.min(...lats);
+        const maxLat = Math.max(...lats);
+        const minLng = Math.min(...lngs);
+        const maxLng = Math.max(...lngs);
+        if (minLat === maxLat && minLng === maxLng) {
+            bgMap.setView([minLat, minLng], 12);
+        } else {
+            bgMap.fitBounds([
+                [minLat, minLng],
+                [maxLat, maxLng]
+            ], { padding: [40, 40] });
+        }
+    }
+}
+
+function updateMapModeViews() {
+    layerCloseButtonsContainer.innerHTML = '';
+
+    if (appMode === 'network') {
+        mapMarkersOverlay.style.display = 'none';
+        canvas.style.pointerEvents = 'auto';
+        renderer.activeMapLayers = null; // render all
+        renderer.render();
+    } else {
+        mapMarkersOverlay.style.display = 'block';
+        renderer.activeMapLayers = activeMapLayers; // Only render these layers
+
+        const instructionSpan = document.getElementById('mapInstruction');
+
+        if (activeMapLayers.size === 0) {
+            canvas.style.pointerEvents = 'none'; // Map gets controls
+            instructionSpan.style.display = 'inline-flex';
+            setTimeout(() => instructionSpan.style.opacity = '1', 10);
+            mapOpacityControl.style.opacity = '1';
+            mapOpacityControl.style.pointerEvents = 'auto';
+        } else {
+            canvas.style.pointerEvents = 'auto'; // Canvas gets controls
+            instructionSpan.style.opacity = '0';
+            setTimeout(() => { if (activeMapLayers.size > 0 || appMode !== 'map') instructionSpan.style.display = 'none'; }, 300);
+            mapOpacityControl.style.opacity = '0.4'; // Dim control slightly when layers popped out
+            mapOpacityControl.style.pointerEvents = 'auto'; // Still allow them to edit opacity while viewing overlays
+        }
+
+        renderMapMarkers();
+        updateCloseButtons();
+        renderer.render();
+    }
+}
+
+// ==== Map Opacity Handlers ====
+mapOpacitySlider.addEventListener('input', () => {
+    const val = parseFloat(mapOpacitySlider.value);
+    satelliteLayer.setOpacity(val);
+    mapMarkersOverlay.style.opacity = val;
+});
+
+showMapImageCheckbox.addEventListener('change', () => {
+    const show = showMapImageCheckbox.checked;
+    if (show) {
+        bgMap.addLayer(satelliteLayer);
+    } else {
+        bgMap.removeLayer(satelliteLayer);
+    }
+    renderer.showMapBackground = show;
+    renderer.render();
+});
+
+showLocationsCheckbox.addEventListener('change', () => {
+    mapMarkersOverlay.style.visibility = showLocationsCheckbox.checked ? 'visible' : 'hidden';
+});
+
+function renderMapMarkers() {
+    mapMarkersOverlay.innerHTML = '';
+    if (appMode !== 'map' || !model || !model.layers) return;
+
+    model.layers.forEach(layer => {
+        const latVal = layer.latitude !== undefined ? layer.latitude : layer.Latitude;
+        const lngVal = layer.longitude !== undefined ? layer.longitude : layer.Longitude;
+        if (latVal !== undefined && lngVal !== undefined) {
+            const lat = parseFloat(latVal);
+            const lng = parseFloat(lngVal);
+            if (!isNaN(lat) && !isNaN(lng)) {
+                const pos = bgMap.latLngToContainerPoint([lat, lng]);
+
+                // Hide marker if the layer is currently popped out
+                if (activeMapLayers.has(layer.layer_name)) return;
+
+                const marker = document.createElement('div');
+                marker.className = 'map-marker';
+                marker.style.left = pos.x + 'px';
+                marker.style.top = pos.y + 'px';
+                marker.title = layer.layer_name;
+
+                if (renderer.showLayerNames) {
+                    const label = document.createElement('div');
+                    label.className = 'map-marker-label';
+                    label.innerText = layer.layer_name;
+                    marker.appendChild(label);
+                }
+
+                marker.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    activeMapLayers.add(layer.layer_name);
+                    updateMapModeViews();
+                });
+
+                mapMarkersOverlay.appendChild(marker);
+            }
+        }
+    });
+}
+
+function updateCloseButtons() {
+    layerCloseButtonsContainer.innerHTML = '';
+    if (appMode !== 'map' || activeMapLayers.size === 0 || !renderer.positions || !renderer.model) return;
+
+    Array.from(activeMapLayers).forEach(layerName => {
+        const layerIndex = renderer.model.layers.findIndex(l => l.layer_name === layerName);
+        if (layerIndex === -1) return;
+
+        // Find the top-right corner of the layer in screen coords
+        // The geographic origin is calculated safely in renderer project
+        // So we grab a generic point near the origin representing top-right
+        const topRScreen = renderer.project(renderer.layerWidth, 0, layerIndex);
+
+        const closeBtn = document.createElement('button');
+        closeBtn.className = 'popout-close-btn';
+        closeBtn.innerHTML = '✕';
+        closeBtn.style.left = topRScreen.x + 'px';
+        closeBtn.style.top = topRScreen.y + 'px';
+        closeBtn.title = "Close " + layerName;
+
+        closeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            activeMapLayers.delete(layerName);
+            updateMapModeViews();
+        });
+
+        layerCloseButtonsContainer.appendChild(closeBtn);
+    });
+}
+
 // ---- Toggle Labels ----
 showLabelsCheckbox.addEventListener('change', () => {
     renderer.showLabels = showLabelsCheckbox.checked;
@@ -299,6 +558,7 @@ transformNodesCheckbox.addEventListener('change', () => {
 // ---- Toggle Layer Names ----
 showLayerNamesCheckbox.addEventListener('change', () => {
     renderer.showLayerNames = showLayerNamesCheckbox.checked;
+    if (appMode === 'map') renderMapMarkers();
     renderer.render();
 });
 
@@ -703,6 +963,11 @@ function updateLinkColors() {
 
 // ---- Zoom Controls ----
 zoomInBtn.addEventListener('click', () => {
+    if (appMode === 'map') {
+        bgMap.zoomIn(1);
+        return;
+    }
+
     const cx = canvas.width / 2;
     const cy = canvas.height / 2;
     const factor = 1.2;
@@ -713,6 +978,11 @@ zoomInBtn.addEventListener('click', () => {
 });
 
 zoomOutBtn.addEventListener('click', () => {
+    if (appMode === 'map') {
+        bgMap.zoomOut(1);
+        return;
+    }
+
     const cx = canvas.width / 2;
     const cy = canvas.height / 2;
     const factor = 1 / 1.2;
@@ -723,6 +993,11 @@ zoomOutBtn.addEventListener('click', () => {
 });
 
 zoomResetBtn.addEventListener('click', () => {
+    if (appMode === 'map') {
+        fitMapToLayers();
+        return;
+    }
+
     // Reset rotation angles to defaults
     renderer.skewX = 0.7;
     renderer.skewY = 0.55;
