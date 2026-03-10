@@ -87,6 +87,8 @@ multilayer_to_json <- function(multilayer, file = NULL, bipartite = NULL, direct
 
   # ---- Build layers array ----
   layers_df <- as.data.frame(multilayer$layers)
+  # Drop legacy 'name' column — layer_name is canonical
+  layers_df <- layers_df[, names(layers_df) != "name", drop = FALSE]
   # Add bipartite flag
   if (bipartite) {
     layers_df$bipartite <- TRUE

@@ -17,7 +17,6 @@ The visualizer expects a JSON object containing three primary arrays: `layers`, 
   "layers": [
     {
       "layer_id": 1,
-      "name": "Forest Canopy",
       "layer_name": "Forest Canopy",
       "latitude": 42.35, 
       "longitude": 3.17
@@ -53,8 +52,7 @@ The visualizer expects a JSON object containing three primary arrays: `layers`, 
 #### `layers` Array
 Defines the individual layers (planes) in the network.
 * `layer_id` *(Integer/String)*: Unique identifier.
-* `name` *(String)*: Name of the layer.
-* `layer_name` *(String)*: Same as `name` (used internally by the renderer).
+* `layer_name` *(String)*: Name of the layer.
 * `latitude` / `longitude` *(Float, Optional)*: If provided, unlocks the geographic **Map Mode** allowing layers to be represented on an interactive world map.
 
 #### `nodes` Array
