@@ -50,11 +50,13 @@ export class Renderer {
         this.hoveredNode = null;  // { layerName, nodeName }
         this.selectedNode = null; // { layerName, nodeName }
         this.selectedLayer = null; // layerIndex or null
+        this.searchedNodeName = null; // node_name string — highlights all instances across layers
 
         // Color-by functions
         this.nodeColorFn = null;
         this.nodeSizeFn = null;
         this.linkColorFn = null;
+        this.layerColorFn = null; // (layerIndex, layer) -> { fill, border, text }
 
         this.showMapBackground = false;
         this.isMapMode = false;
@@ -431,44 +433,65 @@ export class Renderer {
             ctx.lineTo(corners[i].x, corners[i].y);
         }
         ctx.closePath();
-        ctx.fillStyle = this.colorMapper.getLayerFill(layerIndex);
+        const layerColors = this.layerColorFn
+            ? this.layerColorFn(layerIndex, layer)
+            : { fill: this.colorMapper.getLayerFill(), border: this.colorMapper.getLayerBorder(), text: 'rgba(139,92,246,1)' };
+        ctx.fillStyle = layerColors.fill;
         ctx.fill();
 
         // Border
-        ctx.strokeStyle = this.colorMapper.getLayerBorder(layerIndex);
+        ctx.strokeStyle = layerColors.border;
         ctx.lineWidth = 1.5;
         ctx.stroke();
 
-        // Layer label — positioned outside the polygon (only if toggled on)
+        // Compute X-axis direction (bottom edge) for oriented text
+        const xA = this.project(0, 0, layerIndex);
+        const xB = this.project(this.layerWidth, 0, layerIndex);
+        const xAngle = Math.atan2(xB.y - xA.y, xB.x - xA.x);
+
+        // Layer label — oriented along the bottom (X-axis) edge
         if (this.showLayerNames) {
-            const labelPos = this.project(-50, this.layerHeight / 2, layerIndex);
+            const anchor = this.project(this.layerWidth / 2, this.layerHeight + 28, layerIndex);
             ctx.save();
+            ctx.translate(anchor.x, anchor.y);
+            ctx.rotate(xAngle);
             ctx.font = 'bold 15px Inter, system-ui, sans-serif';
-            ctx.fillStyle = this.colorMapper.getLayerBorder(layerIndex).replace('0.55', '1.0');
-            ctx.textAlign = 'right';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(layer.layer_name, labelPos.x - 8, labelPos.y);
+            ctx.fillStyle = layerColors.text;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'top';
+            ctx.fillText(layer.layer_name, 0, 0);
             ctx.restore();
         }
 
-        // Bipartite set labels inside the polygon (only if toggled on)
+        // Bipartite set labels — oriented along the top/bottom (X-axis) edge
         if (this.showSetNames && this.layoutType === 'bipartite' && this.bipartiteInfo) {
             const bpInfo = this.bipartiteInfo.get(layer.layer_name);
             if (bpInfo && bpInfo.isBipartite) {
                 ctx.save();
-                // Label for Set A (top row)
-                const topLabelPos = this.project(this.layerWidth / 2, -12, layerIndex);
                 ctx.font = '600 11px Inter, system-ui, sans-serif';
+
+                // Set A label (top edge)
+                const topAnchor = this.project(this.layerWidth / 2, -12, layerIndex);
+                ctx.save();
+                ctx.translate(topAnchor.x, topAnchor.y);
+                ctx.rotate(xAngle);
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'bottom';
                 ctx.fillStyle = BIPARTITE_SET_A_COLOR;
-                ctx.fillText(bpInfo.setALabel, topLabelPos.x, topLabelPos.y);
+                ctx.fillText(bpInfo.setALabel, 0, 0);
+                ctx.restore();
 
-                // Label for Set B (bottom row)
-                const botLabelPos = this.project(this.layerWidth / 2, this.layerHeight + 18, layerIndex);
+                // Set B label (bottom edge)
+                const botAnchor = this.project(this.layerWidth / 2, this.layerHeight + 12, layerIndex);
+                ctx.save();
+                ctx.translate(botAnchor.x, botAnchor.y);
+                ctx.rotate(xAngle);
+                ctx.textAlign = 'center';
                 ctx.textBaseline = 'top';
                 ctx.fillStyle = BIPARTITE_SET_B_COLOR;
-                ctx.fillText(bpInfo.setBLabel, botLabelPos.x, botLabelPos.y);
+                ctx.fillText(bpInfo.setBLabel, 0, 0);
+                ctx.restore();
+
                 ctx.restore();
             }
         }
@@ -626,16 +649,17 @@ export class Renderer {
             const isSelected = this.selectedNode &&
                 this.selectedNode.layerName === layer.layer_name &&
                 this.selectedNode.nodeName === nodeName;
+            const isSearched = !!this.searchedNodeName && nodeName === this.searchedNodeName;
 
-            // Glow effect for hovered/selected
-            if (isHovered || isSelected) {
+            // Glow effect for hovered/selected/searched
+            if (isHovered || isSelected || isSearched) {
                 ctx.save();
                 ctx.translate(sp.x, sp.y);
                 if (this.transformNodes) ctx.transform(ta, tb, tc, td, 0, 0);
 
                 ctx.beginPath();
                 ctx.arc(0, 0, r + 6, 0, Math.PI * 2);
-                ctx.fillStyle = isSelected
+                ctx.fillStyle = (isSelected || isSearched)
                     ? 'rgba(250, 204, 21, 0.25)'
                     : 'rgba(0,0,0,0.08)';
                 ctx.fill();
@@ -652,12 +676,12 @@ export class Renderer {
             ctx.fillStyle = fillColor;
             ctx.fill();
 
-            ctx.strokeStyle = isSelected
+            ctx.strokeStyle = (isSelected || isSearched)
                 ? '#facc15'
                 : isHovered
                     ? '#333333'
                     : 'rgba(0,0,0,0.2)';
-            ctx.lineWidth = isSelected ? 2.5 : this.nodeStrokeWidth;
+            ctx.lineWidth = (isSelected || isSearched) ? 2.5 : this.nodeStrokeWidth;
             ctx.stroke();
 
             ctx.restore();
@@ -690,6 +714,11 @@ export class Renderer {
             this.selectedLink.layer_from === link.layer_from &&
             this.selectedLink.layer_to === link.layer_to) {
             return true;
+        }
+
+        // Highlight based on search (all instances across layers)
+        if (this.searchedNodeName) {
+            return link.node_from === this.searchedNodeName || link.node_to === this.searchedNodeName;
         }
 
         // Highlight based on node hover/selection

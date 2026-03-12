@@ -21,36 +21,10 @@ const CATEGORICAL_PALETTE = [
     '#e879f9', // fuchsia
 ];
 
-// Layer palette — slightly muted, semi-transparent for layer backgrounds
-const LAYER_PALETTE = [
-    'rgba(99, 102, 241, 0.18)',   // indigo
-    'rgba(16, 185, 129, 0.18)',   // emerald
-    'rgba(245, 158, 11, 0.18)',   // amber
-    'rgba(239, 68, 68, 0.18)',    // red
-    'rgba(139, 92, 246, 0.18)',   // violet
-    'rgba(14, 165, 233, 0.18)',   // sky
-    'rgba(249, 115, 22, 0.18)',   // orange
-];
-
-const LAYER_BORDER_PALETTE = [
-    'rgba(99, 102, 241, 0.55)',
-    'rgba(16, 185, 129, 0.55)',
-    'rgba(245, 158, 11, 0.55)',
-    'rgba(239, 68, 68, 0.55)',
-    'rgba(139, 92, 246, 0.55)',
-    'rgba(14, 165, 233, 0.55)',
-    'rgba(249, 115, 22, 0.55)',
-];
-
-const NODE_LAYER_COLORS = [
-    '#818cf8', // indigo
-    '#34d399', // emerald
-    '#fbbf24', // amber
-    '#f87171', // red
-    '#a78bfa', // violet
-    '#38bdf8', // sky
-    '#fb923c', // orange
-];
+// Layer palette — single purple used for all layers by default
+const LAYER_FILL_DEFAULT  = 'rgba(139, 92, 246, 0.18)';
+const LAYER_BORDER_DEFAULT = 'rgba(139, 92, 246, 0.55)';
+const NODE_LAYER_COLOR_DEFAULT = '#a78bfa';
 
 // Bipartite set colors (matching stabilitygame.html plant/pollinator palette)
 export const BIPARTITE_SET_A_COLOR = '#34d399'; // green (plants)
@@ -62,18 +36,18 @@ export class ColorMapper {
     }
 
     /**
-     * Get a color for a layer (background fill)
+     * Get a color for a layer (background fill) — default purple for all layers
      */
-    getLayerFill(layerIndex) {
-        return LAYER_PALETTE[layerIndex % LAYER_PALETTE.length];
+    getLayerFill() {
+        return LAYER_FILL_DEFAULT;
     }
 
-    getLayerBorder(layerIndex) {
-        return LAYER_BORDER_PALETTE[layerIndex % LAYER_BORDER_PALETTE.length];
+    getLayerBorder() {
+        return LAYER_BORDER_DEFAULT;
     }
 
-    getNodeLayerColor(layerIndex) {
-        return NODE_LAYER_COLORS[layerIndex % NODE_LAYER_COLORS.length];
+    getNodeLayerColor() {
+        return NODE_LAYER_COLOR_DEFAULT;
     }
 
     /**

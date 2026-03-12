@@ -38,6 +38,7 @@ const bipartiteColorLabelA = document.getElementById('bipartiteColorLabelA');
 const bipartiteColorLabelB = document.getElementById('bipartiteColorLabelB');
 const nodeSizeSelect = document.getElementById('nodeSizeSelect');
 const linkColorSelect = document.getElementById('linkColorSelect');
+const layerColorSelect = document.getElementById('layerColorSelect');
 
 // Legend Panel and State
 const legendPanel = document.getElementById('legendPanel');
@@ -202,6 +203,73 @@ const interaction = new InteractionHandler(canvas, renderer, {
     }
 });
 
+// ---- Reset all visualization options to defaults ----
+function resetVisualizationOptions() {
+    // Checkboxes
+    showLabelsCheckbox.checked = false;
+    renderer.showLabels = false;
+
+    transformNodesCheckbox.checked = true;
+    renderer.transformNodes = true;
+
+    showLayerNamesCheckbox.checked = false;
+    renderer.showLayerNames = false;
+
+    showSetNamesCheckbox.checked = false;
+    renderer.showSetNames = false;
+
+    bipartiteNestedCheckbox.checked = false;
+    layout.bipartiteNested = false;
+
+    showInterlayerCheckbox.checked = true;
+    renderer.showInterlayerLinks = true;
+
+    // Stacking mode
+    setStackMode('horizontal');
+
+    // Layer spacing
+    layerSpacingSlider.value = 300;
+    renderer.layerSpacing = 300;
+
+    // Node size slider — reset to HTML default; actual radius set by auto-scale in loadData
+    nodeSizeSlider.value = 10;
+
+    // Color dropdowns
+    nodeColorSelect.value = '';
+    nodeColorSelectSetA.value = '';
+    nodeColorSelectSetB.value = '';
+    nodeSizeSelect.value = '';
+    linkColorSelect.value = '';
+    layerColorSelect.value = '';
+
+    // Color functions
+    renderer.nodeColorFn = null;
+    renderer.nodeSizeFn = null;
+    renderer.linkColorFn = null;
+    renderer.layerColorFn = null;
+    activeNodeColorScale = null;
+    activeNodeColorScaleA = null;
+    activeNodeColorScaleB = null;
+    activeLinkColorScale = null;
+    colorScaleOverrides.clear();
+
+    // Interaction state
+    renderer.selectedNode = null;
+    renderer.selectedLink = null;
+    renderer.selectedLayer = null;
+    renderer.hoveredNode = null;
+    renderer.hoveredLink = null;
+    renderer.searchedNodeName = null;
+    committedSearchName = null;
+    if (nodeSearchInput) nodeSearchInput.value = '';
+    if (nodeSearchResults) nodeSearchResults.innerHTML = '';
+
+    // Info panel
+    hideNodeInfo();
+
+    renderLegends();
+}
+
 // ---- Load Data ----
 function loadData(json) {
     try {
@@ -307,7 +375,7 @@ function loadData(json) {
         bipartiteColorByContainer.style.display = isBipartiteLayout ? '' : 'none';
 
         populateDropdowns();
-        updateNodeColors(); // Ensure node colors match current selection/layout
+        resetVisualizationOptions();
 
         renderer.setData(model, positions);
         renderer.centerView();
@@ -428,18 +496,12 @@ function updateMapModeViews() {
         mapMarkersOverlay.style.display = 'block';
         renderer.activeMapLayers = activeMapLayers; // Only render these layers
 
-        const instructionSpan = document.getElementById('mapInstruction');
-
         if (activeMapLayers.size === 0) {
             canvas.style.pointerEvents = 'none'; // Map gets controls
-            instructionSpan.style.display = 'inline-flex';
-            setTimeout(() => instructionSpan.style.opacity = '1', 10);
             mapOpacityControl.style.opacity = '1';
             mapOpacityControl.style.pointerEvents = 'auto';
         } else {
             canvas.style.pointerEvents = 'auto'; // Canvas gets controls
-            instructionSpan.style.opacity = '0';
-            setTimeout(() => { if (activeMapLayers.size > 0 || appMode !== 'map') instructionSpan.style.display = 'none'; }, 300);
             mapOpacityControl.style.opacity = '0.4'; // Dim control slightly when layers popped out
             mapOpacityControl.style.pointerEvents = 'auto'; // Still allow them to edit opacity while viewing overlays
         }
@@ -752,6 +814,16 @@ function populateDropdowns() {
         opt.textContent = attr;
         linkColorSelect.appendChild(opt);
     }
+
+    // Layer color options
+    layerColorSelect.innerHTML = '<option value="">Default (purple)</option>';
+    for (const attr of model.layerAttributeNames) {
+        const opt = document.createElement('option');
+        opt.value = attr;
+        opt.textContent = attr;
+        layerColorSelect.appendChild(opt);
+    }
+    layerColorSelect.disabled = model.layerAttributeNames.length === 0;
 }
 
 nodeColorSelect.addEventListener('change', () => {
@@ -959,7 +1031,39 @@ function updateLinkColors() {
     renderLegends();
 }
 
+function _hexToRgba(color, alpha) {
+    if (color.startsWith('#')) {
+        const r = parseInt(color.slice(1, 3), 16);
+        const g = parseInt(color.slice(3, 5), 16);
+        const b = parseInt(color.slice(5, 7), 16);
+        return `rgba(${r},${g},${b},${alpha})`;
+    }
+    if (color.startsWith('rgb(')) {
+        return color.replace('rgb(', 'rgba(').replace(')', `,${alpha})`);
+    }
+    return color;
+}
 
+function updateLayerColors() {
+    const attrName = layerColorSelect.value;
+    if (!attrName || !model) {
+        renderer.layerColorFn = null;
+        renderer.render();
+        return;
+    }
+    const sc = colorMapper.buildColorScale(model.layers, attrName);
+    renderer.layerColorFn = (layerIndex, layer) => {
+        const hex = sc.scaleFn(layer[attrName]);
+        return {
+            fill: _hexToRgba(hex, 0.18),
+            border: _hexToRgba(hex, 0.55),
+            text: hex,
+        };
+    };
+    renderer.render();
+}
+
+layerColorSelect.addEventListener('change', updateLayerColors);
 
 // ---- Zoom Controls ----
 zoomInBtn.addEventListener('click', () => {
@@ -1547,4 +1651,87 @@ async function _exportPDF() {
         console.error(err);
     }
 }
+
+// ---- Node Search ----
+const nodeSearchInput = document.getElementById('nodeSearchInput');
+const nodeSearchResults = document.getElementById('nodeSearchResults');
+const nodeSearchClearBtn = document.getElementById('nodeSearchClearBtn');
+
+let committedSearchName = null; // the last clicked/confirmed node name
+
+function closeSearchDropdown() {
+    nodeSearchResults.style.display = 'none';
+    nodeSearchResults.innerHTML = '';
+}
+
+function clearNodeSearch() {
+    committedSearchName = null;
+    nodeSearchInput.value = '';
+    closeSearchDropdown();
+    if (renderer) {
+        renderer.searchedNodeName = null;
+        renderer.render();
+    }
+}
+
+function selectSearchNode(name) {
+    committedSearchName = name;
+    nodeSearchInput.value = name;
+    closeSearchDropdown();
+    if (renderer) {
+        renderer.searchedNodeName = name;
+        renderer.render();
+    }
+}
+
+nodeSearchInput.addEventListener('input', () => {
+    const query = nodeSearchInput.value.trim().toLowerCase();
+    if (!model || !query) {
+        closeSearchDropdown();
+        if (!query && renderer) { renderer.searchedNodeName = committedSearchName; renderer.render(); }
+        return;
+    }
+    const matches = model.nodes
+        .filter(n => n.node_name.toLowerCase().includes(query))
+        .slice(0, 12);
+    if (matches.length === 0) {
+        nodeSearchResults.innerHTML = '<div style="font-size:11px;color:#999;padding:6px 10px;">No results</div>';
+        nodeSearchResults.style.display = 'block';
+        return;
+    }
+    nodeSearchResults.innerHTML = matches.map(n =>
+        `<div data-name="${n.node_name}"
+          style="font-size:11px;padding:6px 10px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"
+        >${n.node_name}</div>`
+    ).join('');
+    nodeSearchResults.style.display = 'block';
+    nodeSearchResults.querySelectorAll('[data-name]').forEach(el => {
+        el.addEventListener('mouseover', () => {
+            el.style.background = 'rgba(0,0,0,0.06)';
+            if (renderer) { renderer.searchedNodeName = el.dataset.name; renderer.render(); }
+        });
+        el.addEventListener('mouseout', () => {
+            el.style.background = '';
+            if (renderer) { renderer.searchedNodeName = committedSearchName; renderer.render(); }
+        });
+        el.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            selectSearchNode(el.dataset.name);
+        });
+    });
+});
+
+nodeSearchInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') clearNodeSearch();
+    if (e.key === 'Enter') {
+        const first = nodeSearchResults.querySelector('[data-name]');
+        if (first) selectSearchNode(first.dataset.name);
+    }
+});
+
+nodeSearchInput.addEventListener('blur', () => {
+    setTimeout(closeSearchDropdown, 150);
+});
+
+nodeSearchClearBtn.addEventListener('click', clearNodeSearch);
 

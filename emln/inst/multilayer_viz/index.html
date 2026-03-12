@@ -78,6 +78,12 @@
           </label>
         </div>
         <div style="margin-top:6px;">
+          <label style="font-size:11px;color:#666;">Color By</label>
+          <select id="layerColorSelect" class="styled-select" disabled>
+            <option value="">Default (purple)</option>
+          </select>
+        </div>
+        <div style="margin-top:6px;">
           <label style="font-size:11px;color:#666;">Layout</label>
           <select id="layoutSelect" class="styled-select">
             <option value="fruchterman">Fruchterman-Reingold</option>
@@ -158,6 +164,26 @@
       </div>
     </details>
 
+    <!-- 5. Node Search -->
+    <details class="control-section" id="sectionSearch" style="overflow:visible;">
+      <summary>Search Node</summary>
+      <div class="section-body" style="overflow:visible;">
+        <div style="position:relative;">
+          <div style="display:flex; gap:4px;">
+            <input type="text" id="nodeSearchInput" class="styled-select"
+              placeholder="type to search…"
+              style="margin-top:0; padding:4px 8px; flex:1;" autocomplete="off">
+            <button id="nodeSearchClearBtn" class="btn" style="padding:0 9px; font-size:14px; line-height:1;" title="Clear search">×</button>
+          </div>
+          <div id="nodeSearchResults"
+            style="display:none; position:absolute; left:0; right:0; top:calc(100% + 3px);
+                   background:rgba(255,255,255,0.97); border:1px solid rgba(0,0,0,0.12);
+                   border-radius:8px; box-shadow:0 4px 16px rgba(0,0,0,0.12);
+                   max-height:160px; overflow-y:auto; z-index:1000;"></div>
+        </div>
+      </div>
+    </details>
+
   </div>
 
   <!-- Bottom-left: Zoom & interaction hints -->
@@ -195,10 +221,6 @@
         </svg>
       </button>
 
-      <!-- Instructional Map Text -->
-      <span id="mapInstruction" class="pulse-highlight"
-        style="display:none; margin-left:8px; font-size:11px; font-weight:600; color:#ea580c; align-items:center; opacity:0; transition: opacity 0.3s ease;">Map
-        dragging available when all layers closed</span>
     </div>
     <div class="interaction-hints">
       <span>drag: rotate 3D</span>
@@ -274,6 +296,8 @@
           (10)</button>
         <button class="btn btn-primary demo-dataset-btn" data-file="demo_large" style="width:100%;">Large ER
           (50)</button>
+        <button class="btn btn-primary demo-dataset-btn" data-file="demo_large_ba" style="width:100%;">Large BA
+          (3 × 1000)</button>
         <button class="btn btn-primary demo-dataset-btn" data-file="demo_bipartite" style="width:100%;">Bipartite
           (Basic)</button>
         <button class="btn btn-primary demo-dataset-btn" data-file="demo_bipartite_bartomeus"
