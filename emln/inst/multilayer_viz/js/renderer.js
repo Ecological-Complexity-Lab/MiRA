@@ -61,6 +61,10 @@ export class Renderer {
         this.showMapBackground = false;
         this.isMapMode = false;
 
+        // Layer meta-graph view
+        this.layerViewMode = false;
+        this.layerView = null;
+
         // Bipartite support
         this.bipartiteInfo = null; // Map<layerName, { isBipartite, setA, setB, setALabel, setBLabel }>
         this.layoutType = 'fruchterman'; // Current layout type (needed to know when to render bipartite)
@@ -335,7 +339,12 @@ export class Renderer {
         const w = this.canvas.width;
         const h = this.canvas.height;
         ctx.clearRect(0, 0, w, h);
-        this.renderToContext(ctx, w, h);
+
+        if (this.layerViewMode && this.layerView) {
+            this.layerView.render(ctx, w, h);
+        } else {
+            this.renderToContext(ctx, w, h);
+        }
 
         if (this.onRender) this.onRender();
     }

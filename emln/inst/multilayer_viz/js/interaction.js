@@ -49,6 +49,7 @@ export class InteractionHandler {
 
         // Mouse wheel → zoom
         this.canvas.addEventListener('wheel', (e) => {
+            if (this.renderer.layerViewMode) return;
             e.preventDefault();
             const rect = this.canvas.getBoundingClientRect();
             const mx = e.clientX - rect.left;
@@ -68,6 +69,7 @@ export class InteractionHandler {
 
         // Mouse down → start rotation, pan, layer drag, or select
         this.canvas.addEventListener('mousedown', (e) => {
+            if (this.renderer.layerViewMode) return;
             if (e.button !== 0) return; // only handle left-click
 
             const rect = this.canvas.getBoundingClientRect();
@@ -143,6 +145,7 @@ export class InteractionHandler {
 
         // Mouse up → stop rotation, pan, or layer drag; also detect layer clicks
         this.canvas.addEventListener('mouseup', (e) => {
+            if (this.renderer.layerViewMode) return;
             const wasDragging = this.isRotating || this.isPanning || this.isDraggingLayer;
             this.isRotating = false;
             this.isPanning = false;
@@ -176,6 +179,7 @@ export class InteractionHandler {
 
         // Mouse move → rotate, pan, layer drag, or hover
         this.canvas.addEventListener('mousemove', (e) => {
+            if (this.renderer.layerViewMode) return;
             const rect = this.canvas.getBoundingClientRect();
             const mx = e.clientX - rect.left;
             const my = e.clientY - rect.top;
@@ -265,6 +269,7 @@ export class InteractionHandler {
         });
 
         this.canvas.addEventListener('mouseleave', () => {
+            if (this.renderer.layerViewMode) return;
             this.isPanning = false;
             this.isRotating = false;
             this.isDraggingLayer = false;

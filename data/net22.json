@@ -1,0 +1,2292 @@
+{
+  "nodes": [
+    {
+      "node_id": 1,
+      "node_name": "Lestodiplosis_syringopais",
+      "type": "taxon",
+      "taxonomy_name": "Lestodiplosis syringopais",
+      "taxonomy_rank": "species",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 2,
+      "node_name": "Megaselia_sp._(?nepenthina)",
+      "type": "taxon",
+      "taxonomy_name": "Megaselia nepenthina",
+      "taxonomy_rank": "species",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 3,
+      "node_name": "Endonepenthia_schuitemakeri",
+      "type": "taxon",
+      "taxonomy_name": "Endonepenthia schuitemakeri",
+      "taxonomy_rank": "species",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 4,
+      "node_name": "T._bambusa",
+      "type": "taxon",
+      "taxonomy_name": "Tripteroides bambusa",
+      "taxonomy_rank": "species",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 5,
+      "node_name": "Dasyhelea_nepenthicola",
+      "type": "taxon",
+      "taxonomy_name": "Dasyhelea nepenthicola",
+      "taxonomy_rank": "species",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 6,
+      "node_name": "Culex_curtipalpis",
+      "type": "taxon",
+      "taxonomy_name": "Culex curtipalpis",
+      "taxonomy_rank": "species",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 7,
+      "node_name": "C._lucaris",
+      "type": "taxon",
+      "taxonomy_name": "Culex lucaris",
+      "taxonomy_rank": "species",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 8,
+      "node_name": "live_insects",
+      "type": "taxon",
+      "taxonomy_name": "Insecta",
+      "taxonomy_rank": "class",
+      "taxa_verified": "TRUE",
+      "verification_level": "class"
+    },
+    {
+      "node_id": 9,
+      "node_name": "recently_drowned_insects",
+      "type": "taxon",
+      "taxonomy_name": "Insecta",
+      "taxonomy_rank": "class",
+      "taxa_verified": "TRUE",
+      "verification_level": "class"
+    },
+    {
+      "node_id": 10,
+      "node_name": "bacteria",
+      "type": "taxon",
+      "taxonomy_name": "Bacteria",
+      "taxonomy_rank": "genus",
+      "taxa_verified": "TRUE",
+      "verification_level": "superkingdom"
+    },
+    {
+      "node_id": 11,
+      "node_name": "protozoa",
+      "type": "taxon",
+      "taxonomy_name": "Protozoa",
+      "taxonomy_rank": "kingdom",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 12,
+      "node_name": "older_organic_debris",
+      "type": "taxon",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 13,
+      "node_name": "Misumenops_nepenthicola",
+      "type": "taxon",
+      "taxonomy_name": "Misumenops nepenthicola",
+      "taxonomy_rank": "species",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 14,
+      "node_name": "Encyrtid_(near_Tachinaephagus)",
+      "type": "taxon",
+      "taxonomy_name": "Encyrtidae",
+      "taxonomy_rank": "family",
+      "taxa_verified": "TRUE",
+      "verification_level": "family"
+    },
+    {
+      "node_id": 15,
+      "node_name": "Toxorhynchites_klossi",
+      "type": "taxon",
+      "taxonomy_name": "Tipula klossi",
+      "taxonomy_rank": "species",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 16,
+      "node_name": "Nepenthosyrphus_sp.",
+      "type": "taxon",
+      "taxonomy_name": "Nepenthosyrphus",
+      "taxonomy_rank": "genus",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 17,
+      "node_name": "Pierretia_urceola",
+      "type": "taxon",
+      "taxonomy_name": "Pierretia urceola",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 18,
+      "node_name": "Anoetidae_sp._1",
+      "type": "taxon",
+      "taxonomy_name": "Anoetidae",
+      "taxa_verified": "TRUE",
+      "verification_level": "family"
+    },
+    {
+      "node_id": 19,
+      "node_name": "Anoetidae_sp._2",
+      "type": "taxon",
+      "taxonomy_name": "Anoetidae",
+      "taxa_verified": "TRUE",
+      "verification_level": "family"
+    },
+    {
+      "node_id": 20,
+      "node_name": "Tripteroides_tenax",
+      "type": "taxon",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 21,
+      "node_name": "Megaselia_deningi",
+      "type": "taxon",
+      "taxonomy_name": "Megaselia deningi",
+      "taxonomy_rank": "species",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 22,
+      "node_name": "Trybliographa_sp.",
+      "type": "taxon",
+      "taxonomy_name": "Trybliographa",
+      "taxa_verified": "TRUE",
+      "verification_level": "genus"
+    },
+    {
+      "node_id": 23,
+      "node_name": "Uranotaenia_nivipleura",
+      "type": "taxon",
+      "taxonomy_name": "Uranotaenia nivipleura",
+      "taxonomy_rank": "species",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 24,
+      "node_name": "Zwickia_guentheri",
+      "type": "taxon",
+      "taxonomy_name": "Zwickia guentheri",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 25,
+      "node_name": "Tripteroides_dofleini",
+      "type": "taxon",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 26,
+      "node_name": "Chloropid_(unspecified)",
+      "type": "taxon",
+      "taxonomy_name": "Chloropidae",
+      "taxonomy_rank": "family",
+      "taxa_verified": "TRUE",
+      "verification_level": "family"
+    },
+    {
+      "node_id": 27,
+      "node_name": "Uranotaenia_belkini",
+      "type": "taxon",
+      "taxonomy_name": "Uranotaenia belkini",
+      "taxonomy_rank": "species",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 28,
+      "node_name": "U._bosseri",
+      "type": "taxon",
+      "taxonomy_name": "Uranotaenia bosseri",
+      "taxonomy_rank": "species",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 29,
+      "node_name": "U._damasei",
+      "type": "taxon",
+      "taxonomy_name": "Uranotaenia damasei",
+      "taxonomy_rank": "species",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 30,
+      "node_name": "Theridion_sp.",
+      "type": "taxon",
+      "taxonomy_name": "Theridion",
+      "taxonomy_rank": "genus",
+      "taxa_verified": "TRUE",
+      "verification_level": "genus"
+    },
+    {
+      "node_id": 31,
+      "node_name": "Creutzeria_sp.",
+      "type": "taxon",
+      "taxonomy_name": "Creutzeria",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 32,
+      "node_name": "U._brunhesi",
+      "type": "taxon",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 33,
+      "node_name": "Uranotaenia_nepenthes",
+      "type": "taxon",
+      "taxonomy_name": "Uranotaenia nepenthes",
+      "taxonomy_rank": "species",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 34,
+      "node_name": "Creutzeria_seychellensis",
+      "type": "taxon",
+      "taxonomy_name": "Creutzeria seychellensis",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 35,
+      "node_name": "Corethrella_calathicola",
+      "type": "taxon",
+      "taxonomy_name": "Corethrella calathicola",
+      "taxonomy_rank": "species",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 36,
+      "node_name": "Uranotaenia_moultoni",
+      "type": "taxon",
+      "taxonomy_name": "Uranotaenia moultoni",
+      "taxonomy_rank": "species",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 37,
+      "node_name": "Dasyhelea_ampullariae",
+      "type": "taxon",
+      "taxonomy_name": "Dasyhelea ampullariae",
+      "taxonomy_rank": "species",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 38,
+      "node_name": "D._nepenthicola",
+      "type": "taxon",
+      "taxonomy_name": "Dasyhelea nepenthicola",
+      "taxonomy_rank": "species",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 39,
+      "node_name": "Culex_acutipalus",
+      "type": "taxon",
+      "taxonomy_name": "Culex acutipalus",
+      "taxonomy_rank": "species",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 40,
+      "node_name": "C._navalis",
+      "type": "taxon",
+      "taxonomy_name": "Culex navalis",
+      "taxonomy_rank": "species",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 41,
+      "node_name": "C._hewitti",
+      "type": "taxon",
+      "taxonomy_name": "Culex hewitti",
+      "taxonomy_rank": "species",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 42,
+      "node_name": "Nepenthomyia_malayana",
+      "type": "taxon",
+      "taxonomy_name": "Nepenthomyia malayana",
+      "taxonomy_rank": "species",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 43,
+      "node_name": "T._nepenthis",
+      "type": "taxon",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 44,
+      "node_name": "Xenoplatyura_beaveri",
+      "type": "taxon",
+      "taxa_verified": "FALSE"
+    }
+  ],
+  "layers": [
+    {
+      "layer_id": 1,
+      "location": "West Malaysia",
+      "latitude": 2.974709,
+      "longitude": 103.122705,
+      "directed": "TRUE",
+      "layer_name": "layer_1"
+    },
+    {
+      "layer_id": 2,
+      "location": "Sri Lanka",
+      "latitude": 7.862065,
+      "longitude": 80.812428,
+      "directed": "TRUE",
+      "layer_name": "layer_2"
+    },
+    {
+      "layer_id": 3,
+      "location": "Madagascar",
+      "latitude": -19,
+      "longitude": 46.37211,
+      "directed": "TRUE",
+      "layer_name": "layer_3"
+    },
+    {
+      "layer_id": 4,
+      "location": "Seychelles",
+      "latitude": -4.677263,
+      "longitude": 55.461923,
+      "directed": "TRUE",
+      "layer_name": "layer_4"
+    },
+    {
+      "layer_id": 5,
+      "location": "West Malaysia",
+      "latitude": 2.974709,
+      "longitude": 103.122705,
+      "directed": "TRUE",
+      "layer_name": "layer_5"
+    }
+  ],
+  "extended": [
+    {
+      "layer_from": "layer_1",
+      "node_from": "bacteria",
+      "layer_to": "layer_1",
+      "node_to": "older_organic_debris",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Anoetidae_sp._2",
+      "layer_to": "layer_1",
+      "node_to": "bacteria",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "protozoa",
+      "layer_to": "layer_1",
+      "node_to": "older_organic_debris",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Misumenops_nepenthicola",
+      "layer_to": "layer_1",
+      "node_to": "Culex_curtipalpis",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Toxorhynchites_klossi",
+      "layer_to": "layer_1",
+      "node_to": "Tripteroides_tenax",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Nepenthosyrphus_sp.",
+      "layer_to": "layer_1",
+      "node_to": "recently_drowned_insects",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Dasyhelea_nepenthicola",
+      "layer_to": "layer_1",
+      "node_to": "protozoa",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Culex_curtipalpis",
+      "layer_to": "layer_1",
+      "node_to": "bacteria",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "C._lucaris",
+      "layer_to": "layer_1",
+      "node_to": "bacteria",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Toxorhynchites_klossi",
+      "layer_to": "layer_1",
+      "node_to": "T._bambusa",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Toxorhynchites_klossi",
+      "layer_to": "layer_1",
+      "node_to": "Culex_curtipalpis",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Toxorhynchites_klossi",
+      "layer_to": "layer_1",
+      "node_to": "C._lucaris",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Lestodiplosis_syringopais",
+      "layer_to": "layer_1",
+      "node_to": "Megaselia_sp._(?nepenthina)",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Dasyhelea_nepenthicola",
+      "layer_to": "layer_1",
+      "node_to": "older_organic_debris",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Anoetidae_sp._1",
+      "layer_to": "layer_1",
+      "node_to": "older_organic_debris",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Anoetidae_sp._2",
+      "layer_to": "layer_1",
+      "node_to": "protozoa",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Anoetidae_sp._2",
+      "layer_to": "layer_1",
+      "node_to": "older_organic_debris",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Lestodiplosis_syringopais",
+      "layer_to": "layer_1",
+      "node_to": "Endonepenthia_schuitemakeri",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Lestodiplosis_syringopais",
+      "layer_to": "layer_1",
+      "node_to": "Dasyhelea_nepenthicola",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Megaselia_sp._(?nepenthina)",
+      "layer_to": "layer_1",
+      "node_to": "recently_drowned_insects",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Endonepenthia_schuitemakeri",
+      "layer_to": "layer_1",
+      "node_to": "recently_drowned_insects",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Tripteroides_tenax",
+      "layer_to": "layer_1",
+      "node_to": "bacteria",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Tripteroides_tenax",
+      "layer_to": "layer_1",
+      "node_to": "protozoa",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Tripteroides_tenax",
+      "layer_to": "layer_1",
+      "node_to": "recently_drowned_insects",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "T._bambusa",
+      "layer_to": "layer_1",
+      "node_to": "bacteria",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "T._bambusa",
+      "layer_to": "layer_1",
+      "node_to": "protozoa",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "T._bambusa",
+      "layer_to": "layer_1",
+      "node_to": "recently_drowned_insects",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Dasyhelea_nepenthicola",
+      "layer_to": "layer_1",
+      "node_to": "bacteria",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Pierretia_urceola",
+      "layer_to": "layer_1",
+      "node_to": "recently_drowned_insects",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Culex_curtipalpis",
+      "layer_to": "layer_1",
+      "node_to": "protozoa",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "C._lucaris",
+      "layer_to": "layer_1",
+      "node_to": "protozoa",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Anoetidae_sp._1",
+      "layer_to": "layer_1",
+      "node_to": "bacteria",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Anoetidae_sp._1",
+      "layer_to": "layer_1",
+      "node_to": "protozoa",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "bacteria",
+      "layer_to": "layer_1",
+      "node_to": "recently_drowned_insects",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "protozoa",
+      "layer_to": "layer_1",
+      "node_to": "recently_drowned_insects",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Misumenops_nepenthicola",
+      "layer_to": "layer_1",
+      "node_to": "C._lucaris",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Misumenops_nepenthicola",
+      "layer_to": "layer_1",
+      "node_to": "live_insects",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Encyrtid_(near_Tachinaephagus)",
+      "layer_to": "layer_1",
+      "node_to": "Endonepenthia_schuitemakeri",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Misumenops_nepenthicola",
+      "layer_to": "layer_1",
+      "node_to": "Lestodiplosis_syringopais",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Misumenops_nepenthicola",
+      "layer_to": "layer_1",
+      "node_to": "Megaselia_sp._(?nepenthina)",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Misumenops_nepenthicola",
+      "layer_to": "layer_1",
+      "node_to": "Endonepenthia_schuitemakeri",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Misumenops_nepenthicola",
+      "layer_to": "layer_1",
+      "node_to": "Tripteroides_tenax",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Misumenops_nepenthicola",
+      "layer_to": "layer_1",
+      "node_to": "T._bambusa",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Misumenops_nepenthicola",
+      "layer_to": "layer_1",
+      "node_to": "Dasyhelea_nepenthicola",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Uranotaenia_nivipleura",
+      "layer_to": "layer_2",
+      "node_to": "recently_drowned_insects",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Trybliographa_sp.",
+      "layer_to": "layer_2",
+      "node_to": "Megaselia_deningi",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Megaselia_deningi",
+      "layer_to": "layer_2",
+      "node_to": "recently_drowned_insects",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Tripteroides_dofleini",
+      "layer_to": "layer_2",
+      "node_to": "bacteria",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Tripteroides_dofleini",
+      "layer_to": "layer_2",
+      "node_to": "protozoa",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Tripteroides_dofleini",
+      "layer_to": "layer_2",
+      "node_to": "recently_drowned_insects",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Uranotaenia_nivipleura",
+      "layer_to": "layer_2",
+      "node_to": "bacteria",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Zwickia_guentheri",
+      "layer_to": "layer_2",
+      "node_to": "bacteria",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Zwickia_guentheri",
+      "layer_to": "layer_2",
+      "node_to": "protozoa",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Zwickia_guentheri",
+      "layer_to": "layer_2",
+      "node_to": "older_organic_debris",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "bacteria",
+      "layer_to": "layer_2",
+      "node_to": "recently_drowned_insects",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "bacteria",
+      "layer_to": "layer_2",
+      "node_to": "older_organic_debris",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "protozoa",
+      "layer_to": "layer_2",
+      "node_to": "older_organic_debris",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Uranotaenia_nivipleura",
+      "layer_to": "layer_2",
+      "node_to": "protozoa",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "protozoa",
+      "layer_to": "layer_2",
+      "node_to": "recently_drowned_insects",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Theridion_sp.",
+      "layer_to": "layer_3",
+      "node_to": "Chloropid_(unspecified)",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Theridion_sp.",
+      "layer_to": "layer_3",
+      "node_to": "Uranotaenia_belkini",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Theridion_sp.",
+      "layer_to": "layer_3",
+      "node_to": "U._bosseri",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Theridion_sp.",
+      "layer_to": "layer_3",
+      "node_to": "U._brunhesi",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Theridion_sp.",
+      "layer_to": "layer_3",
+      "node_to": "U._damasei",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Theridion_sp.",
+      "layer_to": "layer_3",
+      "node_to": "live_insects",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Chloropid_(unspecified)",
+      "layer_to": "layer_3",
+      "node_to": "recently_drowned_insects",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Uranotaenia_belkini",
+      "layer_to": "layer_3",
+      "node_to": "bacteria",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Uranotaenia_belkini",
+      "layer_to": "layer_3",
+      "node_to": "protozoa",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Uranotaenia_belkini",
+      "layer_to": "layer_3",
+      "node_to": "recently_drowned_insects",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "U._bosseri",
+      "layer_to": "layer_3",
+      "node_to": "bacteria",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "U._bosseri",
+      "layer_to": "layer_3",
+      "node_to": "protozoa",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "U._bosseri",
+      "layer_to": "layer_3",
+      "node_to": "recently_drowned_insects",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "U._brunhesi",
+      "layer_to": "layer_3",
+      "node_to": "bacteria",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "U._brunhesi",
+      "layer_to": "layer_3",
+      "node_to": "protozoa",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "U._brunhesi",
+      "layer_to": "layer_3",
+      "node_to": "recently_drowned_insects",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "U._damasei",
+      "layer_to": "layer_3",
+      "node_to": "bacteria",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "U._damasei",
+      "layer_to": "layer_3",
+      "node_to": "protozoa",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "U._damasei",
+      "layer_to": "layer_3",
+      "node_to": "recently_drowned_insects",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Creutzeria_sp.",
+      "layer_to": "layer_3",
+      "node_to": "bacteria",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Creutzeria_sp.",
+      "layer_to": "layer_3",
+      "node_to": "protozoa",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Creutzeria_sp.",
+      "layer_to": "layer_3",
+      "node_to": "older_organic_debris",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "bacteria",
+      "layer_to": "layer_3",
+      "node_to": "recently_drowned_insects",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "protozoa",
+      "layer_to": "layer_3",
+      "node_to": "recently_drowned_insects",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "bacteria",
+      "layer_to": "layer_3",
+      "node_to": "older_organic_debris",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "protozoa",
+      "layer_to": "layer_3",
+      "node_to": "older_organic_debris",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Uranotaenia_nepenthes",
+      "layer_to": "layer_4",
+      "node_to": "bacteria",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Uranotaenia_nepenthes",
+      "layer_to": "layer_4",
+      "node_to": "protozoa",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Uranotaenia_nepenthes",
+      "layer_to": "layer_4",
+      "node_to": "recently_drowned_insects",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Creutzeria_seychellensis",
+      "layer_to": "layer_4",
+      "node_to": "bacteria",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Creutzeria_seychellensis",
+      "layer_to": "layer_4",
+      "node_to": "protozoa",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Creutzeria_seychellensis",
+      "layer_to": "layer_4",
+      "node_to": "older_organic_debris",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "bacteria",
+      "layer_to": "layer_4",
+      "node_to": "recently_drowned_insects",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "protozoa",
+      "layer_to": "layer_4",
+      "node_to": "recently_drowned_insects",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "bacteria",
+      "layer_to": "layer_4",
+      "node_to": "older_organic_debris",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "protozoa",
+      "layer_to": "layer_4",
+      "node_to": "older_organic_debris",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "Xenoplatyura_beaveri",
+      "layer_to": "layer_5",
+      "node_to": "Tripteroides_tenax",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "Dasyhelea_ampullariae",
+      "layer_to": "layer_5",
+      "node_to": "older_organic_debris",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "C._hewitti",
+      "layer_to": "layer_5",
+      "node_to": "protozoa",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "Anoetidae_sp._2",
+      "layer_to": "layer_5",
+      "node_to": "older_organic_debris",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "Xenoplatyura_beaveri",
+      "layer_to": "layer_5",
+      "node_to": "C._hewitti",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "Uranotaenia_moultoni",
+      "layer_to": "layer_5",
+      "node_to": "bacteria",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "Culex_acutipalus",
+      "layer_to": "layer_5",
+      "node_to": "bacteria",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "Tripteroides_tenax",
+      "layer_to": "layer_5",
+      "node_to": "protozoa",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "Xenoplatyura_beaveri",
+      "layer_to": "layer_5",
+      "node_to": "T._nepenthis",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "Xenoplatyura_beaveri",
+      "layer_to": "layer_5",
+      "node_to": "T._bambusa",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "Xenoplatyura_beaveri",
+      "layer_to": "layer_5",
+      "node_to": "Dasyhelea_ampullariae",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "Xenoplatyura_beaveri",
+      "layer_to": "layer_5",
+      "node_to": "D._nepenthicola",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "Xenoplatyura_beaveri",
+      "layer_to": "layer_5",
+      "node_to": "live_insects",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "Corethrella_calathicola",
+      "layer_to": "layer_5",
+      "node_to": "Uranotaenia_moultoni",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "Corethrella_calathicola",
+      "layer_to": "layer_5",
+      "node_to": "Tripteroides_tenax",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "Corethrella_calathicola",
+      "layer_to": "layer_5",
+      "node_to": "T._nepenthis",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "Corethrella_calathicola",
+      "layer_to": "layer_5",
+      "node_to": "T._bambusa",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "Corethrella_calathicola",
+      "layer_to": "layer_5",
+      "node_to": "Dasyhelea_ampullariae",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "Corethrella_calathicola",
+      "layer_to": "layer_5",
+      "node_to": "D._nepenthicola",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "Corethrella_calathicola",
+      "layer_to": "layer_5",
+      "node_to": "Culex_acutipalus",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "Corethrella_calathicola",
+      "layer_to": "layer_5",
+      "node_to": "C._navalis",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "Corethrella_calathicola",
+      "layer_to": "layer_5",
+      "node_to": "C._hewitti",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "Uranotaenia_moultoni",
+      "layer_to": "layer_5",
+      "node_to": "protozoa",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "Uranotaenia_moultoni",
+      "layer_to": "layer_5",
+      "node_to": "recently_drowned_insects",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "Tripteroides_tenax",
+      "layer_to": "layer_5",
+      "node_to": "bacteria",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "Tripteroides_tenax",
+      "layer_to": "layer_5",
+      "node_to": "recently_drowned_insects",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "T._nepenthis",
+      "layer_to": "layer_5",
+      "node_to": "bacteria",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "T._nepenthis",
+      "layer_to": "layer_5",
+      "node_to": "protozoa",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "T._nepenthis",
+      "layer_to": "layer_5",
+      "node_to": "recently_drowned_insects",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "T._bambusa",
+      "layer_to": "layer_5",
+      "node_to": "bacteria",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "T._bambusa",
+      "layer_to": "layer_5",
+      "node_to": "recently_drowned_insects",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "Dasyhelea_ampullariae",
+      "layer_to": "layer_5",
+      "node_to": "bacteria",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "Dasyhelea_ampullariae",
+      "layer_to": "layer_5",
+      "node_to": "protozoa",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "D._nepenthicola",
+      "layer_to": "layer_5",
+      "node_to": "bacteria",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "D._nepenthicola",
+      "layer_to": "layer_5",
+      "node_to": "protozoa",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "D._nepenthicola",
+      "layer_to": "layer_5",
+      "node_to": "older_organic_debris",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "Nepenthomyia_malayana",
+      "layer_to": "layer_5",
+      "node_to": "recently_drowned_insects",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "Culex_acutipalus",
+      "layer_to": "layer_5",
+      "node_to": "protozoa",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "C._navalis",
+      "layer_to": "layer_5",
+      "node_to": "bacteria",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "C._navalis",
+      "layer_to": "layer_5",
+      "node_to": "protozoa",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "C._hewitti",
+      "layer_to": "layer_5",
+      "node_to": "bacteria",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "Anoetidae_sp._1",
+      "layer_to": "layer_5",
+      "node_to": "bacteria",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "Anoetidae_sp._1",
+      "layer_to": "layer_5",
+      "node_to": "protozoa",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "Anoetidae_sp._1",
+      "layer_to": "layer_5",
+      "node_to": "older_organic_debris",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "Anoetidae_sp._2",
+      "layer_to": "layer_5",
+      "node_to": "bacteria",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "Anoetidae_sp._2",
+      "layer_to": "layer_5",
+      "node_to": "protozoa",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "bacteria",
+      "layer_to": "layer_5",
+      "node_to": "recently_drowned_insects",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "protozoa",
+      "layer_to": "layer_5",
+      "node_to": "recently_drowned_insects",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "bacteria",
+      "layer_to": "layer_5",
+      "node_to": "older_organic_debris",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "protozoa",
+      "layer_to": "layer_5",
+      "node_to": "older_organic_debris",
+      "weight": 1,
+      "type": "scavenger",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "T._bambusa",
+      "layer_to": "layer_5",
+      "node_to": "protozoa",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "Xenoplatyura_beaveri",
+      "layer_to": "layer_5",
+      "node_to": "Corethrella_calathicola",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "Xenoplatyura_beaveri",
+      "layer_to": "layer_5",
+      "node_to": "Uranotaenia_moultoni",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "Xenoplatyura_beaveri",
+      "layer_to": "layer_5",
+      "node_to": "Culex_acutipalus",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_5",
+      "node_from": "Xenoplatyura_beaveri",
+      "layer_to": "layer_5",
+      "node_to": "C._navalis",
+      "weight": 1,
+      "type": "predation",
+      "method": "literature",
+      "directed": true
+    }
+  ],
+  "state_nodes": [
+    {
+      "layer_id": 1,
+      "node_id": 10,
+      "layer_name": "layer_1",
+      "node_name": "bacteria"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 19,
+      "layer_name": "layer_1",
+      "node_name": "Anoetidae_sp._2"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 11,
+      "layer_name": "layer_1",
+      "node_name": "protozoa"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 13,
+      "layer_name": "layer_1",
+      "node_name": "Misumenops_nepenthicola"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 15,
+      "layer_name": "layer_1",
+      "node_name": "Toxorhynchites_klossi"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 16,
+      "layer_name": "layer_1",
+      "node_name": "Nepenthosyrphus_sp."
+    },
+    {
+      "layer_id": 1,
+      "node_id": 5,
+      "layer_name": "layer_1",
+      "node_name": "Dasyhelea_nepenthicola"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 6,
+      "layer_name": "layer_1",
+      "node_name": "Culex_curtipalpis"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 7,
+      "layer_name": "layer_1",
+      "node_name": "C._lucaris"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 1,
+      "layer_name": "layer_1",
+      "node_name": "Lestodiplosis_syringopais"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 18,
+      "layer_name": "layer_1",
+      "node_name": "Anoetidae_sp._1"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 2,
+      "layer_name": "layer_1",
+      "node_name": "Megaselia_sp._(?nepenthina)"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 3,
+      "layer_name": "layer_1",
+      "node_name": "Endonepenthia_schuitemakeri"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 20,
+      "layer_name": "layer_1",
+      "node_name": "Tripteroides_tenax"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 4,
+      "layer_name": "layer_1",
+      "node_name": "T._bambusa"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 17,
+      "layer_name": "layer_1",
+      "node_name": "Pierretia_urceola"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 14,
+      "layer_name": "layer_1",
+      "node_name": "Encyrtid_(near_Tachinaephagus)"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 23,
+      "layer_name": "layer_2",
+      "node_name": "Uranotaenia_nivipleura"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 22,
+      "layer_name": "layer_2",
+      "node_name": "Trybliographa_sp."
+    },
+    {
+      "layer_id": 2,
+      "node_id": 21,
+      "layer_name": "layer_2",
+      "node_name": "Megaselia_deningi"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 25,
+      "layer_name": "layer_2",
+      "node_name": "Tripteroides_dofleini"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 24,
+      "layer_name": "layer_2",
+      "node_name": "Zwickia_guentheri"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 10,
+      "layer_name": "layer_2",
+      "node_name": "bacteria"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 11,
+      "layer_name": "layer_2",
+      "node_name": "protozoa"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 30,
+      "layer_name": "layer_3",
+      "node_name": "Theridion_sp."
+    },
+    {
+      "layer_id": 3,
+      "node_id": 26,
+      "layer_name": "layer_3",
+      "node_name": "Chloropid_(unspecified)"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 27,
+      "layer_name": "layer_3",
+      "node_name": "Uranotaenia_belkini"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 28,
+      "layer_name": "layer_3",
+      "node_name": "U._bosseri"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 32,
+      "layer_name": "layer_3",
+      "node_name": "U._brunhesi"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 29,
+      "layer_name": "layer_3",
+      "node_name": "U._damasei"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 31,
+      "layer_name": "layer_3",
+      "node_name": "Creutzeria_sp."
+    },
+    {
+      "layer_id": 3,
+      "node_id": 10,
+      "layer_name": "layer_3",
+      "node_name": "bacteria"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 11,
+      "layer_name": "layer_3",
+      "node_name": "protozoa"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 33,
+      "layer_name": "layer_4",
+      "node_name": "Uranotaenia_nepenthes"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 34,
+      "layer_name": "layer_4",
+      "node_name": "Creutzeria_seychellensis"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 10,
+      "layer_name": "layer_4",
+      "node_name": "bacteria"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 11,
+      "layer_name": "layer_4",
+      "node_name": "protozoa"
+    },
+    {
+      "layer_id": 5,
+      "node_id": 44,
+      "layer_name": "layer_5",
+      "node_name": "Xenoplatyura_beaveri"
+    },
+    {
+      "layer_id": 5,
+      "node_id": 37,
+      "layer_name": "layer_5",
+      "node_name": "Dasyhelea_ampullariae"
+    },
+    {
+      "layer_id": 5,
+      "node_id": 41,
+      "layer_name": "layer_5",
+      "node_name": "C._hewitti"
+    },
+    {
+      "layer_id": 5,
+      "node_id": 19,
+      "layer_name": "layer_5",
+      "node_name": "Anoetidae_sp._2"
+    },
+    {
+      "layer_id": 5,
+      "node_id": 36,
+      "layer_name": "layer_5",
+      "node_name": "Uranotaenia_moultoni"
+    },
+    {
+      "layer_id": 5,
+      "node_id": 39,
+      "layer_name": "layer_5",
+      "node_name": "Culex_acutipalus"
+    },
+    {
+      "layer_id": 5,
+      "node_id": 20,
+      "layer_name": "layer_5",
+      "node_name": "Tripteroides_tenax"
+    },
+    {
+      "layer_id": 5,
+      "node_id": 35,
+      "layer_name": "layer_5",
+      "node_name": "Corethrella_calathicola"
+    },
+    {
+      "layer_id": 5,
+      "node_id": 43,
+      "layer_name": "layer_5",
+      "node_name": "T._nepenthis"
+    },
+    {
+      "layer_id": 5,
+      "node_id": 4,
+      "layer_name": "layer_5",
+      "node_name": "T._bambusa"
+    },
+    {
+      "layer_id": 5,
+      "node_id": 38,
+      "layer_name": "layer_5",
+      "node_name": "D._nepenthicola"
+    },
+    {
+      "layer_id": 5,
+      "node_id": 42,
+      "layer_name": "layer_5",
+      "node_name": "Nepenthomyia_malayana"
+    },
+    {
+      "layer_id": 5,
+      "node_id": 40,
+      "layer_name": "layer_5",
+      "node_name": "C._navalis"
+    },
+    {
+      "layer_id": 5,
+      "node_id": 18,
+      "layer_name": "layer_5",
+      "node_name": "Anoetidae_sp._1"
+    },
+    {
+      "layer_id": 5,
+      "node_id": 10,
+      "layer_name": "layer_5",
+      "node_name": "bacteria"
+    },
+    {
+      "layer_id": 5,
+      "node_id": 11,
+      "layer_name": "layer_5",
+      "node_name": "protozoa"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 12,
+      "layer_name": "layer_1",
+      "node_name": "older_organic_debris"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 9,
+      "layer_name": "layer_1",
+      "node_name": "recently_drowned_insects"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 8,
+      "layer_name": "layer_1",
+      "node_name": "live_insects"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 9,
+      "layer_name": "layer_2",
+      "node_name": "recently_drowned_insects"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 12,
+      "layer_name": "layer_2",
+      "node_name": "older_organic_debris"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 8,
+      "layer_name": "layer_3",
+      "node_name": "live_insects"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 9,
+      "layer_name": "layer_3",
+      "node_name": "recently_drowned_insects"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 12,
+      "layer_name": "layer_3",
+      "node_name": "older_organic_debris"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 9,
+      "layer_name": "layer_4",
+      "node_name": "recently_drowned_insects"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 12,
+      "layer_name": "layer_4",
+      "node_name": "older_organic_debris"
+    },
+    {
+      "layer_id": 5,
+      "node_id": 12,
+      "layer_name": "layer_5",
+      "node_name": "older_organic_debris"
+    },
+    {
+      "layer_id": 5,
+      "node_id": 8,
+      "layer_name": "layer_5",
+      "node_name": "live_insects"
+    },
+    {
+      "layer_id": 5,
+      "node_id": 9,
+      "layer_name": "layer_5",
+      "node_name": "recently_drowned_insects"
+    }
+  ]
+}

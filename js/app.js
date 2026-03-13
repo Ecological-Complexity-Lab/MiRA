@@ -7,6 +7,7 @@ import { Renderer } from './renderer.js';
 import { ForceLayout } from './layout.js';
 import { InteractionHandler } from './interaction.js';
 import { ColorMapper } from './colorMapper.js';
+import { LayerView } from './layerView.js';
 
 // ---- State ----
 let model = null;
@@ -43,6 +44,7 @@ const layerColorSelect = document.getElementById('layerColorSelect');
 // Legend Panel and State
 const legendPanel = document.getElementById('legendPanel');
 const expandedLegends = new Set();
+const lvExpandedLegends = new Set(['lvColor', 'lvSize']); // layer view legends expanded by default
 
 // Legend Dragging State
 let isDraggingLegend = false;
@@ -97,7 +99,34 @@ window.addEventListener('mouseup', () => {
 const showLabelsCheckbox = document.getElementById('showLabelsCheckbox');
 const transformNodesCheckbox = document.getElementById('transformNodesCheckbox');
 const showLayerNamesCheckbox = document.getElementById('showLayerNamesCheckbox');
-const mapModeBtn = document.getElementById('mapModeBtn');
+const mapModeBtn      = document.getElementById('mapModeBtn');
+const layerViewBtn    = document.getElementById('layerViewBtn');
+const layerDrillPanel   = document.getElementById('layerDrillPanel');
+const layerDrillClose   = document.getElementById('layerDrillClose');
+const layerDrillTitle   = document.getElementById('layerDrillTitle');
+const layerDrillStats   = document.getElementById('layerDrillStats');
+const layerComparePanel   = document.getElementById('layerComparePanel');
+const layerCompareClose   = document.getElementById('layerCompareClose');
+const layerCompareTitle   = document.getElementById('layerCompareTitle');
+const layerCompareContent = document.getElementById('layerCompareContent');
+// Layer view sidebar controls
+const lvSizeBy                = document.getElementById('lvSizeBy');
+const lvColorBy               = document.getElementById('lvColorBy');
+const lvUniformColor          = document.getElementById('lvUniformColor');
+const lvUniformColorContainer = document.getElementById('lvUniformColorContainer');
+const lvShowEdges             = document.getElementById('lvShowEdges');
+const lvEdgeOptionsContainer  = document.getElementById('lvEdgeOptionsContainer');
+const lvEdgeMetric            = document.getElementById('lvEdgeMetric');
+const lvMinEdgeWeight         = document.getElementById('lvMinEdgeWeight');
+const lvMinEdgeWeightLabel    = document.getElementById('lvMinEdgeWeightLabel');
+const lvEdgeLabels            = document.getElementById('lvEdgeLabels');
+const lvShowLabels            = document.getElementById('lvShowLabels');
+const lvFontSize              = document.getElementById('lvFontSize');
+const lvSizeMult              = document.getElementById('lvSizeMult');
+const lvSizeMultLabel         = document.getElementById('lvSizeMultLabel');
+const lvSpacing               = document.getElementById('lvSpacing');
+const lvSpacingLabel          = document.getElementById('lvSpacingLabel');
+const LV_SECTIONS = ['sectionLayerViewCircles','sectionLayerViewEdges'];
 const mapOpacityControl = document.getElementById('mapOpacityControl');
 const mapOpacitySlider = document.getElementById('mapOpacitySlider');
 const showMapImageCheckbox = document.getElementById('showMapImageCheckbox');
@@ -120,7 +149,9 @@ const closeInfoBtn = document.getElementById('closeInfoBtn');
 const tooltip = document.getElementById('tooltip');
 
 // ---- Application State ----
-let appMode = 'network'; // 'network' or 'map'
+let appMode = 'network'; // 'network', 'map', or 'layer'
+let layerViewHandlers = null;
+let lvRAF  = null; // requestAnimationFrame id for meta-graph animation
 let activeMapLayers = new Set();
 const mapMarkersOverlay = document.getElementById('mapMarkersOverlay');
 const layerCloseButtonsContainer = document.getElementById('layerCloseButtons');
@@ -252,6 +283,9 @@ function resetVisualizationOptions() {
     activeNodeColorScaleB = null;
     activeLinkColorScale = null;
     colorScaleOverrides.clear();
+
+    // Layer view
+    if (appMode === 'layer') _exitLayerView();
 
     // Interaction state
     renderer.selectedNode = null;
@@ -452,6 +486,755 @@ function toggleMapMode() {
 
 mapModeBtn.addEventListener('click', toggleMapMode);
 
+// ---- Layer View (Meta-Graph) Mode ----
+function _startLayerViewLoop() {
+    function loop() {
+        if (appMode !== 'layer' || !renderer.layerView) { lvRAF = null; return; }
+        const stillHot = renderer.layerView.tick();
+        renderer.render();
+        lvRAF = stillHot ? requestAnimationFrame(loop) : null;
+    }
+    lvRAF = requestAnimationFrame(loop);
+}
+
+function _ensureLayerViewLoop() {
+    if (!lvRAF && appMode === 'layer' && renderer.layerView) _startLayerViewLoop();
+}
+
+function toggleLayerView() {
+    if (!model) return;
+    if (appMode === 'layer') {
+        _exitLayerView();
+        appMode = 'network';
+        renderer.render();
+        return;
+    }
+    if (appMode === 'map') toggleMapMode();
+    appMode = 'layer';
+    renderer.layerView = new LayerView(model, positions);
+    renderer.layerViewMode = true;
+    layerViewBtn.classList.add('active');
+    canvas.style.cursor = 'grab';
+    _showLayerViewSidebar();
+
+    // Auto-fit initial viewScale so all bubbles are visible
+    {
+        const lv = renderer.layerView;
+        const layoutR = lv.layoutRadius(); // bounding radius of initial circle
+        const fitScale = Math.min(canvas.width, canvas.height) * 0.42 / Math.max(layoutR, 1);
+        lv.viewScale = Math.min(Math.max(fitScale, 0.05), 0.85);
+    }
+
+    let isDragging    = false;
+    let isBubbleDrag  = false; // true = dragging a bubble; false = panning
+    let dragStartX    = 0, dragStartY    = 0;
+    let offsetStartX  = 0, offsetStartY  = 0;
+    let mouseDownX    = 0, mouseDownY    = 0;
+
+    const canvasCoords = (e) => {
+        const rect = canvas.getBoundingClientRect();
+        return {
+            mx: (e.clientX - rect.left) * (canvas.width  / rect.width),
+            my: (e.clientY - rect.top)  * (canvas.height / rect.height),
+        };
+    };
+
+    const onMouseDown = (e) => {
+        if (e.button !== 0) return;
+        mouseDownX = e.clientX; mouseDownY = e.clientY;
+        const { mx, my } = canvasCoords(e);
+        const lv = renderer.layerView;
+        const hitName = lv.startDragBubble(mx, my, canvas.width, canvas.height);
+        if (hitName) {
+            isBubbleDrag = true;
+            isDragging   = true;
+            _ensureLayerViewLoop();
+        } else {
+            isBubbleDrag = false;
+            isDragging   = true;
+            dragStartX   = e.clientX; dragStartY   = e.clientY;
+            offsetStartX = lv.viewOffsetX;
+            offsetStartY = lv.viewOffsetY;
+        }
+        canvas.style.cursor = 'grabbing';
+    };
+
+    const onMouseMove = (e) => {
+        if (isDragging) {
+            if (isBubbleDrag) {
+                const { mx, my } = canvasCoords(e);
+                renderer.layerView.moveDragBubble(mx, my, canvas.width, canvas.height);
+                _ensureLayerViewLoop();
+            } else {
+                renderer.layerView.viewOffsetX = offsetStartX + (e.clientX - dragStartX);
+                renderer.layerView.viewOffsetY = offsetStartY + (e.clientY - dragStartY);
+                renderer.render();
+            }
+            tooltip.classList.remove('visible');
+            return;
+        }
+        const { mx, my } = canvasCoords(e);
+        const lv = renderer.layerView;
+        const hitBubble = lv.hitTestBubble(mx, my, canvas.width, canvas.height);
+        if (hitBubble) {
+            const info = lv.getBubbleInfo(hitBubble);
+            tooltip.textContent = `${hitBubble} — ${info.nodeCount} nodes, ${info.edgeCount} edges, density ${info.density.toFixed(3)}, avg deg ${info.avgDegree.toFixed(1)}`;
+            tooltip.classList.add('visible');
+            tooltip.style.left = (e.clientX + 14) + 'px';
+            tooltip.style.top  = (e.clientY - 8)  + 'px';
+            canvas.style.cursor = 'pointer';
+            return;
+        }
+        const hitEdge = lv.hitTestEdge(mx, my, canvas.width, canvas.height);
+        if (hitEdge) {
+            const parts = [];
+            if (hitEdge.interlayerCount > 0) parts.push(`${hitEdge.interlayerCount} interlayer links`);
+            if (hitEdge.sharedFraction > 0)  parts.push(`${Math.round(hitEdge.sharedFraction * 100)}% shared nodes`);
+            tooltip.textContent = `${hitEdge.lA} ↔ ${hitEdge.lB}: ${parts.join(', ')}`;
+            tooltip.classList.add('visible');
+            tooltip.style.left = (e.clientX + 14) + 'px';
+            tooltip.style.top  = (e.clientY - 8)  + 'px';
+            canvas.style.cursor = 'default';
+            return;
+        }
+        tooltip.classList.remove('visible');
+        canvas.style.cursor = 'grab';
+    };
+
+    const onMouseUp = (e) => {
+        const didDrag = Math.hypot(e.clientX - mouseDownX, e.clientY - mouseDownY) > 5;
+        if (isBubbleDrag) {
+            renderer.layerView.endDragBubble();
+            _ensureLayerViewLoop();
+        }
+        isDragging   = false;
+        isBubbleDrag = false;
+        canvas.style.cursor = 'grab';
+        if (!didDrag) {
+            const { mx, my } = canvasCoords(e);
+            const hit = renderer.layerView.hitTestBubble(mx, my, canvas.width, canvas.height);
+            const prevSel = renderer.layerView._selectedLayer;
+            if (e.metaKey && hit && prevSel && hit !== prevSel) {
+                // Cmd+click on a different bubble → comparison mode
+                renderer.layerView.selectForComparison(prevSel, hit);
+                closeLayerDrillDown();
+                openLayerComparison(prevSel, hit);
+            } else {
+                // Normal click → single selection
+                renderer.layerView.selectBubble(hit);
+                closeLayerComparison();
+                if (hit) openLayerDrillDown(hit);
+                else closeLayerDrillDown();
+            }
+            renderer.render();
+        }
+    };
+
+    const onWheel = (e) => {
+        e.preventDefault();
+        const lv       = renderer.layerView;
+        const factor   = e.deltaY > 0 ? 0.9 : 1.1;
+        const newScale = Math.min(Math.max(lv.viewScale * factor, 0.15), 20);
+        const { mx, my } = canvasCoords(e);
+        const fracX = (mx - canvas.width  / 2 - lv.viewOffsetX) / lv.viewScale;
+        const fracY = (my - canvas.height / 2 - lv.viewOffsetY) / lv.viewScale;
+        lv.viewOffsetX = mx - canvas.width  / 2 - fracX * newScale;
+        lv.viewOffsetY = my - canvas.height / 2 - fracY * newScale;
+        lv.viewScale   = newScale;
+        renderer.render();
+    };
+
+    canvas.addEventListener('mousedown', onMouseDown);
+    canvas.addEventListener('mousemove', onMouseMove);
+    canvas.addEventListener('mouseup',   onMouseUp);
+    canvas.addEventListener('wheel',     onWheel, { passive: false });
+    layerViewHandlers = { onMouseDown, onMouseMove, onMouseUp, onWheel };
+
+    _startLayerViewLoop();
+}
+
+const NETWORK_SECTIONS = ['sectionLayers','sectionNodes','sectionLinks','sectionSearch'];
+
+function _showLayerViewSidebar() {
+    NETWORK_SECTIONS.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
+    LV_SECTIONS.forEach(id => { document.getElementById(id).style.display = ''; });
+    _syncLayerViewControls();
+}
+
+function _hideLayerViewSidebar() {
+    NETWORK_SECTIONS.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = ''; });
+    LV_SECTIONS.forEach(id => { document.getElementById(id).style.display = 'none'; });
+    renderLegends(); // restore network legends
+}
+
+function _syncLayerViewControls() {
+    const lv = renderer.layerView;
+    if (!lv) return;
+    const s = lv.settings;
+    lvSizeBy.value    = s.sizeBy;
+    lvColorBy.value   = s.colorBy;
+    lvUniformColor.value = s.uniformColor;
+    lvUniformColorContainer.style.display = s.colorBy === 'uniform' ? '' : 'none';
+    lvShowEdges.checked  = s.showEdges;
+    lvEdgeOptionsContainer.style.display = s.showEdges ? '' : 'none';
+    lvEdgeMetric.value   = s.edgeMetric;
+    lvEdgeLabels.checked = s.showEdgeLabels;
+    lvShowLabels.checked = s.showLabels;
+    lvFontSize.value     = s.labelFontSize;
+    lvSizeMult.value     = s.sizeMultiplier;
+    lvSizeMultLabel.textContent = s.sizeMultiplier.toFixed(1) + '×';
+    lvSpacing.value      = s.bubbleSpacing;
+    lvSpacingLabel.textContent = s.bubbleSpacing.toFixed(1) + '×';
+    _updateEdgeWeightSlider();
+    renderLayerViewLegend();
+}
+
+function _updateEdgeWeightSlider() {
+    const lv = renderer.layerView;
+    if (!lv) return;
+    const maxW = lv.maxEdgeWeight(lv.settings.edgeMetric);
+    lvMinEdgeWeight.max   = maxW;
+    lvMinEdgeWeight.value = Math.min(lv.settings.minEdgeWeight, maxW);
+    lvMinEdgeWeightLabel.textContent = lvMinEdgeWeight.value;
+}
+
+function _exitLayerView() {
+    if (lvRAF) { cancelAnimationFrame(lvRAF); lvRAF = null; }
+    renderer.layerViewMode = false;
+    renderer.layerView = null;
+    layerViewBtn.classList.remove('active');
+    canvas.style.cursor = '';
+    tooltip.classList.remove('visible');
+    _hideLayerViewSidebar();
+    closeLayerDrillDown();
+    closeLayerComparison();
+    if (layerViewHandlers) {
+        canvas.removeEventListener('mousedown', layerViewHandlers.onMouseDown);
+        canvas.removeEventListener('mousemove', layerViewHandlers.onMouseMove);
+        canvas.removeEventListener('mouseup',   layerViewHandlers.onMouseUp);
+        canvas.removeEventListener('wheel',     layerViewHandlers.onWheel);
+        layerViewHandlers = null;
+    }
+}
+
+function closeLayerDrillDown() {
+    layerDrillPanel.style.transform    = 'translateX(340px)';
+    layerDrillPanel.style.opacity      = '0';
+    layerDrillPanel.style.pointerEvents = 'none';
+}
+
+function closeLayerComparison() {
+    layerComparePanel.style.transform    = 'translateX(420px)';
+    layerComparePanel.style.opacity      = '0';
+    layerComparePanel.style.pointerEvents = 'none';
+    if (renderer.layerView) renderer.layerView._compareLayer = null;
+}
+
+// ── Per-layer stats helper (used by comparison panel) ──────────────────────
+function _layerStats(layerName) {
+    const nodeSet    = model.nodesPerLayer.get(layerName) || new Set();
+    const intraLinks = model.intralayerLinks.filter(l => l.layer_from === layerName);
+    const N = nodeSet.size;
+
+    const edgeKeys = new Set();
+    for (const l of intraLinks) edgeKeys.add([l.node_from, l.node_to].sort().join('::'));
+    const E = edgeKeys.size;
+
+    const maxEdges = N * (N - 1) / 2;
+    const density  = maxEdges > 0 ? E / maxEdges : 0;
+
+    const degMap = new Map();
+    for (const node of nodeSet) degMap.set(node, 0);
+    for (const l of intraLinks) {
+        degMap.set(l.node_from, (degMap.get(l.node_from) || 0) + 1);
+        if (degMap.has(l.node_to)) degMap.set(l.node_to, (degMap.get(l.node_to) || 0) + 1);
+        else degMap.set(l.node_to, 1);
+    }
+    for (const [k, v] of degMap) degMap.set(k, Math.round(v / 2));
+
+    const degrees    = [...degMap.values()];
+    const avgDeg     = N > 0 ? degrees.reduce((s, d) => s + d, 0) / N : 0;
+    const maxDeg     = degrees.length ? Math.max(...degrees) : 0;
+    const maxDegNode = [...degMap.entries()].find(([, d]) => d === maxDeg)?.[0] ?? '—';
+
+    const ilIn  = model.interlayerLinks.filter(l => l.layer_to   === layerName).length;
+    const ilOut = model.interlayerLinks.filter(l => l.layer_from === layerName).length;
+
+    // Bipartite detection
+    const tFrom = new Set(intraLinks.map(l => model.nodesByName.get(l.node_from)?.type).filter(Boolean));
+    const tTo   = new Set(intraLinks.map(l => model.nodesByName.get(l.node_to  )?.type).filter(Boolean));
+    const isBipartite = tFrom.size > 0 && tTo.size > 0 && [...tFrom].every(t => !tTo.has(t));
+    const degByType = new Map();
+    if (isBipartite) {
+        for (const [node, deg] of degMap) {
+            const t = model.nodesByName.get(node)?.type ?? 'unknown';
+            if (!degByType.has(t)) degByType.set(t, new Map());
+            degByType.get(t).set(node, deg);
+        }
+    }
+
+    return { layerName, nodeSet, N, E, maxEdges, density, degMap, degrees, avgDeg, maxDeg, maxDegNode, ilIn, ilOut, edgeKeys, isBipartite, degByType };
+}
+
+function openLayerComparison(nameA, nameB) {
+    if (!model) return;
+    closeLayerDrillDown();
+
+    const sA = _layerStats(nameA);
+    const sB = _layerStats(nameB);
+
+    // Bubble colors
+    const lv = renderer.layerView;
+    const colorA = lv?._bubbles.find(b => b.layerName === nameA)?.color ?? '#60a5fa';
+    const colorB = lv?._bubbles.find(b => b.layerName === nameB)?.color ?? '#f87171';
+
+    // ── Overlap ──
+    const sharedNodes = [...sA.nodeSet].filter(n => sB.nodeSet.has(n));
+    const sharedN     = sharedNodes.length;
+    const unionN      = sA.N + sB.N - sharedN;
+    const nodeJacc    = unionN > 0 ? sharedN / unionN : 0;
+
+    let sharedE = 0;
+    for (const k of sA.edgeKeys) if (sB.edgeKeys.has(k)) sharedE++;
+    const unionE   = sA.E + sB.E - sharedE;
+    const edgeJacc = unionE > 0 ? sharedE / unionE : 0;
+
+    const ilAtoB = model.interlayerLinks.filter(l => l.layer_from === nameA && l.layer_to === nameB).length;
+    const ilBtoA = model.interlayerLinks.filter(l => l.layer_from === nameB && l.layer_to === nameA).length;
+
+    const commonHubs = sharedNodes
+        .map(n => ({ name: n, dA: sA.degMap.get(n) ?? 0, dB: sB.degMap.get(n) ?? 0 }))
+        .sort((a, b) => (b.dA + b.dB) - (a.dA + a.dB))
+        .slice(0, 5);
+
+    // ── HTML helpers ──
+    const fmt  = (v, d = 0) => typeof v === 'number' ? v.toLocaleString(undefined, { maximumFractionDigits: d }) : v;
+    const pct  = (v, tot)   => tot > 0 ? `${((v / tot) * 100).toFixed(1)}%` : '—';
+    const trunc = (s, n = 18) => s.length > n ? s.slice(0, n - 1) + '…' : s;
+
+    // 3-column row: label | A | B
+    const colHdr =
+        `<div style="display:grid;grid-template-columns:1fr 88px 88px;gap:4px;padding:2px 0 5px;border-bottom:2px solid rgba(0,0,0,0.08);margin-bottom:2px;">
+            <span></span>
+            <span style="text-align:right;font-size:10px;font-weight:700;color:${colorA};overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${trunc(nameA, 12)}</span>
+            <span style="text-align:right;font-size:10px;font-weight:700;color:${colorB};overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${trunc(nameB, 12)}</span>
+        </div>`;
+
+    const cRow = (label, a, b) =>
+        `<div style="display:grid;grid-template-columns:1fr 88px 88px;gap:4px;align-items:baseline;padding:3px 0;border-bottom:1px solid rgba(0,0,0,0.04);">
+            <span style="color:#6b7280;">${label}</span>
+            <span style="font-weight:600;color:#1a1a2e;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${a}</span>
+            <span style="font-weight:600;color:#1a1a2e;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${b}</span>
+        </div>`;
+
+    const sRow = (label, v) =>
+        `<div style="display:flex;justify-content:space-between;align-items:baseline;padding:3px 0;border-bottom:1px solid rgba(0,0,0,0.04);">
+            <span style="color:#6b7280;">${label}</span>
+            <span style="font-weight:600;color:#1a1a2e;text-align:right;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${v}</span>
+        </div>`;
+
+    const section = (title, content) =>
+        `<div style="margin-bottom:14px;">
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:#9ca3af;margin-bottom:6px;">${title}</div>
+            ${content}
+        </div>`;
+
+    // Common hubs list
+    const hubsVal = commonHubs.length
+        ? commonHubs.map(h => `${trunc(h.name)} <span style="color:#9ca3af;">(${h.dA}/${h.dB})</span>`).join(', ')
+        : '—';
+
+    // Bipartite: shared types between both layers
+    const biTypes = sA.isBipartite && sB.isBipartite
+        ? [...sA.degByType.keys()].filter(t => sB.degByType.has(t))
+        : [];
+    const isBothBi = biTypes.length >= 2;
+
+    layerCompareTitle.innerHTML =
+        `<span style="color:${colorA};font-weight:700;">${trunc(nameA, 16)}</span>` +
+        `<span style="color:#9ca3af;font-weight:400;margin:0 6px;">vs</span>` +
+        `<span style="color:${colorB};font-weight:700;">${trunc(nameB, 16)}</span>`;
+
+    layerCompareContent.innerHTML =
+        section('Size',
+            colHdr +
+            cRow('Nodes', fmt(sA.N), fmt(sB.N)) +
+            cRow('Edges', fmt(sA.E), fmt(sB.E)) +
+            cRow('Density', sA.density.toFixed(4), sB.density.toFixed(4)) +
+            cRow('Avg degree', fmt(sA.avgDeg, 2), fmt(sB.avgDeg, 2)) +
+            cRow('Max degree', `${fmt(sA.maxDeg)} (${trunc(sA.maxDegNode, 10)})`, `${fmt(sB.maxDeg)} (${trunc(sB.maxDegNode, 10)})`)
+        ) +
+        section('Overlap',
+            sRow('Shared nodes', `${fmt(sharedN)} &nbsp;<span style="color:#9ca3af;">${pct(sharedN, sA.N)} of A &middot; ${pct(sharedN, sB.N)} of B</span>`) +
+            sRow('Shared edges', `${fmt(sharedE)} &nbsp;<span style="color:#9ca3af;">${pct(sharedE, sA.E)} of A &middot; ${pct(sharedE, sB.E)} of B</span>`) +
+            sRow('Node Jaccard', nodeJacc.toFixed(3)) +
+            sRow('Edge Jaccard', edgeJacc.toFixed(3)) +
+            sRow('Interlayer A→B', fmt(ilAtoB)) +
+            sRow('Interlayer B→A', fmt(ilBtoA)) +
+            sRow('Common hubs', hubsVal)
+        ) +
+        section('Divergence',
+            colHdr +
+            cRow('Nodes only in', fmt(sA.N - sharedN), fmt(sB.N - sharedN)) +
+            cRow('Edges only in', fmt(sA.E - sharedE), fmt(sB.E - sharedE)) +
+            `<div style="margin-top:10px;">
+                <div style="font-size:10px;color:#9ca3af;margin-bottom:6px;">Degree distribution</div>
+                ${isBothBi
+                    ? biTypes.map((t, i) =>
+                        `<div style="font-size:10px;color:#6b7280;margin-bottom:2px;">${t}</div>
+                         <canvas id="cmpHist_${i}" width="348" height="80" style="display:block;width:100%;border-radius:4px;margin-bottom:6px;"></canvas>`
+                      ).join('')
+                    : `<canvas id="cmpHist_0" width="348" height="90" style="display:block;width:100%;border-radius:4px;"></canvas>`
+                }
+            </div>`
+        ) +
+        section('Cross-layer links',
+            colHdr +
+            cRow('Incoming', fmt(sA.ilIn), fmt(sB.ilIn)) +
+            cRow('Outgoing', fmt(sA.ilOut), fmt(sB.ilOut)) +
+            cRow('Total', fmt(sA.ilIn + sA.ilOut), fmt(sB.ilIn + sB.ilOut))
+        );
+
+    // Draw histogram(s)
+    if (isBothBi) {
+        biTypes.forEach((t, i) => {
+            const c = document.getElementById(`cmpHist_${i}`);
+            if (c) _drawComparisonHistogram(c,
+                [...(sA.degByType.get(t)?.values() ?? [])],
+                [...(sB.degByType.get(t)?.values() ?? [])],
+                colorA, colorB);
+        });
+    } else {
+        const c = document.getElementById('cmpHist_0');
+        if (c) _drawComparisonHistogram(c, sA.degrees, sB.degrees, colorA, colorB);
+    }
+
+    layerComparePanel.style.transform    = 'translateX(0)';
+    layerComparePanel.style.opacity      = '1';
+    layerComparePanel.style.pointerEvents = 'all';
+}
+
+function _drawComparisonHistogram(canvas, degsA, degsB, colorA, colorB) {
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    const PAD = { top: 6, right: 8, bottom: 22, left: 28 };
+    ctx.clearRect(0, 0, W, H);
+    if (!degsA.length && !degsB.length) return;
+
+    const maxDeg = Math.max(...degsA, ...degsB, 0);
+    const bins   = maxDeg + 1;
+    const cA = new Array(bins).fill(0); for (const d of degsA) cA[d]++;
+    const cB = new Array(bins).fill(0); for (const d of degsB) cB[d]++;
+    const maxC = Math.max(...cA, ...cB, 1);
+
+    const cW  = W - PAD.left - PAD.right;
+    const cH  = H - PAD.top  - PAD.bottom;
+    const barW = cW / bins;
+
+    // Grid lines + y-labels
+    ctx.font = '9px Inter, system-ui, sans-serif';
+    ctx.fillStyle = '#9ca3af';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    for (const v of [0, Math.round(maxC / 2), maxC]) {
+        const y = PAD.top + cH - Math.round((v / maxC) * cH);
+        ctx.fillText(v, PAD.left - 3, y);
+        ctx.strokeStyle = 'rgba(0,0,0,0.06)'; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(PAD.left, y); ctx.lineTo(W - PAD.right, y); ctx.stroke();
+    }
+
+    // Bars A then B (overlaid, semi-transparent)
+    for (const [counts, color] of [[cA, colorA], [cB, colorB]]) {
+        ctx.fillStyle = color + 'aa';
+        for (let i = 0; i < bins; i++) {
+            if (!counts[i]) continue;
+            const bh = Math.round((counts[i] / maxC) * cH);
+            ctx.fillRect(Math.round(PAD.left + i * barW), PAD.top + cH - bh, Math.max(1, Math.floor(barW) - 1), bh);
+        }
+    }
+
+    // X-axis labels
+    ctx.fillStyle = '#9ca3af'; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    const step = bins <= 10 ? 1 : bins <= 20 ? 2 : Math.ceil(bins / 10);
+    for (let i = 0; i < bins; i += step)
+        ctx.fillText(i, PAD.left + (i + 0.5) * barW, PAD.top + cH + 3);
+
+    // Legend dots
+    for (const [color, label, xOff] of [[colorA, 'A', 28], [colorB, 'B', 14]]) {
+        ctx.fillStyle = color;
+        ctx.textAlign = 'right'; ctx.textBaseline = 'top';
+        ctx.font = 'bold 9px Inter, system-ui, sans-serif';
+        ctx.fillText(label, W - PAD.right - xOff + 14, PAD.top + 1);
+    }
+}
+
+function openLayerDrillDown(layerName) {
+    if (!model) return;
+
+    const layerObj   = model.layers.find(l => l.layer_name === layerName);
+    const layerIdx   = model.layers.indexOf(layerObj) + 1;
+    const nodeSet    = model.nodesPerLayer.get(layerName) || new Set();
+    const intraLinks = model.intralayerLinks.filter(l => l.layer_from === layerName);
+    const N  = nodeSet.size;
+    const E  = Math.round(intraLinks.length / 2);
+    const maxEdges = N * (N - 1) / 2;
+    const density  = maxEdges > 0 ? (E / maxEdges) : 0;
+
+    // Degree per node
+    const degMap = new Map();
+    for (const node of nodeSet) degMap.set(node, 0);
+    for (const l of intraLinks) {
+        degMap.set(l.node_from, (degMap.get(l.node_from) || 0) + 1);
+        if (degMap.has(l.node_to)) degMap.set(l.node_to, (degMap.get(l.node_to) || 0) + 1);
+        else degMap.set(l.node_to, 1);
+    }
+    // Each undirected edge stored twice → halve
+    for (const [k, v] of degMap) degMap.set(k, Math.round(v / 2));
+
+    const degrees   = [...degMap.values()];
+    const avgDeg    = N > 0 ? (degrees.reduce((s, d) => s + d, 0) / N) : 0;
+    const maxDeg    = degrees.length ? Math.max(...degrees) : 0;
+    const minDeg    = degrees.length ? Math.min(...degrees) : 0;
+    const maxDegNode = [...degMap.entries()].find(([, d]) => d === maxDeg)?.[0] ?? '—';
+    const isolated  = degrees.filter(d => d === 0).length;
+
+    // Interlayer links
+    const ilIn    = model.interlayerLinks.filter(l => l.layer_to   === layerName).length;
+    const ilOut   = model.interlayerLinks.filter(l => l.layer_from === layerName).length;
+    const ilTotal = ilIn + ilOut;
+
+    // Layers sharing at least one node
+    let sharedLayers = 0;
+    for (const [otherName, otherNodes] of model.nodesPerLayer) {
+        if (otherName === layerName) continue;
+        for (const n of otherNodes) { if (nodeSet.has(n)) { sharedLayers++; break; } }
+    }
+
+    // Bipartite detection: check if intraLinks connect two distinct node types
+    const typesFrom = new Set(intraLinks.map(l => {
+        const n = model.nodesByName.get(l.node_from); return n ? n.type : null;
+    }));
+    const typesTo = new Set(intraLinks.map(l => {
+        const n = model.nodesByName.get(l.node_to); return n ? n.type : null;
+    }));
+    typesFrom.delete(null); typesTo.delete(null);
+    const isBipartite = typesFrom.size > 0 && typesTo.size > 0
+        && [...typesFrom].every(t => !typesTo.has(t));
+
+    // Degree maps per node type for bipartite
+    const degByType = new Map(); // type → Map<node, degree>
+    if (isBipartite) {
+        for (const [node, deg] of degMap) {
+            const n = model.nodesByName.get(node);
+            const t = n ? (n.type || 'unknown') : 'unknown';
+            if (!degByType.has(t)) degByType.set(t, new Map());
+            degByType.get(t).set(node, deg);
+        }
+    }
+
+    // ── HTML helpers ──
+    const fmt = (v, d = 0) => typeof v === 'number' ? v.toLocaleString(undefined, { maximumFractionDigits: d }) : v;
+
+    const section = (title, rows) =>
+        `<div style="margin-bottom:14px;">
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:#9ca3af;margin-bottom:6px;">${title}</div>
+            ${rows.map(([k, v]) =>
+                `<div style="display:flex;justify-content:space-between;align-items:baseline;padding:3px 0;border-bottom:1px solid rgba(0,0,0,0.04);">
+                    <span style="color:#6b7280;">${k}</span>
+                    <span style="font-weight:600;color:#1a1a2e;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:right;">${v}</span>
+                </div>`
+            ).join('')}
+        </div>`;
+
+    layerDrillTitle.textContent = layerName;
+    layerDrillStats.innerHTML =
+        section('Identity', [
+            ['Layer name', layerName],
+            ['Layer index', layerIdx],
+        ]) +
+        section('Size', [
+            ['Nodes', fmt(N)],
+            ['Edges (intra-layer)', fmt(E)],
+            ['Density', maxEdges > 0 ? density.toFixed(4) : '—'],
+        ]) +
+        section('Connectivity', [
+            ['Average degree', fmt(avgDeg, 2)],
+            ['Max degree', `${fmt(maxDeg)} (${maxDegNode})`],
+            ['Min degree', fmt(minDeg)],
+            ['Isolated nodes', fmt(isolated)],
+        ]) +
+        section('Cross-layer connectivity', [
+            ['Interlayer links — incoming', fmt(ilIn)],
+            ['Interlayer links — outgoing', fmt(ilOut)],
+            ['Interlayer links — total', fmt(ilTotal)],
+            ['Layers sharing ≥1 node', fmt(sharedLayers)],
+        ]) +
+        `<div style="margin-bottom:6px;">
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:#9ca3af;margin-bottom:8px;">Degree distribution</div>
+            <canvas id="degHistCanvas" width="268" height="120" style="display:block;width:100%;border-radius:4px;"></canvas>
+        </div>`;
+
+    // ── Draw histogram(s) ──
+    const histCanvas = document.getElementById('degHistCanvas');
+    if (histCanvas) _drawDegreeHistogram(histCanvas, isBipartite ? degByType : null, degrees);
+
+    // Slide panel in
+    layerDrillPanel.style.transform    = 'translateX(0)';
+    layerDrillPanel.style.opacity      = '1';
+    layerDrillPanel.style.pointerEvents = 'all';
+}
+
+function _drawDegreeHistogram(canvas, degByType, allDegrees) {
+    const ctx  = canvas.getContext('2d');
+    const W    = canvas.width, H = canvas.height;
+    const PAD  = { top: 8, right: 8, bottom: 28, left: 32 };
+    ctx.clearRect(0, 0, W, H);
+
+    // Build datasets: either [{ label, degrees, color }] or single set
+    const PALETTE = ['#60a5fa', '#f87171', '#34d399', '#fbbf24'];
+    let datasets;
+    if (degByType && degByType.size > 1) {
+        datasets = [...degByType.entries()].map(([type, dMap], i) => ({
+            label: type, degrees: [...dMap.values()], color: PALETTE[i % PALETTE.length],
+        }));
+    } else {
+        datasets = [{ label: '', degrees: allDegrees, color: '#60a5fa' }];
+    }
+
+    const isBi = datasets.length > 1;
+    const chartH = isBi ? Math.floor((H - PAD.top - PAD.bottom - 6) / 2) : H - PAD.top - PAD.bottom;
+
+    datasets.forEach((ds, di) => {
+        const degs = ds.degrees;
+        if (!degs.length) return;
+        const maxD = Math.max(...degs);
+        const bins = maxD + 1;
+        const counts = new Array(bins).fill(0);
+        for (const d of degs) counts[d]++;
+        const maxC = Math.max(...counts, 1);
+
+        const yOff  = PAD.top + di * (chartH + 6);
+        const cW    = W - PAD.left - PAD.right;
+        const barW  = Math.max(1, Math.floor(cW / bins) - 1);
+
+        // Y-axis ticks
+        ctx.font = '9px Inter, system-ui, sans-serif';
+        ctx.fillStyle = '#9ca3af';
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'middle';
+        for (let v of [0, Math.round(maxC / 2), maxC]) {
+            const y = yOff + chartH - Math.round((v / maxC) * chartH);
+            ctx.fillText(v, PAD.left - 4, y);
+            ctx.strokeStyle = 'rgba(0,0,0,0.06)';
+            ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.moveTo(PAD.left, y); ctx.lineTo(W - PAD.right, y); ctx.stroke();
+        }
+
+        // Bars
+        ctx.fillStyle = ds.color + 'cc';
+        for (let i = 0; i < bins; i++) {
+            if (!counts[i]) continue;
+            const bh = Math.round((counts[i] / maxC) * chartH);
+            const x  = PAD.left + i * (cW / bins);
+            ctx.fillRect(Math.round(x), yOff + chartH - bh, barW, bh);
+        }
+
+        // X-axis labels (every few ticks to avoid crowding)
+        ctx.fillStyle = '#9ca3af';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        const step = bins <= 10 ? 1 : bins <= 20 ? 2 : Math.ceil(bins / 10);
+        for (let i = 0; i < bins; i += step) {
+            const x = PAD.left + (i + 0.5) * (cW / bins);
+            ctx.fillText(i, x, yOff + chartH + 3);
+        }
+
+        // Label (bipartite only)
+        if (isBi) {
+            ctx.fillStyle = ds.color;
+            ctx.font = '9px Inter, system-ui, sans-serif';
+            ctx.textAlign = 'right';
+            ctx.textBaseline = 'top';
+            ctx.fillText(ds.label, W - PAD.right, yOff + 1);
+        }
+    });
+}
+
+layerViewBtn.addEventListener('click', toggleLayerView);
+layerDrillClose.addEventListener('click', closeLayerDrillDown);
+layerCompareClose.addEventListener('click', () => {
+    closeLayerComparison();
+    renderer.render();
+});
+
+// ── Layer View sidebar controls ────────────────────────────────────────────
+lvSizeBy.addEventListener('change', () => {
+    if (!renderer.layerView) return;
+    renderer.layerView.updateSetting('sizeBy', lvSizeBy.value);
+    renderLayerViewLegend();
+    _ensureLayerViewLoop();
+});
+lvColorBy.addEventListener('change', () => {
+    if (!renderer.layerView) return;
+    lvUniformColorContainer.style.display = lvColorBy.value === 'uniform' ? '' : 'none';
+    renderer.layerView.updateSetting('colorBy', lvColorBy.value);
+    renderLayerViewLegend();
+    renderer.render();
+});
+lvUniformColor.addEventListener('input', () => {
+    if (!renderer.layerView) return;
+    renderer.layerView.updateSetting('uniformColor', lvUniformColor.value);
+    renderer.render();
+});
+lvShowEdges.addEventListener('change', () => {
+    if (!renderer.layerView) return;
+    lvEdgeOptionsContainer.style.display = lvShowEdges.checked ? '' : 'none';
+    renderer.layerView.updateSetting('showEdges', lvShowEdges.checked);
+    renderer.render();
+});
+lvEdgeMetric.addEventListener('change', () => {
+    if (!renderer.layerView) return;
+    renderer.layerView.updateSetting('edgeMetric', lvEdgeMetric.value);
+    _updateEdgeWeightSlider();
+    renderer.render();
+});
+lvMinEdgeWeight.addEventListener('input', () => {
+    if (!renderer.layerView) return;
+    const val = parseInt(lvMinEdgeWeight.value);
+    lvMinEdgeWeightLabel.textContent = val;
+    renderer.layerView.updateSetting('minEdgeWeight', val);
+    renderer.render();
+});
+lvEdgeLabels.addEventListener('change', () => {
+    if (!renderer.layerView) return;
+    renderer.layerView.updateSetting('showEdgeLabels', lvEdgeLabels.checked);
+    renderer.render();
+});
+lvShowLabels.addEventListener('change', () => {
+    if (!renderer.layerView) return;
+    renderer.layerView.updateSetting('showLabels', lvShowLabels.checked);
+    renderer.render();
+});
+lvFontSize.addEventListener('input', () => {
+    if (!renderer.layerView) return;
+    renderer.layerView.updateSetting('labelFontSize', parseInt(lvFontSize.value));
+    renderer.render();
+});
+lvSizeMult.addEventListener('input', () => {
+    if (!renderer.layerView) return;
+    const val = parseFloat(lvSizeMult.value);
+    lvSizeMultLabel.textContent = val.toFixed(1) + '×';
+    renderer.layerView.updateSetting('sizeMultiplier', val);
+    renderLayerViewLegend();
+    _ensureLayerViewLoop();
+});
+lvSpacing.addEventListener('input', () => {
+    if (!renderer.layerView) return;
+    const val = parseFloat(lvSpacing.value);
+    lvSpacingLabel.textContent = val.toFixed(1) + '×';
+    renderer.layerView.updateSetting('bubbleSpacing', val);
+    _ensureLayerViewLoop();
+});
 function fitMapToLayers() {
     if (!model || !model.layers) return;
     const lats = [];
@@ -1431,6 +2214,126 @@ function createLegendDOM(titleText, scale, id) {
     }
 
     return wrapper;
+}
+
+// ── Layer View Legend ──────────────────────────────────────────────────────
+
+function renderLayerViewLegend() {
+    if (appMode !== 'layer' || !renderer.layerView) return;
+    legendPanel.innerHTML = '';
+    for (const scale of renderer.layerView.getLegendScales()) {
+        legendPanel.appendChild(
+            lvExpandedLegends.has(scale.id)
+                ? _createLVLegendBox(scale)
+                : _createLVLegendBtn(scale)
+        );
+    }
+}
+
+function _createLVLegendBox(scale) {
+    const BOX_CSS = 'background:rgba(255,255,255,0.95);border:1px solid rgba(0,0,0,0.1);border-radius:8px;padding:10px 14px;box-shadow:0 4px 6px rgba(0,0,0,0.05);font-family:Inter,system-ui,sans-serif;min-width:140px;pointer-events:auto;cursor:grab;';
+    const wrapper = document.createElement('div');
+    wrapper.className = 'legend-box';
+    wrapper.style.cssText = BOX_CSS;
+    wrapper.onmousedown = () => { wrapper.style.cursor = 'grabbing'; };
+    wrapper.onmouseup   = () => { wrapper.style.cursor = 'grab'; };
+
+    // Header
+    const header = document.createElement('div');
+    header.style.cssText = 'display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;gap:12px;';
+    const titleEl = document.createElement('div');
+    titleEl.textContent = `${scale.title}: ${scale.attrName}`;
+    titleEl.style.cssText = 'font-size:11px;font-weight:600;color:#1a1a2e;text-transform:uppercase;letter-spacing:0.5px;flex-grow:1;';
+    const controls = document.createElement('div');
+    controls.style.cssText = 'display:flex;gap:4px;align-items:center;margin-top:-2px;margin-right:-4px;';
+
+    if (scale.canToggle) {
+        const toggleBtn = document.createElement('button');
+        toggleBtn.textContent = '⇌';
+        toggleBtn.title = 'Switch between Continuous and Categorical display';
+        toggleBtn.style.cssText = 'background:none;border:1px solid rgba(0,0,0,0.12);cursor:pointer;color:#4b5563;border-radius:4px;font-size:10px;padding:2px 4px;font-weight:bold;height:18px;';
+        toggleBtn.onclick = () => {
+            const lv = renderer.layerView;
+            if (!lv) return;
+            const cur = lv.settings.colorLegendType;
+            lv.updateSetting('colorLegendType', cur === 'categorical' ? 'continuous' : 'categorical');
+            renderLayerViewLegend();
+        };
+        controls.appendChild(toggleBtn);
+    }
+
+    const minBtn = document.createElement('button');
+    minBtn.innerHTML = '✕';
+    minBtn.title = 'Minimize';
+    minBtn.style.cssText = 'background:none;border:none;cursor:pointer;color:#9ca3af;font-size:12px;padding:2px;height:18px;';
+    minBtn.onclick = () => { lvExpandedLegends.delete(scale.id); renderLayerViewLegend(); };
+    controls.appendChild(minBtn);
+
+    header.appendChild(titleEl);
+    header.appendChild(controls);
+    wrapper.appendChild(header);
+
+    // Content
+    if (scale.type === 'categorical') {
+        const list = document.createElement('div');
+        list.style.cssText = 'display:flex;flex-direction:column;gap:4px;max-height:200px;overflow-y:auto;';
+        for (const [val, col] of scale.map.entries()) {
+            const row = document.createElement('div');
+            row.style.cssText = 'display:flex;align-items:center;gap:6px;font-size:12px;color:#4b5563;';
+            const swatch = document.createElement('div');
+            swatch.style.cssText = `width:12px;height:12px;border-radius:50%;background:${col};flex-shrink:0;`;
+            const text = document.createElement('span');
+            text.textContent = val;
+            text.style.cssText = 'white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px;';
+            row.appendChild(swatch); row.appendChild(text); list.appendChild(row);
+        }
+        wrapper.appendChild(list);
+    } else if (scale.type === 'continuous') {
+        const gradWrap = document.createElement('div');
+        gradWrap.style.cssText = 'display:flex;flex-direction:column;gap:4px;';
+        const track = document.createElement('div');
+        track.style.cssText = `height:12px;border-radius:6px;background:${scale.gradient};`;
+        const labels = document.createElement('div');
+        labels.style.cssText = 'display:flex;justify-content:space-between;font-size:11px;color:#6b7280;margin-top:2px;';
+        const minS = document.createElement('span'); minS.textContent = scale.minLabel;
+        const maxS = document.createElement('span'); maxS.textContent = scale.maxLabel;
+        labels.appendChild(minS); labels.appendChild(maxS);
+        gradWrap.appendChild(track); gradWrap.appendChild(labels);
+        wrapper.appendChild(gradWrap);
+    } else if (scale.type === 'size') {
+        const DISP_MAX = 22;
+        const minR = scale.minR || DISP_MAX * 0.25;
+        const maxR = scale.maxR || DISP_MAX;
+        const midR = Math.sqrt(minR * maxR);
+        const items = [
+            { r: DISP_MAX * minR / maxR, label: scale.minLabel },
+            { r: DISP_MAX * midR / maxR, label: scale.midLabel || '' },
+            { r: DISP_MAX,               label: scale.maxLabel },
+        ];
+        const dotsRow = document.createElement('div');
+        dotsRow.style.cssText = `display:flex;align-items:flex-end;gap:10px;height:${DISP_MAX * 2 + 4}px;`;
+        const labelsRow = document.createElement('div');
+        labelsRow.style.cssText = 'display:flex;justify-content:space-between;font-size:11px;color:#6b7280;margin-top:5px;';
+        items.forEach(({ r, label }) => {
+            const d = Math.max(3, Math.round(r * 2));
+            const dot = document.createElement('div');
+            dot.style.cssText = `width:${d}px;height:${d}px;background:#6b7280;border-radius:50%;flex-shrink:0;`;
+            dotsRow.appendChild(dot);
+            const lbl = document.createElement('span'); lbl.textContent = label;
+            labelsRow.appendChild(lbl);
+        });
+        wrapper.appendChild(dotsRow); wrapper.appendChild(labelsRow);
+    }
+    return wrapper;
+}
+
+function _createLVLegendBtn(scale) {
+    const btn = document.createElement('button');
+    btn.className = 'btn';
+    btn.style.cssText = 'pointer-events:auto;font-size:11px;padding:6px 10px;box-shadow:0 4px 6px rgba(0,0,0,0.05);background:rgba(255,255,255,0.95);backdrop-filter:blur(8px);border:1px solid rgba(0,0,0,0.1);border-radius:8px;color:#4b5563;font-weight:600;display:flex;align-items:center;gap:6px;cursor:pointer;';
+    btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"></path></svg> Expand ${scale.title} Legend`;
+    btn.onclick = () => { lvExpandedLegends.add(scale.id); renderLayerViewLegend(); };
+    return btn;
 }
 
 // ---- Screenshot Export ----

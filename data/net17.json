@@ -1,0 +1,7152 @@
+{
+  "nodes": [
+    {
+      "node_id": 1,
+      "node_name": "Cereus_sp.",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "genus"
+    },
+    {
+      "node_id": 2,
+      "node_name": "Chamaesyce_recurva",
+      "type": "plant",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 3,
+      "node_name": "Galactia_striata",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 4,
+      "node_name": "Opuntia_megasperma",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 5,
+      "node_name": "Polyscias_guilfoylei",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 6,
+      "node_name": "Psidium_guajava",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 7,
+      "node_name": "Rubus_niveus",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 8,
+      "node_name": "Alternanthera_echinocephala",
+      "type": "plant",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 9,
+      "node_name": "Ceiba_pentandra",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 10,
+      "node_name": "Hypericum_thesiifolium",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 11,
+      "node_name": "Impatiens_balsamina",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 12,
+      "node_name": "Lantana_peduncularis",
+      "type": "plant",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 13,
+      "node_name": "Mentzelia_aspera",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 14,
+      "node_name": "Nolana_galapagensis",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 15,
+      "node_name": "Passiflora_foetida",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 16,
+      "node_name": "Passiflora_suberosa",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 17,
+      "node_name": "Plumbago_scandens",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 18,
+      "node_name": "Psidium_sp.",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "genus"
+    },
+    {
+      "node_id": 19,
+      "node_name": "Rhynchosia_minima",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 20,
+      "node_name": "Scalesia_sp",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "genus"
+    },
+    {
+      "node_id": 21,
+      "node_name": "Syzygium_jambos",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 22,
+      "node_name": "Cardiospermum_galapageium",
+      "type": "plant",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 23,
+      "node_name": "Brassica_sp.",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "genus"
+    },
+    {
+      "node_id": 24,
+      "node_name": "Calandrinia_galapagosa",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 25,
+      "node_name": "Cleome_viscosa",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 26,
+      "node_name": "Croton_scouleri",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 27,
+      "node_name": "Eragrostis_ciliaris",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 28,
+      "node_name": "Gen._sp.3",
+      "type": "plant",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 29,
+      "node_name": "Gossypium_darwinii",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 30,
+      "node_name": "Passiflora_sp.1",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "genus"
+    },
+    {
+      "node_id": 31,
+      "node_name": "Pectis_linifolia",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 32,
+      "node_name": "Sesuvium_portulacastrum",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 33,
+      "node_name": "Chamaesyce_punctulata",
+      "type": "plant",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 34,
+      "node_name": "Cordia_leucophlyctis",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 35,
+      "node_name": "Cressa_truxillensis",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 36,
+      "node_name": "Dianthus_caryophyllus",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 37,
+      "node_name": "Evolvulus_convolvuloides",
+      "type": "plant",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 38,
+      "node_name": "Gen._sp.2",
+      "type": "plant",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 39,
+      "node_name": "Hibiscus_sp.",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "genus"
+    },
+    {
+      "node_id": 40,
+      "node_name": "Hippomane_mancinella",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 41,
+      "node_name": "Luffa_cylindrica",
+      "type": "plant",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 42,
+      "node_name": "Miconia_robinsoniana",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 43,
+      "node_name": "Passiflora_ligularis",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 44,
+      "node_name": "Scalesia_incisa",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 45,
+      "node_name": "Senna_septemtrionalis",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 46,
+      "node_name": "Waltheria_ovata",
+      "type": "plant",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 47,
+      "node_name": "Gen._sp.1",
+      "type": "plant",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 48,
+      "node_name": "Chiococca_alba",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 49,
+      "node_name": "Physalis_pubescens",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 50,
+      "node_name": "Acacia_rorudiana",
+      "type": "plant",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 51,
+      "node_name": "Bursera_graveolens",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 52,
+      "node_name": "Carica_x_heilbornii",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 53,
+      "node_name": "Chamaesyce_ophthalmica",
+      "type": "plant",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 54,
+      "node_name": "Maytenus_octogona",
+      "type": "plant",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 55,
+      "node_name": "Opuntia_echios",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 56,
+      "node_name": "Passiflora_colinvauxii",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 57,
+      "node_name": "Scalesia_affinis",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 58,
+      "node_name": "Tiquilia_darwinii",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 59,
+      "node_name": "Casuarina_equisetifolia",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 60,
+      "node_name": "Cryptocarpus_pyriformis",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 61,
+      "node_name": "Dalechampia_scandens",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 62,
+      "node_name": "Ipomoea_sp.",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "genus"
+    },
+    {
+      "node_id": 63,
+      "node_name": "Jasminocereus_thouarsii",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 64,
+      "node_name": "Opuntia_ficus-indica",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 65,
+      "node_name": "Passiflora_sp",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "genus"
+    },
+    {
+      "node_id": 66,
+      "node_name": "Psidium_galapageium",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 67,
+      "node_name": "Russelia_equisetiformis",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 68,
+      "node_name": "Tournefortia_pubescens",
+      "type": "plant",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 69,
+      "node_name": "Cereus_peruvianus",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 70,
+      "node_name": "Hylocereus_polyrhizus",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 71,
+      "node_name": "Iochroma_ellipticum",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 72,
+      "node_name": "Pernettya_howellii",
+      "type": "plant",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 73,
+      "node_name": "Senna_occidentalis",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 74,
+      "node_name": "Vallesia_glabra",
+      "type": "plant",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 75,
+      "node_name": "Blainvillea_dichotoma",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 76,
+      "node_name": "Alternanthera_filifolia",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 77,
+      "node_name": "Cassia_grandis",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 78,
+      "node_name": "Brassica_oleracea",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 79,
+      "node_name": "Hippobroma_longiflora",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 80,
+      "node_name": "Sarcostemma_angustissimum",
+      "type": "plant",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 81,
+      "node_name": "Opuntia_sp.",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "genus"
+    },
+    {
+      "node_id": 82,
+      "node_name": "Boerhavia_coccinea",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 83,
+      "node_name": "Cyperaceae_cf._Eleocharis_sp.1",
+      "type": "plant",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 84,
+      "node_name": "Desmodium_incanum",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 85,
+      "node_name": "Desmodium_procumbens",
+      "type": "plant",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 86,
+      "node_name": "Elecharis_maculosa",
+      "type": "plant",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 87,
+      "node_name": "Eragrostis_sp.",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "genus"
+    },
+    {
+      "node_id": 88,
+      "node_name": "Erichloa_pacifica",
+      "type": "plant",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 89,
+      "node_name": "Fimbristylis_dichotoma",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 90,
+      "node_name": "Hypoxis_decumbens",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 91,
+      "node_name": "Lantana_camara",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 92,
+      "node_name": "Ludwigia_leptocarpa",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 93,
+      "node_name": "Oxalis_sp.1",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "genus"
+    },
+    {
+      "node_id": 94,
+      "node_name": "Paspalum_conjugatum",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 95,
+      "node_name": "Pennisetum_purpureum",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 96,
+      "node_name": "Poaceae",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "family"
+    },
+    {
+      "node_id": 97,
+      "node_name": "Polygonum_galapagense",
+      "type": "plant",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 98,
+      "node_name": "Portulaca_oleracea",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 99,
+      "node_name": "Scutia_spicata",
+      "type": "plant",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 100,
+      "node_name": "Seed_13",
+      "type": "plant",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 101,
+      "node_name": "Seed_27",
+      "type": "plant",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 102,
+      "node_name": "Seed_56",
+      "type": "plant",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 103,
+      "node_name": "Solanum_americanum",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 104,
+      "node_name": "Talinum_paniculatum",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 105,
+      "node_name": "Tournefortia_psilostachya",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 106,
+      "node_name": "Zanthoxylum_fagara",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 107,
+      "node_name": "Capsicum_frutescens",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 108,
+      "node_name": "cf._Malvaceae",
+      "type": "plant",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 109,
+      "node_name": "Cordia_lutea",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 110,
+      "node_name": "Momordica_charantia",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 111,
+      "node_name": "Panicum_sp.",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "genus"
+    },
+    {
+      "node_id": 112,
+      "node_name": "Pilea_baurii",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 113,
+      "node_name": "Seed_01",
+      "type": "plant",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 114,
+      "node_name": "Sida_spinosa",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 115,
+      "node_name": "Tournefortia_rufo-sericea",
+      "type": "plant",
+      "taxa_verified": "FALSE"
+    },
+    {
+      "node_id": 116,
+      "node_name": "Tradescantia_fluminensis",
+      "type": "plant",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 117,
+      "node_name": "Camarhynchus_pallidus",
+      "type": "bird",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 118,
+      "node_name": "Camarhynchus_parvulus",
+      "type": "bird",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 119,
+      "node_name": "Certhidea_fusca",
+      "type": "bird",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 120,
+      "node_name": "Geospiza_fortis",
+      "type": "bird",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 121,
+      "node_name": "Geospiza_fuliginosa",
+      "type": "bird",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 122,
+      "node_name": "Geospiza_magnirostris",
+      "type": "bird",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 123,
+      "node_name": "Mimus_melanotis",
+      "type": "bird",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 124,
+      "node_name": "Myiarchus_magnirostris",
+      "type": "bird",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 125,
+      "node_name": "Setophaga_petechia",
+      "type": "bird",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 126,
+      "node_name": "Certhidea_olivacea",
+      "type": "bird",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 127,
+      "node_name": "Geospiza_scandens",
+      "type": "bird",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 128,
+      "node_name": "Mimus_parvulus",
+      "type": "bird",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    },
+    {
+      "node_id": 129,
+      "node_name": "Platyspiza_crassirostris",
+      "type": "bird",
+      "taxa_verified": "TRUE",
+      "verification_level": "species"
+    }
+  ],
+  "layers": [
+    {
+      "layer_id": 1,
+      "interaction_type": "pollination",
+      "location": "San Cristobal,Galapagos",
+      "latitude": -0.909114,
+      "longitude": -89.561852,
+      "layer_name": "layer_1"
+    },
+    {
+      "layer_id": 2,
+      "interaction_type": "seed-dispersal",
+      "location": "San Cristobal,Galapagos",
+      "latitude": -0.909114,
+      "longitude": -89.561852,
+      "layer_name": "layer_2"
+    },
+    {
+      "layer_id": 3,
+      "interaction_type": "pollination",
+      "location": "Santa Cruz,Galapagos",
+      "latitude": -0.533386,
+      "longitude": -90.350216,
+      "layer_name": "layer_3"
+    },
+    {
+      "layer_id": 4,
+      "interaction_type": "seed-dispersal",
+      "location": "Santa Cruz,Galapagos",
+      "latitude": -0.533386,
+      "longitude": -90.350216,
+      "layer_name": "layer_4"
+    }
+  ],
+  "extended": [
+    {
+      "layer_from": "layer_1",
+      "node_from": "Cereus_sp.",
+      "layer_to": "layer_1",
+      "node_to": "Camarhynchus_pallidus",
+      "weight": 0.04,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Chamaesyce_recurva",
+      "layer_to": "layer_1",
+      "node_to": "Camarhynchus_pallidus",
+      "weight": 0.04,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Galactia_striata",
+      "layer_to": "layer_1",
+      "node_to": "Camarhynchus_pallidus",
+      "weight": 0.04,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Opuntia_megasperma",
+      "layer_to": "layer_1",
+      "node_to": "Camarhynchus_pallidus",
+      "weight": 0.12,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Polyscias_guilfoylei",
+      "layer_to": "layer_1",
+      "node_to": "Camarhynchus_pallidus",
+      "weight": 0.12,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Psidium_guajava",
+      "layer_to": "layer_1",
+      "node_to": "Camarhynchus_pallidus",
+      "weight": 0.56,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Rubus_niveus",
+      "layer_to": "layer_1",
+      "node_to": "Camarhynchus_pallidus",
+      "weight": 0.08,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Alternanthera_echinocephala",
+      "layer_to": "layer_1",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.02,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Ceiba_pentandra",
+      "layer_to": "layer_1",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.02,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Galactia_striata",
+      "layer_to": "layer_1",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.059,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Hypericum_thesiifolium",
+      "layer_to": "layer_1",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.02,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Impatiens_balsamina",
+      "layer_to": "layer_1",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.02,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Lantana_peduncularis",
+      "layer_to": "layer_1",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.039,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Mentzelia_aspera",
+      "layer_to": "layer_1",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.02,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Nolana_galapagensis",
+      "layer_to": "layer_1",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.02,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Opuntia_megasperma",
+      "layer_to": "layer_1",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.02,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Passiflora_foetida",
+      "layer_to": "layer_1",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.039,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Passiflora_suberosa",
+      "layer_to": "layer_1",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.059,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Plumbago_scandens",
+      "layer_to": "layer_1",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.02,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Polyscias_guilfoylei",
+      "layer_to": "layer_1",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.059,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Psidium_guajava",
+      "layer_to": "layer_1",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.373,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Psidium_sp.",
+      "layer_to": "layer_1",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.039,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Rhynchosia_minima",
+      "layer_to": "layer_1",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.059,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Rubus_niveus",
+      "layer_to": "layer_1",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.039,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Scalesia_sp",
+      "layer_to": "layer_1",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.02,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Syzygium_jambos",
+      "layer_to": "layer_1",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.059,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Cardiospermum_galapageium",
+      "layer_to": "layer_1",
+      "node_to": "Certhidea_fusca",
+      "weight": 0.024,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Ceiba_pentandra",
+      "layer_to": "layer_1",
+      "node_to": "Certhidea_fusca",
+      "weight": 0.024,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Chamaesyce_recurva",
+      "layer_to": "layer_1",
+      "node_to": "Certhidea_fusca",
+      "weight": 0.024,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Galactia_striata",
+      "layer_to": "layer_1",
+      "node_to": "Certhidea_fusca",
+      "weight": 0.049,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Impatiens_balsamina",
+      "layer_to": "layer_1",
+      "node_to": "Certhidea_fusca",
+      "weight": 0.024,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Lantana_peduncularis",
+      "layer_to": "layer_1",
+      "node_to": "Certhidea_fusca",
+      "weight": 0.024,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Plumbago_scandens",
+      "layer_to": "layer_1",
+      "node_to": "Certhidea_fusca",
+      "weight": 0.024,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Polyscias_guilfoylei",
+      "layer_to": "layer_1",
+      "node_to": "Certhidea_fusca",
+      "weight": 0.122,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Psidium_guajava",
+      "layer_to": "layer_1",
+      "node_to": "Certhidea_fusca",
+      "weight": 0.366,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Psidium_sp.",
+      "layer_to": "layer_1",
+      "node_to": "Certhidea_fusca",
+      "weight": 0.049,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Rhynchosia_minima",
+      "layer_to": "layer_1",
+      "node_to": "Certhidea_fusca",
+      "weight": 0.049,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Rubus_niveus",
+      "layer_to": "layer_1",
+      "node_to": "Certhidea_fusca",
+      "weight": 0.073,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Scalesia_sp",
+      "layer_to": "layer_1",
+      "node_to": "Certhidea_fusca",
+      "weight": 0.024,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Syzygium_jambos",
+      "layer_to": "layer_1",
+      "node_to": "Certhidea_fusca",
+      "weight": 0.122,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Brassica_sp.",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.015,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Calandrinia_galapagosa",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.015,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Cleome_viscosa",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.031,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Croton_scouleri",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.015,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Eragrostis_ciliaris",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.031,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Galactia_striata",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.077,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Gen._sp.3",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.031,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Gossypium_darwinii",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.015,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Impatiens_balsamina",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.015,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Opuntia_megasperma",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.015,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Passiflora_foetida",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.015,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Passiflora_sp.1",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.015,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Passiflora_suberosa",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.031,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Pectis_linifolia",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.015,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Plumbago_scandens",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.015,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Polyscias_guilfoylei",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.062,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Psidium_guajava",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.323,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Psidium_sp.",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.031,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Rhynchosia_minima",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.062,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Rubus_niveus",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.062,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Sesuvium_portulacastrum",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.015,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Syzygium_jambos",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.092,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Alternanthera_echinocephala",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.007,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Calandrinia_galapagosa",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.025,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Ceiba_pentandra",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.011,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Chamaesyce_punctulata",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.004,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Chamaesyce_recurva",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.011,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Cleome_viscosa",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.004,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Cordia_leucophlyctis",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.004,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Cressa_truxillensis",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.004,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Croton_scouleri",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.007,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Dianthus_caryophyllus",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.015,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Eragrostis_ciliaris",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.044,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Evolvulus_convolvuloides",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.007,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Galactia_striata",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.058,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Gen._sp.2",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.007,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Gen._sp.3",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.007,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Gossypium_darwinii",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.004,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Hibiscus_sp.",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.004,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Hippomane_mancinella",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.004,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Impatiens_balsamina",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.004,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Lantana_peduncularis",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.022,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Luffa_cylindrica",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.018,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Mentzelia_aspera",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.015,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Miconia_robinsoniana",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.011,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Opuntia_megasperma",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.004,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Passiflora_foetida",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.004,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Passiflora_ligularis",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.007,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Passiflora_suberosa",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.018,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Plumbago_scandens",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.022,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Polyscias_guilfoylei",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.087,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Psidium_guajava",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.302,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Psidium_sp.",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.004,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Rhynchosia_minima",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.029,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Rubus_niveus",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.084,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Scalesia_incisa",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.018,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Scalesia_sp",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.015,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Senna_septemtrionalis",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.004,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Sesuvium_portulacastrum",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.025,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Syzygium_jambos",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.08,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Waltheria_ovata",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.004,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Eragrostis_ciliaris",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_magnirostris",
+      "weight": 0.111,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Gen._sp.1",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_magnirostris",
+      "weight": 0.111,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Impatiens_balsamina",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_magnirostris",
+      "weight": 0.111,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Psidium_guajava",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_magnirostris",
+      "weight": 0.556,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Syzygium_jambos",
+      "layer_to": "layer_1",
+      "node_to": "Geospiza_magnirostris",
+      "weight": 0.111,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Ceiba_pentandra",
+      "layer_to": "layer_1",
+      "node_to": "Mimus_melanotis",
+      "weight": 0.125,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Galactia_striata",
+      "layer_to": "layer_1",
+      "node_to": "Mimus_melanotis",
+      "weight": 0.125,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Impatiens_balsamina",
+      "layer_to": "layer_1",
+      "node_to": "Mimus_melanotis",
+      "weight": 0.062,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Plumbago_scandens",
+      "layer_to": "layer_1",
+      "node_to": "Mimus_melanotis",
+      "weight": 0.062,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Polyscias_guilfoylei",
+      "layer_to": "layer_1",
+      "node_to": "Mimus_melanotis",
+      "weight": 0.062,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Psidium_guajava",
+      "layer_to": "layer_1",
+      "node_to": "Mimus_melanotis",
+      "weight": 0.5,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Rubus_niveus",
+      "layer_to": "layer_1",
+      "node_to": "Mimus_melanotis",
+      "weight": 0.062,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Calandrinia_galapagosa",
+      "layer_to": "layer_1",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.034,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Ceiba_pentandra",
+      "layer_to": "layer_1",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.052,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Galactia_striata",
+      "layer_to": "layer_1",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.069,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Impatiens_balsamina",
+      "layer_to": "layer_1",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.052,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Lantana_peduncularis",
+      "layer_to": "layer_1",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.017,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Luffa_cylindrica",
+      "layer_to": "layer_1",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.017,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Mentzelia_aspera",
+      "layer_to": "layer_1",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.017,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Passiflora_suberosa",
+      "layer_to": "layer_1",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.034,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Plumbago_scandens",
+      "layer_to": "layer_1",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.034,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Polyscias_guilfoylei",
+      "layer_to": "layer_1",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.034,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Psidium_guajava",
+      "layer_to": "layer_1",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.414,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Rhynchosia_minima",
+      "layer_to": "layer_1",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.103,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Rubus_niveus",
+      "layer_to": "layer_1",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.034,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Scalesia_incisa",
+      "layer_to": "layer_1",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.034,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Sesuvium_portulacastrum",
+      "layer_to": "layer_1",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.034,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Syzygium_jambos",
+      "layer_to": "layer_1",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.017,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Cardiospermum_galapageium",
+      "layer_to": "layer_1",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.017,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Ceiba_pentandra",
+      "layer_to": "layer_1",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.017,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Chamaesyce_recurva",
+      "layer_to": "layer_1",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.034,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Chiococca_alba",
+      "layer_to": "layer_1",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.017,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Eragrostis_ciliaris",
+      "layer_to": "layer_1",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.017,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Galactia_striata",
+      "layer_to": "layer_1",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.034,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Hippomane_mancinella",
+      "layer_to": "layer_1",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.068,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Passiflora_suberosa",
+      "layer_to": "layer_1",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.034,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Physalis_pubescens",
+      "layer_to": "layer_1",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.017,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Polyscias_guilfoylei",
+      "layer_to": "layer_1",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.085,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Psidium_guajava",
+      "layer_to": "layer_1",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.508,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Rhynchosia_minima",
+      "layer_to": "layer_1",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.017,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Rubus_niveus",
+      "layer_to": "layer_1",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.051,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Scalesia_incisa",
+      "layer_to": "layer_1",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.034,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Senna_septemtrionalis",
+      "layer_to": "layer_1",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.017,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Syzygium_jambos",
+      "layer_to": "layer_1",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.034,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Impatiens_balsamina",
+      "layer_to": "layer_3",
+      "node_to": "Camarhynchus_pallidus",
+      "weight": 0.125,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Mentzelia_aspera",
+      "layer_to": "layer_3",
+      "node_to": "Camarhynchus_pallidus",
+      "weight": 0.125,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Nolana_galapagensis",
+      "layer_to": "layer_3",
+      "node_to": "Camarhynchus_pallidus",
+      "weight": 0.25,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Psidium_guajava",
+      "layer_to": "layer_3",
+      "node_to": "Camarhynchus_pallidus",
+      "weight": 0.375,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Syzygium_jambos",
+      "layer_to": "layer_3",
+      "node_to": "Camarhynchus_pallidus",
+      "weight": 0.125,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Acacia_rorudiana",
+      "layer_to": "layer_3",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.013513514,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Alternanthera_echinocephala",
+      "layer_to": "layer_3",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.094594595,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Brassica_sp.",
+      "layer_to": "layer_3",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.013513514,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Bursera_graveolens",
+      "layer_to": "layer_3",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.013513514,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Cardiospermum_galapageium",
+      "layer_to": "layer_3",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.027027027,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Carica_x_heilbornii",
+      "layer_to": "layer_3",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.013513514,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Chamaesyce_ophthalmica",
+      "layer_to": "layer_3",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.013513514,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Chamaesyce_recurva",
+      "layer_to": "layer_3",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.040540541,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Cleome_viscosa",
+      "layer_to": "layer_3",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.013513514,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Croton_scouleri",
+      "layer_to": "layer_3",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.013513514,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Galactia_striata",
+      "layer_to": "layer_3",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.081081081,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Hippomane_mancinella",
+      "layer_to": "layer_3",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.027027027,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Impatiens_balsamina",
+      "layer_to": "layer_3",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.094594595,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Maytenus_octogona",
+      "layer_to": "layer_3",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.040540541,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Mentzelia_aspera",
+      "layer_to": "layer_3",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.054054054,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Nolana_galapagensis",
+      "layer_to": "layer_3",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.081081081,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Opuntia_echios",
+      "layer_to": "layer_3",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.054054054,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Passiflora_colinvauxii",
+      "layer_to": "layer_3",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.040540541,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Passiflora_suberosa",
+      "layer_to": "layer_3",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.108108108,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Polyscias_guilfoylei",
+      "layer_to": "layer_3",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.040540541,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Psidium_guajava",
+      "layer_to": "layer_3",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.027027027,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Rhynchosia_minima",
+      "layer_to": "layer_3",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.054054054,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Scalesia_affinis",
+      "layer_to": "layer_3",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.027027027,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Tiquilia_darwinii",
+      "layer_to": "layer_3",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.013513514,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Cardiospermum_galapageium",
+      "layer_to": "layer_3",
+      "node_to": "Certhidea_olivacea",
+      "weight": 0.166666667,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Nolana_galapagensis",
+      "layer_to": "layer_3",
+      "node_to": "Certhidea_olivacea",
+      "weight": 0.333333333,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Psidium_guajava",
+      "layer_to": "layer_3",
+      "node_to": "Certhidea_olivacea",
+      "weight": 0.333333333,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Rhynchosia_minima",
+      "layer_to": "layer_3",
+      "node_to": "Certhidea_olivacea",
+      "weight": 0.166666667,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Acacia_rorudiana",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.005555556,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Alternanthera_echinocephala",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.022222222,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Bursera_graveolens",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.094444444,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Cardiospermum_galapageium",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.016666667,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Casuarina_equisetifolia",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.005555556,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Chamaesyce_ophthalmica",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.005555556,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Chamaesyce_recurva",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.061111111,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Croton_scouleri",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.038888889,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Cryptocarpus_pyriformis",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.011111111,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Dalechampia_scandens",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.005555556,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Eragrostis_ciliaris",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.005555556,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Galactia_striata",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.005555556,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Hippomane_mancinella",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.038888889,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Impatiens_balsamina",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.05,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Ipomoea_sp.",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.005555556,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Jasminocereus_thouarsii",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.011111111,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Maytenus_octogona",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.016666667,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Mentzelia_aspera",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.05,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Nolana_galapagensis",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.072222222,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Opuntia_echios",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.144444444,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Opuntia_ficus-indica",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.016666667,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Passiflora_colinvauxii",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.005555556,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Passiflora_sp",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.005555556,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Passiflora_suberosa",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.061111111,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Plumbago_scandens",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.005555556,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Psidium_galapageium",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.005555556,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Psidium_guajava",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.161111111,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Rhynchosia_minima",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.033333333,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Russelia_equisetiformis",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.011111111,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Scalesia_affinis",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.005555556,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Syzygium_jambos",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.011111111,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Tournefortia_pubescens",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.011111111,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Acacia_rorudiana",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.003802281,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Alternanthera_echinocephala",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.015209125,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Brassica_sp.",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.007604563,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Bursera_graveolens",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.057034221,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Cardiospermum_galapageium",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.019011407,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Cereus_peruvianus",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.003802281,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Chamaesyce_recurva",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.064638783,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Cleome_viscosa",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.007604563,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Cordia_leucophlyctis",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.011406844,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Croton_scouleri",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.022813688,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Eragrostis_ciliaris",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.015209125,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Evolvulus_convolvuloides",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.003802281,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Galactia_striata",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.064638783,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Hippomane_mancinella",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.034220532,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Hylocereus_polyrhizus",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.003802281,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Impatiens_balsamina",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.030418251,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Iochroma_ellipticum",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.003802281,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Jasminocereus_thouarsii",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.003802281,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Lantana_peduncularis",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.011406844,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Maytenus_octogona",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.003802281,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Mentzelia_aspera",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.098859316,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Nolana_galapagensis",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.114068441,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Opuntia_echios",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.034220532,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Opuntia_ficus-indica",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.011406844,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Passiflora_colinvauxii",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.007604563,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Passiflora_foetida",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.003802281,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Passiflora_ligularis",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.003802281,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Passiflora_sp",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.011406844,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Passiflora_suberosa",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.064638783,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Pernettya_howellii",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.007604563,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Plumbago_scandens",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.003802281,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Polyscias_guilfoylei",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.011406844,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Psidium_galapageium",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.007604563,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Psidium_guajava",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.144486692,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Rhynchosia_minima",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.022813688,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Russelia_equisetiformis",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.02661597,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Scalesia_affinis",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.003802281,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Senna_occidentalis",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.003802281,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Syzygium_jambos",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.011406844,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Tournefortia_pubescens",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.011406844,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Vallesia_glabra",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.007604563,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Alternanthera_echinocephala",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_magnirostris",
+      "weight": 0.0625,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Blainvillea_dichotoma",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_magnirostris",
+      "weight": 0.03125,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Bursera_graveolens",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_magnirostris",
+      "weight": 0.15625,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Chamaesyce_recurva",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_magnirostris",
+      "weight": 0.0625,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Cleome_viscosa",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_magnirostris",
+      "weight": 0.03125,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Croton_scouleri",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_magnirostris",
+      "weight": 0.03125,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Galactia_striata",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_magnirostris",
+      "weight": 0.03125,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Hippomane_mancinella",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_magnirostris",
+      "weight": 0.03125,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Impatiens_balsamina",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_magnirostris",
+      "weight": 0.0625,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Mentzelia_aspera",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_magnirostris",
+      "weight": 0.0625,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Nolana_galapagensis",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_magnirostris",
+      "weight": 0.03125,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Opuntia_echios",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_magnirostris",
+      "weight": 0.09375,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Passiflora_sp",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_magnirostris",
+      "weight": 0.03125,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Passiflora_suberosa",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_magnirostris",
+      "weight": 0.03125,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Psidium_guajava",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_magnirostris",
+      "weight": 0.1875,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Rhynchosia_minima",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_magnirostris",
+      "weight": 0.03125,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Russelia_equisetiformis",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_magnirostris",
+      "weight": 0.03125,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Acacia_rorudiana",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_scandens",
+      "weight": 0.014492754,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Alternanthera_filifolia",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_scandens",
+      "weight": 0.028985507,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Bursera_graveolens",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_scandens",
+      "weight": 0.028985507,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Cardiospermum_galapageium",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_scandens",
+      "weight": 0.014492754,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Chamaesyce_ophthalmica",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_scandens",
+      "weight": 0.028985507,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Cordia_leucophlyctis",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_scandens",
+      "weight": 0.028985507,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Croton_scouleri",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_scandens",
+      "weight": 0.101449275,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Galactia_striata",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_scandens",
+      "weight": 0.028985507,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Impatiens_balsamina",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_scandens",
+      "weight": 0.014492754,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Mentzelia_aspera",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_scandens",
+      "weight": 0.057971014,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Nolana_galapagensis",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_scandens",
+      "weight": 0.057971014,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Opuntia_echios",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_scandens",
+      "weight": 0.347826087,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Opuntia_ficus-indica",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_scandens",
+      "weight": 0.130434783,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Passiflora_suberosa",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_scandens",
+      "weight": 0.072463768,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Psidium_guajava",
+      "layer_to": "layer_3",
+      "node_to": "Geospiza_scandens",
+      "weight": 0.043478261,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Alternanthera_echinocephala",
+      "layer_to": "layer_3",
+      "node_to": "Mimus_parvulus",
+      "weight": 0.045454545,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Bursera_graveolens",
+      "layer_to": "layer_3",
+      "node_to": "Mimus_parvulus",
+      "weight": 0.045454545,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Cassia_grandis",
+      "layer_to": "layer_3",
+      "node_to": "Mimus_parvulus",
+      "weight": 0.045454545,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Croton_scouleri",
+      "layer_to": "layer_3",
+      "node_to": "Mimus_parvulus",
+      "weight": 0.181818182,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Impatiens_balsamina",
+      "layer_to": "layer_3",
+      "node_to": "Mimus_parvulus",
+      "weight": 0.090909091,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Jasminocereus_thouarsii",
+      "layer_to": "layer_3",
+      "node_to": "Mimus_parvulus",
+      "weight": 0.045454545,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Mentzelia_aspera",
+      "layer_to": "layer_3",
+      "node_to": "Mimus_parvulus",
+      "weight": 0.045454545,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Nolana_galapagensis",
+      "layer_to": "layer_3",
+      "node_to": "Mimus_parvulus",
+      "weight": 0.045454545,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Opuntia_echios",
+      "layer_to": "layer_3",
+      "node_to": "Mimus_parvulus",
+      "weight": 0.227272727,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Passiflora_colinvauxii",
+      "layer_to": "layer_3",
+      "node_to": "Mimus_parvulus",
+      "weight": 0.045454545,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Passiflora_suberosa",
+      "layer_to": "layer_3",
+      "node_to": "Mimus_parvulus",
+      "weight": 0.045454545,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Psidium_guajava",
+      "layer_to": "layer_3",
+      "node_to": "Mimus_parvulus",
+      "weight": 0.045454545,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Rhynchosia_minima",
+      "layer_to": "layer_3",
+      "node_to": "Mimus_parvulus",
+      "weight": 0.045454545,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Tournefortia_pubescens",
+      "layer_to": "layer_3",
+      "node_to": "Mimus_parvulus",
+      "weight": 0.045454545,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Acacia_rorudiana",
+      "layer_to": "layer_3",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.012345679,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Alternanthera_echinocephala",
+      "layer_to": "layer_3",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.030864198,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Brassica_oleracea",
+      "layer_to": "layer_3",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.00617284,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Bursera_graveolens",
+      "layer_to": "layer_3",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.141975309,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Casuarina_equisetifolia",
+      "layer_to": "layer_3",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.018518519,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Ceiba_pentandra",
+      "layer_to": "layer_3",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.00617284,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Chamaesyce_ophthalmica",
+      "layer_to": "layer_3",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.00617284,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Chamaesyce_recurva",
+      "layer_to": "layer_3",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.061728395,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Croton_scouleri",
+      "layer_to": "layer_3",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.043209877,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Cryptocarpus_pyriformis",
+      "layer_to": "layer_3",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.00617284,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Eragrostis_ciliaris",
+      "layer_to": "layer_3",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.00617284,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Galactia_striata",
+      "layer_to": "layer_3",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.049382716,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Hippobroma_longiflora",
+      "layer_to": "layer_3",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.00617284,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Hippomane_mancinella",
+      "layer_to": "layer_3",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.012345679,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Impatiens_balsamina",
+      "layer_to": "layer_3",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.024691358,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Jasminocereus_thouarsii",
+      "layer_to": "layer_3",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.00617284,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Maytenus_octogona",
+      "layer_to": "layer_3",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.00617284,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Mentzelia_aspera",
+      "layer_to": "layer_3",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.037037037,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Nolana_galapagensis",
+      "layer_to": "layer_3",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.074074074,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Opuntia_echios",
+      "layer_to": "layer_3",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.154320988,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Opuntia_ficus-indica",
+      "layer_to": "layer_3",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.012345679,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Passiflora_colinvauxii",
+      "layer_to": "layer_3",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.00617284,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Passiflora_suberosa",
+      "layer_to": "layer_3",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.018518519,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Pernettya_howellii",
+      "layer_to": "layer_3",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.00617284,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Plumbago_scandens",
+      "layer_to": "layer_3",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.00617284,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Polyscias_guilfoylei",
+      "layer_to": "layer_3",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.00617284,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Psidium_galapageium",
+      "layer_to": "layer_3",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.00617284,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Psidium_guajava",
+      "layer_to": "layer_3",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.166666667,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Rhynchosia_minima",
+      "layer_to": "layer_3",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.018518519,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Russelia_equisetiformis",
+      "layer_to": "layer_3",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.00617284,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Sarcostemma_angustissimum",
+      "layer_to": "layer_3",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.00617284,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Scalesia_affinis",
+      "layer_to": "layer_3",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.00617284,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Syzygium_jambos",
+      "layer_to": "layer_3",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.00617284,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Tournefortia_pubescens",
+      "layer_to": "layer_3",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.018518519,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Alternanthera_echinocephala",
+      "layer_to": "layer_3",
+      "node_to": "Platyspiza_crassirostris",
+      "weight": 0.048780488,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Bursera_graveolens",
+      "layer_to": "layer_3",
+      "node_to": "Platyspiza_crassirostris",
+      "weight": 0.097560976,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Cereus_peruvianus",
+      "layer_to": "layer_3",
+      "node_to": "Platyspiza_crassirostris",
+      "weight": 0.024390244,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Chamaesyce_recurva",
+      "layer_to": "layer_3",
+      "node_to": "Platyspiza_crassirostris",
+      "weight": 0.073170732,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Cordia_leucophlyctis",
+      "layer_to": "layer_3",
+      "node_to": "Platyspiza_crassirostris",
+      "weight": 0.024390244,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Eragrostis_ciliaris",
+      "layer_to": "layer_3",
+      "node_to": "Platyspiza_crassirostris",
+      "weight": 0.024390244,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Galactia_striata",
+      "layer_to": "layer_3",
+      "node_to": "Platyspiza_crassirostris",
+      "weight": 0.097560976,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Hippomane_mancinella",
+      "layer_to": "layer_3",
+      "node_to": "Platyspiza_crassirostris",
+      "weight": 0.024390244,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Impatiens_balsamina",
+      "layer_to": "layer_3",
+      "node_to": "Platyspiza_crassirostris",
+      "weight": 0.097560976,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Maytenus_octogona",
+      "layer_to": "layer_3",
+      "node_to": "Platyspiza_crassirostris",
+      "weight": 0.024390244,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Mentzelia_aspera",
+      "layer_to": "layer_3",
+      "node_to": "Platyspiza_crassirostris",
+      "weight": 0.024390244,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Nolana_galapagensis",
+      "layer_to": "layer_3",
+      "node_to": "Platyspiza_crassirostris",
+      "weight": 0.024390244,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Opuntia_echios",
+      "layer_to": "layer_3",
+      "node_to": "Platyspiza_crassirostris",
+      "weight": 0.073170732,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Opuntia_sp.",
+      "layer_to": "layer_3",
+      "node_to": "Platyspiza_crassirostris",
+      "weight": 0.024390244,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Passiflora_colinvauxii",
+      "layer_to": "layer_3",
+      "node_to": "Platyspiza_crassirostris",
+      "weight": 0.048780488,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Passiflora_foetida",
+      "layer_to": "layer_3",
+      "node_to": "Platyspiza_crassirostris",
+      "weight": 0.048780488,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Passiflora_suberosa",
+      "layer_to": "layer_3",
+      "node_to": "Platyspiza_crassirostris",
+      "weight": 0.097560976,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Plumbago_scandens",
+      "layer_to": "layer_3",
+      "node_to": "Platyspiza_crassirostris",
+      "weight": 0.024390244,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Psidium_guajava",
+      "layer_to": "layer_3",
+      "node_to": "Platyspiza_crassirostris",
+      "weight": 0.048780488,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Rhynchosia_minima",
+      "layer_to": "layer_3",
+      "node_to": "Platyspiza_crassirostris",
+      "weight": 0.048780488,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Alternanthera_echinocephala",
+      "layer_to": "layer_3",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.063157895,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Brassica_sp.",
+      "layer_to": "layer_3",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.010526316,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Bursera_graveolens",
+      "layer_to": "layer_3",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.021052632,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Cardiospermum_galapageium",
+      "layer_to": "layer_3",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.042105263,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Chamaesyce_recurva",
+      "layer_to": "layer_3",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.063157895,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Cordia_leucophlyctis",
+      "layer_to": "layer_3",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.010526316,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Cryptocarpus_pyriformis",
+      "layer_to": "layer_3",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.010526316,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Galactia_striata",
+      "layer_to": "layer_3",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.052631579,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Gossypium_darwinii",
+      "layer_to": "layer_3",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.010526316,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Hippomane_mancinella",
+      "layer_to": "layer_3",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.021052632,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Impatiens_balsamina",
+      "layer_to": "layer_3",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.073684211,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Mentzelia_aspera",
+      "layer_to": "layer_3",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.063157895,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Nolana_galapagensis",
+      "layer_to": "layer_3",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.136842105,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Opuntia_echios",
+      "layer_to": "layer_3",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.031578947,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Opuntia_ficus-indica",
+      "layer_to": "layer_3",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.010526316,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Passiflora_colinvauxii",
+      "layer_to": "layer_3",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.010526316,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Pernettya_howellii",
+      "layer_to": "layer_3",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.031578947,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Polyscias_guilfoylei",
+      "layer_to": "layer_3",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.010526316,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Psidium_guajava",
+      "layer_to": "layer_3",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.189473684,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Rhynchosia_minima",
+      "layer_to": "layer_3",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.021052632,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Russelia_equisetiformis",
+      "layer_to": "layer_3",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.031578947,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Scalesia_affinis",
+      "layer_to": "layer_3",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.031578947,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Senna_occidentalis",
+      "layer_to": "layer_3",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.010526316,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Syzygium_jambos",
+      "layer_to": "layer_3",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.042105263,
+      "type": "pollination",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Boerhavia_coccinea",
+      "layer_to": "layer_2",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.016666667,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Chiococca_alba",
+      "layer_to": "layer_2",
+      "node_to": "Mimus_melanotis",
+      "weight": 0.37254902,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Cyperaceae_cf._Eleocharis_sp.1",
+      "layer_to": "layer_2",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.242165242,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Desmodium_incanum",
+      "layer_to": "layer_2",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.008547009,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Desmodium_incanum",
+      "layer_to": "layer_2",
+      "node_to": "Geospiza_magnirostris",
+      "weight": 0.333333334,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Desmodium_procumbens",
+      "layer_to": "layer_2",
+      "node_to": "Geospiza_magnirostris",
+      "weight": 0.166666666,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Elecharis_maculosa",
+      "layer_to": "layer_2",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.005698006,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Eragrostis_sp.",
+      "layer_to": "layer_2",
+      "node_to": "Camarhynchus_pallidus",
+      "weight": 0.2,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Eragrostis_sp.",
+      "layer_to": "layer_2",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.045454545,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Eragrostis_sp.",
+      "layer_to": "layer_2",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.166666667,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Eragrostis_sp.",
+      "layer_to": "layer_2",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.13960114,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Eragrostis_sp.",
+      "layer_to": "layer_2",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.027777778,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Erichloa_pacifica",
+      "layer_to": "layer_2",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.025641026,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Fimbristylis_dichotoma",
+      "layer_to": "layer_2",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.016666667,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Fimbristylis_dichotoma",
+      "layer_to": "layer_2",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.076923077,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Hypoxis_decumbens",
+      "layer_to": "layer_2",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.002849003,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Lantana_camara",
+      "layer_to": "layer_2",
+      "node_to": "Mimus_melanotis",
+      "weight": 0.098039216,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Lantana_camara",
+      "layer_to": "layer_2",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.222222222,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Ludwigia_leptocarpa",
+      "layer_to": "layer_2",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.005698006,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Maytenus_octogona",
+      "layer_to": "layer_2",
+      "node_to": "Mimus_melanotis",
+      "weight": 0.019607843,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Mentzelia_aspera",
+      "layer_to": "layer_2",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.002849003,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Miconia_robinsoniana",
+      "layer_to": "layer_2",
+      "node_to": "Camarhynchus_pallidus",
+      "weight": 0.5,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Miconia_robinsoniana",
+      "layer_to": "layer_2",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.5,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Miconia_robinsoniana",
+      "layer_to": "layer_2",
+      "node_to": "Certhidea_fusca",
+      "weight": 0.5,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Miconia_robinsoniana",
+      "layer_to": "layer_2",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.633333333,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Miconia_robinsoniana",
+      "layer_to": "layer_2",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.333333333,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Miconia_robinsoniana",
+      "layer_to": "layer_2",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.062678063,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Miconia_robinsoniana",
+      "layer_to": "layer_2",
+      "node_to": "Geospiza_magnirostris",
+      "weight": 0.166666666,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Miconia_robinsoniana",
+      "layer_to": "layer_2",
+      "node_to": "Mimus_melanotis",
+      "weight": 0.019607843,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Miconia_robinsoniana",
+      "layer_to": "layer_2",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.055555556,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Oxalis_sp.1",
+      "layer_to": "layer_2",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.01994302,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Paspalum_conjugatum",
+      "layer_to": "layer_2",
+      "node_to": "Camarhynchus_pallidus",
+      "weight": 0.1,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Paspalum_conjugatum",
+      "layer_to": "layer_2",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.045454545,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Paspalum_conjugatum",
+      "layer_to": "layer_2",
+      "node_to": "Certhidea_fusca",
+      "weight": 0.166666666,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Paspalum_conjugatum",
+      "layer_to": "layer_2",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.2,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Paspalum_conjugatum",
+      "layer_to": "layer_2",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.153846154,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Passiflora_foetida",
+      "layer_to": "layer_2",
+      "node_to": "Mimus_melanotis",
+      "weight": 0.019607843,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Pennisetum_purpureum",
+      "layer_to": "layer_2",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.016666667,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Poaceae",
+      "layer_to": "layer_2",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.090909091,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Poaceae",
+      "layer_to": "layer_2",
+      "node_to": "Certhidea_fusca",
+      "weight": 0.166666666,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Poaceae",
+      "layer_to": "layer_2",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.05,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Poaceae",
+      "layer_to": "layer_2",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.083333333,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Poaceae",
+      "layer_to": "layer_2",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.088319088,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Poaceae",
+      "layer_to": "layer_2",
+      "node_to": "Geospiza_magnirostris",
+      "weight": 0.166666666,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Polygonum_galapagense",
+      "layer_to": "layer_2",
+      "node_to": "Camarhynchus_pallidus",
+      "weight": 0.1,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Polygonum_galapagense",
+      "layer_to": "layer_2",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.045584046,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Portulaca_oleracea",
+      "layer_to": "layer_2",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.017094017,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Portulaca_oleracea",
+      "layer_to": "layer_2",
+      "node_to": "Mimus_melanotis",
+      "weight": 0.019607843,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Psidium_guajava",
+      "layer_to": "layer_2",
+      "node_to": "Mimus_melanotis",
+      "weight": 0.019607843,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Rubus_niveus",
+      "layer_to": "layer_2",
+      "node_to": "Camarhynchus_pallidus",
+      "weight": 0.1,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Rubus_niveus",
+      "layer_to": "layer_2",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.045454545,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Rubus_niveus",
+      "layer_to": "layer_2",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.166666667,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Rubus_niveus",
+      "layer_to": "layer_2",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.002849003,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Rubus_niveus",
+      "layer_to": "layer_2",
+      "node_to": "Mimus_melanotis",
+      "weight": 0.137254902,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Rubus_niveus",
+      "layer_to": "layer_2",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.111111111,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Scutia_spicata",
+      "layer_to": "layer_2",
+      "node_to": "Mimus_melanotis",
+      "weight": 0.019607843,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Seed_13",
+      "layer_to": "layer_2",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.016666667,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Seed_27",
+      "layer_to": "layer_2",
+      "node_to": "Certhidea_fusca",
+      "weight": 0.166666666,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Seed_27",
+      "layer_to": "layer_2",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.083333333,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Seed_27",
+      "layer_to": "layer_2",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.042735043,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Seed_56",
+      "layer_to": "layer_2",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.022792023,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Solanum_americanum",
+      "layer_to": "layer_2",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.045454545,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Talinum_paniculatum",
+      "layer_to": "layer_2",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.227272727,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Talinum_paniculatum",
+      "layer_to": "layer_2",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.033333333,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Talinum_paniculatum",
+      "layer_to": "layer_2",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.166666667,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Talinum_paniculatum",
+      "layer_to": "layer_2",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.031339031,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Talinum_paniculatum",
+      "layer_to": "layer_2",
+      "node_to": "Geospiza_magnirostris",
+      "weight": 0.166666666,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Tournefortia_psilostachya",
+      "layer_to": "layer_2",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.016666667,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Tournefortia_psilostachya",
+      "layer_to": "layer_2",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.002849003,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Tournefortia_psilostachya",
+      "layer_to": "layer_2",
+      "node_to": "Mimus_melanotis",
+      "weight": 0.098039216,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Tournefortia_pubescens",
+      "layer_to": "layer_2",
+      "node_to": "Mimus_melanotis",
+      "weight": 0.039215686,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Tournefortia_pubescens",
+      "layer_to": "layer_2",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.055555556,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Vallesia_glabra",
+      "layer_to": "layer_2",
+      "node_to": "Mimus_melanotis",
+      "weight": 0.019607843,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Zanthoxylum_fagara",
+      "layer_to": "layer_2",
+      "node_to": "Mimus_melanotis",
+      "weight": 0.117647059,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_2",
+      "node_from": "Zanthoxylum_fagara",
+      "layer_to": "layer_2",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.527777778,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Bursera_graveolens",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_scandens",
+      "weight": 0.0625,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Bursera_graveolens",
+      "layer_to": "layer_4",
+      "node_to": "Mimus_parvulus",
+      "weight": 0.028571429,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Capsicum_frutescens",
+      "layer_to": "layer_4",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.090909091,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "cf._Malvaceae",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.008547009,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Chiococca_alba",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_scandens",
+      "weight": 0.03125,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Cordia_leucophlyctis",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_scandens",
+      "weight": 0.015625,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Cordia_lutea",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_scandens",
+      "weight": 0.046875,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Cyperaceae_cf._Eleocharis_sp.1",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.256410256,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Cyperaceae_cf._Eleocharis_sp.1",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.246376812,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Cyperaceae_cf._Eleocharis_sp.1",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_magnirostris",
+      "weight": 0.4,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Cyperaceae_cf._Eleocharis_sp.1",
+      "layer_to": "layer_4",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.052631579,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Desmodium_incanum",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.008547009,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Desmodium_procumbens",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.017094017,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Desmodium_procumbens",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.014492754,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Desmodium_procumbens",
+      "layer_to": "layer_4",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.052631579,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Eragrostis_sp.",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.094017094,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Eragrostis_sp.",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.115942029,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Eragrostis_sp.",
+      "layer_to": "layer_4",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.090909091,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Erichloa_pacifica",
+      "layer_to": "layer_4",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.090909091,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Erichloa_pacifica",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.025641026,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Erichloa_pacifica",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.014492754,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Erichloa_pacifica",
+      "layer_to": "layer_4",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.105263158,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Lantana_peduncularis",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_scandens",
+      "weight": 0.015625,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Mentzelia_aspera",
+      "layer_to": "layer_4",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.363636364,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Mentzelia_aspera",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.068376068,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Mentzelia_aspera",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.043478261,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Mentzelia_aspera",
+      "layer_to": "layer_4",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.052631579,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Miconia_robinsoniana",
+      "layer_to": "layer_4",
+      "node_to": "Camarhynchus_pallidus",
+      "weight": 1,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Miconia_robinsoniana",
+      "layer_to": "layer_4",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.545454545,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Miconia_robinsoniana",
+      "layer_to": "layer_4",
+      "node_to": "Certhidea_olivacea",
+      "weight": 1,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Miconia_robinsoniana",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.102564103,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Miconia_robinsoniana",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.15942029,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Miconia_robinsoniana",
+      "layer_to": "layer_4",
+      "node_to": "Mimus_parvulus",
+      "weight": 0.142857143,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Miconia_robinsoniana",
+      "layer_to": "layer_4",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.363636364,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Miconia_robinsoniana",
+      "layer_to": "layer_4",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.157894737,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Momordica_charantia",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_scandens",
+      "weight": 0.015625,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Opuntia_echios",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_magnirostris",
+      "weight": 0.2,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Oxalis_sp.1",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.076923077,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Oxalis_sp.1",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.043478261,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Panicum_sp.",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.008547009,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Panicum_sp.",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.014492754,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Paspalum_conjugatum",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.042735043,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Paspalum_conjugatum",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.057971014,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Pilea_baurii",
+      "layer_to": "layer_4",
+      "node_to": "Mimus_parvulus",
+      "weight": 0.028571429,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Poaceae",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.05982906,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Poaceae",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.014492754,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Poaceae",
+      "layer_to": "layer_4",
+      "node_to": "Mimus_parvulus",
+      "weight": 0.028571429,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Poaceae",
+      "layer_to": "layer_4",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.090909091,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Poaceae",
+      "layer_to": "layer_4",
+      "node_to": "Platyspiza_crassirostris",
+      "weight": 0.333333333,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Poaceae",
+      "layer_to": "layer_4",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.210526316,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Polygonum_galapagense",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.136752137,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Polygonum_galapagense",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.15942029,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Polygonum_galapagense",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_magnirostris",
+      "weight": 0.2,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Polygonum_galapagense",
+      "layer_to": "layer_4",
+      "node_to": "Platyspiza_crassirostris",
+      "weight": 0.333333333,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Polygonum_galapagense",
+      "layer_to": "layer_4",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.157894737,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Portulaca_oleracea",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.042735043,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Portulaca_oleracea",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.057971014,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Rubus_niveus",
+      "layer_to": "layer_4",
+      "node_to": "Mimus_parvulus",
+      "weight": 0.2,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Scutia_spicata",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_scandens",
+      "weight": 0.03125,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Scutia_spicata",
+      "layer_to": "layer_4",
+      "node_to": "Mimus_parvulus",
+      "weight": 0.171428571,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Seed_01",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.017094017,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Seed_01",
+      "layer_to": "layer_4",
+      "node_to": "Mimus_parvulus",
+      "weight": 0.028571429,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Seed_01",
+      "layer_to": "layer_4",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.181818182,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Seed_01",
+      "layer_to": "layer_4",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.105263158,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Seed_27",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.008547009,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Seed_27",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.014492754,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Seed_56",
+      "layer_to": "layer_4",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.052631579,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Sida_spinosa",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.008547009,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Sida_spinosa",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.014492754,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Talinum_paniculatum",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.008547009,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Talinum_paniculatum",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.014492754,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Talinum_paniculatum",
+      "layer_to": "layer_4",
+      "node_to": "Platyspiza_crassirostris",
+      "weight": 0.333333333,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Tournefortia_psilostachya",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_magnirostris",
+      "weight": 0.2,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Tournefortia_psilostachya",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_scandens",
+      "weight": 0.484375,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Tournefortia_psilostachya",
+      "layer_to": "layer_4",
+      "node_to": "Mimus_parvulus",
+      "weight": 0.314285714,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Tournefortia_psilostachya",
+      "layer_to": "layer_4",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.181818182,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Tournefortia_psilostachya",
+      "layer_to": "layer_4",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.052631579,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Tournefortia_pubescens",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_scandens",
+      "weight": 0.25,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Tournefortia_rufo-sericea",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_scandens",
+      "weight": 0.015625,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Tradescantia_fluminensis",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.008547009,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Tradescantia_fluminensis",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.014492754,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Vallesia_glabra",
+      "layer_to": "layer_4",
+      "node_to": "Mimus_parvulus",
+      "weight": 0.028571429,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Zanthoxylum_fagara",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_scandens",
+      "weight": 0.03125,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_4",
+      "node_from": "Zanthoxylum_fagara",
+      "layer_to": "layer_4",
+      "node_to": "Mimus_parvulus",
+      "weight": 0.028571429,
+      "type": "seed-dispersal",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Camarhynchus_pallidus",
+      "layer_to": "layer_2",
+      "node_to": "Camarhynchus_pallidus",
+      "weight": 0.4631,
+      "type": "interlayer",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Camarhynchus_parvulus",
+      "layer_to": "layer_2",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.4968,
+      "type": "interlayer",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Certhidea_fusca",
+      "layer_to": "layer_2",
+      "node_to": "Certhidea_fusca",
+      "weight": 0.5015,
+      "type": "interlayer",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Geospiza_fortis",
+      "layer_to": "layer_2",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.5073,
+      "type": "interlayer",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Geospiza_fuliginosa",
+      "layer_to": "layer_2",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.743,
+      "type": "interlayer",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Geospiza_magnirostris",
+      "layer_to": "layer_2",
+      "node_to": "Geospiza_magnirostris",
+      "weight": 0.514,
+      "type": "interlayer",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Mimus_melanotis",
+      "layer_to": "layer_2",
+      "node_to": "Mimus_melanotis",
+      "weight": 0.4164,
+      "type": "interlayer",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Myiarchus_magnirostris",
+      "layer_to": "layer_2",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.5288,
+      "type": "interlayer",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_1",
+      "node_from": "Setophaga_petechia",
+      "layer_to": "layer_2",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.607,
+      "type": "interlayer",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Camarhynchus_parvulus",
+      "layer_to": "layer_4",
+      "node_to": "Camarhynchus_parvulus",
+      "weight": 0.566328482,
+      "type": "interlayer",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Geospiza_fortis",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_fortis",
+      "weight": 0.70026227,
+      "type": "interlayer",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Geospiza_fuliginosa",
+      "layer_to": "layer_4",
+      "node_to": "Geospiza_fuliginosa",
+      "weight": 0.89,
+      "type": "interlayer",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Mimus_parvulus",
+      "layer_to": "layer_4",
+      "node_to": "Mimus_parvulus",
+      "weight": 0.522295031,
+      "type": "interlayer",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Myiarchus_magnirostris",
+      "layer_to": "layer_4",
+      "node_to": "Myiarchus_magnirostris",
+      "weight": 0.710048229,
+      "type": "interlayer",
+      "directed": true
+    },
+    {
+      "layer_from": "layer_3",
+      "node_from": "Setophaga_petechia",
+      "layer_to": "layer_4",
+      "node_to": "Setophaga_petechia",
+      "weight": 0.815140146,
+      "type": "interlayer",
+      "directed": true
+    }
+  ],
+  "state_nodes": [
+    {
+      "layer_id": 1,
+      "node_id": 1,
+      "layer_name": "layer_1",
+      "node_name": "Cereus_sp."
+    },
+    {
+      "layer_id": 1,
+      "node_id": 2,
+      "layer_name": "layer_1",
+      "node_name": "Chamaesyce_recurva"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 3,
+      "layer_name": "layer_1",
+      "node_name": "Galactia_striata"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 4,
+      "layer_name": "layer_1",
+      "node_name": "Opuntia_megasperma"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 5,
+      "layer_name": "layer_1",
+      "node_name": "Polyscias_guilfoylei"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 6,
+      "layer_name": "layer_1",
+      "node_name": "Psidium_guajava"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 7,
+      "layer_name": "layer_1",
+      "node_name": "Rubus_niveus"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 8,
+      "layer_name": "layer_1",
+      "node_name": "Alternanthera_echinocephala"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 9,
+      "layer_name": "layer_1",
+      "node_name": "Ceiba_pentandra"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 10,
+      "layer_name": "layer_1",
+      "node_name": "Hypericum_thesiifolium"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 11,
+      "layer_name": "layer_1",
+      "node_name": "Impatiens_balsamina"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 12,
+      "layer_name": "layer_1",
+      "node_name": "Lantana_peduncularis"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 13,
+      "layer_name": "layer_1",
+      "node_name": "Mentzelia_aspera"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 14,
+      "layer_name": "layer_1",
+      "node_name": "Nolana_galapagensis"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 15,
+      "layer_name": "layer_1",
+      "node_name": "Passiflora_foetida"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 16,
+      "layer_name": "layer_1",
+      "node_name": "Passiflora_suberosa"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 17,
+      "layer_name": "layer_1",
+      "node_name": "Plumbago_scandens"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 18,
+      "layer_name": "layer_1",
+      "node_name": "Psidium_sp."
+    },
+    {
+      "layer_id": 1,
+      "node_id": 19,
+      "layer_name": "layer_1",
+      "node_name": "Rhynchosia_minima"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 20,
+      "layer_name": "layer_1",
+      "node_name": "Scalesia_sp"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 21,
+      "layer_name": "layer_1",
+      "node_name": "Syzygium_jambos"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 22,
+      "layer_name": "layer_1",
+      "node_name": "Cardiospermum_galapageium"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 23,
+      "layer_name": "layer_1",
+      "node_name": "Brassica_sp."
+    },
+    {
+      "layer_id": 1,
+      "node_id": 24,
+      "layer_name": "layer_1",
+      "node_name": "Calandrinia_galapagosa"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 25,
+      "layer_name": "layer_1",
+      "node_name": "Cleome_viscosa"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 26,
+      "layer_name": "layer_1",
+      "node_name": "Croton_scouleri"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 27,
+      "layer_name": "layer_1",
+      "node_name": "Eragrostis_ciliaris"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 28,
+      "layer_name": "layer_1",
+      "node_name": "Gen._sp.3"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 29,
+      "layer_name": "layer_1",
+      "node_name": "Gossypium_darwinii"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 30,
+      "layer_name": "layer_1",
+      "node_name": "Passiflora_sp.1"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 31,
+      "layer_name": "layer_1",
+      "node_name": "Pectis_linifolia"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 32,
+      "layer_name": "layer_1",
+      "node_name": "Sesuvium_portulacastrum"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 33,
+      "layer_name": "layer_1",
+      "node_name": "Chamaesyce_punctulata"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 34,
+      "layer_name": "layer_1",
+      "node_name": "Cordia_leucophlyctis"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 35,
+      "layer_name": "layer_1",
+      "node_name": "Cressa_truxillensis"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 36,
+      "layer_name": "layer_1",
+      "node_name": "Dianthus_caryophyllus"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 37,
+      "layer_name": "layer_1",
+      "node_name": "Evolvulus_convolvuloides"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 38,
+      "layer_name": "layer_1",
+      "node_name": "Gen._sp.2"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 39,
+      "layer_name": "layer_1",
+      "node_name": "Hibiscus_sp."
+    },
+    {
+      "layer_id": 1,
+      "node_id": 40,
+      "layer_name": "layer_1",
+      "node_name": "Hippomane_mancinella"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 41,
+      "layer_name": "layer_1",
+      "node_name": "Luffa_cylindrica"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 42,
+      "layer_name": "layer_1",
+      "node_name": "Miconia_robinsoniana"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 43,
+      "layer_name": "layer_1",
+      "node_name": "Passiflora_ligularis"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 44,
+      "layer_name": "layer_1",
+      "node_name": "Scalesia_incisa"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 45,
+      "layer_name": "layer_1",
+      "node_name": "Senna_septemtrionalis"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 46,
+      "layer_name": "layer_1",
+      "node_name": "Waltheria_ovata"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 47,
+      "layer_name": "layer_1",
+      "node_name": "Gen._sp.1"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 48,
+      "layer_name": "layer_1",
+      "node_name": "Chiococca_alba"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 49,
+      "layer_name": "layer_1",
+      "node_name": "Physalis_pubescens"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 11,
+      "layer_name": "layer_3",
+      "node_name": "Impatiens_balsamina"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 13,
+      "layer_name": "layer_3",
+      "node_name": "Mentzelia_aspera"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 14,
+      "layer_name": "layer_3",
+      "node_name": "Nolana_galapagensis"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 6,
+      "layer_name": "layer_3",
+      "node_name": "Psidium_guajava"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 21,
+      "layer_name": "layer_3",
+      "node_name": "Syzygium_jambos"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 50,
+      "layer_name": "layer_3",
+      "node_name": "Acacia_rorudiana"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 8,
+      "layer_name": "layer_3",
+      "node_name": "Alternanthera_echinocephala"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 23,
+      "layer_name": "layer_3",
+      "node_name": "Brassica_sp."
+    },
+    {
+      "layer_id": 3,
+      "node_id": 51,
+      "layer_name": "layer_3",
+      "node_name": "Bursera_graveolens"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 22,
+      "layer_name": "layer_3",
+      "node_name": "Cardiospermum_galapageium"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 52,
+      "layer_name": "layer_3",
+      "node_name": "Carica_x_heilbornii"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 53,
+      "layer_name": "layer_3",
+      "node_name": "Chamaesyce_ophthalmica"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 2,
+      "layer_name": "layer_3",
+      "node_name": "Chamaesyce_recurva"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 25,
+      "layer_name": "layer_3",
+      "node_name": "Cleome_viscosa"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 26,
+      "layer_name": "layer_3",
+      "node_name": "Croton_scouleri"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 3,
+      "layer_name": "layer_3",
+      "node_name": "Galactia_striata"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 40,
+      "layer_name": "layer_3",
+      "node_name": "Hippomane_mancinella"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 54,
+      "layer_name": "layer_3",
+      "node_name": "Maytenus_octogona"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 55,
+      "layer_name": "layer_3",
+      "node_name": "Opuntia_echios"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 56,
+      "layer_name": "layer_3",
+      "node_name": "Passiflora_colinvauxii"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 16,
+      "layer_name": "layer_3",
+      "node_name": "Passiflora_suberosa"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 5,
+      "layer_name": "layer_3",
+      "node_name": "Polyscias_guilfoylei"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 19,
+      "layer_name": "layer_3",
+      "node_name": "Rhynchosia_minima"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 57,
+      "layer_name": "layer_3",
+      "node_name": "Scalesia_affinis"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 58,
+      "layer_name": "layer_3",
+      "node_name": "Tiquilia_darwinii"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 59,
+      "layer_name": "layer_3",
+      "node_name": "Casuarina_equisetifolia"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 60,
+      "layer_name": "layer_3",
+      "node_name": "Cryptocarpus_pyriformis"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 61,
+      "layer_name": "layer_3",
+      "node_name": "Dalechampia_scandens"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 27,
+      "layer_name": "layer_3",
+      "node_name": "Eragrostis_ciliaris"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 62,
+      "layer_name": "layer_3",
+      "node_name": "Ipomoea_sp."
+    },
+    {
+      "layer_id": 3,
+      "node_id": 63,
+      "layer_name": "layer_3",
+      "node_name": "Jasminocereus_thouarsii"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 64,
+      "layer_name": "layer_3",
+      "node_name": "Opuntia_ficus-indica"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 65,
+      "layer_name": "layer_3",
+      "node_name": "Passiflora_sp"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 17,
+      "layer_name": "layer_3",
+      "node_name": "Plumbago_scandens"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 66,
+      "layer_name": "layer_3",
+      "node_name": "Psidium_galapageium"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 67,
+      "layer_name": "layer_3",
+      "node_name": "Russelia_equisetiformis"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 68,
+      "layer_name": "layer_3",
+      "node_name": "Tournefortia_pubescens"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 69,
+      "layer_name": "layer_3",
+      "node_name": "Cereus_peruvianus"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 34,
+      "layer_name": "layer_3",
+      "node_name": "Cordia_leucophlyctis"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 37,
+      "layer_name": "layer_3",
+      "node_name": "Evolvulus_convolvuloides"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 70,
+      "layer_name": "layer_3",
+      "node_name": "Hylocereus_polyrhizus"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 71,
+      "layer_name": "layer_3",
+      "node_name": "Iochroma_ellipticum"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 12,
+      "layer_name": "layer_3",
+      "node_name": "Lantana_peduncularis"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 15,
+      "layer_name": "layer_3",
+      "node_name": "Passiflora_foetida"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 43,
+      "layer_name": "layer_3",
+      "node_name": "Passiflora_ligularis"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 72,
+      "layer_name": "layer_3",
+      "node_name": "Pernettya_howellii"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 73,
+      "layer_name": "layer_3",
+      "node_name": "Senna_occidentalis"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 74,
+      "layer_name": "layer_3",
+      "node_name": "Vallesia_glabra"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 75,
+      "layer_name": "layer_3",
+      "node_name": "Blainvillea_dichotoma"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 76,
+      "layer_name": "layer_3",
+      "node_name": "Alternanthera_filifolia"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 77,
+      "layer_name": "layer_3",
+      "node_name": "Cassia_grandis"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 78,
+      "layer_name": "layer_3",
+      "node_name": "Brassica_oleracea"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 9,
+      "layer_name": "layer_3",
+      "node_name": "Ceiba_pentandra"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 79,
+      "layer_name": "layer_3",
+      "node_name": "Hippobroma_longiflora"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 80,
+      "layer_name": "layer_3",
+      "node_name": "Sarcostemma_angustissimum"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 81,
+      "layer_name": "layer_3",
+      "node_name": "Opuntia_sp."
+    },
+    {
+      "layer_id": 3,
+      "node_id": 29,
+      "layer_name": "layer_3",
+      "node_name": "Gossypium_darwinii"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 82,
+      "layer_name": "layer_2",
+      "node_name": "Boerhavia_coccinea"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 48,
+      "layer_name": "layer_2",
+      "node_name": "Chiococca_alba"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 83,
+      "layer_name": "layer_2",
+      "node_name": "Cyperaceae_cf._Eleocharis_sp.1"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 84,
+      "layer_name": "layer_2",
+      "node_name": "Desmodium_incanum"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 85,
+      "layer_name": "layer_2",
+      "node_name": "Desmodium_procumbens"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 86,
+      "layer_name": "layer_2",
+      "node_name": "Elecharis_maculosa"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 87,
+      "layer_name": "layer_2",
+      "node_name": "Eragrostis_sp."
+    },
+    {
+      "layer_id": 2,
+      "node_id": 88,
+      "layer_name": "layer_2",
+      "node_name": "Erichloa_pacifica"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 89,
+      "layer_name": "layer_2",
+      "node_name": "Fimbristylis_dichotoma"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 90,
+      "layer_name": "layer_2",
+      "node_name": "Hypoxis_decumbens"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 91,
+      "layer_name": "layer_2",
+      "node_name": "Lantana_camara"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 92,
+      "layer_name": "layer_2",
+      "node_name": "Ludwigia_leptocarpa"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 54,
+      "layer_name": "layer_2",
+      "node_name": "Maytenus_octogona"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 13,
+      "layer_name": "layer_2",
+      "node_name": "Mentzelia_aspera"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 42,
+      "layer_name": "layer_2",
+      "node_name": "Miconia_robinsoniana"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 93,
+      "layer_name": "layer_2",
+      "node_name": "Oxalis_sp.1"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 94,
+      "layer_name": "layer_2",
+      "node_name": "Paspalum_conjugatum"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 15,
+      "layer_name": "layer_2",
+      "node_name": "Passiflora_foetida"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 95,
+      "layer_name": "layer_2",
+      "node_name": "Pennisetum_purpureum"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 96,
+      "layer_name": "layer_2",
+      "node_name": "Poaceae"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 97,
+      "layer_name": "layer_2",
+      "node_name": "Polygonum_galapagense"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 98,
+      "layer_name": "layer_2",
+      "node_name": "Portulaca_oleracea"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 6,
+      "layer_name": "layer_2",
+      "node_name": "Psidium_guajava"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 7,
+      "layer_name": "layer_2",
+      "node_name": "Rubus_niveus"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 99,
+      "layer_name": "layer_2",
+      "node_name": "Scutia_spicata"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 100,
+      "layer_name": "layer_2",
+      "node_name": "Seed_13"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 101,
+      "layer_name": "layer_2",
+      "node_name": "Seed_27"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 102,
+      "layer_name": "layer_2",
+      "node_name": "Seed_56"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 103,
+      "layer_name": "layer_2",
+      "node_name": "Solanum_americanum"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 104,
+      "layer_name": "layer_2",
+      "node_name": "Talinum_paniculatum"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 105,
+      "layer_name": "layer_2",
+      "node_name": "Tournefortia_psilostachya"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 68,
+      "layer_name": "layer_2",
+      "node_name": "Tournefortia_pubescens"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 74,
+      "layer_name": "layer_2",
+      "node_name": "Vallesia_glabra"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 106,
+      "layer_name": "layer_2",
+      "node_name": "Zanthoxylum_fagara"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 51,
+      "layer_name": "layer_4",
+      "node_name": "Bursera_graveolens"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 107,
+      "layer_name": "layer_4",
+      "node_name": "Capsicum_frutescens"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 108,
+      "layer_name": "layer_4",
+      "node_name": "cf._Malvaceae"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 48,
+      "layer_name": "layer_4",
+      "node_name": "Chiococca_alba"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 34,
+      "layer_name": "layer_4",
+      "node_name": "Cordia_leucophlyctis"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 109,
+      "layer_name": "layer_4",
+      "node_name": "Cordia_lutea"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 83,
+      "layer_name": "layer_4",
+      "node_name": "Cyperaceae_cf._Eleocharis_sp.1"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 84,
+      "layer_name": "layer_4",
+      "node_name": "Desmodium_incanum"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 85,
+      "layer_name": "layer_4",
+      "node_name": "Desmodium_procumbens"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 87,
+      "layer_name": "layer_4",
+      "node_name": "Eragrostis_sp."
+    },
+    {
+      "layer_id": 4,
+      "node_id": 88,
+      "layer_name": "layer_4",
+      "node_name": "Erichloa_pacifica"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 12,
+      "layer_name": "layer_4",
+      "node_name": "Lantana_peduncularis"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 13,
+      "layer_name": "layer_4",
+      "node_name": "Mentzelia_aspera"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 42,
+      "layer_name": "layer_4",
+      "node_name": "Miconia_robinsoniana"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 110,
+      "layer_name": "layer_4",
+      "node_name": "Momordica_charantia"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 55,
+      "layer_name": "layer_4",
+      "node_name": "Opuntia_echios"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 93,
+      "layer_name": "layer_4",
+      "node_name": "Oxalis_sp.1"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 111,
+      "layer_name": "layer_4",
+      "node_name": "Panicum_sp."
+    },
+    {
+      "layer_id": 4,
+      "node_id": 94,
+      "layer_name": "layer_4",
+      "node_name": "Paspalum_conjugatum"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 112,
+      "layer_name": "layer_4",
+      "node_name": "Pilea_baurii"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 96,
+      "layer_name": "layer_4",
+      "node_name": "Poaceae"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 97,
+      "layer_name": "layer_4",
+      "node_name": "Polygonum_galapagense"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 98,
+      "layer_name": "layer_4",
+      "node_name": "Portulaca_oleracea"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 7,
+      "layer_name": "layer_4",
+      "node_name": "Rubus_niveus"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 99,
+      "layer_name": "layer_4",
+      "node_name": "Scutia_spicata"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 113,
+      "layer_name": "layer_4",
+      "node_name": "Seed_01"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 101,
+      "layer_name": "layer_4",
+      "node_name": "Seed_27"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 102,
+      "layer_name": "layer_4",
+      "node_name": "Seed_56"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 114,
+      "layer_name": "layer_4",
+      "node_name": "Sida_spinosa"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 104,
+      "layer_name": "layer_4",
+      "node_name": "Talinum_paniculatum"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 105,
+      "layer_name": "layer_4",
+      "node_name": "Tournefortia_psilostachya"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 68,
+      "layer_name": "layer_4",
+      "node_name": "Tournefortia_pubescens"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 115,
+      "layer_name": "layer_4",
+      "node_name": "Tournefortia_rufo-sericea"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 116,
+      "layer_name": "layer_4",
+      "node_name": "Tradescantia_fluminensis"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 74,
+      "layer_name": "layer_4",
+      "node_name": "Vallesia_glabra"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 106,
+      "layer_name": "layer_4",
+      "node_name": "Zanthoxylum_fagara"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 117,
+      "layer_name": "layer_1",
+      "node_name": "Camarhynchus_pallidus"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 118,
+      "layer_name": "layer_1",
+      "node_name": "Camarhynchus_parvulus"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 119,
+      "layer_name": "layer_1",
+      "node_name": "Certhidea_fusca"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 120,
+      "layer_name": "layer_1",
+      "node_name": "Geospiza_fortis"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 121,
+      "layer_name": "layer_1",
+      "node_name": "Geospiza_fuliginosa"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 122,
+      "layer_name": "layer_1",
+      "node_name": "Geospiza_magnirostris"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 123,
+      "layer_name": "layer_1",
+      "node_name": "Mimus_melanotis"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 124,
+      "layer_name": "layer_1",
+      "node_name": "Myiarchus_magnirostris"
+    },
+    {
+      "layer_id": 1,
+      "node_id": 125,
+      "layer_name": "layer_1",
+      "node_name": "Setophaga_petechia"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 118,
+      "layer_name": "layer_3",
+      "node_name": "Camarhynchus_parvulus"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 120,
+      "layer_name": "layer_3",
+      "node_name": "Geospiza_fortis"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 121,
+      "layer_name": "layer_3",
+      "node_name": "Geospiza_fuliginosa"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 128,
+      "layer_name": "layer_3",
+      "node_name": "Mimus_parvulus"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 124,
+      "layer_name": "layer_3",
+      "node_name": "Myiarchus_magnirostris"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 125,
+      "layer_name": "layer_3",
+      "node_name": "Setophaga_petechia"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 117,
+      "layer_name": "layer_3",
+      "node_name": "Camarhynchus_pallidus"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 126,
+      "layer_name": "layer_3",
+      "node_name": "Certhidea_olivacea"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 122,
+      "layer_name": "layer_3",
+      "node_name": "Geospiza_magnirostris"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 127,
+      "layer_name": "layer_3",
+      "node_name": "Geospiza_scandens"
+    },
+    {
+      "layer_id": 3,
+      "node_id": 129,
+      "layer_name": "layer_3",
+      "node_name": "Platyspiza_crassirostris"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 125,
+      "layer_name": "layer_2",
+      "node_name": "Setophaga_petechia"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 123,
+      "layer_name": "layer_2",
+      "node_name": "Mimus_melanotis"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 121,
+      "layer_name": "layer_2",
+      "node_name": "Geospiza_fuliginosa"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 122,
+      "layer_name": "layer_2",
+      "node_name": "Geospiza_magnirostris"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 117,
+      "layer_name": "layer_2",
+      "node_name": "Camarhynchus_pallidus"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 118,
+      "layer_name": "layer_2",
+      "node_name": "Camarhynchus_parvulus"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 120,
+      "layer_name": "layer_2",
+      "node_name": "Geospiza_fortis"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 124,
+      "layer_name": "layer_2",
+      "node_name": "Myiarchus_magnirostris"
+    },
+    {
+      "layer_id": 2,
+      "node_id": 119,
+      "layer_name": "layer_2",
+      "node_name": "Certhidea_fusca"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 127,
+      "layer_name": "layer_4",
+      "node_name": "Geospiza_scandens"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 128,
+      "layer_name": "layer_4",
+      "node_name": "Mimus_parvulus"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 124,
+      "layer_name": "layer_4",
+      "node_name": "Myiarchus_magnirostris"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 120,
+      "layer_name": "layer_4",
+      "node_name": "Geospiza_fortis"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 121,
+      "layer_name": "layer_4",
+      "node_name": "Geospiza_fuliginosa"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 122,
+      "layer_name": "layer_4",
+      "node_name": "Geospiza_magnirostris"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 125,
+      "layer_name": "layer_4",
+      "node_name": "Setophaga_petechia"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 118,
+      "layer_name": "layer_4",
+      "node_name": "Camarhynchus_parvulus"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 117,
+      "layer_name": "layer_4",
+      "node_name": "Camarhynchus_pallidus"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 126,
+      "layer_name": "layer_4",
+      "node_name": "Certhidea_olivacea"
+    },
+    {
+      "layer_id": 4,
+      "node_id": 129,
+      "layer_name": "layer_4",
+      "node_name": "Platyspiza_crassirostris"
+    }
+  ]
+}
