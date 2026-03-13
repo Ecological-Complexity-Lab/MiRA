@@ -384,13 +384,19 @@
           <input type="checkbox" id="exportGridCheckbox" checked>
           <span>Background grid</span>
         </label>
+        <label class="checkbox-label">
+          <input type="checkbox" id="exportPanelsCheckbox" checked>
+          <span>Include panels &amp; legend</span>
+        </label>
       </div>
       <div class="dialog-buttons">
         <button class="btn btn-primary" data-format="png">PNG</button>
         <button class="btn btn-primary" data-format="jpg">JPG</button>
         <button class="btn btn-primary" data-format="pdf">PDF</button>
+        <button class="btn btn-primary" id="exportSvgBtn" data-format="svg" title="Vector — not available in Map Mode">SVG</button>
         <button class="btn" id="exportCancelBtn">Cancel</button>
       </div>
+      <p id="exportSvgNote" style="font-size:11px;color:#9ca3af;margin:6px 0 0;display:none;">SVG is unavailable in Map Mode.</p>
     </div>
   </div>
 

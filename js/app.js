@@ -2353,8 +2353,13 @@ function _createLVLegendBtn(scale) {
 const captureBtn = document.getElementById('captureBtn');
 const exportDialog = document.getElementById('exportDialog');
 const exportCancelBtn = document.getElementById('exportCancelBtn');
+const exportSvgBtn = document.getElementById('exportSvgBtn');
+const exportSvgNote = document.getElementById('exportSvgNote');
 
 captureBtn.addEventListener('click', () => {
+    // SVG unavailable in map mode
+    exportSvgBtn.disabled = appMode === 'map';
+    exportSvgNote.style.display = appMode === 'map' ? '' : 'none';
     exportDialog.style.display = 'flex';
 });
 
@@ -2370,34 +2375,88 @@ exportDialog.addEventListener('click', (e) => {
 // Format buttons
 exportDialog.querySelectorAll('[data-format]').forEach(btn => {
     btn.addEventListener('click', async () => {
+        if (btn.disabled) return;
         const format = btn.dataset.format;
         exportDialog.style.display = 'none';
         await exportScreenshot(format);
     });
 });
 
-async function exportScreenshot(format) {
-    if (format === 'pdf') {
-        // Vector PDF — handled entirely by _exportPDF
-        await _exportPDF();
-        return;
+// ── Dynamic script loader ──────────────────────────────────────────────────
+async function _loadScript(src) {
+    const existing = document.querySelector(`script[src="${src}"]`);
+    if (existing) {
+        // Already loaded successfully — nothing to do
+        if (existing.dataset.loaded) return;
+        // Still in flight — wait for it
+        return new Promise((resolve, reject) => {
+            existing.addEventListener('load',  resolve, { once: true });
+            existing.addEventListener('error', reject,  { once: true });
+        });
     }
+    return new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = src;
+        s.onload  = () => { s.dataset.loaded = '1'; resolve(); };
+        s.onerror = reject;
+        document.head.appendChild(s);
+    });
+}
+
+// ── Composite visible overlay panels onto offscreen canvas ────────────────
+// Captures legend + drill/compare panels (if open) and draws them at their
+// screen positions, scaled to match the export resolution.
+async function _compositeOverlays(ctx, scale) {
+    await _loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+
+    const panels = [];
+
+    // Legend
+    const lp = document.getElementById('legendPanel');
+    if (lp && lp.children.length > 0) panels.push(lp);
+
+    // Layer stats / compare panels (only meaningful in layer view)
+    const drill = document.getElementById('layerDrillPanel');
+    if (drill && drill.style.opacity === '1') panels.push(drill);
+
+    const compare = document.getElementById('layerComparePanel');
+    if (compare && compare.style.opacity === '1') panels.push(compare);
+
+    for (const el of panels) {
+        const rect = el.getBoundingClientRect();
+        try {
+            const panelCanvas = await html2canvas(el, {
+                scale,
+                useCORS: true,
+                allowTaint: true,
+                backgroundColor: null,
+                logging: false,
+            });
+            ctx.drawImage(panelCanvas, rect.left * scale, rect.top * scale,
+                rect.width * scale, rect.height * scale);
+        } catch (e) {
+            console.warn('Panel capture failed for', el.id, e);
+        }
+    }
+}
+
+async function exportScreenshot(format) {
+    if (format === 'svg') { await _exportSVG(); return; }
+    if (format === 'pdf') { await _exportPDF(); return; }
 
     // Raster export (PNG / JPG)
     const srcCanvas = document.getElementById('networkCanvas');
-    const scale = 2; // 2x for high-quality export
+    const scale = 2;
 
-    // Check grid preference
-    const includeGrid = document.getElementById('exportGridCheckbox').checked;
-    const prevShowGrid = renderer.showGrid;
+    const includeGrid   = document.getElementById('exportGridCheckbox').checked;
+    const includePanels = document.getElementById('exportPanelsCheckbox').checked;
+    const prevShowGrid  = renderer.showGrid;
     renderer.showGrid = includeGrid;
     renderer.render();
 
-    const w = srcCanvas.width;
-    const h = srcCanvas.height;
-
+    const w = srcCanvas.width, h = srcCanvas.height;
     const offscreen = document.createElement('canvas');
-    offscreen.width = w * scale;
+    offscreen.width  = w * scale;
     offscreen.height = h * scale;
     const ctx = offscreen.getContext('2d');
 
@@ -2405,42 +2464,149 @@ async function exportScreenshot(format) {
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, offscreen.width, offscreen.height);
 
-    // Draw the network canvas scaled up
+    // In map mode: composite the Leaflet map underneath the canvas
+    if (appMode === 'map') {
+        try {
+            await _loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+            const mapEl = document.getElementById('backgroundMap');
+            const mapCanvas = await html2canvas(mapEl, {
+                scale, useCORS: true, allowTaint: true,
+                backgroundColor: '#ffffff', logging: false,
+                width: w, height: h, x: 0, y: 0,
+            });
+            ctx.drawImage(mapCanvas, 0, 0, offscreen.width, offscreen.height);
+        } catch (e) { console.warn('Map capture failed:', e); }
+    }
+
+    // Network canvas (nodes, edges, layer planes)
     ctx.drawImage(srcCanvas, 0, 0, offscreen.width, offscreen.height);
 
-    // Restore grid setting
+    // Restore grid
     renderer.showGrid = prevShowGrid;
     renderer.render();
 
-    // Draw branding watermark in bottom-right
+    // Panels & legend
+    if (includePanels) await _compositeOverlays(ctx, scale);
+
+    // Branding
     _drawBranding(ctx, offscreen.width, offscreen.height, scale);
 
     const mimeType = format === 'jpg' ? 'image/jpeg' : 'image/png';
-    const quality = format === 'jpg' ? 0.92 : undefined;
+    const quality  = format === 'jpg' ? 0.92 : undefined;
+    await _saveCanvas(offscreen, `multilayer_network.${format}`, mimeType, quality);
+}
 
+async function _saveCanvas(offscreen, filename, mimeType, quality) {
     if (window.showSaveFilePicker) {
         try {
+            const ext = filename.split('.').pop();
             const handle = await window.showSaveFilePicker({
-                suggestedName: `multilayer_network.${format}`,
-                types: [{
-                    description: `${format.toUpperCase()} Image`,
-                    accept: { [mimeType]: [`.${format}`] },
-                }],
+                suggestedName: filename,
+                types: [{ description: `${ext.toUpperCase()} file`, accept: { [mimeType]: [`.${ext}`] } }],
             });
             const writable = await handle.createWritable();
             const blob = await new Promise(resolve => offscreen.toBlob(resolve, mimeType, quality));
-            await writable.write(blob);
-            await writable.close();
-        } catch (err) {
-            if (err.name !== 'AbortError') console.error('Save File Picker failed:', err);
-        }
+            await writable.write(blob); await writable.close();
+        } catch (err) { if (err.name !== 'AbortError') console.error('Save failed:', err); }
     } else {
-        // Fallback for browsers without File System Access API
         const dataUrl = offscreen.toDataURL(mimeType, quality);
         const link = document.createElement('a');
-        link.download = `multilayer_network.${format}`;
-        link.href = dataUrl;
-        link.click();
+        link.download = filename; link.href = dataUrl; link.click();
+    }
+}
+
+async function _exportSVG() {
+    // Try multiple CDN sources for canvas2svg
+    const C2S_URLS = [
+        'https://unpkg.com/canvas2svg@1.0.15/canvas2svg.js',
+        'https://cdn.jsdelivr.net/npm/canvas2svg@1.0.15/canvas2svg.js',
+    ];
+    let loaded = false;
+    for (const url of C2S_URLS) {
+        try { await _loadScript(url); loaded = true; break; } catch (_) {}
+    }
+    if (!loaded || typeof C2S === 'undefined') {
+        alert('Could not load SVG library. Please check your internet connection and try again.');
+        return;
+    }
+
+    const srcCanvas = document.getElementById('networkCanvas');
+    const w = srcCanvas.width, h = srcCanvas.height;
+
+    const includeGrid   = document.getElementById('exportGridCheckbox').checked;
+    const includePanels = document.getElementById('exportPanelsCheckbox').checked;
+
+    // Create canvas2svg context (drop-in Canvas 2D API → SVG)
+    const c2s = new C2S(w, h);
+
+    // White background
+    c2s.fillStyle = '#ffffff';
+    c2s.fillRect(0, 0, w, h);
+
+    // Swap renderer's context to the SVG context, render, restore
+    const savedCtx  = renderer.ctx;
+    const savedW    = renderer.canvas.width;
+    const savedH    = renderer.canvas.height;
+    renderer.ctx    = c2s;
+    // canvas.width/height are read by renderer — temporarily shim
+    const prevShowGrid = renderer.showGrid;
+    renderer.showGrid  = includeGrid;
+    try {
+        renderer.render();
+    } finally {
+        renderer.ctx    = savedCtx;
+        renderer.showGrid = prevShowGrid;
+        renderer.render(); // restore on-screen
+    }
+
+    // Branding (SVG context supports fillText)
+    _drawBranding(c2s, w, h, 1);
+
+    let svgStr = c2s.getSerializedSvg(true);
+
+    // Panels & legend: embed as foreign objects if requested
+    if (includePanels) {
+        // Append a note comment — full DOM embedding in SVG needs a browser-side polyfill;
+        // we add a high-res PNG overlay of the panels as <image> elements instead.
+        try {
+            await _loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+            const panelEls = [
+                document.getElementById('legendPanel'),
+                document.getElementById('layerDrillPanel'),
+                document.getElementById('layerComparePanel'),
+            ].filter(el => el && (el.children.length > 0 || el.style.opacity === '1'));
+
+            const overlayFragments = [];
+            for (const el of panelEls) {
+                const rect = el.getBoundingClientRect();
+                if (rect.width === 0) continue;
+                const pc = await html2canvas(el, { scale: 2, useCORS: true, allowTaint: true, backgroundColor: null, logging: false });
+                const dataUrl = pc.toDataURL('image/png');
+                overlayFragments.push(
+                    `<image x="${rect.left}" y="${rect.top}" width="${rect.width}" height="${rect.height}" href="${dataUrl}" style="image-rendering:auto"/>`
+                );
+            }
+            if (overlayFragments.length) {
+                svgStr = svgStr.replace('</svg>', overlayFragments.join('\n') + '</svg>');
+            }
+        } catch (e) { console.warn('SVG panel overlay failed:', e); }
+    }
+
+    const blob = new Blob([svgStr], { type: 'image/svg+xml' });
+    if (window.showSaveFilePicker) {
+        try {
+            const handle = await window.showSaveFilePicker({
+                suggestedName: 'multilayer_network.svg',
+                types: [{ description: 'SVG Image', accept: { 'image/svg+xml': ['.svg'] } }],
+            });
+            const writable = await handle.createWritable();
+            await writable.write(blob); await writable.close();
+        } catch (err) { if (err.name !== 'AbortError') console.error(err); }
+    } else {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.download = 'multilayer_network.svg'; a.href = url; a.click();
+        URL.revokeObjectURL(url);
     }
 }
 
@@ -2479,54 +2645,53 @@ function _drawBranding(ctx, canvasW, canvasH, scale) {
 }
 
 async function _exportPDF() {
-    // Dynamically load jsPDF if not already loaded
-    if (!window.jspdf) {
-        try {
-            const script = document.createElement('script');
-            script.src = 'https://unpkg.com/jspdf@2.5.2/dist/jspdf.umd.min.js';
-            document.head.appendChild(script);
-            await new Promise((resolve, reject) => {
-                script.onload = resolve;
-                script.onerror = () => reject(new Error('Failed to load jsPDF library'));
-            });
-        } catch (err) {
-            alert('Could not load PDF library. Please check your internet connection and try again.');
-            console.error(err);
-            return;
-        }
+    try {
+        await _loadScript('https://unpkg.com/jspdf@2.5.2/dist/jspdf.umd.min.js');
+    } catch (err) {
+        alert('Could not load PDF library. Please check your internet connection and try again.');
+        return;
     }
 
     try {
         const { jsPDF } = window.jspdf;
 
         const srcCanvas = document.getElementById('networkCanvas');
-        // High-DPI scale for sharp output (4x = ~300 DPI for typical screens)
-        const scale = 4;
-
-        // Temporarily adjust renderer for export
-        const includeGrid = document.getElementById('exportGridCheckbox').checked;
-        const prevShowGrid = renderer.showGrid;
+        const scale = 4; // ~300 DPI
+        const includeGrid   = document.getElementById('exportGridCheckbox').checked;
+        const includePanels = document.getElementById('exportPanelsCheckbox').checked;
+        const prevShowGrid  = renderer.showGrid;
         renderer.showGrid = includeGrid;
         renderer.render();
 
-        const w = srcCanvas.width;
-        const h = srcCanvas.height;
-
-        // Render to a high-res offscreen canvas
+        const w = srcCanvas.width, h = srcCanvas.height;
         const offscreen = document.createElement('canvas');
-        offscreen.width = w * scale;
-        offscreen.height = h * scale;
+        offscreen.width = w * scale; offscreen.height = h * scale;
         const ctx = offscreen.getContext('2d');
 
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(0, 0, offscreen.width, offscreen.height);
+
+        // Map background (if in map mode)
+        if (appMode === 'map') {
+            try {
+                await _loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+                const mapEl = document.getElementById('backgroundMap');
+                const mapCanvas = await html2canvas(mapEl, {
+                    scale, useCORS: true, allowTaint: true,
+                    backgroundColor: '#ffffff', logging: false,
+                    width: w, height: h, x: 0, y: 0,
+                });
+                ctx.drawImage(mapCanvas, 0, 0, offscreen.width, offscreen.height);
+            } catch (e) { console.warn('Map capture failed (PDF):', e); }
+        }
+
         ctx.drawImage(srcCanvas, 0, 0, offscreen.width, offscreen.height);
 
-        // Restore renderer
         renderer.showGrid = prevShowGrid;
         renderer.render();
 
-        // Add branding
+        if (includePanels) await _compositeOverlays(ctx, scale);
+
         _drawBranding(ctx, offscreen.width, offscreen.height, scale);
 
         // Create PDF at the original CSS-pixel page size
