@@ -1885,6 +1885,19 @@ zoomResetBtn.addEventListener('click', () => {
         return;
     }
 
+    if (appMode === 'layer' && renderer.layerView) {
+        renderer.layerView.resetLayout();
+        // Re-fit the viewport to the new layout
+        const lr = renderer.layerView.layoutRadius();
+        const margin = 60;
+        const fitScale = Math.min(canvas.width, canvas.height) / (2 * (lr + margin));
+        renderer.layerView.viewScale   = fitScale;
+        renderer.layerView.viewOffsetX = 0;
+        renderer.layerView.viewOffsetY = 0;
+        _ensureLayerViewLoop();
+        return;
+    }
+
     // Reset rotation angles to defaults
     renderer.skewX = 0.7;
     renderer.skewY = 0.55;
