@@ -361,6 +361,12 @@ export class Renderer {
             return;
         }
 
+        // Focus set: 1-hop ego network of the selected node across all layers.
+        // Built once per render; null when nothing is selected.
+        this._focusSet = this.selectedNode
+            ? this._computeFocusSet(this.selectedNode.nodeName)
+            : null;
+
         const numLayers = this.model.layers.length;
 
         // Draw back-to-front: layer polygon, intralayer links, nodes
@@ -526,8 +532,10 @@ export class Renderer {
                 color = 'rgba(0,0,0,0.85)';
             }
 
-            // Check if connected to hovered/selected node
             const isHighlighted = this._isLinkHighlighted(link);
+            const _fn = this.selectedNode ? this.selectedNode.nodeName : null;
+            const isFaded = !!this._focusSet && !!_fn &&
+                link.node_from !== _fn && link.node_to !== _fn;
 
             const baseWidth = link.weight ? Math.min(link.weight * 2, 8) : 2;
             ctx.beginPath();
@@ -535,7 +543,7 @@ export class Renderer {
             ctx.lineTo(to.x, to.y);
             ctx.strokeStyle = isHighlighted && typeof color === 'string' ? this._brighten(color) : color;
             ctx.lineWidth = isHighlighted ? baseWidth + 2 : baseWidth;
-            ctx.globalAlpha = isHighlighted ? 1 : (useBipartiteGradient ? 0.5 : 0.9);
+            ctx.globalAlpha = isFaded ? 0.04 : isHighlighted ? 1 : (useBipartiteGradient ? 0.5 : 0.9);
             ctx.stroke();
             ctx.globalAlpha = 1;
 
@@ -563,6 +571,9 @@ export class Renderer {
             }
 
             const isHighlighted = this._isLinkHighlighted(link);
+            const _fn = this.selectedNode ? this.selectedNode.nodeName : null;
+            const isFaded = !!this._focusSet && !!_fn &&
+                link.node_from !== _fn && link.node_to !== _fn;
 
             // Compute curved control point — offset perpendicular to the line
             const mx = (fromScreen.x + toScreen.x) / 2;
@@ -581,7 +592,7 @@ export class Renderer {
             ctx.quadraticCurveTo(cpx, cpy, toScreen.x, toScreen.y);
             ctx.strokeStyle = isHighlighted ? this._brighten(color) : color;
             ctx.lineWidth = isHighlighted ? baseWidth + 2 : baseWidth;
-            ctx.globalAlpha = isHighlighted ? 1 : 0.7;
+            ctx.globalAlpha = isFaded ? 0.04 : isHighlighted ? 1 : 0.7;
             ctx.setLineDash([6, 4]);
             ctx.stroke();
             ctx.setLineDash([]);
@@ -646,10 +657,26 @@ export class Renderer {
             const isHovered = this.hoveredNode &&
                 this.hoveredNode.layerName === layer.layer_name &&
                 this.hoveredNode.nodeName === nodeName;
-            const isSelected = this.selectedNode &&
-                this.selectedNode.layerName === layer.layer_name &&
-                this.selectedNode.nodeName === nodeName;
+            // Cross-layer: the selected physical node is highlighted in every layer
+            const isSelected = !!this.selectedNode && this.selectedNode.nodeName === nodeName;
             const isSearched = !!this.searchedNodeName && nodeName === this.searchedNodeName;
+
+            // Fade nodes outside the focus set
+            const isFaded = !!this._focusSet && !this._focusSet.has(`${layer.layer_name}::${nodeName}`);
+
+            if (isFaded) {
+                // Draw ghost node — no glow, no label, very low opacity
+                ctx.save();
+                ctx.globalAlpha = 0.08;
+                ctx.translate(sp.x, sp.y);
+                if (this.transformNodes) ctx.transform(ta, tb, tc, td, 0, 0);
+                ctx.beginPath();
+                ctx.arc(0, 0, r, 0, Math.PI * 2);
+                ctx.fillStyle = fillColor;
+                ctx.fill();
+                ctx.restore();
+                continue;
+            }
 
             // Glow effect for hovered/selected/searched
             if (isHovered || isSelected || isSearched) {
@@ -721,13 +748,45 @@ export class Renderer {
             return link.node_from === this.searchedNodeName || link.node_to === this.searchedNodeName;
         }
 
-        // Highlight based on node hover/selection
-        const target = this.hoveredNode || this.selectedNode;
-        if (!target) return false;
-        return (
-            (link.layer_from === target.layerName && link.node_from === target.nodeName) ||
-            (link.layer_to === target.layerName && link.node_to === target.nodeName)
-        );
+        // Highlight based on node hover (layer-specific)
+        if (this.hoveredNode) {
+            const h = this.hoveredNode;
+            return (link.layer_from === h.layerName && link.node_from === h.nodeName) ||
+                   (link.layer_to   === h.layerName && link.node_to   === h.nodeName);
+        }
+
+        // Highlight based on node selection (cross-layer — all instances of the physical node)
+        if (this.selectedNode) {
+            const name = this.selectedNode.nodeName;
+            return link.node_from === name || link.node_to === name;
+        }
+
+        return false;
+    }
+
+    /**
+     * Build the focus set for a given physical node name.
+     * Returns a Set of "layerName::nodeName" state-node keys that should be
+     * shown at full opacity: the node itself (in every layer) plus its direct
+     * intralayer and interlayer neighbours.
+     */
+    _computeFocusSet(nodeName) {
+        const set = new Set();
+        // The selected physical node appears in every layer → highlight all instances
+        for (const layer of this.model.layers) {
+            set.add(`${layer.layer_name}::${nodeName}`);
+        }
+        // 1-hop intralayer neighbours
+        for (const link of this.model.intralayerLinks) {
+            if (link.node_from === nodeName) set.add(`${link.layer_to}::${link.node_to}`);
+            if (link.node_to   === nodeName) set.add(`${link.layer_from}::${link.node_from}`);
+        }
+        // 1-hop interlayer neighbours
+        for (const link of this.model.interlayerLinks) {
+            if (link.node_from === nodeName) set.add(`${link.layer_to}::${link.node_to}`);
+            if (link.node_to   === nodeName) set.add(`${link.layer_from}::${link.node_from}`);
+        }
+        return set;
     }
 
     _brighten(color) {
