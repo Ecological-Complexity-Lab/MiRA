@@ -9,6 +9,7 @@ import { InteractionHandler } from './interaction.js';
 import { ColorMapper } from './colorMapper.js';
 import { LayerView } from './layerView.js';
 import { csvToJson } from './csvImporter.js';
+import { Dashboard } from './dashboard.js';
 
 // ---- State ----
 let model = null;
@@ -47,6 +48,10 @@ const csvImportCancel = document.getElementById('csvImportCancel');
 const csvImportError  = document.getElementById('csvImportError');
 const csvImportWarn   = document.getElementById('csvImportWarn');
 const csvImportInfo   = document.getElementById('csvImportInfo');
+const dataLoadedNotice   = document.getElementById('dataLoadedNotice');
+const dataLoadedClose    = document.getElementById('dataLoadedClose');
+const dataLoadedOk       = document.getElementById('dataLoadedOk');
+const dataLoadedDontShow = document.getElementById('dataLoadedDontShow');
 const nodeColorSelect = document.getElementById('nodeColorSelect');
 const nodeColorSelectSetA = document.getElementById('nodeColorSelectSetA');
 const nodeColorSelectSetB = document.getElementById('nodeColorSelectSetB');
@@ -144,6 +149,14 @@ const lvSizeMultLabel         = document.getElementById('lvSizeMultLabel');
 const lvSpacing               = document.getElementById('lvSpacing');
 const lvSpacingLabel          = document.getElementById('lvSpacingLabel');
 const LV_SECTIONS = ['sectionLayerViewCircles','sectionLayerViewEdges'];
+const DB_SECTIONS = ['sectionDashboard'];
+const dashboardBtn       = document.getElementById('dashboardBtn');
+const dashboardContainer = document.getElementById('dashboardContainer');
+const dbSortSelect       = document.getElementById('dbSortSelect');
+const dbHighlightSelect  = document.getElementById('dbHighlightSelect');
+const dbBipartiteToggle  = document.getElementById('dbBipartiteToggle');
+const dbBipartiteRow     = document.getElementById('dbBipartiteRow');
+let   dashboard          = null;
 const mapOpacityControl = document.getElementById('mapOpacityControl');
 const mapOpacitySlider = document.getElementById('mapOpacitySlider');
 const showMapImageCheckbox = document.getElementById('showMapImageCheckbox');
@@ -166,7 +179,7 @@ const closeInfoBtn = document.getElementById('closeInfoBtn');
 const tooltip = document.getElementById('tooltip');
 
 // ---- Application State ----
-let appMode = 'network'; // 'network', 'map', or 'layer'
+let appMode = 'network'; // 'network', 'map', 'layer', or 'dashboard'
 let layerViewHandlers = null;
 let lvRAF  = null; // requestAnimationFrame id for meta-graph animation
 let activeMapLayers = new Set();
@@ -348,10 +361,10 @@ function loadData(json) {
             mapModeBtn.style.display = 'none';
         }
 
-        // Reset out of map mode if active when loading a new un-mapped network
-        if (appMode === 'map') {
-            toggleMapMode(); // Switches back to network mode and cleans up markers
-        }
+        // Reset out of any non-network mode when loading new data
+        if (appMode === 'map')       { toggleMapMode(); }
+        if (appMode === 'layer')     { _exitLayerView(); appMode = 'network'; }
+        if (appMode === 'dashboard') { _exitDashboard(); appMode = 'network'; }
 
         // Pass bipartite info to layout engine
         layout.bipartiteInfo = model.bipartiteInfo;
@@ -475,6 +488,7 @@ document.querySelectorAll('.demo-dataset-btn').forEach(btn => {
 
 // ---- Map Mode Logic ----
 function toggleMapMode() {
+    if (appMode === 'dashboard') { _exitDashboard(); appMode = 'network'; }
     appMode = appMode === 'network' ? 'map' : 'network';
 
     if (appMode === 'map') {
@@ -683,6 +697,70 @@ function _hideLayerViewSidebar() {
     LV_SECTIONS.forEach(id => { document.getElementById(id).style.display = 'none'; });
     renderLegends(); // restore network legends
 }
+
+// ---- Dashboard Mode ----
+function _showDashboardSidebar() {
+    NETWORK_SECTIONS.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
+    LV_SECTIONS.forEach(id => { document.getElementById(id).style.display = 'none'; });
+    DB_SECTIONS.forEach(id => { document.getElementById(id).style.display = ''; });
+}
+
+function _hideDashboardSidebar() {
+    DB_SECTIONS.forEach(id => { document.getElementById(id).style.display = 'none'; });
+    NETWORK_SECTIONS.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = ''; });
+    renderLegends();
+}
+
+function _exitDashboard() {
+    dashboard?.destroy();
+    dashboard = null;
+    dashboardContainer.style.display = 'none';
+    canvas.style.display = '';
+    dashboardBtn.classList.remove('active');
+    _hideDashboardSidebar();
+}
+
+function toggleDashboard() {
+    if (!model) return;
+    if (appMode === 'dashboard') {
+        _exitDashboard();
+        appMode = 'network';
+        renderer.render();
+        return;
+    }
+    // Exit other active modes first
+    if (appMode === 'layer') { _exitLayerView(); appMode = 'network'; }
+    if (appMode === 'map')   { toggleMapMode(); }
+
+    appMode = 'dashboard';
+    dashboardBtn.classList.add('active');
+    canvas.style.display = 'none';
+    dashboardContainer.style.display = 'block';
+    _showDashboardSidebar();
+
+    // Show bipartite toggle only when relevant
+    const hasBp = [...model.bipartiteInfo.values()].some(b => b.isBipartite);
+    dbBipartiteRow.style.display = hasBp ? '' : 'none';
+
+    // Reset sidebar controls
+    dbSortSelect.value      = 'participation';
+    dbHighlightSelect.value = 'nodes';
+    dbBipartiteToggle.checked = true;
+
+    dashboard = new Dashboard(dashboardContainer, model, {
+        onLayerClick: () => {
+            _exitDashboard();
+            appMode = 'network';
+            renderer.render();
+        },
+    });
+    dashboard.render();
+}
+
+dashboardBtn.addEventListener('click', toggleDashboard);
+dbSortSelect.addEventListener('change',      () => dashboard?.setSortOrder(dbSortSelect.value));
+dbHighlightSelect.addEventListener('change', () => dashboard?.setHighlightMetric(dbHighlightSelect.value));
+dbBipartiteToggle.addEventListener('change', () => dashboard?.setShowBipartite(dbBipartiteToggle.checked));
 
 function _syncLayerViewControls() {
     const lv = renderer.layerView;
@@ -1578,6 +1656,7 @@ fileInput.addEventListener('change', (e) => {
         try {
             const json = JSON.parse(evt.target.result);
             loadData(json);
+            _showDataLoadedNotice();
         } catch (err) {
             alert('Invalid JSON file: ' + err.message);
         }
@@ -1585,8 +1664,29 @@ fileInput.addEventListener('change', (e) => {
     reader.readAsText(file);
 });
 
+// ---- Data-loaded notice ----
+const DATA_NOTICE_KEY = 'mlviz_dataLoadedNoticeDismissed';
+
+function _showDataLoadedNotice() {
+    if (sessionStorage.getItem(DATA_NOTICE_KEY)) return;
+    dataLoadedNotice.style.display = 'flex';
+}
+
+function _closeDataLoadedNotice() {
+    dataLoadedNotice.style.display = 'none';
+}
+
+dataLoadedClose.addEventListener('click', _closeDataLoadedNotice);
+dataLoadedOk.addEventListener('click', _closeDataLoadedNotice);
+dataLoadedDontShow.addEventListener('click', () => {
+    sessionStorage.setItem(DATA_NOTICE_KEY, '1');
+    _closeDataLoadedNotice();
+});
+dataLoadedNotice.addEventListener('click', e => { if (e.target === dataLoadedNotice) _closeDataLoadedNotice(); });
+
 // ---- CSV Import ----
 let _csvEdgeText = null, _csvLayersText = null, _csvNodesText = null;
+let _csvPendingJson = null;
 
 function _readFileAsText(file) {
     return new Promise((res, rej) => {
@@ -1597,7 +1697,11 @@ function _readFileAsText(file) {
     });
 }
 
-function _closeCsvModal() { csvImportModal.style.display = 'none'; }
+function _closeCsvModal() {
+    _csvPendingJson = null;
+    csvImportLoad.textContent = 'Load Network';
+    csvImportModal.style.display = 'none';
+}
 
 csvUploadBtn.addEventListener('click', () => {
     _csvEdgeText = _csvLayersText = _csvNodesText = null;
@@ -1639,6 +1743,15 @@ csvNodesFile.addEventListener('change', async e => {
 });
 
 csvImportLoad.addEventListener('click', () => {
+    // If user is confirming after a warning, load the pending json directly
+    if (_csvPendingJson) {
+        const json = _csvPendingJson;
+        _closeCsvModal();
+        loadData(json);
+        _showDataLoadedNotice();
+        return;
+    }
+
     csvImportError.style.display = 'none';
     csvImportWarn.style.display  = 'none';
     csvImportInfo.style.display  = 'none';
@@ -1650,19 +1763,23 @@ csvImportLoad.addEventListener('click', () => {
         if (warnings.length) {
             csvImportWarn.textContent = '⚠ ' + warnings.join(' | ');
             csvImportWarn.style.display = 'block';
-            // Keep modal open so user reads the warning; load proceeds after a delay
             if (infoMessages.length) {
                 csvImportInfo.textContent = infoMessages.join(' · ');
                 csvImportInfo.style.display = 'block';
             }
-            setTimeout(() => { _closeCsvModal(); loadData(json); }, 2500);
+            // Require explicit confirmation — store json and change button label
+            _csvPendingJson = json;
+            csvImportLoad.textContent = 'Load Anyway';
         } else if (infoMessages.length) {
             csvImportInfo.textContent = infoMessages.join(' · ');
             csvImportInfo.style.display = 'block';
-            setTimeout(() => { _closeCsvModal(); loadData(json); }, 800);
+            _closeCsvModal();
+            loadData(json);
+            _showDataLoadedNotice();
         } else {
             _closeCsvModal();
             loadData(json);
+            _showDataLoadedNotice();
         }
     } catch (err) {
         csvImportError.textContent = err.message;
@@ -2524,6 +2641,79 @@ function _createLVLegendBtn(scale) {
     btn.onclick = () => { lvExpandedLegends.add(scale.id); renderLayerViewLegend(); };
     return btn;
 }
+
+// ---- Help Popup ----
+const helpBtn            = document.getElementById('helpBtn');
+const helpPopup          = document.getElementById('helpPopup');
+const helpPopupClose     = document.getElementById('helpPopupClose');
+const helpPopupTitle     = document.getElementById('helpPopupTitle');
+const helpPopupBody      = document.getElementById('helpPopupBody');
+const helpPopupFullManual = document.getElementById('helpPopupFullManual');
+
+const HELP_CONTENT = {
+    network: {
+        title: '🕸️ Network Mode',
+        body: `<p>All layers are rendered simultaneously in a 3D coordinate space.</p>
+<ul style="padding-left:16px;margin:8px 0;">
+  <li><b>Rotate</b> — drag the background</li>
+  <li><b>Pan</b> — <kbd>Shift</kbd> + drag</li>
+  <li><b>Move a layer</b> — <kbd>Cmd/Ctrl</kbd> + drag its outline</li>
+  <li><b>Hover</b> a node to highlight connections</li>
+  <li><b>Click</b> a node to lock its selection</li>
+</ul>
+<p>Use the left panel to control layers, nodes, and links.</p>`,
+    },
+    map: {
+        title: '🗺️ Map Mode',
+        body: `<p>Layers are placed on a geographic map using their <code>latitude</code>/<code>longitude</code>.</p>
+<ul style="padding-left:16px;margin:8px 0;">
+  <li><b>Click a marker</b> to pop that layer into 3D space</li>
+  <li><b>Click ✕</b> on a popped layer to return it to the map</li>
+  <li><b>Pan the map</b> — <kbd>Shift</kbd> + drag (carries 3D layers with it)</li>
+  <li>Use the <b>Map</b> sidebar section to control opacity</li>
+</ul>`,
+    },
+    layer: {
+        title: '🔵 Layer Mode',
+        body: `<p>Each layer is a bubble in a force-directed meta-graph with a micro-graph preview inside.</p>
+<ul style="padding-left:16px;margin:8px 0;">
+  <li><b>Click</b> a bubble — layer statistics panel</li>
+  <li><b>Cmd/Ctrl + click</b> a second bubble — side-by-side comparison</li>
+  <li><b>Drag</b> a bubble to pin it; <b>Reset</b> to unpin all</li>
+  <li><b>Scroll</b> to zoom; drag background to pan</li>
+</ul>
+<p><b>Blue lines</b> = interlayer links &nbsp;·&nbsp; <b>Gray lines</b> = shared nodes</p>`,
+    },
+    dashboard: {
+        title: '📊 Dashboard Mode',
+        body: `<p>Analytics panels for your multilayer network. Click any section header to collapse it.</p>
+<ul style="padding-left:16px;margin:8px 0;">
+  <li><b>KPI Cards</b> — totals at a glance</li>
+  <li><b>Per-Layer Charts</b> — nodes, links, density per layer. Click a layer name to highlight it.</li>
+  <li><b>Presence Matrix</b> — node × layer heatmap with orientation and sort toggles</li>
+  <li><b>Layer Similarity</b> — Jaccard heatmaps for node and edge identity</li>
+  <li><b>Degree Distributions</b> — histograms for full network and per layer</li>
+  <li><b>Node Participation</b> — how many layers each node appears in</li>
+</ul>
+<p>Use the left panel to change sort order and highlight metric.</p>`,
+    },
+};
+
+helpBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    if (helpPopup.style.display !== 'none') { helpPopup.style.display = 'none'; return; }
+    const c = HELP_CONTENT[appMode] ?? HELP_CONTENT.network;
+    helpPopupTitle.textContent = c.title;
+    helpPopupBody.innerHTML = c.body;
+    helpPopup.style.display = 'block';
+});
+helpPopupClose.addEventListener('click', () => { helpPopup.style.display = 'none'; });
+helpPopupFullManual.addEventListener('click', () => { window.open('docs/manual.html', '_blank'); });
+document.addEventListener('click', e => {
+    if (helpPopup.style.display !== 'none' && !helpPopup.contains(e.target) && e.target !== helpBtn) {
+        helpPopup.style.display = 'none';
+    }
+});
 
 // ---- Screenshot Export ----
 const captureBtn = document.getElementById('captureBtn');

@@ -6,7 +6,7 @@ This document explains the interactive controls, visualization modes, and settin
 
 ## 🌎 Visualization Modes
 
-The application supports three visualization modes. The active mode is controlled by the buttons in the bottom-left corner. **The left-side control panel changes completely depending on which mode is active** — Network Mode shows the Data / Layers / Nodes / Links accordions, while Layer View replaces them with dedicated Layer View controls. Map Mode reuses the Network Mode panel and adds a map-specific opacity slider.
+The application supports four visualization modes. The active mode is controlled by the buttons in the bottom-left corner. **The left-side control panel changes completely depending on which mode is active** — Network Mode shows the Data / Layers / Nodes / Links accordions, while Layer View replaces them with dedicated Layer View controls. Map Mode reuses the Network Mode panel and adds a map-specific opacity slider. Dashboard Mode replaces the canvas entirely with analytics panels and shows its own sidebar controls.
 
 ### 🕸️ Network Mode (Default)
 In Network Mode, all layers are rendered simultaneously within a continuous 3D coordinate space.
@@ -26,6 +26,49 @@ Map Mode bridges geographic analysis with ecological network structure by hiding
 * **Map Navigation**: You can pan and scale the Leaflet map freely. When layers are popped out into 3D space, holding `Shift` + Drag pans the geographic map, smoothly carrying your 3D layers along with it.
 
 The left panel is the same as Network Mode, with a **Map** section added at the top for opacity and visibility controls.
+
+### 📊 Dashboard Mode
+Dashboard Mode replaces the network canvas with a set of quantitative analytics panels, giving a statistical overview of the multilayer network. All panels are **collapsible** — click a section header to expand or collapse it.
+
+**When Dashboard Mode is active, the left panel shows three Dashboard-specific controls:**
+* **Sort layers by** — order layers in all charts by: Participation (fraction of nodes that appear in multiple layers), Nodes, Intra-links, Inter-links, or Density.
+* **Highlight metric** — which metric drives bar highlighting (the tallest-value bar is accent-colored; others are subdued).
+* **Show bipartite panels** — toggle (bipartite networks only): hide or show the Set A / Set B split panels to reduce visual clutter.
+
+**Dashboard sections:**
+
+#### KPI Cards
+Four headline numbers at the top: total unique nodes, total layers, total intralayer links, and total interlayer links. A fifth card shows mean edge density across all layers.
+
+#### Per-Layer Bar Charts
+Side-by-side bar charts showing, for each layer: node count, intralayer link count, interlayer link count, and edge density. The bar corresponding to the highest value in each chart is accent-colored. For bipartite networks, the node-count chart becomes a stacked bar chart split by Set A (blue) and Set B (pink).
+
+Clicking any layer name in these charts highlights that layer in the network background.
+
+#### Node × Layer Presence Matrix
+A heatmap matrix showing which nodes appear in which layers. Cells are colored when the node is present. A toggle switches between two orientations:
+* **Layer rows × Node cols** (default) — useful when there are more nodes than layers, taking advantage of screen width.
+* **Node rows × Layer cols** — traditional orientation.
+
+Sort buttons reorder rows/columns by node name (alphabetical) or node participation (nodes appearing in more layers sorted first). For bipartite networks, rows are split by set membership and colored accordingly.
+
+#### Layer Similarity (Jaccard)
+Square heatmaps where both rows and columns are layers, and each cell shows the Jaccard similarity between the two layers. Color intensity encodes similarity (0 = white, 1 = full accent color). Two matrices are always shown:
+* **Node identity** — overlap in which physical nodes appear (unipartite), or split into **Set A** and **Set B** matrices (bipartite, three matrices total).
+* **Edge identity** — overlap in which edges (by node-pair key) appear across layers, shown in amber.
+
+The diagonal equals 1 by computation (Jaccard of a set with itself). Empty layers produce a gray cell (NaN).
+
+#### Degree Distributions
+Histograms of node degree for the full network and a per-layer breakdown. For bipartite networks, separate histograms are shown for Set A and Set B.
+
+#### Node Participation
+A bar chart showing how many layers each node appears in, sorted by participation count. For bipartite networks, Set A and Set B are shown as separate charts.
+
+#### Set Size Ratio *(bipartite networks only)*
+A bar chart showing the ratio of Set A to Set B nodes within each layer, providing a quick view of how balanced the two sets are across layers.
+
+---
 
 ### 🔵 Layer View (Meta-Graph Mode)
 Layer View is a novel visualization mode that abstracts away individual nodes and renders the **layers themselves** as the primary objects. Each layer becomes an interactive bubble in a force-directed meta-graph, giving an at-a-glance overview of the entire multilayer structure.
@@ -87,6 +130,12 @@ Always visible regardless of mode. Contains:
   * *Synthetic Bipartite (10 layers)* — generated undirected pollinator-plant network with 10 layers, structured clusters, and one isolated layer. Designed to showcase Layer View on a bipartite multilayer network.
   * *Synthetic Unipartite (10 layers)* — generated directed social/influence network with 10 layers, overlapping actor groups, a bridging layer, and one isolated layer. Designed to showcase Layer View on a directed unipartite multilayer network.
 * **Load User Data (JSON)**: Upload a local JSON dataset. See `README.md` for the required data format.
+* **Load User Data (CSV)**: Upload network data as CSV files — useful when working directly with outputs from the `emln` R package. A modal dialog presents three file pickers:
+  * *Extended Edge List* **(required)** — one row per link with columns `layer_from`, `node_from`, `layer_to`, `node_to`, and optionally `weight`. Both intralayer and interlayer links go in this one file (matches `emln`'s `$extended` data frame).
+  * *Layer Attributes* **(optional)** — columns `layer_id`, `layer_name`, and optionally `latitude`, `longitude`. If omitted, unique layer names are derived automatically from the edge list.
+  * *Node Attributes* **(optional)** — columns `node_name`, and optionally `group` (or `node_type` / `type` for bipartite). If omitted, unique node names are derived from the edge list.
+  * **Directed / Bipartite checkboxes** — mark the network type before loading.
+  * If the layer or node files are omitted, an informational note confirms what was auto-derived. If the edge list lacks a `weight` column, a warning is shown and all weights are set to 1; you can confirm and load anyway. All three file formats auto-detect comma, tab, or semicolon delimiters.
 
 ### 2. Layers *(Network / Map Mode only)*
 * **Layer Names**: Toggles floating title tags above each layer plane.
@@ -127,6 +176,7 @@ A legend panel appears in the **bottom-right corner** of the screen whenever col
 
 * **Snapshot (Camera)**: Captures a high-resolution export of the current canvas. Choose between PNG, JPG, or PDF formats, and whether to include the backdrop grid.
 * **Zoom (+ / − / Reset)**: Adjusts the viewport scale. In Layer View, **Reset** re-runs the full force layout from scratch (unpins all bubbles) and re-fits the viewport.
+* **Dashboard button (📊)**: Toggles Dashboard Mode — hides the network canvas and shows the analytics panels.
 * **Layer View button**: Toggles Layer View (Meta-Graph Mode). The icon shows three connected circles.
 * **Map Mode button**: Toggles geographic Map Mode (only shown when the dataset has coordinates).
 * **Interaction Hints**: A quick-reference cheatsheet for mouse bindings.

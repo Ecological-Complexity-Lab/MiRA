@@ -2642,6 +2642,79 @@ function _createLVLegendBtn(scale) {
     return btn;
 }
 
+// ---- Help Popup ----
+const helpBtn            = document.getElementById('helpBtn');
+const helpPopup          = document.getElementById('helpPopup');
+const helpPopupClose     = document.getElementById('helpPopupClose');
+const helpPopupTitle     = document.getElementById('helpPopupTitle');
+const helpPopupBody      = document.getElementById('helpPopupBody');
+const helpPopupFullManual = document.getElementById('helpPopupFullManual');
+
+const HELP_CONTENT = {
+    network: {
+        title: '🕸️ Network Mode',
+        body: `<p>All layers are rendered simultaneously in a 3D coordinate space.</p>
+<ul style="padding-left:16px;margin:8px 0;">
+  <li><b>Rotate</b> — drag the background</li>
+  <li><b>Pan</b> — <kbd>Shift</kbd> + drag</li>
+  <li><b>Move a layer</b> — <kbd>Cmd/Ctrl</kbd> + drag its outline</li>
+  <li><b>Hover</b> a node to highlight connections</li>
+  <li><b>Click</b> a node to lock its selection</li>
+</ul>
+<p>Use the left panel to control layers, nodes, and links.</p>`,
+    },
+    map: {
+        title: '🗺️ Map Mode',
+        body: `<p>Layers are placed on a geographic map using their <code>latitude</code>/<code>longitude</code>.</p>
+<ul style="padding-left:16px;margin:8px 0;">
+  <li><b>Click a marker</b> to pop that layer into 3D space</li>
+  <li><b>Click ✕</b> on a popped layer to return it to the map</li>
+  <li><b>Pan the map</b> — <kbd>Shift</kbd> + drag (carries 3D layers with it)</li>
+  <li>Use the <b>Map</b> sidebar section to control opacity</li>
+</ul>`,
+    },
+    layer: {
+        title: '🔵 Layer Mode',
+        body: `<p>Each layer is a bubble in a force-directed meta-graph with a micro-graph preview inside.</p>
+<ul style="padding-left:16px;margin:8px 0;">
+  <li><b>Click</b> a bubble — layer statistics panel</li>
+  <li><b>Cmd/Ctrl + click</b> a second bubble — side-by-side comparison</li>
+  <li><b>Drag</b> a bubble to pin it; <b>Reset</b> to unpin all</li>
+  <li><b>Scroll</b> to zoom; drag background to pan</li>
+</ul>
+<p><b>Blue lines</b> = interlayer links &nbsp;·&nbsp; <b>Gray lines</b> = shared nodes</p>`,
+    },
+    dashboard: {
+        title: '📊 Dashboard Mode',
+        body: `<p>Analytics panels for your multilayer network. Click any section header to collapse it.</p>
+<ul style="padding-left:16px;margin:8px 0;">
+  <li><b>KPI Cards</b> — totals at a glance</li>
+  <li><b>Per-Layer Charts</b> — nodes, links, density per layer. Click a layer name to highlight it.</li>
+  <li><b>Presence Matrix</b> — node × layer heatmap with orientation and sort toggles</li>
+  <li><b>Layer Similarity</b> — Jaccard heatmaps for node and edge identity</li>
+  <li><b>Degree Distributions</b> — histograms for full network and per layer</li>
+  <li><b>Node Participation</b> — how many layers each node appears in</li>
+</ul>
+<p>Use the left panel to change sort order and highlight metric.</p>`,
+    },
+};
+
+helpBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    if (helpPopup.style.display !== 'none') { helpPopup.style.display = 'none'; return; }
+    const c = HELP_CONTENT[appMode] ?? HELP_CONTENT.network;
+    helpPopupTitle.textContent = c.title;
+    helpPopupBody.innerHTML = c.body;
+    helpPopup.style.display = 'block';
+});
+helpPopupClose.addEventListener('click', () => { helpPopup.style.display = 'none'; });
+helpPopupFullManual.addEventListener('click', () => { window.open('docs/manual.html', '_blank'); });
+document.addEventListener('click', e => {
+    if (helpPopup.style.display !== 'none' && !helpPopup.contains(e.target) && e.target !== helpBtn) {
+        helpPopup.style.display = 'none';
+    }
+});
+
 // ---- Screenshot Export ----
 const captureBtn = document.getElementById('captureBtn');
 const exportDialog = document.getElementById('exportDialog');

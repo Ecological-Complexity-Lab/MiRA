@@ -4,14 +4,28 @@ An interactive, browser-based visualization tool for multilayer ecological netwo
 
 ## Visualization Modes
 
-The tool supports three complementary modes, switchable via the bottom-left toolbar:
+The tool supports four complementary modes, switchable via the bottom-left toolbar:
 
 * **Network Mode** (default) — classic 3D stacked-layer view. Rotate, pan, drag layers, hover nodes for info, and click to select.
 * **Map Mode** — geographic layout using an interactive Leaflet map. Layers with `latitude`/`longitude` metadata appear as map markers; clicking a marker pops that layer into 3D space for side-by-side inspection.
-* **Layer View** — a novel meta-graph mode where each layer becomes a bubble in a force-directed graph. Micro-graph previews of internal topology appear inside each bubble. Meta-edges show interlayer links (blue, solid) and shared physical nodes (gray). Click a bubble for a statistics panel; Cmd+click two bubbles for a side-by-side comparison with overlapping degree histograms and overlap/divergence metrics. See `docs/DOCUMENTATION.md` for the full feature description.
+* **Layer View** — a novel meta-graph mode where each layer becomes a bubble in a force-directed graph. Micro-graph previews of internal topology appear inside each bubble. Meta-edges show interlayer links (blue, solid) and shared physical nodes (gray). Click a bubble for a statistics panel; Cmd+click two bubbles for a side-by-side comparison with overlapping degree histograms and overlap/divergence metrics.
+* **Dashboard Mode** — a statistics panel replacing the network canvas with collapsible analytics sections: KPI cards, per-layer bar charts, Node × Layer presence matrix (with orientation toggle), Layer Similarity Jaccard heatmaps (node and edge identity; bipartite-aware), degree distribution histograms, node participation chart, and a bipartite set-size ratio chart.
+
+See `docs/DOCUMENTATION.md` for the full feature description of all modes.
 
 ## Loading Custom Data
 
+Two routes are available for loading your own data via the **Data** panel:
+
+### CSV (emln output)
+Use the **"📊 Load User Data (CSV)"** button to load network data directly from CSV files — the native output format of `emln`'s `create_multilayer_network()`. A modal dialog accepts:
+* **Extended Edge List** *(required)* — columns `layer_from`, `node_from`, `layer_to`, `node_to`, `weight` (optional). Both intralayer and interlayer links go in this one file.
+* **Layer Attributes** *(optional)* — columns `layer_id`, `layer_name`, `latitude`, `longitude`. If omitted, layers are derived automatically from the edge list.
+* **Node Attributes** *(optional)* — columns `node_name`, `group` (or `node_type`/`type`). If omitted, nodes are derived automatically.
+
+Comma, tab, and semicolon delimiters are all auto-detected. Directed and bipartite flags can be set via checkboxes before loading.
+
+### JSON
 To run your own datasets in the visualizer without using the `emln` package, format your network data as a single `.json` file and use the **"📂 Load User Data (JSON)"** button inside the **Data** panel.
 
 ### JSON Structure Specification
