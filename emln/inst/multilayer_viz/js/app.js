@@ -489,6 +489,7 @@ document.querySelectorAll('.demo-dataset-btn').forEach(btn => {
 // ---- Map Mode Logic ----
 function toggleMapMode() {
     if (appMode === 'dashboard') { _exitDashboard(); appMode = 'network'; }
+    if (appMode === 'layer')     { _exitLayerView(); appMode = 'network'; renderer.render(); }
     appMode = appMode === 'network' ? 'map' : 'network';
 
     if (appMode === 'map') {
@@ -540,7 +541,8 @@ function toggleLayerView() {
         renderer.render();
         return;
     }
-    if (appMode === 'map') toggleMapMode();
+    if (appMode === 'map')       toggleMapMode();
+    if (appMode === 'dashboard') { _exitDashboard(); appMode = 'network'; }
     appMode = 'layer';
     renderer.layerView = new LayerView(model, positions);
     renderer.layerViewMode = true;
