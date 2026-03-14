@@ -239,6 +239,15 @@ body {
 .zoom-controls {
   display: flex;
   gap: 4px;
+  align-items: center;
+}
+
+.toolbar-sep {
+  width: 1px;
+  height: 18px;
+  background: rgba(0,0,0,0.15);
+  margin: 0 4px;
+  flex-shrink: 0;
 }
 
 .zoom-btn {
@@ -675,4 +684,161 @@ body {
   display: flex;
   gap: 8px;
   justify-content: center;
+}
+
+/* ---- Dashboard Mode ---- */
+#dashboardContainer {
+  position: absolute;
+  inset: 0;
+  background: #f3f4f8;
+  overflow-y: auto;
+  display: none;
+  z-index: 5;
+}
+
+.db-root {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 20px 24px 40px;
+}
+
+.db-section {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  margin-bottom: 14px;
+  overflow: hidden;
+}
+
+.db-sec-hd {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 11px 16px;
+  cursor: pointer;
+  user-select: none;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.db-sec-hd:hover { background: #f3f4f6; }
+
+.db-sec-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.db-chevron { font-size: 12px; color: #9ca3af; }
+
+.db-sec-bd { padding: 16px; }
+
+/* KPI cards */
+.db-kpi-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.db-card {
+  flex: 1 1 110px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+
+.db-kpi-v {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1f2937;
+  line-height: 1.3;
+}
+
+.db-kpi-l {
+  font-size: 11px;
+  color: #9ca3af;
+  margin-top: 3px;
+}
+
+.db-kpi-sub {
+  font-size: 12px;
+  font-weight: 400;
+  color: #6b7280;
+  display: block;
+}
+
+.db-badge {
+  display: inline-block;
+  background: #ede9fe;
+  color: #6366f1;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 12px;
+  margin-right: 4px;
+}
+
+/* Charts */
+.db-charts-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.db-chart-box { flex: 1 1 250px; min-width: 0; }
+
+.db-chart-hl {
+  outline: 2px solid #6366f1;
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.db-chart-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+  margin-bottom: 6px;
+}
+
+/* Presence matrix */
+.db-matrix-wrap {
+  overflow: auto;
+  max-height: 460px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+}
+
+.db-matrix-ctrl {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.db-sort-btn {
+  font-size: 11px;
+  padding: 3px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  color: #374151;
+  cursor: pointer;
+  line-height: 1.4;
+}
+
+.db-sort-btn:hover { background: #f3f4f6; }
+
+.db-sort-btn.active {
+  background: #6366f1;
+  color: #fff;
+  border-color: #6366f1;
+}
+
+.db-heatmap-col {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
 }

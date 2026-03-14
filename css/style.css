@@ -239,6 +239,15 @@ body {
 .zoom-controls {
   display: flex;
   gap: 4px;
+  align-items: center;
+}
+
+.toolbar-sep {
+  width: 1px;
+  height: 18px;
+  background: rgba(0,0,0,0.15);
+  margin: 0 4px;
+  flex-shrink: 0;
 }
 
 .zoom-btn {
