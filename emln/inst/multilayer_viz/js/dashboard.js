@@ -5,7 +5,7 @@
  */
 
 const ACCENT      = '#6366f1';
-const SET_A_COLOR = '#34d399';
+const SET_A_COLOR = '#0072b2';
 const SET_B_COLOR = '#f472b6';
 const BAR_FILL    = 'rgba(99,102,241,0.72)';
 const GRID        = '#e5e7eb';

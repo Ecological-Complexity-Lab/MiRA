@@ -27,7 +27,7 @@ const LAYER_BORDER_DEFAULT = 'rgba(139, 92, 246, 0.55)';
 const NODE_LAYER_COLOR_DEFAULT = '#a78bfa';
 
 // Bipartite set colors (matching stabilitygame.html plant/pollinator palette)
-export const BIPARTITE_SET_A_COLOR = '#34d399'; // green (plants)
+export const BIPARTITE_SET_A_COLOR = '#0072b2'; // blue (Set A)
 export const BIPARTITE_SET_B_COLOR = '#f472b6'; // pink (pollinators)
 
 export class ColorMapper {
