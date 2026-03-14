@@ -9,6 +9,7 @@ import { InteractionHandler } from './interaction.js';
 import { ColorMapper } from './colorMapper.js';
 import { LayerView } from './layerView.js';
 import { csvToJson } from './csvImporter.js';
+import { Dashboard } from './dashboard.js';
 
 // ---- State ----
 let model = null;
@@ -148,6 +149,14 @@ const lvSizeMultLabel         = document.getElementById('lvSizeMultLabel');
 const lvSpacing               = document.getElementById('lvSpacing');
 const lvSpacingLabel          = document.getElementById('lvSpacingLabel');
 const LV_SECTIONS = ['sectionLayerViewCircles','sectionLayerViewEdges'];
+const DB_SECTIONS = ['sectionDashboard'];
+const dashboardBtn       = document.getElementById('dashboardBtn');
+const dashboardContainer = document.getElementById('dashboardContainer');
+const dbSortSelect       = document.getElementById('dbSortSelect');
+const dbHighlightSelect  = document.getElementById('dbHighlightSelect');
+const dbBipartiteToggle  = document.getElementById('dbBipartiteToggle');
+const dbBipartiteRow     = document.getElementById('dbBipartiteRow');
+let   dashboard          = null;
 const mapOpacityControl = document.getElementById('mapOpacityControl');
 const mapOpacitySlider = document.getElementById('mapOpacitySlider');
 const showMapImageCheckbox = document.getElementById('showMapImageCheckbox');
@@ -170,7 +179,7 @@ const closeInfoBtn = document.getElementById('closeInfoBtn');
 const tooltip = document.getElementById('tooltip');
 
 // ---- Application State ----
-let appMode = 'network'; // 'network', 'map', or 'layer'
+let appMode = 'network'; // 'network', 'map', 'layer', or 'dashboard'
 let layerViewHandlers = null;
 let lvRAF  = null; // requestAnimationFrame id for meta-graph animation
 let activeMapLayers = new Set();
@@ -352,10 +361,10 @@ function loadData(json) {
             mapModeBtn.style.display = 'none';
         }
 
-        // Reset out of map mode if active when loading a new un-mapped network
-        if (appMode === 'map') {
-            toggleMapMode(); // Switches back to network mode and cleans up markers
-        }
+        // Reset out of any non-network mode when loading new data
+        if (appMode === 'map')       { toggleMapMode(); }
+        if (appMode === 'layer')     { _exitLayerView(); appMode = 'network'; }
+        if (appMode === 'dashboard') { _exitDashboard(); appMode = 'network'; }
 
         // Pass bipartite info to layout engine
         layout.bipartiteInfo = model.bipartiteInfo;
@@ -479,6 +488,7 @@ document.querySelectorAll('.demo-dataset-btn').forEach(btn => {
 
 // ---- Map Mode Logic ----
 function toggleMapMode() {
+    if (appMode === 'dashboard') { _exitDashboard(); appMode = 'network'; }
     appMode = appMode === 'network' ? 'map' : 'network';
 
     if (appMode === 'map') {
@@ -687,6 +697,70 @@ function _hideLayerViewSidebar() {
     LV_SECTIONS.forEach(id => { document.getElementById(id).style.display = 'none'; });
     renderLegends(); // restore network legends
 }
+
+// ---- Dashboard Mode ----
+function _showDashboardSidebar() {
+    NETWORK_SECTIONS.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
+    LV_SECTIONS.forEach(id => { document.getElementById(id).style.display = 'none'; });
+    DB_SECTIONS.forEach(id => { document.getElementById(id).style.display = ''; });
+}
+
+function _hideDashboardSidebar() {
+    DB_SECTIONS.forEach(id => { document.getElementById(id).style.display = 'none'; });
+    NETWORK_SECTIONS.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = ''; });
+    renderLegends();
+}
+
+function _exitDashboard() {
+    dashboard?.destroy();
+    dashboard = null;
+    dashboardContainer.style.display = 'none';
+    canvas.style.display = '';
+    dashboardBtn.classList.remove('active');
+    _hideDashboardSidebar();
+}
+
+function toggleDashboard() {
+    if (!model) return;
+    if (appMode === 'dashboard') {
+        _exitDashboard();
+        appMode = 'network';
+        renderer.render();
+        return;
+    }
+    // Exit other active modes first
+    if (appMode === 'layer') { _exitLayerView(); appMode = 'network'; }
+    if (appMode === 'map')   { toggleMapMode(); }
+
+    appMode = 'dashboard';
+    dashboardBtn.classList.add('active');
+    canvas.style.display = 'none';
+    dashboardContainer.style.display = 'block';
+    _showDashboardSidebar();
+
+    // Show bipartite toggle only when relevant
+    const hasBp = [...model.bipartiteInfo.values()].some(b => b.isBipartite);
+    dbBipartiteRow.style.display = hasBp ? '' : 'none';
+
+    // Reset sidebar controls
+    dbSortSelect.value      = 'participation';
+    dbHighlightSelect.value = 'nodes';
+    dbBipartiteToggle.checked = true;
+
+    dashboard = new Dashboard(dashboardContainer, model, {
+        onLayerClick: () => {
+            _exitDashboard();
+            appMode = 'network';
+            renderer.render();
+        },
+    });
+    dashboard.render();
+}
+
+dashboardBtn.addEventListener('click', toggleDashboard);
+dbSortSelect.addEventListener('change',      () => dashboard?.setSortOrder(dbSortSelect.value));
+dbHighlightSelect.addEventListener('change', () => dashboard?.setHighlightMetric(dbHighlightSelect.value));
+dbBipartiteToggle.addEventListener('change', () => dashboard?.setShowBipartite(dbBipartiteToggle.checked));
 
 function _syncLayerViewControls() {
     const lv = renderer.layerView;

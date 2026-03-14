@@ -25,6 +25,9 @@
   <!-- Main Canvas -->
   <canvas id="networkCanvas"></canvas>
 
+  <!-- Dashboard Container -->
+  <div id="dashboardContainer"></div>
+
   <!-- Tooltip (follows mouse on hover) -->
   <div id="tooltip"></div>
 
@@ -246,7 +249,32 @@
       </div>
     </details>
 
-    <!-- 5. Node Search -->
+    <!-- 5. Dashboard controls -->
+    <details class="control-section" id="sectionDashboard" style="display:none">
+      <summary>Dashboard</summary>
+      <div class="section-body">
+        <label style="font-size:11px;color:#666;">Sort matrix rows</label>
+        <select id="dbSortSelect" class="styled-select">
+          <option value="participation">By participation</option>
+          <option value="name">By name</option>
+          <option value="set">By set</option>
+        </select>
+        <label style="font-size:11px;color:#666;margin-top:10px;display:block;">Highlight chart</label>
+        <select id="dbHighlightSelect" class="styled-select">
+          <option value="nodes">Nodes per layer</option>
+          <option value="edges">Edges per layer</option>
+          <option value="density">Density per layer</option>
+        </select>
+        <div class="checkbox-row" id="dbBipartiteRow" style="display:none;margin-top:10px;">
+          <label class="checkbox-label">
+            <input type="checkbox" id="dbBipartiteToggle" checked>
+            <span>Show bipartite detail</span>
+          </label>
+        </div>
+      </div>
+    </details>
+
+    <!-- 6. Node Search -->
     <details class="control-section" id="sectionSearch" style="overflow:visible;">
       <summary>Search Node</summary>
       <div class="section-body" style="overflow:visible;">
@@ -304,6 +332,13 @@
           <line x1="12" y1="7.5" x2="5.9" y2="16.6"/>
           <line x1="12" y1="7.5" x2="18.1" y2="16.6"/>
           <line x1="7.5" y1="19" x2="16.5" y2="19"/>
+        </svg>
+      </button>
+      <button id="dashboardBtn" class="btn zoom-btn" title="Toggle Dashboard">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+          <rect x="3" y="12" width="5" height="9" rx="1"/>
+          <rect x="9.5" y="7" width="5" height="14" rx="1"/>
+          <rect x="16" y="3" width="5" height="18" rx="1"/>
         </svg>
       </button>
       <button id="mapModeBtn" class="btn zoom-btn" title="Toggle Map View" style="display:none;">
