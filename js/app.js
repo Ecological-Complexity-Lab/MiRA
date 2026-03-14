@@ -8,6 +8,7 @@ import { ForceLayout } from './layout.js';
 import { InteractionHandler } from './interaction.js';
 import { ColorMapper } from './colorMapper.js';
 import { LayerView } from './layerView.js';
+import { csvToJson } from './csvImporter.js';
 
 // ---- State ----
 let model = null;
@@ -29,7 +30,27 @@ const canvas = document.getElementById('networkCanvas');
 const openDemoDialogBtn = document.getElementById('openDemoDialogBtn');
 const demoDialog = document.getElementById('demoDialog');
 const demoCancelBtn = document.getElementById('demoCancelBtn');
-const fileInput = document.getElementById('fileInput');
+const fileInput       = document.getElementById('fileInput');
+const csvUploadBtn    = document.getElementById('csvUploadBtn');
+const csvImportModal  = document.getElementById('csvImportModal');
+const csvModalClose   = document.getElementById('csvModalClose');
+const csvEdgeFile     = document.getElementById('csvEdgeFile');
+const csvEdgeLabel    = document.getElementById('csvEdgeLabel');
+const csvLayersFile   = document.getElementById('csvLayersFile');
+const csvLayersLabel  = document.getElementById('csvLayersLabel');
+const csvNodesFile    = document.getElementById('csvNodesFile');
+const csvNodesLabel   = document.getElementById('csvNodesLabel');
+const csvDirected     = document.getElementById('csvDirected');
+const csvBipartite    = document.getElementById('csvBipartite');
+const csvImportLoad   = document.getElementById('csvImportLoad');
+const csvImportCancel = document.getElementById('csvImportCancel');
+const csvImportError  = document.getElementById('csvImportError');
+const csvImportWarn   = document.getElementById('csvImportWarn');
+const csvImportInfo   = document.getElementById('csvImportInfo');
+const dataLoadedNotice   = document.getElementById('dataLoadedNotice');
+const dataLoadedClose    = document.getElementById('dataLoadedClose');
+const dataLoadedOk       = document.getElementById('dataLoadedOk');
+const dataLoadedDontShow = document.getElementById('dataLoadedDontShow');
 const nodeColorSelect = document.getElementById('nodeColorSelect');
 const nodeColorSelectSetA = document.getElementById('nodeColorSelectSetA');
 const nodeColorSelectSetB = document.getElementById('nodeColorSelectSetB');
@@ -1561,11 +1582,135 @@ fileInput.addEventListener('change', (e) => {
         try {
             const json = JSON.parse(evt.target.result);
             loadData(json);
+            _showDataLoadedNotice();
         } catch (err) {
             alert('Invalid JSON file: ' + err.message);
         }
     };
     reader.readAsText(file);
+});
+
+// ---- Data-loaded notice ----
+const DATA_NOTICE_KEY = 'mlviz_dataLoadedNoticeDismissed';
+
+function _showDataLoadedNotice() {
+    if (sessionStorage.getItem(DATA_NOTICE_KEY)) return;
+    dataLoadedNotice.style.display = 'flex';
+}
+
+function _closeDataLoadedNotice() {
+    dataLoadedNotice.style.display = 'none';
+}
+
+dataLoadedClose.addEventListener('click', _closeDataLoadedNotice);
+dataLoadedOk.addEventListener('click', _closeDataLoadedNotice);
+dataLoadedDontShow.addEventListener('click', () => {
+    sessionStorage.setItem(DATA_NOTICE_KEY, '1');
+    _closeDataLoadedNotice();
+});
+dataLoadedNotice.addEventListener('click', e => { if (e.target === dataLoadedNotice) _closeDataLoadedNotice(); });
+
+// ---- CSV Import ----
+let _csvEdgeText = null, _csvLayersText = null, _csvNodesText = null;
+let _csvPendingJson = null;
+
+function _readFileAsText(file) {
+    return new Promise((res, rej) => {
+        const r = new FileReader();
+        r.onload = e => res(e.target.result);
+        r.onerror = rej;
+        r.readAsText(file);
+    });
+}
+
+function _closeCsvModal() {
+    _csvPendingJson = null;
+    csvImportLoad.textContent = 'Load Network';
+    csvImportModal.style.display = 'none';
+}
+
+csvUploadBtn.addEventListener('click', () => {
+    _csvEdgeText = _csvLayersText = _csvNodesText = null;
+    csvEdgeLabel.textContent = 'Choose file…';
+    csvLayersLabel.textContent = 'Choose file…';
+    csvNodesLabel.textContent = 'Choose file…';
+    csvDirected.checked = false;
+    csvBipartite.checked = false;
+    csvImportLoad.disabled = true;
+    csvImportLoad.style.opacity = '0.4';
+    csvImportError.style.display = 'none';
+    csvImportWarn.style.display  = 'none';
+    csvImportInfo.style.display  = 'none';
+    csvImportModal.style.display = 'flex';
+});
+
+csvModalClose.addEventListener('click', _closeCsvModal);
+csvImportCancel.addEventListener('click', _closeCsvModal);
+csvImportModal.addEventListener('click', e => { if (e.target === csvImportModal) _closeCsvModal(); });
+
+csvEdgeFile.addEventListener('change', async e => {
+    const f = e.target.files[0]; if (!f) return;
+    csvEdgeLabel.textContent = f.name;
+    _csvEdgeText = await _readFileAsText(f);
+    csvImportLoad.disabled = false;
+    csvImportLoad.style.opacity = '1';
+});
+
+csvLayersFile.addEventListener('change', async e => {
+    const f = e.target.files[0]; if (!f) return;
+    csvLayersLabel.textContent = f.name;
+    _csvLayersText = await _readFileAsText(f);
+});
+
+csvNodesFile.addEventListener('change', async e => {
+    const f = e.target.files[0]; if (!f) return;
+    csvNodesLabel.textContent = f.name;
+    _csvNodesText = await _readFileAsText(f);
+});
+
+csvImportLoad.addEventListener('click', () => {
+    // If user is confirming after a warning, load the pending json directly
+    if (_csvPendingJson) {
+        const json = _csvPendingJson;
+        _closeCsvModal();
+        loadData(json);
+        _showDataLoadedNotice();
+        return;
+    }
+
+    csvImportError.style.display = 'none';
+    csvImportWarn.style.display  = 'none';
+    csvImportInfo.style.display  = 'none';
+    try {
+        const { json, infoMessages, warnings } = csvToJson(_csvEdgeText, _csvLayersText, _csvNodesText, {
+            directed: csvDirected.checked,
+            bipartite: csvBipartite.checked,
+        });
+        if (warnings.length) {
+            csvImportWarn.textContent = '⚠ ' + warnings.join(' | ');
+            csvImportWarn.style.display = 'block';
+            if (infoMessages.length) {
+                csvImportInfo.textContent = infoMessages.join(' · ');
+                csvImportInfo.style.display = 'block';
+            }
+            // Require explicit confirmation — store json and change button label
+            _csvPendingJson = json;
+            csvImportLoad.textContent = 'Load Anyway';
+        } else if (infoMessages.length) {
+            csvImportInfo.textContent = infoMessages.join(' · ');
+            csvImportInfo.style.display = 'block';
+            _closeCsvModal();
+            loadData(json);
+            _showDataLoadedNotice();
+        } else {
+            _closeCsvModal();
+            loadData(json);
+            _showDataLoadedNotice();
+        }
+    } catch (err) {
+        csvImportError.textContent = err.message;
+        csvImportError.style.display = 'block';
+    }
 });
 
 // ---- Dropdowns ----

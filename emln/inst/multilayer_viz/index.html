@@ -41,6 +41,7 @@
             <button class="btn" id="uploadLabel" style="width:100%;">📂 Load User Data (JSON)</button>
             <input type="file" id="fileInput" accept=".json">
           </div>
+          <button class="btn" id="csvUploadBtn" style="width:100%;">📊 Load User Data (CSV)</button>
         </div>
       </div>
     </details>
@@ -422,6 +423,71 @@
         <button class="btn btn-primary demo-dataset-btn" data-file="synth_unipartite"
           style="width:100%;">Synthetic Directed (10 layers)</button>
         <button class="btn" id="demoCancelBtn" style="width:100%; margin-top: 8px;">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CSV Import Modal -->
+  <div id="csvImportModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:3000; align-items:center; justify-content:center;">
+    <div style="background:#fff; border-radius:12px; width:460px; max-height:90vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.3); padding:24px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
+        <h3 style="margin:0; font-size:15px; font-weight:700;">Load Network from CSV</h3>
+        <button id="csvModalClose" class="close-btn">✕</button>
+      </div>
+
+      <!-- Edge list (required) -->
+      <div style="margin-bottom:16px;">
+        <label style="font-size:12px; font-weight:600; display:block; margin-bottom:2px;">Extended Edge List <span style="color:#ef4444;">*</span></label>
+        <p style="font-size:11px; color:#9ca3af; margin:0 0 6px;">Columns: layer_from · node_from · layer_to · node_to · weight (optional)</p>
+        <div class="file-input-wrapper" style="width:100%;">
+          <button class="btn" id="csvEdgeLabel" style="width:100%; text-align:left; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Choose file…</button>
+          <input type="file" id="csvEdgeFile" accept=".csv,.tsv,.txt">
+        </div>
+      </div>
+
+      <!-- Layers (optional) -->
+      <div style="margin-bottom:16px;">
+        <label style="font-size:12px; font-weight:600; display:block; margin-bottom:2px;">Layer Attributes <span style="font-weight:400; color:#9ca3af;">(optional)</span></label>
+        <p style="font-size:11px; color:#9ca3af; margin:0 0 6px;">Columns: layer_id · layer_name · latitude · longitude · …</p>
+        <div class="file-input-wrapper" style="width:100%;">
+          <button class="btn" id="csvLayersLabel" style="width:100%; text-align:left; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Choose file…</button>
+          <input type="file" id="csvLayersFile" accept=".csv,.tsv,.txt">
+        </div>
+      </div>
+
+      <!-- Nodes (optional) -->
+      <div style="margin-bottom:16px;">
+        <label style="font-size:12px; font-weight:600; display:block; margin-bottom:2px;">Node Attributes <span style="font-weight:400; color:#9ca3af;">(optional)</span></label>
+        <p style="font-size:11px; color:#9ca3af; margin:0 0 6px;">Columns: node_name · group (or node_type) · …</p>
+        <div class="file-input-wrapper" style="width:100%;">
+          <button class="btn" id="csvNodesLabel" style="width:100%; text-align:left; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Choose file…</button>
+          <input type="file" id="csvNodesFile" accept=".csv,.tsv,.txt">
+        </div>
+      </div>
+
+      <!-- Options -->
+      <div style="margin-bottom:20px; display:flex; gap:18px;">
+        <label style="font-size:12px; display:flex; align-items:center; gap:6px; cursor:pointer;">
+          <input type="checkbox" id="csvDirected"> Directed network
+        </label>
+        <label style="font-size:12px; display:flex; align-items:center; gap:6px; cursor:pointer;">
+          <input type="checkbox" id="csvBipartite"> Bipartite network
+        </label>
+      </div>
+
+      <!-- Info note (shown when layers/nodes are auto-derived) -->
+      <div id="csvImportInfo" style="display:none; color:#6b7280; font-size:11px; margin-bottom:12px; padding:8px 10px; background:#f3f4f6; border-radius:6px;"></div>
+
+      <!-- Warning area (e.g. missing weight column) -->
+      <div id="csvImportWarn" style="display:none; color:#92400e; font-size:11px; margin-bottom:12px; padding:8px 10px; background:#fffbeb; border:1px solid #fcd34d; border-radius:6px;"></div>
+
+      <!-- Error area -->
+      <div id="csvImportError" style="display:none; color:#ef4444; font-size:12px; margin-bottom:12px; padding:8px 10px; background:#fef2f2; border-radius:6px;"></div>
+
+      <!-- Actions -->
+      <div style="display:flex; gap:8px; justify-content:flex-end;">
+        <button id="csvImportCancel" class="btn" style="background:#f3f4f6; color:#374151;">Cancel</button>
+        <button id="csvImportLoad" class="btn" disabled style="opacity:0.4;">Load Network</button>
       </div>
     </div>
   </div>

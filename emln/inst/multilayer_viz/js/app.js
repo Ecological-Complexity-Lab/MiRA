@@ -8,6 +8,7 @@ import { ForceLayout } from './layout.js';
 import { InteractionHandler } from './interaction.js';
 import { ColorMapper } from './colorMapper.js';
 import { LayerView } from './layerView.js';
+import { csvToJson } from './csvImporter.js';
 
 // ---- State ----
 let model = null;
@@ -29,7 +30,23 @@ const canvas = document.getElementById('networkCanvas');
 const openDemoDialogBtn = document.getElementById('openDemoDialogBtn');
 const demoDialog = document.getElementById('demoDialog');
 const demoCancelBtn = document.getElementById('demoCancelBtn');
-const fileInput = document.getElementById('fileInput');
+const fileInput       = document.getElementById('fileInput');
+const csvUploadBtn    = document.getElementById('csvUploadBtn');
+const csvImportModal  = document.getElementById('csvImportModal');
+const csvModalClose   = document.getElementById('csvModalClose');
+const csvEdgeFile     = document.getElementById('csvEdgeFile');
+const csvEdgeLabel    = document.getElementById('csvEdgeLabel');
+const csvLayersFile   = document.getElementById('csvLayersFile');
+const csvLayersLabel  = document.getElementById('csvLayersLabel');
+const csvNodesFile    = document.getElementById('csvNodesFile');
+const csvNodesLabel   = document.getElementById('csvNodesLabel');
+const csvDirected     = document.getElementById('csvDirected');
+const csvBipartite    = document.getElementById('csvBipartite');
+const csvImportLoad   = document.getElementById('csvImportLoad');
+const csvImportCancel = document.getElementById('csvImportCancel');
+const csvImportError  = document.getElementById('csvImportError');
+const csvImportWarn   = document.getElementById('csvImportWarn');
+const csvImportInfo   = document.getElementById('csvImportInfo');
 const nodeColorSelect = document.getElementById('nodeColorSelect');
 const nodeColorSelectSetA = document.getElementById('nodeColorSelectSetA');
 const nodeColorSelectSetB = document.getElementById('nodeColorSelectSetB');
@@ -1566,6 +1583,91 @@ fileInput.addEventListener('change', (e) => {
         }
     };
     reader.readAsText(file);
+});
+
+// ---- CSV Import ----
+let _csvEdgeText = null, _csvLayersText = null, _csvNodesText = null;
+
+function _readFileAsText(file) {
+    return new Promise((res, rej) => {
+        const r = new FileReader();
+        r.onload = e => res(e.target.result);
+        r.onerror = rej;
+        r.readAsText(file);
+    });
+}
+
+function _closeCsvModal() { csvImportModal.style.display = 'none'; }
+
+csvUploadBtn.addEventListener('click', () => {
+    _csvEdgeText = _csvLayersText = _csvNodesText = null;
+    csvEdgeLabel.textContent = 'Choose file…';
+    csvLayersLabel.textContent = 'Choose file…';
+    csvNodesLabel.textContent = 'Choose file…';
+    csvDirected.checked = false;
+    csvBipartite.checked = false;
+    csvImportLoad.disabled = true;
+    csvImportLoad.style.opacity = '0.4';
+    csvImportError.style.display = 'none';
+    csvImportWarn.style.display  = 'none';
+    csvImportInfo.style.display  = 'none';
+    csvImportModal.style.display = 'flex';
+});
+
+csvModalClose.addEventListener('click', _closeCsvModal);
+csvImportCancel.addEventListener('click', _closeCsvModal);
+csvImportModal.addEventListener('click', e => { if (e.target === csvImportModal) _closeCsvModal(); });
+
+csvEdgeFile.addEventListener('change', async e => {
+    const f = e.target.files[0]; if (!f) return;
+    csvEdgeLabel.textContent = f.name;
+    _csvEdgeText = await _readFileAsText(f);
+    csvImportLoad.disabled = false;
+    csvImportLoad.style.opacity = '1';
+});
+
+csvLayersFile.addEventListener('change', async e => {
+    const f = e.target.files[0]; if (!f) return;
+    csvLayersLabel.textContent = f.name;
+    _csvLayersText = await _readFileAsText(f);
+});
+
+csvNodesFile.addEventListener('change', async e => {
+    const f = e.target.files[0]; if (!f) return;
+    csvNodesLabel.textContent = f.name;
+    _csvNodesText = await _readFileAsText(f);
+});
+
+csvImportLoad.addEventListener('click', () => {
+    csvImportError.style.display = 'none';
+    csvImportWarn.style.display  = 'none';
+    csvImportInfo.style.display  = 'none';
+    try {
+        const { json, infoMessages, warnings } = csvToJson(_csvEdgeText, _csvLayersText, _csvNodesText, {
+            directed: csvDirected.checked,
+            bipartite: csvBipartite.checked,
+        });
+        if (warnings.length) {
+            csvImportWarn.textContent = '⚠ ' + warnings.join(' | ');
+            csvImportWarn.style.display = 'block';
+            // Keep modal open so user reads the warning; load proceeds after a delay
+            if (infoMessages.length) {
+                csvImportInfo.textContent = infoMessages.join(' · ');
+                csvImportInfo.style.display = 'block';
+            }
+            setTimeout(() => { _closeCsvModal(); loadData(json); }, 2500);
+        } else if (infoMessages.length) {
+            csvImportInfo.textContent = infoMessages.join(' · ');
+            csvImportInfo.style.display = 'block';
+            setTimeout(() => { _closeCsvModal(); loadData(json); }, 800);
+        } else {
+            _closeCsvModal();
+            loadData(json);
+        }
+    } catch (err) {
+        csvImportError.textContent = err.message;
+        csvImportError.style.display = 'block';
+    }
 });
 
 // ---- Dropdowns ----
