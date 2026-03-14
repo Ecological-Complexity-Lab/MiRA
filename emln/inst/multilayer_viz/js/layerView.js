@@ -65,7 +65,7 @@ export class LayerView {
         const intraCounts = new Map();
         for (const layer of layers) {
             const links = model.intralayerLinks.filter(l => l.layer_from === layer.layer_name);
-            intraCounts.set(layer.layer_name, Math.round(links.length / 2));
+            intraCounts.set(layer.layer_name, links.length);  // edges stored once, no /2
         }
 
         this._bubbles = layers.map((layer) => {
@@ -73,8 +73,19 @@ export class LayerView {
             const nodeSet   = model.nodesPerLayer.get(layerName) || new Set();
             const N = nodeSet.size;
             const E = intraCounts.get(layerName) || 0;
-            const density = N > 1 ? (2 * E) / (N * (N - 1)) : 0;
-            const avgDeg  = N > 0 ? (2 * E) / N : 0;
+            const isDir = model.directed ?? false;
+            const bpInfo = model.bipartiteInfo?.get(layerName);
+            const isBp   = bpInfo?.isBipartite ?? false;
+            const nA = isBp ? (bpInfo.setA?.size ?? 0) : 0;
+            const nB = isBp ? (bpInfo.setB?.size ?? 0) : 0;
+            let E_max;
+            if (isBp) {
+                E_max = isDir ? 2 * nA * nB : nA * nB;
+            } else {
+                E_max = isDir ? N * (N - 1) : N * (N - 1) / 2;
+            }
+            const density = E_max > 0 ? E / E_max : 0;
+            const avgDeg  = N > 0 ? (2 * E) / N : 0;  // total degree / N (same for directed and undirected)
             return {
                 layerName, nodeCount: N, edgeCount: E, density, avgDegree: avgDeg,
                 color: this._layerColorMap.get(layerName),
@@ -91,7 +102,7 @@ export class LayerView {
                     l => (l.layer_from === lA && l.layer_to === lB) ||
                          (l.layer_from === lB && l.layer_to === lA)
                 );
-                const interlayerCount = Math.round(interlayerLinks.length / 2);
+                const interlayerCount = interlayerLinks.length;  // edges stored once, no /2
                 const setA = model.nodesPerLayer.get(lA) || new Set();
                 const setB = model.nodesPerLayer.get(lB) || new Set();
                 let sharedCount = 0;

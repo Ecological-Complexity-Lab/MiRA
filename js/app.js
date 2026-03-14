@@ -736,21 +736,47 @@ function _layerStats(layerName) {
     const intraLinks = model.intralayerLinks.filter(l => l.layer_from === layerName);
     const N = nodeSet.size;
 
+    const isDir  = model.directed ?? false;
+    const bpInfo = model.bipartiteInfo?.get(layerName);
+    const isBipartite = bpInfo?.isBipartite ?? false;
+    const nA = isBipartite ? (bpInfo.setA?.size ?? 0) : 0;
+    const nB = isBipartite ? (bpInfo.setB?.size ?? 0) : 0;
+
+    // Edge deduplication — directed: preserve direction; undirected: sort pair
     const edgeKeys = new Set();
-    for (const l of intraLinks) edgeKeys.add([l.node_from, l.node_to].sort().join('::'));
+    for (const l of intraLinks) {
+        const key = isDir
+            ? `${l.node_from}::${l.node_to}`
+            : [l.node_from, l.node_to].sort().join('::');
+        edgeKeys.add(key);
+    }
     const E = edgeKeys.size;
 
-    const maxEdges = N * (N - 1) / 2;
-    const density  = maxEdges > 0 ? E / maxEdges : 0;
-
-    const degMap = new Map();
-    for (const node of nodeSet) degMap.set(node, 0);
-    for (const l of intraLinks) {
-        degMap.set(l.node_from, (degMap.get(l.node_from) || 0) + 1);
-        if (degMap.has(l.node_to)) degMap.set(l.node_to, (degMap.get(l.node_to) || 0) + 1);
-        else degMap.set(l.node_to, 1);
+    // Density formula per network type
+    let E_max;
+    if (isBipartite) {
+        E_max = isDir ? 2 * nA * nB : nA * nB;
+    } else {
+        E_max = isDir ? N * (N - 1) : N * (N - 1) / 2;
     }
-    for (const [k, v] of degMap) degMap.set(k, Math.round(v / 2));
+    const density = E_max > 0 ? E / E_max : 0;
+
+    // Degree maps — edges stored once, no halving needed
+    const degMap    = new Map();
+    const inDegMap  = new Map();
+    const outDegMap = new Map();
+    for (const node of nodeSet) {
+        degMap.set(node, 0);
+        if (isDir) { inDegMap.set(node, 0); outDegMap.set(node, 0); }
+    }
+    for (const l of intraLinks) {
+        degMap.set(l.node_from, (degMap.get(l.node_from) ?? 0) + 1);
+        degMap.set(l.node_to,   (degMap.get(l.node_to)   ?? 0) + 1);
+        if (isDir) {
+            outDegMap.set(l.node_from, (outDegMap.get(l.node_from) ?? 0) + 1);
+            inDegMap.set(l.node_to,   (inDegMap.get(l.node_to)    ?? 0) + 1);
+        }
+    }
 
     const degrees    = [...degMap.values()];
     const avgDeg     = N > 0 ? degrees.reduce((s, d) => s + d, 0) / N : 0;
@@ -760,20 +786,22 @@ function _layerStats(layerName) {
     const ilIn  = model.interlayerLinks.filter(l => l.layer_to   === layerName).length;
     const ilOut = model.interlayerLinks.filter(l => l.layer_from === layerName).length;
 
-    // Bipartite detection
-    const tFrom = new Set(intraLinks.map(l => model.nodesByName.get(l.node_from)?.type).filter(Boolean));
-    const tTo   = new Set(intraLinks.map(l => model.nodesByName.get(l.node_to  )?.type).filter(Boolean));
-    const isBipartite = tFrom.size > 0 && tTo.size > 0 && [...tFrom].every(t => !tTo.has(t));
+    // Degree by type for bipartite (keyed by type label)
     const degByType = new Map();
     if (isBipartite) {
-        for (const [node, deg] of degMap) {
-            const t = model.nodesByName.get(node)?.type ?? 'unknown';
-            if (!degByType.has(t)) degByType.set(t, new Map());
-            degByType.get(t).set(node, deg);
+        for (const [label, nodeNameSet] of [
+            [bpInfo.setALabel, bpInfo.setA],
+            [bpInfo.setBLabel, bpInfo.setB],
+        ]) {
+            const typeMap = new Map();
+            for (const node of (nodeNameSet ?? [])) {
+                if (degMap.has(node)) typeMap.set(node, degMap.get(node));
+            }
+            if (typeMap.size) degByType.set(label, typeMap);
         }
     }
 
-    return { layerName, nodeSet, N, E, maxEdges, density, degMap, degrees, avgDeg, maxDeg, maxDegNode, ilIn, ilOut, edgeKeys, isBipartite, degByType };
+    return { layerName, nodeSet, N, E, E_max, maxEdges: E_max, density, degMap, inDegMap, outDegMap, degrees, avgDeg, maxDeg, maxDegNode, ilIn, ilOut, edgeKeys, isBipartite, degByType, isDir, nA, nB };
 }
 
 function openLayerComparison(nameA, nameB) {
@@ -855,13 +883,23 @@ function openLayerComparison(nameA, nameB) {
         `<span style="color:#9ca3af;font-weight:400;margin:0 6px;">vs</span>` +
         `<span style="color:${colorB};font-weight:700;">${trunc(nameB, 16)}</span>`;
 
+    const isEitherDir = sA.isDir || sB.isDir;
+    const avgInA  = sA.isDir && sA.N > 0 ? sA.E / sA.N : null;
+    const avgOutA = sA.isDir && sA.N > 0 ? sA.E / sA.N : null;
+    const avgInB  = sB.isDir && sB.N > 0 ? sB.E / sB.N : null;
+    const avgOutB = sB.isDir && sB.N > 0 ? sB.E / sB.N : null;
+
     layerCompareContent.innerHTML =
         section('Size',
             colHdr +
             cRow('Nodes', fmt(sA.N), fmt(sB.N)) +
             cRow('Edges', fmt(sA.E), fmt(sB.E)) +
             cRow('Density', sA.density.toFixed(4), sB.density.toFixed(4)) +
-            cRow('Avg degree', fmt(sA.avgDeg, 2), fmt(sB.avgDeg, 2)) +
+            (isEitherDir
+                ? cRow('Avg in-degree',  fmt(avgInA,  2), fmt(avgInB,  2)) +
+                  cRow('Avg out-degree', fmt(avgOutA, 2), fmt(avgOutB, 2))
+                : cRow('Avg degree', fmt(sA.avgDeg, 2), fmt(sB.avgDeg, 2))
+            ) +
             cRow('Max degree', `${fmt(sA.maxDeg)} (${trunc(sA.maxDegNode, 10)})`, `${fmt(sB.maxDeg)} (${trunc(sB.maxDegNode, 10)})`)
         ) +
         section('Overlap',
@@ -975,24 +1013,45 @@ function openLayerDrillDown(layerName) {
     const layerIdx   = model.layers.indexOf(layerObj) + 1;
     const nodeSet    = model.nodesPerLayer.get(layerName) || new Set();
     const intraLinks = model.intralayerLinks.filter(l => l.layer_from === layerName);
-    const N  = nodeSet.size;
-    const E  = Math.round(intraLinks.length / 2);
-    const maxEdges = N * (N - 1) / 2;
-    const density  = maxEdges > 0 ? (E / maxEdges) : 0;
+    const N = nodeSet.size;
 
-    // Degree per node
-    const degMap = new Map();
-    for (const node of nodeSet) degMap.set(node, 0);
-    for (const l of intraLinks) {
-        degMap.set(l.node_from, (degMap.get(l.node_from) || 0) + 1);
-        if (degMap.has(l.node_to)) degMap.set(l.node_to, (degMap.get(l.node_to) || 0) + 1);
-        else degMap.set(l.node_to, 1);
+    const isDir  = model.directed ?? false;
+    const bpInfo = model.bipartiteInfo?.get(layerName);
+    const isBipartite = bpInfo?.isBipartite ?? false;
+    const nA = isBipartite ? (bpInfo.setA?.size ?? 0) : 0;
+    const nB = isBipartite ? (bpInfo.setB?.size ?? 0) : 0;
+
+    // Edge count — edges stored once, no /2
+    const E = intraLinks.length;
+
+    // Density formula per network type
+    let E_max;
+    if (isBipartite) {
+        E_max = isDir ? 2 * nA * nB : nA * nB;
+    } else {
+        E_max = isDir ? N * (N - 1) : N * (N - 1) / 2;
     }
-    // Each undirected edge stored twice → halve
-    for (const [k, v] of degMap) degMap.set(k, Math.round(v / 2));
+    const density = E_max > 0 ? E / E_max : 0;
+
+    // Degree per node — edges stored once, no halving
+    const degMap    = new Map();
+    const inDegMap  = new Map();
+    const outDegMap = new Map();
+    for (const node of nodeSet) {
+        degMap.set(node, 0);
+        if (isDir) { inDegMap.set(node, 0); outDegMap.set(node, 0); }
+    }
+    for (const l of intraLinks) {
+        degMap.set(l.node_from, (degMap.get(l.node_from) ?? 0) + 1);
+        degMap.set(l.node_to,   (degMap.get(l.node_to)   ?? 0) + 1);
+        if (isDir) {
+            outDegMap.set(l.node_from, (outDegMap.get(l.node_from) ?? 0) + 1);
+            inDegMap.set(l.node_to,   (inDegMap.get(l.node_to)    ?? 0) + 1);
+        }
+    }
 
     const degrees   = [...degMap.values()];
-    const avgDeg    = N > 0 ? (degrees.reduce((s, d) => s + d, 0) / N) : 0;
+    const avgDeg    = N > 0 ? degrees.reduce((s, d) => s + d, 0) / N : 0;
     const maxDeg    = degrees.length ? Math.max(...degrees) : 0;
     const minDeg    = degrees.length ? Math.min(...degrees) : 0;
     const maxDegNode = [...degMap.entries()].find(([, d]) => d === maxDeg)?.[0] ?? '—';
@@ -1010,25 +1069,18 @@ function openLayerDrillDown(layerName) {
         for (const n of otherNodes) { if (nodeSet.has(n)) { sharedLayers++; break; } }
     }
 
-    // Bipartite detection: check if intraLinks connect two distinct node types
-    const typesFrom = new Set(intraLinks.map(l => {
-        const n = model.nodesByName.get(l.node_from); return n ? n.type : null;
-    }));
-    const typesTo = new Set(intraLinks.map(l => {
-        const n = model.nodesByName.get(l.node_to); return n ? n.type : null;
-    }));
-    typesFrom.delete(null); typesTo.delete(null);
-    const isBipartite = typesFrom.size > 0 && typesTo.size > 0
-        && [...typesFrom].every(t => !typesTo.has(t));
-
     // Degree maps per node type for bipartite
-    const degByType = new Map(); // type → Map<node, degree>
+    const degByType = new Map(); // typeLabel → Map<node, degree>
     if (isBipartite) {
-        for (const [node, deg] of degMap) {
-            const n = model.nodesByName.get(node);
-            const t = n ? (n.type || 'unknown') : 'unknown';
-            if (!degByType.has(t)) degByType.set(t, new Map());
-            degByType.get(t).set(node, deg);
+        for (const [label, nodeNameSet] of [
+            [bpInfo.setALabel, bpInfo.setA],
+            [bpInfo.setBLabel, bpInfo.setB],
+        ]) {
+            const typeMap = new Map();
+            for (const node of (nodeNameSet ?? [])) {
+                if (degMap.has(node)) typeMap.set(node, degMap.get(node));
+            }
+            if (typeMap.size) degByType.set(label, typeMap);
         }
     }
 
@@ -1046,23 +1098,45 @@ function openLayerDrillDown(layerName) {
             ).join('')}
         </div>`;
 
+    // Build connectivity rows depending on network type
+    const connectivityRows = [];
+    if (isDir) {
+        const avgIn  = N > 0 ? E / N : 0;
+        const avgOut = N > 0 ? E / N : 0;
+        const maxIn  = inDegMap.size  ? Math.max(...inDegMap.values())  : 0;
+        const maxOut = outDegMap.size ? Math.max(...outDegMap.values()) : 0;
+        const maxInNode  = [...inDegMap.entries()].find(([, d])  => d === maxIn)?.[0]  ?? '—';
+        const maxOutNode = [...outDegMap.entries()].find(([, d]) => d === maxOut)?.[0] ?? '—';
+        connectivityRows.push(
+            ['Avg in-degree',  fmt(avgIn,  2)],
+            ['Avg out-degree', fmt(avgOut, 2)],
+            ['Max in-degree',  `${fmt(maxIn)}  (${maxInNode})`],
+            ['Max out-degree', `${fmt(maxOut)} (${maxOutNode})`],
+            ['Isolated nodes', fmt(isolated)],
+        );
+    } else {
+        connectivityRows.push(
+            ['Average degree', fmt(avgDeg, 2)],
+            ['Max degree', `${fmt(maxDeg)} (${maxDegNode})`],
+            ['Min degree', fmt(minDeg)],
+            ['Isolated nodes', fmt(isolated)],
+        );
+    }
+
+    // Size section: for bipartite, show set sizes
+    const sizeRows = [['Nodes', fmt(N)]];
+    if (isBipartite) sizeRows.push([`  ${bpInfo.setALabel}`, fmt(nA)], [`  ${bpInfo.setBLabel}`, fmt(nB)]);
+    sizeRows.push(['Edges (intra-layer)', fmt(E)], ['Density', E_max > 0 ? density.toFixed(4) : '—']);
+
     layerDrillTitle.textContent = layerName;
     layerDrillStats.innerHTML =
         section('Identity', [
             ['Layer name', layerName],
             ['Layer index', layerIdx],
+            ['Type', `${isDir ? 'Directed' : 'Undirected'} ${isBipartite ? 'bipartite' : 'unipartite'}`],
         ]) +
-        section('Size', [
-            ['Nodes', fmt(N)],
-            ['Edges (intra-layer)', fmt(E)],
-            ['Density', maxEdges > 0 ? density.toFixed(4) : '—'],
-        ]) +
-        section('Connectivity', [
-            ['Average degree', fmt(avgDeg, 2)],
-            ['Max degree', `${fmt(maxDeg)} (${maxDegNode})`],
-            ['Min degree', fmt(minDeg)],
-            ['Isolated nodes', fmt(isolated)],
-        ]) +
+        section('Size', sizeRows) +
+        section('Connectivity', connectivityRows) +
         section('Cross-layer connectivity', [
             ['Interlayer links — incoming', fmt(ilIn)],
             ['Interlayer links — outgoing', fmt(ilOut)],
