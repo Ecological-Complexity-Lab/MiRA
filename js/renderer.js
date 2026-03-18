@@ -13,17 +13,17 @@ export class Renderer {
         this.ctx = canvas.getContext('2d');
 
         // Layer geometry
-        this.layerWidth = options.layerWidth || 350;
-        this.layerHeight = options.layerHeight || 250;
-        this.layerSpacing = options.layerSpacing || 300; // depth gap between layers
-        this.skewX = options.skewX || 0.7;               // Y-axis rotation angle (radians)
-        this.skewY = options.skewY || 0.55;              // X-axis rotation angle (radians)
+        this.layerWidth = options.layerWidth ?? 350;
+        this.layerHeight = options.layerHeight ?? 250;
+        this.layerSpacing = options.layerSpacing ?? 300; // depth gap between layers
+        this.skewX = options.skewX ?? 0.7;               // Y-axis rotation angle (radians)
+        this.skewY = options.skewY ?? 0.55;              // X-axis rotation angle (radians)
 
         // Stacking mode: 'horizontal' (depth/Z) or 'vertical' (Y-axis, top-to-bottom)
-        this.stackMode = options.stackMode || 'horizontal';
+        this.stackMode = options.stackMode ?? 'horizontal';
 
         // Node appearance
-        this.nodeRadius = options.nodeRadius || 10;
+        this.nodeRadius = options.nodeRadius ?? 10;
         this.nodeStrokeWidth = 2;
         this.showLabels = true;
         this.transformNodes = false;
