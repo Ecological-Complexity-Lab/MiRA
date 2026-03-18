@@ -67,12 +67,16 @@ export class ColorMapper {
 
         // Check if numeric. We allow numbers and string-represented numbers (excluding pure whitespace).
         const allNumeric = values.length > 0 && values.every(v =>
-            typeof v === 'number' || (typeof v === 'string' && v.trim() !== '' && !isNaN(Number(v)))
+            (typeof v === 'number' && !isNaN(v)) || (typeof v === 'string' && v.trim() !== '' && !isNaN(Number(v)))
         );
 
         let useContinuous;
+        const warnings = [];
         if (forceType === 'continuous' && allNumeric) {
             useContinuous = true;
+        } else if (forceType === 'continuous' && !allNumeric) {
+            warnings.push(`forceType='continuous' requested for "${attrName}" but data is not numeric — falling back to categorical`);
+            useContinuous = false;
         } else if (forceType === 'categorical') {
             useContinuous = false;
         } else {
@@ -96,7 +100,7 @@ export class ColorMapper {
                 const t = (Number(value) - min) / range;
                 return numericGradient(t);
             };
-            return { type: 'continuous', min, max, attrName, scaleFn, canToggle };
+            return { type: 'continuous', min, max, attrName, scaleFn, canToggle, warnings };
         } else {
             // Categorical
             const colorMap = new Map();
@@ -108,7 +112,7 @@ export class ColorMapper {
                 if (value === undefined || value === null) return '#6b7280';
                 return colorMap.get(value) || '#6b7280';
             };
-            return { type: 'categorical', map: colorMap, attrName, scaleFn, canToggle };
+            return { type: 'categorical', map: colorMap, attrName, scaleFn, canToggle, warnings };
         }
     }
 }
