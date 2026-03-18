@@ -11,61 +11,23 @@
 /**
  * Parse CSV/TSV text into an array of objects.
  * Auto-detects delimiter (comma, tab, semicolon).
- * Handles RFC 4180 quoted fields.
+ * Handles RFC 4180 quoted fields, CRLF line endings, and UTF-8 BOM.
+ * Delegates to PapaParse (globalThis.Papa).
  *
  * @param {string} text
  * @returns {Array<Object>}
  */
 export function parseCsv(text) {
-    const lines = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').trim().split('\n');
-    if (lines.length < 2) throw new Error('CSV file must have at least a header row and one data row.');
-
-    // Auto-detect delimiter from the header line
-    const header = lines[0];
-    const counts = {
-        ',': (header.match(/,/g) || []).length,
-        '\t': (header.match(/\t/g) || []).length,
-        ';': (header.match(/;/g) || []).length,
-    };
-    const delim = Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0];
-
-    const splitRow = (line) => {
-        const fields = [];
-        let cur = '';
-        let inQ = false;
-        for (let i = 0; i < line.length; i++) {
-            const ch = line[i];
-            if (inQ) {
-                if (ch === '"') {
-                    if (line[i + 1] === '"') { cur += '"'; i++; }
-                    else inQ = false;
-                } else {
-                    cur += ch;
-                }
-            } else if (ch === '"') {
-                inQ = true;
-            } else if (ch === delim) {
-                fields.push(cur.trim());
-                cur = '';
-            } else {
-                cur += ch;
-            }
-        }
-        fields.push(cur.trim());
-        return fields;
-    };
-
-    const headers = splitRow(lines[0]).map(h => h.trim());
-    const rows = [];
-    for (let i = 1; i < lines.length; i++) {
-        const line = lines[i].trim();
-        if (!line) continue;
-        const vals = splitRow(line);
-        const obj = {};
-        headers.forEach((h, idx) => { obj[h] = vals[idx] ?? ''; });
-        rows.push(obj);
-    }
-    return rows;
+    const result = globalThis.Papa.parse(text, {
+        header: true,
+        skipEmptyLines: true,
+        delimitersToGuess: [',', '\t', ';'],
+        transformHeader: h => h.replace(/^\uFEFF/, '').trim(),
+        transform: val => val.trim(),
+    });
+    if (result.data.length === 0)
+        throw new Error('CSV file must have at least a header row and one data row.');
+    return result.data;
 }
 
 /**
