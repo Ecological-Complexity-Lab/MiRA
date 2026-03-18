@@ -1,0 +1,4 @@
+layer_from,node_from,layer_to,node_to,weight
+Forest,Bee,Forest,Flower,2.5
+Forest,Bee,Meadow,Bee,1
+Meadow,Bee,Meadow,Flower,1.5
