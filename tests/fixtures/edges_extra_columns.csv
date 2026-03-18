@@ -1,0 +1,3 @@
+layer_from,node_from,layer_to,node_to,weight,method,confidence
+Forest,Bee,Forest,Flower,2.5,observation,high
+Forest,Bee,Meadow,Bee,1,literature,medium

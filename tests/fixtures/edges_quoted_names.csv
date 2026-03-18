@@ -1,0 +1,3 @@
+layer_from,node_from,layer_to,node_to,weight
+"Forest, North","Bumble bee, large","Forest, North","Wild flower, red",1
+"Forest, North","Wild flower, red","Forest, South","Wild flower, red",1
