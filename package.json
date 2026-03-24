@@ -7,6 +7,9 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2",
+    "chroma-js": "^3.2.0",
+    "graphology": "^0.26.0",
+    "graphology-shortest-path": "^2.1.0",
     "papaparse": "^5.5.3",
     "vitest": "^2.0.0"
   }

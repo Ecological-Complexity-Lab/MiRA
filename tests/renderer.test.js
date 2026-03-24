@@ -30,6 +30,8 @@
  */
 
 import { describe, it, expect, beforeEach } from 'vitest'
+import chroma from 'chroma-js'
+globalThis.chroma = chroma
 import { Renderer } from '../js/renderer.js'
 
 // ── Mock canvas ───────────────────────────────────────────────────────────────

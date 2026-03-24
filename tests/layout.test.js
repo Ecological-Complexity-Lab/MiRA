@@ -38,6 +38,10 @@
  */
 
 import { describe, it, expect, beforeEach } from 'vitest'
+import * as graphologyLib from 'graphology'
+import * as graphologyShortestPath from 'graphology-shortest-path'
+globalThis.graphology = graphologyLib
+globalThis.graphologyShortestPath = graphologyShortestPath
 import { ForceLayout } from '../js/layout.js'
 
 // ── Fixture helpers ───────────────────────────────────────────────────────────

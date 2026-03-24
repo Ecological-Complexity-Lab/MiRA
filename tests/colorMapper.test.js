@@ -34,6 +34,8 @@
  */
 
 import { describe, it, expect, beforeEach } from 'vitest'
+import chroma from 'chroma-js'
+globalThis.chroma = chroma
 import { ColorMapper, BIPARTITE_SET_A_COLOR, BIPARTITE_SET_B_COLOR } from '../js/colorMapper.js'
 
 // Helper — build items array from a plain value list
@@ -140,7 +142,7 @@ describe('Group 3 — Auto-detection: continuous', () => {
     const result = cm.buildColorScale(items('weight', [1, 1, 1]), 'weight')
     expect(result.type).toBe('continuous')
     expect(() => result.scaleFn(1)).not.toThrow()
-    expect(result.scaleFn(1)).toMatch(/^rgb\(/)
+    expect(result.scaleFn(1)).toMatch(/^#[0-9a-f]{6}$/i)
   })
 })
 
@@ -203,15 +205,15 @@ describe('Group 5 — scaleFn behaviour', () => {
   beforeEach(() => { cm = new ColorMapper() })
 
   it('5.1 continuous: min value maps to the dark-purple end of the gradient', () => {
-    // The Viridis palette starts at rgb(68, 1, 84) for t=0 (minimum value)
+    // Viridis t=0 → #440154 (chroma.js hex output)
     const { scaleFn, min } = cm.buildColorScale(items('w', [0, 5, 10]), 'w')
-    expect(scaleFn(min)).toBe('rgb(68, 1, 84)')
+    expect(scaleFn(min)).toBe('#440154')
   })
 
   it('5.2 continuous: max value maps to the yellow end of the gradient', () => {
-    // The Viridis palette ends at rgb(253, 231, 37) for t=1 (maximum value)
+    // Viridis t=1 → #fee825 (chroma.js hex output)
     const { scaleFn, max } = cm.buildColorScale(items('w', [0, 5, 10]), 'w')
-    expect(scaleFn(max)).toBe('rgb(253, 231, 37)')
+    expect(scaleFn(max)).toBe('#fee825')
   })
 
   it('5.3 continuous: null/undefined input → grey fallback', () => {
@@ -233,12 +235,12 @@ describe('Group 5 — scaleFn behaviour', () => {
     expect(scaleFn(null)).toBe(GREY)
   })
 
-  it('5.6 categorical: cycles through palette when there are more than 15 categories', () => {
-    // The palette has 15 colours; the 16th category wraps back to colour index 0
-    const manyGroups = Array.from({ length: 16 }, (_, i) => `group_${i}`)
+  it('5.6 categorical: cycles through palette when there are more categories than palette size', () => {
+    // ColorBrewer Dark2 has 8 colours; the 9th category wraps back to colour index 0
+    const manyGroups = Array.from({ length: 9 }, (_, i) => `group_${i}`)
     const { scaleFn, map } = cm.buildColorScale(items('g', manyGroups), 'g')
-    expect(scaleFn('group_0')).toBe(scaleFn('group_15'))  // wraps to same color
-    expect(map.size).toBe(16)
+    expect(scaleFn('group_0')).toBe(scaleFn('group_8'))  // wraps to same color
+    expect(map.size).toBe(9)
   })
 })
 

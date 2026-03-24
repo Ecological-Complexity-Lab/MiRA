@@ -3,7 +3,8 @@
  */
 
 // ColorBrewer Dark2 — qualitative palette, colorblind-safe, scientific standard
-const CATEGORICAL_PALETTE = chroma.brewer.Dark2;
+// Accessed via globalThis so it works both in the browser (window.chroma) and in the test env
+const getCategoricalPalette = () => globalThis.chroma.brewer.Dark2;
 
 // Layer palette — single purple used for all layers by default
 const LAYER_FILL_DEFAULT  = 'rgba(139, 92, 246, 0.18)';
@@ -82,14 +83,14 @@ export class ColorMapper {
             const scaleFn = (value) => {
                 if (value === undefined || value === null) return '#6b7280';
                 const t = (Number(value) - min) / range;
-                return chroma.scale('Viridis')(t).hex();
+                return globalThis.chroma.scale('Viridis')(t).hex();
             };
             return { type: 'continuous', min, max, attrName, scaleFn, canToggle, warnings };
         } else {
             // Categorical
             const colorMap = new Map();
             uniqueValues.forEach((val, i) => {
-                colorMap.set(val, CATEGORICAL_PALETTE[i % CATEGORICAL_PALETTE.length]);
+                colorMap.set(val, getCategoricalPalette()[i % getCategoricalPalette().length]);
             });
 
             const scaleFn = (value) => {
