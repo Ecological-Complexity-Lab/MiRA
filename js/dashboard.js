@@ -12,6 +12,11 @@ const GRID        = '#e5e7eb';
 const TEXT        = '#374151';
 const SUBTEXT     = '#9ca3af';
 
+// ─── Number formats ──────────────────────────────────────────────────────────
+const fmtInteger = d3.format('.0f');   // counts: 1234 → "1234"
+const fmtDecimal = d3.format('.3f');   // density/small floats: 0.384
+const fmtRatio   = d3.format('.2f');   // ratios / Jaccard: 0.75
+
 // ─── SVG chart helpers ──────────────────────────────────────────────────────
 
 /**
@@ -24,7 +29,7 @@ function svgBar(items, { width = 280, height = 200, color = BAR_FILL, yLabel = '
     if (!items.length) return `<svg width="${width}" height="${height}"></svg>`;
 
     const maxV = Math.max(...items.map(d => d.value), 0.0001);
-    const fmtV = fmt || (v => v < 1 ? v.toFixed(3) : String(Math.round(v)));
+    const fmtV = fmt || (v => v < 1 ? fmtDecimal(v) : fmtInteger(v));
     const step = W / items.length;
     const barW = Math.max(4, step * 0.62);
 
@@ -196,7 +201,7 @@ function svgHeatmap(matrix, labels, { accentColor = ACCENT, cellSize = 36 } = {}
             cells += `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" fill="${fill}" stroke="${GRID}" stroke-width="0.5"/>`;
             if (showTxt && !isNaN(val)) {
                 const fs  = Math.min(10, cellSize * 0.27);
-                cells += `<text x="${x + cellSize / 2}" y="${y + cellSize / 2 + fs * 0.4}" text-anchor="middle" font-size="${fs}" fill="${textFill}">${val.toFixed(2)}</text>`;
+                cells += `<text x="${x + cellSize / 2}" y="${y + cellSize / 2 + fs * 0.4}" text-anchor="middle" font-size="${fs}" fill="${textFill}">${fmtRatio(val)}</text>`;
             }
         });
     });
@@ -369,7 +374,7 @@ export class Dashboard {
 
     _sKPI(s, bp) {
         const ratio = s.totalInter > 0
-            ? (s.totalIntra / s.totalInter).toFixed(2)
+            ? fmtRatio(s.totalIntra / s.totalInter)
             : (s.totalIntra > 0 ? '∞' : '—');
         const nodesVal = bp
             ? `${s.totalNodes}<span class="db-kpi-sub">${s.setALabel}: ${s.setANodes.size} · ${s.setBLabel}: ${s.setBNodes.size}</span>`
@@ -382,7 +387,7 @@ export class Dashboard {
             { v: s.totalInter,            l: 'Interlayer edges' },
             { v: ratio,                   l: 'Intra : inter ratio' },
             { v: `<span class="db-badge">${s.isDir ? 'Directed' : 'Undirected'}</span><span class="db-badge">${bp ? 'Bipartite' : 'Unipartite'}</span>`, l: 'Network type' },
-            { v: s.avgDensity.toFixed(3), l: 'Avg layer density' },
+            { v: fmtDecimal(s.avgDensity), l: 'Avg layer density' },
         ];
 
         return this._sec('kpi', 'Summary',
@@ -405,16 +410,16 @@ export class Dashboard {
         } else {
             nodeChart = svgBar(
                 s.perLayer.map(l => ({ label: l.layerName, value: l.N })),
-                { width: W, height: H, yLabel: 'Nodes', fmt: v => String(Math.round(v)) }
+                { width: W, height: H, yLabel: 'Nodes', fmt: fmtInteger }
             );
         }
         const edgeChart = svgBar(
             s.perLayer.map(l => ({ label: l.layerName, value: l.E })),
-            { width: W, height: H, yLabel: 'Edges', fmt: v => String(Math.round(v)) }
+            { width: W, height: H, yLabel: 'Edges', fmt: fmtInteger }
         );
         const densChart = svgBar(
             s.perLayer.map(l => ({ label: l.layerName, value: l.density })),
-            { width: W, height: H, yLabel: 'Density', fmt: v => v.toFixed(3) }
+            { width: W, height: H, yLabel: 'Density', fmt: fmtDecimal }
         );
 
         const cls = m => `db-chart-box${hl === m ? ' db-chart-hl' : ''}`;
