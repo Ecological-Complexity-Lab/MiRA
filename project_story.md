@@ -64,7 +64,7 @@ Much of the code is built on hand-rolled implementations of things that stable l
 | Bubble force layout (Layer View) | `layerView.js` | d3-force |
 | Tooltips | `app.js`, `interaction.js` | Floating UI |
 | Shortest-path distances (Kamada-Kawai) | `layout.js` | graphology-shortest-path |
-| Number formatting | `dashboard.js` | d3-format |
+| Number formatting | `dashboard.js` | d3-format | V |
 
 **3. Make the code readable**
 See the philosophy section for specific rules.
