@@ -51,15 +51,15 @@ Before effectively working on the project we need a clear test system to ensure 
 **2. Replace self-implementations with libraries**
 Much of the code is built on hand-rolled implementations of things that stable libraries already solve. These increase complexity, reduce readability, and invite future bugs. The following functionality should be replaced:
 
-| Functionality | File | Candidate library |
-|---|---|---|
-| CSV parsing | `csvImporter.js` | PapaParse |
-| Zoom / pan | `interaction.js` | panzoom |
-| Layout algorithms (FR, KK, circle, grid) | `layout.js` | d3-force + graphology-layout |
-| Canvas rendering infrastructure | `renderer.js` | Konva.js |
-| Network statistics (degree, density, Jaccard) | `dataParser.js`, `dashboard.js` | graphology-metrics |
+| Functionality | File | Candidate library | done?
+|---|---|---|----|
+| CSV parsing | `csvImporter.js` | PapaParse | V| 
+| Zoom / pan | `interaction.js` | panzoom | V with kanova and not panzoom| 
+| Layout algorithms (FR, KK, circle, grid) | `layout.js` | d3-force + graphology-layout | V maybe required more work|
+| Canvas rendering infrastructure | `renderer.js` | Konva.js |V|
+| Network statistics (degree, density, Jaccard) | `dataParser.js`, `dashboard.js` |  graphology-metrics |
 | Bipartite detection | `dataParser.js` | graphology-bipartite |
-| Color scales | `colorMapper.js` | chroma.js |
+| Color scales | `colorMapper.js` | chroma.js | V |
 | SVG chart generation | `dashboard.js` | Observable Plot |
 | Bubble force layout (Layer View) | `layerView.js` | d3-force |
 | Tooltips | `app.js`, `interaction.js` | Floating UI |
@@ -73,7 +73,7 @@ See the philosophy section for specific rules.
 
 1. Diversify data loaders to match common ecological dataset formats
 2. Add adjacency matrix view for networks
-3. some way for short infoarmaion saing between refresh 
+3. some way for short infoarmaion saving between refresh 
 4. Other features as they emerge from real usage
 
 ### Phase 3 — Real-world validation

@@ -2,24 +2,8 @@
  * colorMapper.js — Maps values to colors using categorical or numeric palettes
  */
 
-// Curated categorical palette (vibrant, distinguishable)
-const CATEGORICAL_PALETTE = [
-    '#6ee7b7', // emerald
-    '#fbbf24', // amber
-    '#f87171', // red
-    '#60a5fa', // blue
-    '#a78bfa', // violet
-    '#fb923c', // orange
-    '#34d399', // green
-    '#f472b6', // pink
-    '#38bdf8', // sky
-    '#facc15', // yellow
-    '#c084fc', // purple
-    '#4ade80', // lime
-    '#fb7185', // rose
-    '#22d3ee', // cyan
-    '#e879f9', // fuchsia
-];
+// ColorBrewer Dark2 — qualitative palette, colorblind-safe, scientific standard
+const CATEGORICAL_PALETTE = chroma.brewer.Dark2;
 
 // Layer palette — single purple used for all layers by default
 const LAYER_FILL_DEFAULT  = 'rgba(139, 92, 246, 0.18)';
@@ -98,7 +82,7 @@ export class ColorMapper {
             const scaleFn = (value) => {
                 if (value === undefined || value === null) return '#6b7280';
                 const t = (Number(value) - min) / range;
-                return numericGradient(t);
+                return chroma.scale('Viridis')(t).hex();
             };
             return { type: 'continuous', min, max, attrName, scaleFn, canToggle, warnings };
         } else {
@@ -117,36 +101,5 @@ export class ColorMapper {
     }
 }
 
-/**
- * Interpolate using a multi-stop Viridis-inspired continuous palette
- * t in [0, 1]
- */
-function numericGradient(t) {
-    // Viridis stops: dark purple -> blue -> green -> yellow
-    const stops = [
-        [68, 1, 84],     // 0.0: #440154
-        [49, 104, 142],  // 0.33: #31688e
-        [53, 183, 121],  // 0.66: #35b779
-        [253, 231, 37]   // 1.0: #fde725
-    ];
-
-    // Clamp t
-    t = Math.max(0, Math.min(1, t));
-    if (t === 1) return `rgb(${stops[3][0]}, ${stops[3][1]}, ${stops[3][2]})`;
-
-    // Find segment
-    const segment = t * (stops.length - 1);
-    const index = Math.floor(segment);
-    const fraction = segment - index;
-
-    const [r1, g1, b1] = stops[index];
-    const [r2, g2, b2] = stops[index + 1];
-
-    const r = Math.round(r1 + (r2 - r1) * fraction);
-    const g = Math.round(g1 + (g2 - g1) * fraction);
-    const b = Math.round(b1 + (b2 - b1) * fraction);
-
-    return `rgb(${r}, ${g}, ${b})`;
-}
 
 export const defaultColorMapper = new ColorMapper();
