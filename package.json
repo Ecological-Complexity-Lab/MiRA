@@ -2,9 +2,11 @@
   "type": "module",
   "scripts": {
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:browser": "playwright test"
   },
   "devDependencies": {
+    "@playwright/test": "^1.58.2",
     "vitest": "^2.0.0"
   }
 }
