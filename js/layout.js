@@ -150,41 +150,84 @@ export class ForceLayout {
     // =============================
 
     /**
-     * Fruchterman-Reingold force-directed layout via d3-force.
-     * Uses Barnes-Hut repulsion (O(n log n)) and link attraction,
-     * run synchronously for this.iterations ticks.
+     * Fruchterman-Reingold force-directed layout
      */
     _layoutFruchtermanReingold(nodeArray, edges, globalPositions) {
-        const d3 = globalThis.d3;
+        const positions = new Map();
 
-        // Build node objects; seed positions from globalPositions when available
-        const nodes = nodeArray.map(name => {
-            const gp = globalPositions.get(name);
-            return {
-                id: name,
-                x: gp ? gp.x + (Math.random() - 0.5) * 20 : this.layerWidth  / 2,
-                y: gp ? gp.y + (Math.random() - 0.5) * 20 : this.layerHeight / 2,
-            };
-        });
+        // Initialize from global positions
+        for (const nodeName of nodeArray) {
+            const gp = globalPositions.get(nodeName);
+            positions.set(nodeName, {
+                x: gp ? gp.x + (Math.random() - 0.5) * 20 : Math.random() * this.layerWidth,
+                y: gp ? gp.y + (Math.random() - 0.5) * 20 : Math.random() * this.layerHeight,
+                vx: 0,
+                vy: 0,
+            });
+        }
 
-        // Build link objects using array indices (d3-force mutates source/target to node refs)
-        const idxOf = new Map(nodeArray.map((name, i) => [name, i]));
-        const links = edges
-            .filter(e => idxOf.has(e.node_from) && idxOf.has(e.node_to))
-            .map(e => ({ source: idxOf.get(e.node_from), target: idxOf.get(e.node_to) }));
+        // Ideal edge length based on area
+        const area = this.layerWidth * this.layerHeight;
+        const k = Math.sqrt(area / Math.max(nodeArray.length, 1));
 
-        const simulation = d3.forceSimulation(nodes)
-            .force('charge', d3.forceManyBody().strength(-this.repulsionStrength))
-            .force('link',   d3.forceLink(links).distance(Math.sqrt(this.layerWidth * this.layerHeight / Math.max(nodeArray.length, 1))))
-            .force('center', d3.forceCenter(this.layerWidth / 2, this.layerHeight / 2))
-            .alphaDecay(0)   // disable automatic cooling — we control iteration count
-            .stop();
+        for (let iter = 0; iter < this.iterations; iter++) {
+            const temperature = (1 - iter / this.iterations);
 
-        simulation.tick(this.iterations);
+            // Repulsion between all pairs
+            for (let i = 0; i < nodeArray.length; i++) {
+                for (let j = i + 1; j < nodeArray.length; j++) {
+                    const a = positions.get(nodeArray[i]);
+                    const b = positions.get(nodeArray[j]);
+                    let dx = a.x - b.x;
+                    let dy = a.y - b.y;
+                    let dist = Math.sqrt(dx * dx + dy * dy) || 0.1;
+                    const force = (k * k) / dist;
+                    const fx = (dx / dist) * force;
+                    const fy = (dy / dist) * force;
+                    a.vx += fx;
+                    a.vy += fy;
+                    b.vx -= fx;
+                    b.vy -= fy;
+                }
+            }
 
+            // Attraction along edges
+            for (const edge of edges) {
+                const a = positions.get(edge.node_from);
+                const b = positions.get(edge.node_to);
+                if (!a || !b) continue;
+                let dx = b.x - a.x;
+                let dy = b.y - a.y;
+                let dist = Math.sqrt(dx * dx + dy * dy) || 0.1;
+                const force = (dist * dist) / k;
+                const fx = (dx / dist) * force;
+                const fy = (dy / dist) * force;
+                a.vx += fx;
+                a.vy += fy;
+                b.vx -= fx;
+                b.vy -= fy;
+            }
+
+            // Apply with temperature cooling
+            const maxDisp = this.maxDisplacement * temperature + 1;
+            for (const name of nodeArray) {
+                const pos = positions.get(name);
+                pos.vx *= this.damping;
+                pos.vy *= this.damping;
+                const disp = Math.sqrt(pos.vx * pos.vx + pos.vy * pos.vy) || 0.1;
+                if (disp > maxDisp) {
+                    pos.vx = (pos.vx / disp) * maxDisp;
+                    pos.vy = (pos.vy / disp) * maxDisp;
+                }
+                pos.x += pos.vx;
+                pos.y += pos.vy;
+            }
+        }
+
+        // Strip velocity
         const result = new Map();
-        for (const node of nodes) {
-            result.set(node.id, { x: node.x, y: node.y });
+        for (const [name, pos] of positions) {
+            result.set(name, { x: pos.x, y: pos.y });
         }
         return result;
     }
@@ -201,27 +244,30 @@ export class ForceLayout {
             return result;
         }
 
-        // Build graph for BFS shortest-path computation
-        const idx = new Map(nodeArray.map((name, i) => [name, i]));
-        const graph = new graphology.UndirectedGraph();
-        nodeArray.forEach(name => graph.addNode(name));
-        for (const edge of edges) {
-            if (graph.hasNode(edge.node_from) && graph.hasNode(edge.node_to) &&
-                !graph.hasEdge(edge.node_from, edge.node_to)) {
-                graph.addEdge(edge.node_from, edge.node_to);
-            }
-        }
+        // Build adjacency for shortest-path computation
+        const idx = new Map();
+        nodeArray.forEach((name, i) => idx.set(name, i));
 
-        // BFS single-source shortest paths (O(n*(n+m)) vs O(n³) Floyd-Warshall)
+        // Floyd-Warshall shortest paths
         const dist = Array.from({ length: n }, () => Array(n).fill(Infinity));
         for (let i = 0; i < n; i++) dist[i][i] = 0;
-        nodeArray.forEach((source, i) => {
-            const lengths = graphologyShortestPath.singleSourceLength(graph, source);
-            for (const [target, len] of Object.entries(lengths)) {
-                const j = idx.get(target);
-                if (j !== undefined) dist[i][j] = len;
+        for (const edge of edges) {
+            const a = idx.get(edge.node_from);
+            const b = idx.get(edge.node_to);
+            if (a !== undefined && b !== undefined) {
+                dist[a][b] = 1;
+                dist[b][a] = 1;
             }
-        });
+        }
+        for (let k = 0; k < n; k++) {
+            for (let i = 0; i < n; i++) {
+                for (let j = 0; j < n; j++) {
+                    if (dist[i][k] + dist[k][j] < dist[i][j]) {
+                        dist[i][j] = dist[i][k] + dist[k][j];
+                    }
+                }
+            }
+        }
 
         // Replace Infinity with diameter + 1 for disconnected components
         let diameter = 0;
