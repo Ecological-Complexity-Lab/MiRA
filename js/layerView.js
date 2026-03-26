@@ -3,6 +3,8 @@
  *
  * LayerView:     live force-directed meta-graph (layers as animated bubbles).
  * DrillDownView: live force-directed network for a single layer's interior.
+ *
+ * Both views use d3-force (loaded globally via CDN) for simulation.
  */
 
 // Curated palette (same order as colorMapper.js CATEGORICAL_PALETTE)
@@ -25,10 +27,8 @@ export class LayerView {
         this.viewOffsetX = 0;
         this.viewOffsetY = 0;
 
-        this.alpha      = 1.0;
-        this.alphaDecay = 0.003; // slower cooling → smoother animation
+        this._sim           = null;
         this._draggedBubble = null;
-        this._alphaBeforeDrag = 0;
         this._selectedLayer = null;   // layerName of selected bubble, or null
         this._compareLayer  = null;   // layerName of second bubble in comparison mode
 
@@ -89,7 +89,7 @@ export class LayerView {
             return {
                 layerName, nodeCount: N, edgeCount: E, density, avgDegree: avgDeg,
                 color: this._layerColorMap.get(layerName),
-                r: 65, x: 0, y: 0, fx: 0, fy: 0,  // r set properly by _refreshRadii()
+                r: 65, x: 0, y: 0,  // r set properly by _refreshRadii(); fx/fy left for d3
             };
         });
 
@@ -141,18 +141,23 @@ export class LayerView {
         this.settings[key] = value;
         if (key === 'sizeBy' || key === 'sizeMultiplier') {
             this._refreshRadii();
-            // Tiny alpha bump — just enough for the overlap pass to resolve any new collisions
-            this.alpha = Math.max(this.alpha, 0.05);
+            if (this._sim) {
+                this._sim.force('collide', this._makeCollideForce());
+                this._sim.alpha(Math.max(this._sim.alpha(), 0.05));
+            }
         }
         if (key === 'bubbleSpacing') {
-            this.alpha = Math.max(this.alpha, 0.08); // gentle re-settle for spacing change
+            if (this._sim) {
+                this._sim.force('collide', this._makeCollideForce());
+                this._sim.alpha(Math.max(this._sim.alpha(), 0.08));
+            }
         }
     }
 
     /** Re-run full layout from scratch (for the "Re-run layout" button). */
     resetLayout() {
-        for (const b of this._bubbles) b.pinned = false;
-        this._initLayout(); // pre-settles 250 steps, ends at alpha=0.06
+        for (const b of this._bubbles) { b.fx = null; b.fy = null; }
+        this._initLayout();
     }
 
     /** Returns legend scale descriptors for the current settings. */
@@ -276,14 +281,20 @@ export class LayerView {
         return { nodes: Array.from(scaledPos.values()), links, boundingRadius };
     }
 
-    // ── Force-directed layout (Fruchterman-Reingold, stable) ──────────────
+    // ── Force-directed layout (d3-force) ──────────────────────────────────
+
+    /** Build the forceCollide force from current settings. */
+    _makeCollideForce() {
+        const gap = 50 * (this.settings.bubbleSpacing || 1);
+        return d3.forceCollide(b => b.r + gap / 2).iterations(3);
+    }
 
     _initLayout() {
         const L = this._bubbles.length;
         if (L === 0) return;
         if (L === 1) { this._bubbles[0].x = 0; this._bubbles[0].y = 0; return; }
 
-        // Identify connected vs isolated bubbles
+        // Identify connected vs isolated bubbles for initial placement
         const connectedSet = new Set();
         for (const edge of this._metaEdges) {
             if (edge.interlayerCount > 0 || edge.sharedFraction >= 0.01) {
@@ -294,7 +305,6 @@ export class LayerView {
         const avgR   = this._bubbles.reduce((s, b) => s + b.r, 0) / L;
         const minRad = (L * (avgR * 2.5)) / (2 * Math.PI);
         const rad    = Math.max(minRad, 200);
-        // Place connected bubbles on the circle; isolated ones start at origin (will be pushed out by overlap)
         this._bubbles.forEach((b, i) => {
             if (connectedSet.has(i)) {
                 const angle = (2 * Math.PI * i) / L - Math.PI / 2;
@@ -304,13 +314,28 @@ export class LayerView {
                 b.x = (Math.random() - 0.5) * avgR * 2;
                 b.y = (Math.random() - 0.5) * avgR * 2;
             }
+            b.vx = 0; b.vy = 0;
         });
 
-        // Pre-settle so auto-fit in app.js sees realistic positions, not the raw circle.
-        // End at low alpha so the live animation starts gently — no jitter.
-        this.alpha = 0.5;
-        for (let i = 0; i < 250; i++) this._stepForce();
-        this.alpha = 0.06;
+        // Build link list for d3: only edges that carry information
+        const simLinks = this._metaEdges
+            .filter(e => e.interlayerCount > 0 || e.sharedFraction >= 0.01)
+            .map(e => ({ source: e.lA, target: e.lB }));
+
+        if (this._sim) this._sim.stop();
+        this._sim = d3.forceSimulation(this._bubbles)
+            .force('charge', d3.forceManyBody().strength(-600))
+            .force('link',   d3.forceLink(simLinks).id(b => b.layerName).strength(0.3))
+            .force('x',      d3.forceX(0).strength(0.05))
+            .force('y',      d3.forceY(0).strength(0.05))
+            .force('collide', this._makeCollideForce())
+            .alphaDecay(0.003)   // slow cooling — smoother animation
+            .stop();             // manual ticking: we call _sim.tick() ourselves
+
+        // Pre-settle so auto-fit sees realistic positions, not the raw circle
+        this._sim.alpha(0.5);
+        for (let i = 0; i < 250; i++) this._sim.tick();
+        this._sim.alpha(0.06);
     }
 
     /** Compute the bounding radius of current bubble layout (for auto-fit). */
@@ -318,102 +343,11 @@ export class LayerView {
         return Math.max(1, ...this._bubbles.map(b => Math.sqrt(b.x * b.x + b.y * b.y) + b.r));
     }
 
-    _stepForce() {
-        const L = this._bubbles.length;
-        if (L <= 1) return;
-
-        const avgR    = this._bubbles.reduce((s, b) => s + b.r, 0) / L;
-        const gap     = 50 * (this.settings.bubbleSpacing || 1);
-        const k       = avgR * 2 + gap;
-        const maxDisp = k * this.alpha;
-
-        for (const b of this._bubbles) { b.fx = 0; b.fy = 0; }
-
-        // Repulsion between all bubble pairs
-        for (let i = 0; i < L; i++) {
-            for (let j = i + 1; j < L; j++) {
-                const bi = this._bubbles[i], bj = this._bubbles[j];
-                const dx = bi.x - bj.x, dy = bi.y - bj.y;
-                const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-                const d    = Math.max(dist, bi.r + bj.r + 5);
-                const force = (k * k) / d;
-                const nx = dx / dist, ny = dy / dist;
-                bi.fx += nx * force; bi.fy += ny * force;
-                bj.fx -= nx * force; bj.fy -= ny * force;
-            }
-        }
-
-        // Standard FR attraction along meta-edges (hard overlap pass below prevents collapse)
-        for (const edge of this._metaEdges) {
-            if (!edge.interlayerCount && edge.sharedFraction < 0.01) continue;
-            const bi = this._bubbles[edge.a], bj = this._bubbles[edge.b];
-            if (!bi || !bj) continue;
-            const dx   = bj.x - bi.x, dy = bj.y - bi.y;
-            const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-            const force = (dist * dist) / k;
-            const nx = dx / dist, ny = dy / dist;
-            bi.fx += nx * force; bi.fy += ny * force;
-            bj.fx -= nx * force; bj.fy -= ny * force;
-        }
-
-        // Center gravity — isolated bubbles pulled toward centroid of connected ones
-        const connectedIdx = new Set();
-        for (const edge of this._metaEdges) {
-            if (!edge.interlayerCount && edge.sharedFraction < 0.01) continue;
-            connectedIdx.add(edge.a);
-            connectedIdx.add(edge.b);
-        }
-        let ccx = 0, ccy = 0, ncc = 0;
-        for (let i = 0; i < L; i++) {
-            if (connectedIdx.has(i)) { ccx += this._bubbles[i].x; ccy += this._bubbles[i].y; ncc++; }
-        }
-        if (ncc > 0) { ccx /= ncc; ccy /= ncc; }
-        for (let i = 0; i < L; i++) {
-            const b = this._bubbles[i];
-            if (connectedIdx.has(i)) {
-                b.fx -= b.x * 0.05;
-                b.fy -= b.y * 0.05;
-            } else {
-                b.fx -= (b.x - ccx) * 0.6;
-                b.fy -= (b.y - ccy) * 0.6;
-            }
-        }
-
-        // Apply with F-R displacement clamping
-        const dragged = this._draggedBubble ? this._draggedBubble.bubble : null;
-        for (const b of this._bubbles) {
-            if (b === dragged || b.pinned) continue;
-            const len  = Math.sqrt(b.fx * b.fx + b.fy * b.fy) || 1;
-            const disp = Math.min(len, maxDisp);
-            b.x += (b.fx / len) * disp;
-            b.y += (b.fy / len) * disp;
-        }
-
-        // Hard overlap separation — directly push apart any overlapping pair
-        for (let i = 0; i < L; i++) {
-            for (let j = i + 1; j < L; j++) {
-                const bi = this._bubbles[i], bj = this._bubbles[j];
-                const dx = bi.x - bj.x, dy = bi.y - bj.y;
-                const dist    = Math.sqrt(dx * dx + dy * dy) || 0.01;
-                const minDist = bi.r + bj.r + 15;
-                if (dist < minDist) {
-                    const push = (minDist - dist) * 0.5;
-                    const nx = dx / dist, ny = dy / dist;
-                    if (bi !== dragged && !bi.pinned) { bi.x += nx * push; bi.y += ny * push; }
-                    if (bj !== dragged && !bj.pinned) { bj.x -= nx * push; bj.y -= ny * push; }
-                }
-            }
-        }
-    }
-
     /** Advance simulation one step. Returns true while still animating. */
     tick() {
-        const active = this.alpha > 0.001 || !!this._draggedBubble;
+        const active = this._sim && (this._sim.alpha() > 0.001 || !!this._draggedBubble);
         if (!active) return false;
-        // Always 1 step per frame — prevents jitter at high alpha values.
-        // During drag alpha=0 so forces are frozen; overlap pass still resolves collisions.
-        this._stepForce();
-        if (!this._draggedBubble) this.alpha = Math.max(0, this.alpha - this.alphaDecay);
+        this._sim.tick();
         return true;
     }
 
@@ -424,9 +358,9 @@ export class LayerView {
         for (const b of this._bubbles) {
             if (Math.hypot(lx - b.x, ly - b.y) <= b.r) {
                 this._draggedBubble = { bubble: b, offsetX: lx - b.x, offsetY: ly - b.y };
-                // Freeze forces during drag — neighbors stay put, overlap pass still resolves collisions
-                this._alphaBeforeDrag = this.alpha;
-                this.alpha = 0;
+                // Fix the bubble so d3 forces don't move it during drag
+                b.fx = b.x;
+                b.fy = b.y;
                 return b.layerName;
             }
         }
@@ -437,15 +371,18 @@ export class LayerView {
         if (!this._draggedBubble) return;
         const { lx, ly } = this._toLocal(mx, my, w, h);
         const { bubble, offsetX, offsetY } = this._draggedBubble;
-        bubble.x = lx - offsetX;
-        bubble.y = ly - offsetY;
+        bubble.fx = lx - offsetX;
+        bubble.fy = ly - offsetY;
+        // Mirror to x/y so rendering reflects drag immediately
+        bubble.x = bubble.fx;
+        bubble.y = bubble.fy;
     }
 
     endDragBubble() {
         if (this._draggedBubble) {
-            this._draggedBubble.bubble.pinned = true; // keep it where dropped
+            // Keep fx/fy set → bubble stays pinned where dropped (like old b.pinned)
             this._draggedBubble = null;
-            this.alpha = 0.05; // let others settle gently, pinned bubble won't move
+            if (this._sim) this._sim.alpha(Math.max(this._sim.alpha(), 0.05));
         }
     }
 
@@ -547,6 +484,7 @@ export class LayerView {
                     ctx.lineTo(bj.x - nx * off, bj.y - ny * off);
                     ctx.strokeStyle = 'rgba(100,100,100,0.5)';
                     ctx.lineWidth = lw;
+                    ctx.setLineDash([]);
                     ctx.stroke();
                     if (!edgeFaded && s.showEdgeLabels) this._drawEdgeLabel(ctx,
                         bi.x - nx * off, bi.y - ny * off,
@@ -684,8 +622,7 @@ export class DrillDownView {
         this.viewScale   = 1;
         this.viewOffsetX = 0;
         this.viewOffsetY = 0;
-        this.alpha       = 1.0;  // start fully hot — settle from existing positions
-        this.alphaDecay  = 0.01; // ~100 frames to cool
+        this._sim        = null;
         this._draggedNode = null;
         this._nodes = [];
         this._links = [];
@@ -745,7 +682,6 @@ export class DrillDownView {
                 name,
                 x:  (p.x - (minX + maxX) / 2) * sc,
                 y:  (p.y - (minY + maxY) / 2) * sc,
-                fx: 0, fy: 0,
                 r: 4,
                 color,
                 otherLayers: presence.get(name) || [],
@@ -753,82 +689,43 @@ export class DrillDownView {
             });
         }
 
-        // Links (cap at 1200)
+        // Links for rendering (index-based, unchanged throughout)
         let linkCount = 0;
+        const simLinks = [];
         for (const link of intraLinks) {
             if (linkCount >= 1200) break;
             const ai = nodeIndex.get(link.node_from);
             const bi = nodeIndex.get(link.node_to);
             if (ai !== undefined && bi !== undefined) {
                 this._links.push({ a: ai, b: bi });
+                simLinks.push({ source: ai, target: bi });
                 linkCount++;
             }
         }
+
+        // d3-force simulation — stopped immediately, ticked manually
+        const N = this._nodes.length;
+        const k = Math.max(20, 280 / Math.sqrt(N || 1));
+
+        this._sim = d3.forceSimulation(this._nodes)
+            .force('charge', d3.forceManyBody().strength(-(k * k)))
+            .force('link',   d3.forceLink(simLinks).strength(0.3))
+            .force('x',      d3.forceX(0).strength(0.04))
+            .force('y',      d3.forceY(0).strength(0.04))
+            .alphaDecay(0.01)   // ~100 frames to cool
+            .stop();
+
+        this._sim.alpha(1.0);
     }
 
     /** Advance simulation. Returns true while still animating. */
     tick() {
-        const active = this.alpha > 0.001 || !!this._draggedNode;
+        const active = this._sim && (this._sim.alpha() > 0.001 || !!this._draggedNode);
         if (!active) return false;
-        const steps = Math.ceil(3 * this.alpha + 1);
-        for (let i = 0; i < steps; i++) this._stepForce();
-        if (!this._draggedNode) this.alpha = Math.max(0, this.alpha - this.alphaDecay);
+        // Run multiple sub-steps per frame when alpha is high (matches original behavior)
+        const steps = Math.ceil(3 * this._sim.alpha() + 1);
+        for (let i = 0; i < steps; i++) this._sim.tick();
         return true;
-    }
-
-    _stepForce() {
-        const nodes = this._nodes;
-        const N = nodes.length;
-        if (N === 0) return;
-
-        // k: ideal spacing proportional to available space
-        const k = Math.max(20, 280 / Math.sqrt(N));
-        const maxDisp = k * this.alpha; // F-R temperature clamping
-
-        for (const n of nodes) { n.fx = 0; n.fy = 0; }
-
-        // Repulsion — stride for large N
-        const stride = N > 150 ? Math.ceil(N / 150) : 1;
-        for (let i = 0; i < N; i++) {
-            for (let j = i + stride; j < N; j += stride) {
-                const ni = nodes[i], nj = nodes[j];
-                const dx = ni.x - nj.x, dy = ni.y - nj.y;
-                const dist  = Math.sqrt(dx * dx + dy * dy) || 1;
-                const minSep = ni.r + nj.r + 2;
-                const d     = Math.max(dist, minSep);
-                const force = (k * k) / d;
-                const nx = dx / dist, ny = dy / dist;
-                ni.fx += nx * force; ni.fy += ny * force;
-                nj.fx -= nx * force; nj.fy -= ny * force;
-            }
-        }
-
-        // Attraction along links
-        for (const link of this._links) {
-            const ni = nodes[link.a], nj = nodes[link.b];
-            const dx   = nj.x - ni.x, dy = nj.y - ni.y;
-            const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-            const force = (dist * dist) / k;
-            const nx = dx / dist, ny = dy / dist;
-            ni.fx += nx * force; ni.fy += ny * force;
-            nj.fx -= nx * force; nj.fy -= ny * force;
-        }
-
-        // Center gravity
-        for (const n of nodes) {
-            n.fx -= n.x * 0.04;
-            n.fy -= n.y * 0.04;
-        }
-
-        // Apply with F-R displacement clamping
-        const dragged = this._draggedNode ? this._draggedNode.node : null;
-        for (const n of nodes) {
-            if (n === dragged) continue;
-            const len  = Math.sqrt(n.fx * n.fx + n.fy * n.fy) || 1;
-            const disp = Math.min(len, maxDisp);
-            n.x += (n.fx / len) * disp;
-            n.y += (n.fy / len) * disp;
-        }
     }
 
     render(ctx, w, h) {
@@ -902,7 +799,9 @@ export class DrillDownView {
         for (const n of this._nodes) {
             if (Math.hypot(lx - n.x, ly - n.y) <= hitR) {
                 this._draggedNode = { node: n, offsetX: lx - n.x, offsetY: ly - n.y };
-                this.alpha = Math.max(this.alpha, 0.3);
+                // Fix node position so d3 forces don't move it during drag
+                n.fx = n.x;
+                n.fy = n.y;
                 return n;
             }
         }
@@ -913,14 +812,20 @@ export class DrillDownView {
         if (!this._draggedNode) return;
         const { lx, ly } = this._toLocal(mx, my, w, h);
         const { node, offsetX, offsetY } = this._draggedNode;
-        node.x = lx - offsetX;
-        node.y = ly - offsetY;
+        node.fx = lx - offsetX;
+        node.fy = ly - offsetY;
+        node.x  = node.fx;
+        node.y  = node.fy;
     }
 
     endDragNode() {
         if (this._draggedNode) {
+            const { node } = this._draggedNode;
+            // Release the node (not pinned after drag, unlike bubbles)
+            node.fx = null;
+            node.fy = null;
             this._draggedNode = null;
-            this.alpha = Math.max(this.alpha, 0.15);
+            if (this._sim) this._sim.alpha(Math.max(this._sim.alpha(), 0.15));
         }
     }
 }
