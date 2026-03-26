@@ -68,6 +68,11 @@ export class Renderer {
         // Bipartite support
         this.bipartiteInfo = null; // Map<layerName, { isBipartite, setA, setB, setALabel, setBLabel }>
         this.layoutType = 'fruchterman'; // Current layout type (needed to know when to render bipartite)
+
+        // Konva hit-test overlay (populated after each render)
+        this._konvaStage = null;
+        this._konvaHitLayer = null;
+        this._initKonvaOverlay();
     }
 
     setData(model, positions) {
@@ -344,6 +349,7 @@ export class Renderer {
             this.layerView.render(ctx, w, h);
         } else {
             this.renderToContext(ctx, w, h);
+            this._syncKonvaOverlay();
         }
 
         if (this.onRender) this.onRender();
@@ -876,5 +882,140 @@ export class Renderer {
         const scaledH = rawHeight * this.scale;
         this.offsetX = (this.canvas.width - scaledW) / 2 - minX * this.scale;
         this.offsetY = (this.canvas.height - scaledH) / 2 - minY * this.scale;
+    }
+
+    // ---- Konva hit-test overlay ----
+
+    _initKonvaOverlay() {
+        if (typeof Konva === 'undefined') return;
+        const container = document.createElement('div');
+        container.id = 'konvaOverlay';
+        container.style.cssText = 'position:absolute;top:0;left:0;pointer-events:none;';
+        this.canvas.parentElement.style.position = 'relative';
+        this.canvas.parentElement.appendChild(container);
+        this._konvaStage = new Konva.Stage({
+            container,
+            width: this.canvas.width,
+            height: this.canvas.height,
+        });
+        this._konvaHitLayer = new Konva.Layer();
+        this._konvaStage.add(this._konvaHitLayer);
+    }
+
+    _syncKonvaOverlay() {
+        if (!this._konvaStage || !this.model || !this.positions) return;
+        this._konvaHitLayer.destroyChildren();
+
+        // Layer polygons (lowest priority — added first)
+        for (let i = 0; i < this.model.layers.length; i++) {
+            if (this.activeMapLayers && !this.activeMapLayers.has(this.model.layers[i].layer_name)) continue;
+            const corners = this.getLayerCorners(i);
+            const poly = new Konva.Line({
+                points: corners.flatMap(c => [c.x, c.y]),
+                closed: true,
+                fill: 'rgba(0,0,0,0.001)',
+                stroke: null,
+                _hitType: 'layer',
+                _hitData: i,
+            });
+            this._konvaHitLayer.add(poly);
+        }
+
+        // Intralayer links
+        for (let i = 0; i < this.model.layers.length; i++) {
+            const layer = this.model.layers[i];
+            if (this.activeMapLayers && !this.activeMapLayers.has(layer.layer_name)) continue;
+            const layerPos = this.positions.get(layer.layer_name);
+            if (!layerPos) continue;
+            const links = this.model.intralayerLinks.filter(l => l.layer_from === layer.layer_name);
+            for (const link of links) {
+                const fromPos = layerPos.get(link.node_from);
+                const toPos = layerPos.get(link.node_to);
+                if (!fromPos || !toPos) continue;
+                const from = this.project(fromPos.x, fromPos.y, i);
+                const to = this.project(toPos.x, toPos.y, i);
+                this._konvaHitLayer.add(new Konva.Line({
+                    points: [from.x, from.y, to.x, to.y],
+                    stroke: 'rgba(0,0,0,0.001)',
+                    strokeWidth: 12,
+                    _hitType: 'link',
+                    _hitData: { ...link, isInterlayer: false },
+                }));
+            }
+        }
+
+        // Interlayer links (curved)
+        if (this.showInterlayerLinks) {
+            for (const link of this.model.interlayerLinks) {
+                const fromScreen = this.getNodeScreenPos(link.layer_from, link.node_from);
+                const toScreen = this.getNodeScreenPos(link.layer_to, link.node_to);
+                if (!fromScreen || !toScreen) continue;
+                const mx = (fromScreen.x + toScreen.x) / 2;
+                const my = (fromScreen.y + toScreen.y) / 2;
+                const dx = toScreen.x - fromScreen.x;
+                const dy = toScreen.y - fromScreen.y;
+                const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+                const curvature = dist * 0.35;
+                const cpx = mx + (dy / dist) * curvature;
+                const cpy = my - (dx / dist) * curvature;
+                this._konvaHitLayer.add(new Konva.Path({
+                    data: `M ${fromScreen.x} ${fromScreen.y} Q ${cpx} ${cpy} ${toScreen.x} ${toScreen.y}`,
+                    stroke: 'rgba(0,0,0,0.001)',
+                    strokeWidth: 12,
+                    _hitType: 'link',
+                    _hitData: { ...link, isInterlayer: true },
+                }));
+            }
+        }
+
+        // Node circles (highest priority — added last)
+        for (let i = 0; i < this.model.layers.length; i++) {
+            const layer = this.model.layers[i];
+            if (this.activeMapLayers && !this.activeMapLayers.has(layer.layer_name)) continue;
+            const layerPos = this.positions.get(layer.layer_name);
+            if (!layerPos) continue;
+            for (const [nodeName, pos] of layerPos) {
+                const sp = this.project(pos.x, pos.y, i);
+                this._konvaHitLayer.add(new Konva.Circle({
+                    x: sp.x,
+                    y: sp.y,
+                    radius: this.nodeRadius * this.scale + 4,
+                    fill: 'rgba(0,0,0,0.001)',
+                    _hitType: 'node',
+                    _hitData: { layerName: layer.layer_name, nodeName, layerIndex: i },
+                }));
+            }
+        }
+
+        this._konvaHitLayer.batchDraw();
+    }
+
+    resizeKonvaOverlay(w, h) {
+        if (!this._konvaStage) return;
+        this._konvaStage.width(w);
+        this._konvaStage.height(h);
+    }
+
+    /**
+     * Unified hit test using Konva's off-screen hit canvas.
+     * Returns { type: 'node'|'link'|'layer'|null, data }.
+     * Falls back to manual hit tests if Konva is unavailable.
+     */
+    konvaHitAt(x, y) {
+        if (this._konvaStage) {
+            const shape = this._konvaStage.getIntersection({ x, y });
+            if (shape) {
+                return { type: shape.attrs._hitType ?? null, data: shape.attrs._hitData ?? null };
+            }
+            return { type: null, data: null };
+        }
+        // Fallback: manual hit tests
+        const node = this.hitTestNode(x, y);
+        if (node) return { type: 'node', data: node };
+        const link = this.hitTestLink(x, y);
+        if (link) return { type: 'link', data: link };
+        const layerIdx = this.hitTestLayer(x, y);
+        if (layerIdx >= 0) return { type: 'layer', data: layerIdx };
+        return { type: null, data: null };
     }
 }
