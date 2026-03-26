@@ -102,9 +102,26 @@ Only two, both loaded from CDN in `index.html`:
 ### Workflow (always follow this)
 
 1. If the task is unclear, ask before doing anything.
-2. Present a plan and wait for approval before writing code.
-3. If the attempt is not working within ~10 minutes, or requires hundreds of lines of code, **stop**. Revert to the previous state and write an `attempt_summary_<topic>.md` file describing what was tried and why it failed. The user will then decide the next step.
-4. Every completed step ends with a commit so the working state is always recoverable.
+2. **Token estimate first.** Before starting any task, estimate the token cost using the table below. If the estimate exceeds ~20% of the Claude Pro 5-hour limit (~50k tokens), state the estimate, explain the main drivers, and ask the user to confirm before proceeding.
+3. Present a plan and wait for approval before writing code.
+4. If the attempt is not working within ~10 minutes, or requires hundreds of lines of code, **stop**. Revert to the previous state and write an `attempt_summary_<topic>.md` file describing what was tried and why it failed. The user will then decide the next step.
+5. Every completed step ends with a commit so the working state is always recoverable.
+
+#### Token cost reference
+
+| Task type | Rough estimate | Main drivers |
+|---|---|---|
+| Quick explanation or small bug fix | < 5k | Short context, 1–2 turns |
+| Single-file edit + test | 10k–30k | File read + edits + test output |
+| Medium refactor (1 large file, debug cycle) | 30k–80k | Large file in context × many turns |
+| Multi-file refactor or new feature | 80k–200k | Multiple large files + test iterations |
+| Full architecture change or long debug loop | 200k+ | Compounding context across many turns |
+
+**Cost multipliers to flag explicitly:**
+- Each large file read (> 400 lines) ≈ +5k–15k per turn it stays in context
+- Each Playwright / test run output ≈ +3k–8k
+- Debug loops (read → fix → retest × N) multiply total by N
+- `/compact` helps but the summary itself adds ~5k to every subsequent turn
 
 ### Code rules
 
