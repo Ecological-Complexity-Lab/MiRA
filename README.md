@@ -109,10 +109,3 @@ The **Load Example Data** dialog includes seven built-in datasets:
 | **Synthetic Unipartite** | Directed unipartite | **10** | Generated social/influence network with overlapping actor groups, a bridging layer, and one isolated layer |
 
 The two synthetic 10-layer datasets are specifically designed to showcase **Layer View** with interlayer structure, shared nodes, and disconnected components.
-
-## Developing & Modifying
-
-If you are modifying the visualization locally:
-1. Clone the repository.
-2. Serve the directory using a local web server (e.g., `python3 -m http.server 8000`).
-3. Open `http://localhost:8000` in your browser. (The visualizer uses ES Modules and cannot be run simply by double-clicking `index.html` via the `file://` protocol).
