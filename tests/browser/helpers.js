@@ -48,14 +48,20 @@ export async function dismissDataNotice(page) {
  * e.g. loadDemoDataset(page, 'pond_ecosystem')
  */
 export async function loadDemoDataset(page, dataFile) {
-  // Open the Data panel (<details> is collapsed by default)
-  await page.locator('#sectionData summary').click()
-  await page.locator('#openDemoDialogBtn').click()
-  await page.locator(`button.demo-dataset-btn[data-file="${dataFile}"]`).click()
-  // Wait for loadData() to populate the color dropdown — reliable regardless of caching
+  // Open dialog via JS — avoids click-timing races with parallel workers
+  await page.evaluate(() => {
+    document.getElementById('demoDialog').style.display = 'flex'
+  })
+  await page.locator('#demoDialog').waitFor({ state: 'visible', timeout: 5000 })
+  // Click button and wait for the JSON fetch to complete before checking the dropdown
+  await Promise.all([
+    page.waitForResponse(r => r.url().includes(`${dataFile}.json`) && r.status() === 200, { timeout: 20000 }),
+    page.locator(`button.demo-dataset-btn[data-file="${dataFile}"]`).click(),
+  ])
+  // Wait for loadData() to populate the color dropdown
   await page.waitForFunction(() => {
     const sel = document.getElementById('nodeColorSelect')
     return sel && sel.options.length > 1
-  }, { timeout: 20000 })
+  }, { timeout: 10000 })
   await dismissDataNotice(page)
 }
