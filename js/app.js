@@ -208,6 +208,7 @@ function resizeCanvas() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     if (renderer) {
+        renderer.resizeKonvaOverlay(canvas.width, canvas.height);
         renderer.render();
     }
 }
