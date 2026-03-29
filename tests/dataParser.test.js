@@ -129,10 +129,10 @@ function makeBipartiteAuto() {
   return {
     layers: [{ layer_id: 1, layer_name: 'AL' }],
     nodes: [
-      { node_id: 'a1', node_name: 'A1' },
-      { node_id: 'a2', node_name: 'A2' },
-      { node_id: 'b1', node_name: 'B1' },
-      { node_id: 'b2', node_name: 'B2' },
+      { node_id: 'a1', node_name: 'A1', node_type: 'setA' },
+      { node_id: 'a2', node_name: 'A2', node_type: 'setA' },
+      { node_id: 'b1', node_name: 'B1', node_type: 'setB' },
+      { node_id: 'b2', node_name: 'B2', node_type: 'setB' },
     ],
     extended: [
       { layer_from: 'AL', node_from: 'A1', layer_to: 'AL', node_to: 'B1' },
@@ -524,10 +524,10 @@ describe('Group 8 — Bipartite detection: auto-detect BFS', () => {
     const input = {
       layers: [{ layer_id: 1, layer_name: 'DL' }],
       nodes: [
-        { node_id: 'a1', node_name: 'A1' },
-        { node_id: 'b1', node_name: 'B1' },
-        { node_id: 'a2', node_name: 'A2' },
-        { node_id: 'b2', node_name: 'B2' },
+        { node_id: 'a1', node_name: 'A1', node_type: 'setA' },
+        { node_id: 'b1', node_name: 'B1', node_type: 'setB' },
+        { node_id: 'a2', node_name: 'A2', node_type: 'setA' },
+        { node_id: 'b2', node_name: 'B2', node_type: 'setB' },
       ],
       extended: [
         { layer_from: 'DL', node_from: 'A1', layer_to: 'DL', node_to: 'B1' },
@@ -607,8 +607,8 @@ describe('Group 9 — Mixed multilayer', () => {
         { layer_id: 2, layer_name: 'Uni' },
       ],
       nodes: [
-        { node_id: 'a1', node_name: 'A1' },
-        { node_id: 'b1', node_name: 'B1' },
+        { node_id: 'a1', node_name: 'A1', node_type: 'setA' },
+        { node_id: 'b1', node_name: 'B1', node_type: 'setB' },
         { node_id: 'x',  node_name: 'X' },
         { node_id: 'y',  node_name: 'Y' },
         { node_id: 'z',  node_name: 'Z' },
