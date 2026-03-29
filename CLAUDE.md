@@ -20,9 +20,8 @@ cd multilayer_viz
 python3 -m http.server 8000
 # Then open http://localhost:8000
 ```
-
-There is no build step, no bundler, no package.json, and no test suite. Changes to any `.js` file take effect immediately on browser refresh.
-
+the app run in the browser 
+multilayer_viz/package.json
 ## Architecture
 
 The web app lives entirely in `multilayer_viz/`. The `emln/` folder is an R package that bundles a copy of the web app under `emln/inst/multilayer_viz/` — changes to the web app must be manually mirrored there if R integration is needed.
@@ -133,25 +132,3 @@ Only two, both loaded from CDN in `index.html`:
 
 The project is in Phase 1 — refactoring without behavior changes. Do not add features. If a refactor starts touching behavior, stop and flag it.
 
-### Library constraint
-
-Deployment is GitHub Pages with no build step. Any new library must be loadable via a single CDN `<script>` tag. No npm, no bundler.
-
-### Planned library replacements
-
-The following self-implementations are known candidates for replacement. When touching these files, prefer moving toward the listed library rather than extending the custom code:
-
-| Functionality | File | Target library |
-|---|---|---|
-| CSV parsing | `csvImporter.js` | PapaParse |
-| Zoom / pan | `interaction.js` | panzoom |
-| Layout algorithms | `layout.js` | d3-force + graphology-layout |
-| Canvas rendering infrastructure | `renderer.js` | Konva.js |
-| Network statistics | `dataParser.js`, `dashboard.js` | graphology-metrics |
-| Bipartite detection | `dataParser.js` | graphology-bipartite |
-| Color scales | `colorMapper.js` | chroma.js |
-| SVG chart generation | `dashboard.js` | Observable Plot |
-| Bubble force layout | `layerView.js` | d3-force |
-| Tooltips | `app.js`, `interaction.js` | Floating UI |
-| Shortest-path distances | `layout.js` | graphology-shortest-path |
-| Number formatting | `dashboard.js` | d3-format |

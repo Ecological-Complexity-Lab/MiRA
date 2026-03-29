@@ -97,6 +97,36 @@ test.describe('Network mode controls', () => {
     }
   })
 
+  // --- Issue #22: network mode button ---
+
+  test('network mode button exists in toolbar with an SVG icon', async ({ page }) => {
+    const btn = page.locator('#networkModeBtn')
+    await expect(btn).toBeVisible()
+    await expect(btn.locator('svg')).toHaveCount(1)
+  })
+
+  test('network mode button returns to network from layer view', async ({ page }) => {
+    await page.locator('#layerViewBtn').click()
+    await expect(page.locator('#layerViewBtn')).toHaveClass(/active/)
+
+    await page.locator('#networkModeBtn').click()
+
+    await expect(page.locator('#layerViewBtn')).not.toHaveClass(/active/)
+  })
+
+  test('network mode button returns to network from dashboard', async ({ page }) => {
+    await page.locator('#dashboardBtn').click()
+    await expect(page.locator('#dashboardBtn')).toHaveClass(/active/)
+    await expect(page.locator('#dashboardContainer')).toBeVisible()
+
+    await page.locator('#networkModeBtn').click()
+
+    await expect(page.locator('#dashboardBtn')).not.toHaveClass(/active/)
+    await expect(page.locator('#dashboardContainer')).toBeHidden()
+  })
+
+  // --- end issue #22 ---
+
   test('zoom in / zoom out / reset do not crash', async ({ page }) => {
     await page.locator('#zoomInBtn').click()
     await page.locator('#zoomInBtn').click()

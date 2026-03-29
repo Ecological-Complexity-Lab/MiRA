@@ -121,6 +121,7 @@ window.addEventListener('mouseup', () => {
 const showLabelsCheckbox = document.getElementById('showLabelsCheckbox');
 const transformNodesCheckbox = document.getElementById('transformNodesCheckbox');
 const showLayerNamesCheckbox = document.getElementById('showLayerNamesCheckbox');
+const networkModeBtn  = document.getElementById('networkModeBtn');
 const mapModeBtn      = document.getElementById('mapModeBtn');
 const layerViewBtn    = document.getElementById('layerViewBtn');
 const layerDrillPanel   = document.getElementById('layerDrillPanel');
@@ -706,6 +707,7 @@ function _showDashboardSidebar() {
     NETWORK_SECTIONS.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
     LV_SECTIONS.forEach(id => { document.getElementById(id).style.display = 'none'; });
     DB_SECTIONS.forEach(id => { document.getElementById(id).style.display = ''; });
+    legendPanel.innerHTML = '';
 }
 
 function _hideDashboardSidebar() {
@@ -761,6 +763,14 @@ function toggleDashboard() {
 }
 
 dashboardBtn.addEventListener('click', toggleDashboard);
+
+function goToNetworkMode() {
+    if (!model || appMode === 'network') return;
+    if (appMode === 'map')       toggleMapMode();
+    if (appMode === 'layer')     { _exitLayerView(); appMode = 'network'; renderer.render(); }
+    if (appMode === 'dashboard') { _exitDashboard(); appMode = 'network'; renderer.render(); }
+}
+networkModeBtn.addEventListener('click', goToNetworkMode);
 dbSortSelect.addEventListener('change',      () => dashboard?.setSortOrder(dbSortSelect.value));
 dbHighlightSelect.addEventListener('change', () => dashboard?.setHighlightMetric(dbHighlightSelect.value));
 dbBipartiteToggle.addEventListener('change', () => dashboard?.setShowBipartite(dbBipartiteToggle.checked));
