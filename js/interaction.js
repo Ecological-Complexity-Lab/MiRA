@@ -49,14 +49,26 @@ export class InteractionHandler {
 
         // Mouse wheel → zoom
         this.canvas.addEventListener('wheel', (e) => {
-            if (this.renderer.layerViewMode) return;
             e.preventDefault();
             const rect = this.canvas.getBoundingClientRect();
             const mx = e.clientX - rect.left;
             const my = e.clientY - rect.top;
-
-            // Zoom toward cursor (Standard 3D Canvas)
             const zoomFactor = e.deltaY > 0 ? 0.92 : 1.08;
+
+            if (this.renderer.layerViewMode && this.renderer.layerView) {
+                const lv = this.renderer.layerView;
+                const cx = this.canvas.width / 2;
+                const cy = this.canvas.height / 2;
+                const oldScale = lv.viewScale;
+                const newScale = Math.max(0.1, Math.min(10, oldScale * zoomFactor));
+                lv.viewOffsetX = (mx - cx) - (mx - cx - lv.viewOffsetX) * (newScale / oldScale);
+                lv.viewOffsetY = (my - cy) - (my - cy - lv.viewOffsetY) * (newScale / oldScale);
+                lv.viewScale = newScale;
+                this.renderer.render();
+                return;
+            }
+
+            // Zoom toward cursor (network mode)
             const oldScale = this.renderer.scale;
             const newScale = Math.max(0.2, Math.min(5, oldScale * zoomFactor));
 
