@@ -2864,6 +2864,18 @@ async function exportScreenshot(format) {
     // Network canvas (nodes, edges, layer planes)
     ctx.drawImage(srcCanvas, 0, 0, offscreen.width, offscreen.height);
 
+    // In map mode: composite the map markers overlay on top of the network
+    if (appMode === 'map') {
+        try {
+            const markersCanvas = await html2canvas(mapMarkersOverlay, {
+                scale, useCORS: true, allowTaint: true,
+                backgroundColor: null, logging: false,
+                width: w, height: h, x: 0, y: 0,
+            });
+            ctx.drawImage(markersCanvas, 0, 0, offscreen.width, offscreen.height);
+        } catch (e) { console.warn('Map markers capture failed:', e); }
+    }
+
     // Restore grid
     renderer.showGrid = prevShowGrid;
     renderer.render();
@@ -2901,8 +2913,8 @@ async function _saveCanvas(offscreen, filename, mimeType, quality) {
 async function _exportSVG() {
     // Try multiple CDN sources for canvas2svg
     const C2S_URLS = [
-        'https://unpkg.com/canvas2svg@1.0.15/canvas2svg.js',
-        'https://cdn.jsdelivr.net/npm/canvas2svg@1.0.15/canvas2svg.js',
+        'https://cdn.jsdelivr.net/npm/canvas2svg@1.0.16/canvas2svg.js',
+        'https://unpkg.com/canvas2svg@1.0.16/canvas2svg.js',
     ];
     let loaded = false;
     for (const url of C2S_URLS) {
@@ -3069,6 +3081,18 @@ async function _exportPDF() {
         }
 
         ctx.drawImage(srcCanvas, 0, 0, offscreen.width, offscreen.height);
+
+        // In map mode: composite the map markers overlay on top of the network
+        if (appMode === 'map') {
+            try {
+                const markersCanvas = await html2canvas(mapMarkersOverlay, {
+                    scale, useCORS: true, allowTaint: true,
+                    backgroundColor: null, logging: false,
+                    width: w, height: h, x: 0, y: 0,
+                });
+                ctx.drawImage(markersCanvas, 0, 0, offscreen.width, offscreen.height);
+            } catch (e) { console.warn('Map markers capture failed (PDF):', e); }
+        }
 
         renderer.showGrid = prevShowGrid;
         renderer.render();
