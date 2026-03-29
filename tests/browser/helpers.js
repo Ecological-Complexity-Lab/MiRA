@@ -48,6 +48,7 @@ export async function dismissDataNotice(page) {
  * e.g. loadDemoDataset(page, 'pond_ecosystem')
  */
 export async function loadDemoDataset(page, dataFile) {
+  await dismissDataNotice(page)
   // Open dialog via JS — avoids click-timing races with parallel workers
   await page.evaluate(() => {
     document.getElementById('demoDialog').style.display = 'flex'
@@ -56,12 +57,11 @@ export async function loadDemoDataset(page, dataFile) {
   // Click button and wait for the JSON fetch to complete before checking the dropdown
   await Promise.all([
     page.waitForResponse(r => r.url().includes(`${dataFile}.json`) && r.status() === 200, { timeout: 20000 }),
-    page.locator(`button.demo-dataset-btn[data-file="${dataFile}"]`).click(),
+    page.locator(`button.demo-dataset-btn[data-file="${dataFile}"]`).click({ force: true }),
   ])
   // Wait for loadData() to populate the color dropdown
   await page.waitForFunction(() => {
     const sel = document.getElementById('nodeColorSelect')
     return sel && sel.options.length > 1
   }, { timeout: 10000 })
-  await dismissDataNotice(page)
 }
