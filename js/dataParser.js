@@ -213,6 +213,15 @@ function detectBipartiteLayers(layers, nodes, intralayerLinks, nodesPerLayer, no
     }
 
     // Method 2: Auto-detect via BFS 2-coloring
+    // Guard: any forest (acyclic graph) is trivially 2-colorable, so BFS would
+    // always return "bipartite" for sparse food-web layers (false positive — issue #23).
+    // Without node-type evidence we cannot distinguish a genuine bipartite structure
+    // from a food chain, so we skip BFS inference for forest layers.
+    const isForest = layerEdges.length < layerNodes.size;
+    if (isForest && !hasNodeType) {
+      info.set(layerName, { isBipartite: false });
+      continue;
+    }
     const result = tryBipartiteColoring(layerNodes, layerEdges);
     if (result) {
       info.set(layerName, {

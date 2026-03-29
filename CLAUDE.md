@@ -2,6 +2,15 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## GitHub Repository
+
+- Main repo: `Ecological-Complexity-Lab/multilayer_viz` (origin)
+- Pages/test repo: `yuvalbloch/multilayer_viz_test` (pages remote)
+- Issues and PRs are tracked on the main repo.
+
+---
+
+
 ## Running Tests
 
 ```bash
