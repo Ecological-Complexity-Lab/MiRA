@@ -165,6 +165,64 @@ describe('Group D — Known properties', () => {
     expect(bipartiteCount).toBeGreaterThan(0)
   })
 
+  it('D.4 demo.json — no layer falsely reported as bipartite (food-web)', () => {
+    // pond_1 and pond_3 have 3-cycles → not bipartite.
+    // pond_2 is a 3-node path (crab–fish–pelican) → BFS false positive (issue #23).
+    const model = parseMultilayerData(load('demo.json'))
+    for (const [layerName, info] of model.bipartiteInfo) {
+      expect(info.isBipartite, `layer "${layerName}" should NOT be bipartite`).toBe(false)
+    }
+  })
+
+  it('D.5 3-node path graph is not declared bipartite', () => {
+    // Minimal synthetic regression for the exact false-positive: A–B–C with no cycles.
+    const raw = {
+      layers: [{ layer_id: 1, layer_name: 'L' }],
+      nodes: [
+        { node_id: 'a', layer_name: 'L', node_name: 'A' },
+        { node_id: 'b', layer_name: 'L', node_name: 'B' },
+        { node_id: 'c', layer_name: 'L', node_name: 'C' },
+      ],
+      extended: [
+        { layer_from: 'L', node_from: 'A', layer_to: 'L', node_to: 'B', weight: 1 },
+        { layer_from: 'L', node_from: 'B', layer_to: 'L', node_to: 'C', weight: 1 },
+      ],
+      state_nodes: [
+        { layer_name: 'L', node_name: 'A' },
+        { layer_name: 'L', node_name: 'B' },
+        { layer_name: 'L', node_name: 'C' },
+      ],
+    }
+    const model = parseMultilayerData(raw)
+    expect(model.bipartiteInfo.get('L').isBipartite).toBe(false)
+  })
+
+  it('D.6 explicit bipartite layer is still detected correctly after fix', () => {
+    // Regression guard: ensure the fix does not suppress real bipartite detection.
+    const raw = {
+      layers: [{ layer_id: 1, layer_name: 'BL', bipartite: true }],
+      nodes: [
+        { node_id: 'u1', layer_name: 'BL', node_name: 'U1', node_type: 'setA' },
+        { node_id: 'u2', layer_name: 'BL', node_name: 'U2', node_type: 'setA' },
+        { node_id: 'v1', layer_name: 'BL', node_name: 'V1', node_type: 'setB' },
+      ],
+      extended: [
+        { layer_from: 'BL', node_from: 'U1', layer_to: 'BL', node_to: 'V1', weight: 1 },
+        { layer_from: 'BL', node_from: 'U2', layer_to: 'BL', node_to: 'V1', weight: 1 },
+      ],
+      state_nodes: [
+        { layer_name: 'BL', node_name: 'U1' },
+        { layer_name: 'BL', node_name: 'U2' },
+        { layer_name: 'BL', node_name: 'V1' },
+      ],
+    }
+    const model = parseMultilayerData(raw)
+    const info = model.bipartiteInfo.get('BL')
+    expect(info.isBipartite).toBe(true)
+    expect([...info.setA]).toContain('U1')
+    expect([...info.setB]).toContain('V1')
+  })
+
   it('D.3 synth_bipartite.json — all 10 layers are bipartite (BFS auto-detect)', () => {
     // synth_bipartite is a synthetic pollinator-plant network. Every layer is
     // bipartite. Nodes use the "type" field (not "node_type"), and layers have
