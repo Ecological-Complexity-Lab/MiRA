@@ -10,27 +10,53 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ---
 
+## Active Scope
+
+Work only inside `multilayer_viz/`. Ignore `_archive/` — legacy files only.
+
+---
+
+## Git Workflow (always follow this)
+
+1. All work is done on the `minimal_varsion` branch to keep context clean.
+2. When a task is complete and committed on `minimal_varsion`, cherry-pick the commit(s) to `refactor/phase1`.
+3. Push from `refactor/phase1`.
+
+```bash
+# After committing on minimal_varsion:
+git log --oneline -3                      # note the commit SHA
+git checkout refactor/phase1
+git cherry-pick <sha>
+git push
+git checkout minimal_varsion             # return to working branch
+```
+
+---
 
 ## Running Tests
 
 ```bash
-npm test          # run all tests once
-npm run test:watch  # re-run on file changes
+npm test              # run all Vitest unit tests once
+npm run test:watch    # re-run on file changes
 ```
 
-Tests live in `tests/`. Vitest is the framework (`vitest.config.js` at root). No browser required — all current tests are pure Node.js.
+Unit tests live in `tests/` and run in Node.js via Vitest (`vitest.config.js`).
+Browser (Playwright) tests live in `tests/browser/` and require the app to be served first.
+
+---
 
 ## Running the App
 
-The app uses native ES6 modules and **cannot** be opened via `file://`. Always serve it over HTTP:
+The app uses native ES6 modules and **cannot** be opened via `file://`. Always serve over HTTP:
 
 ```bash
 cd multilayer_viz
 python3 -m http.server 8000
 # Then open http://localhost:8000
 ```
-the app run in the browser 
-multilayer_viz/package.json
+
+---
+
 ## Architecture
 
 The web app lives entirely in `multilayer_viz/`. The `emln/` folder is an R package that bundles a copy of the web app under `emln/inst/multilayer_viz/` — changes to the web app must be manually mirrored there if R integration is needed.
@@ -39,7 +65,7 @@ The web app lives entirely in `multilayer_viz/`. The `emln/` folder is an R pack
 
 ```
 User file (JSON or CSV)
-  → csvImporter.js::csvToJson()       [CSV only]
+  → csvImporter.js::csvToJson()            [CSV only — uses PapaParse]
   → dataParser.js::parseMultilayerData()   → model object
   → layout.js::ForceLayout.computeLayout() → positions map
   → renderer.js::Renderer.setData()
@@ -66,16 +92,18 @@ All modes share the same `#networkCanvas`. Mode transitions are handled by `app.
 |---|---|---|
 | Network (default) | `renderer.js` | Canvas (custom oblique 3D projection) |
 | Map | `renderer.js` + Leaflet | Canvas overlaid on Leaflet map |
-| Layer View | `layerView.js` | Canvas (independent force-directed animation loop) |
+| Layer View | `layerView.js` | Canvas (d3-force animation loop) |
 | Dashboard | `dashboard.js` | DOM `<div>` as SVG strings (not the canvas) |
 
 ### Projection math (`renderer.js`)
 
-The 3D effect is a hand-rolled oblique isometric projection — no 3D library. Key parameters on the `Renderer` instance: `skewX`, `skewY` (rotation angles in radians), `scale`, `offsetX`, `offsetY`, `layerSpacing`, `stackMode` (`'horizontal'|'vertical'`). The `project(x, y, layerIndex)` method is the single source of truth for all coordinate transforms. Hit-testing (`hitTestNode`, `hitTestLink`, `hitTestLayer`) runs in screen space after projection.
+The 3D effect is a hand-rolled oblique isometric projection — no 3D library. Key parameters on the `Renderer` instance: `skewX`, `skewY` (rotation angles in radians), `scale`, `offsetX`, `offsetY`, `layerSpacing`, `stackMode` (`'horizontal'|'vertical'`). The `project(x, y, layerIndex)` method is the single source of truth for all coordinate transforms.
+
+Hit-testing is handled by a Konva overlay (`_initKonvaOverlay` in `renderer.js`) — an invisible `Konva.Stage` on top of the canvas with shapes for nodes, links, and layer polygons. Manual hit-test methods were removed.
 
 ### Color mapping
 
-`colorMapper.js` provides a unified `buildColorScale(items, attrName)` that auto-detects numeric vs. categorical and returns a `scaleFn`. The renderer calls `nodeColorFn` / `linkColorFn` callbacks (set by `app.js`) rather than calling `colorMapper` directly.
+`colorMapper.js` provides a unified `buildColorScale(items, attrName)` that auto-detects numeric vs. categorical and returns a `scaleFn`. Uses chroma.js (ColorBrewer Dark2 palette + Viridis scale). The renderer calls `nodeColorFn` / `linkColorFn` callbacks (set by `app.js`) rather than calling `colorMapper` directly.
 
 ### Bipartite support
 
@@ -85,6 +113,8 @@ Bipartite layers must be **declared explicitly** — auto-detection was removed 
 2. The `nodes` array carries a `node_type` (or legacy `type`) attribute with **exactly two distinct values** across the network.
 
 If `bipartite: true` is set but `node_type` is missing/invalid, `dataParser.js` emits a console warning and treats the layer as unipartite. The resulting `bipartiteInfo` map is consumed by renderer (set-color coding), layout (two-row positioning), layerView, and dashboard.
+
+---
 
 ## JSON Data Format
 
@@ -102,17 +132,25 @@ The visualizer requires this internal JSON shape (also produced by `csvToJson`):
 
 `extended` is the flat edge list (both intra- and interlayer links). `state_nodes` enumerates every (layer, node) pair present in the network. The `links` key in user-facing JSON is remapped to `extended` by the parser.
 
-## External Dependencies
+---
 
-Only two, both loaded from CDN in `index.html`:
-- **Leaflet** — geographic map mode only
-- **Inter font** — typography only
+## External Dependencies (all via CDN in `index.html`)
+
+| Library | Purpose |
+|---|---|
+| Leaflet | Geographic map mode |
+| PapaParse | CSV parsing in `csvImporter.js` |
+| chroma.js | Color scales in `colorMapper.js` |
+| d3-format | Number formatting in `dashboard.js` |
+| graphology + graphology-shortest-path | BFS distances for Kamada-Kawai layout |
+| Konva 9 | Hit-testing overlay in `renderer.js` |
+| Inter font | Typography only |
 
 ---
 
 ## How to Work on This Project
 
-### Workflow (always follow this)
+### Task workflow (always follow this)
 
 1. If the task is unclear, ask before doing anything.
 2. **Token estimate first.** Before starting any task, estimate the token cost using the table below. If the estimate exceeds ~20% of the Claude Pro 5-hour limit (~50k tokens), state the estimate, explain the main drivers, and ask the user to confirm before proceeding.
@@ -144,5 +182,9 @@ Only two, both loaded from CDN in `index.html`:
 
 ### Current phase: refactoring only
 
+<<<<<<< HEAD
 The project is in Phase 1 — refactoring without behavior changes. Do not add features. If a refactor starts touching behavior, stop and flag it.
 
+=======
+Phase 1 refactoring is largely complete (PapaParse, chroma.js, d3-format, graphology BFS, Konva hit-testing all done). Current focus is fixing open GitHub issues — see `bugs.md` and `next_step.md` for active work. Do not add features unless explicitly asked.
+>>>>>>> a769738 (docs(CLAUDE): update with git workflow, current phase, and accurate dependency list)
