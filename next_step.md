@@ -64,3 +64,24 @@ Load `net22.json` via file input (same as `map_mode.spec.js`), switch to map mod
 
 These tests **pass** even with the bug — they document the expected state and catch crashes.
 
+---
+
+## Issue Complexity Reference
+
+| # | Fix Complexity | Test Complexity |
+|---|---|---|
+| **17** Zoom broken in layer mode | Low–Med | Med |
+| **23** Bipartite false positive | Medium | Med |
+| **18** Snapshot misses map layer dots | Medium | High |
+| **15** Incorporate Infomap | Very High | Very High |
+
+---
+
+## FEAT-01 — Pan (drag to move view) is missing
+
+**File:** `js/interaction.js`
+
+User can zoom and rotate but cannot pan. Once zoomed in, parts of the network can go off-screen with no way to reach them.
+
+- Planned fix: replace `interaction.js` with `panzoom` library (see CLAUDE.md)
+- Implementing pan manually is an option but investing in panzoom may be smarter

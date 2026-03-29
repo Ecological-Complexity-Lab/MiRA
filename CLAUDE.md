@@ -24,7 +24,7 @@ the app run in the browser
 multilayer_viz/package.json
 ## Architecture
 
-The web app lives entirely in `multilayer_viz/`. The `emln/` folder is an R package that bundles a copy of the web app under `emln/inst/multilayer_viz/` — changes to the web app must be manually mirrored there if R integration is needed.
+The web app lives entirely in `multilayer_viz/`. Ignore `_archive/` — legacy files only.
 
 ### Data pipeline (the critical path)
 
@@ -128,7 +128,7 @@ Only two, both loaded from CDN in `index.html`:
 - **No magic numbers.** Use named constants.
 - **One function, one responsibility.**
 
-### Current phase: refactoring only
+### Current phase: bug fixes
 
-The project is in Phase 1 — refactoring without behavior changes. Do not add features. If a refactor starts touching behavior, stop and flag it.
+Phase 1 refactoring is largely complete (PapaParse, chroma.js, d3-format, graphology BFS, Konva hit-testing all done). Current focus is fixing open GitHub issues — see `bugs.md` and `next_step.md` for active work. Do not add features unless explicitly asked.
 
