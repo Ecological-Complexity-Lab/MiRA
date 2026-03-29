@@ -54,3 +54,49 @@ test.describe('Export and toolbar', () => {
     await expect(page.locator('#exportDialog')).toBeHidden()
   })
 })
+
+test.describe('SVG export', () => {
+  let pageErrors
+
+  test.beforeEach(async ({ page }) => {
+    pageErrors = []
+    page.on('pageerror', e => pageErrors.push(e.message))
+    await page.goto('/')
+    await waitForAppReady(page)
+    await loadDemoDataset(page, 'demo_directed')
+    // Replace window.alert so CDN-load failures surface as assertions, not blocking dialogs
+    await page.evaluate(() => {
+      window._alertMessages = []
+      window.alert = msg => { window._alertMessages.push(msg) }
+    })
+  })
+
+  test('SVG button is visible in the export dialog', async ({ page }) => {
+    await page.locator('#captureBtn').click()
+    await expect(page.locator('#exportDialog')).toBeVisible()
+    await expect(page.locator('#exportSvgBtn')).toBeVisible()
+  })
+
+  test('SVG button is enabled in network mode', async ({ page }) => {
+    await page.locator('#captureBtn').click()
+    await expect(page.locator('#exportSvgBtn')).toBeEnabled()
+  })
+
+  test('SVG export loads canvas2svg from CDN and shows no error alert', async ({ page }) => {
+    await page.locator('#captureBtn').click()
+    await expect(page.locator('#exportDialog')).toBeVisible()
+
+    // Wait for the canvas2svg script to be fetched — this directly verifies the
+    // CDN URL is correct. If the URL were wrong, the app shows an alert instead.
+    const c2sResponsePromise = page.waitForResponse(
+      r => r.url().includes('canvas2svg') && r.status() === 200,
+      { timeout: 30000 },
+    )
+    await page.locator('#exportSvgBtn').click()
+    await c2sResponsePromise
+
+    const alerts = await page.evaluate(() => window._alertMessages)
+    expect(alerts, 'canvas2svg must load — no "Could not load SVG library" alert').toEqual([])
+    expect(pageErrors).toEqual([])
+  })
+})
