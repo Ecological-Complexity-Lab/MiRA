@@ -77,6 +77,26 @@ test.describe('Layer View mode', () => {
     }
   })
 
+  test('zoom-in button increases layerView.viewScale in layer mode', async ({ page }) => {
+    await page.locator('#layerViewBtn').click()
+    await page.waitForTimeout(300)
+    const before = await page.evaluate(() => window._layerView?.viewScale)
+    await page.locator('#zoomInBtn').click()
+    await page.waitForTimeout(100)
+    const after = await page.evaluate(() => window._layerView?.viewScale)
+    expect(after).toBeGreaterThan(before)
+  })
+
+  test('zoom-out button decreases layerView.viewScale in layer mode', async ({ page }) => {
+    await page.locator('#layerViewBtn').click()
+    await page.waitForTimeout(300)
+    const before = await page.evaluate(() => window._layerView?.viewScale)
+    await page.locator('#zoomOutBtn').click()
+    await page.waitForTimeout(100)
+    const after = await page.evaluate(() => window._layerView?.viewScale)
+    expect(after).toBeLessThan(before)
+  })
+
   test('clicking layer view button again returns to network mode', async ({ page }) => {
     await page.locator('#layerViewBtn').click()
     await expect(page.locator('#sectionLayerViewCircles')).toBeVisible()

@@ -547,6 +547,7 @@ function toggleLayerView() {
     if (appMode === 'dashboard') { _exitDashboard(); appMode = 'network'; }
     appMode = 'layer';
     renderer.layerView = new LayerView(model, positions);
+    window._layerView = renderer.layerView;
     renderer.layerViewMode = true;
     layerViewBtn.classList.add('active');
     canvas.style.cursor = 'grab';
@@ -810,6 +811,7 @@ function _exitLayerView() {
     if (lvRAF) { cancelAnimationFrame(lvRAF); lvRAF = null; }
     renderer.layerViewMode = false;
     renderer.layerView = null;
+    window._layerView = null;
     layerViewBtn.classList.remove('active');
     canvas.style.cursor = '';
     tooltip.classList.remove('visible');
@@ -2156,11 +2158,12 @@ layerColorSelect.addEventListener('change', updateLayerColors);
 
 // ---- Zoom Controls ----
 zoomInBtn.addEventListener('click', () => {
-    if (appMode === 'map') {
-        bgMap.zoomIn(1);
+    if (appMode === 'map') { bgMap.zoomIn(1); return; }
+    if (appMode === 'layer' && renderer.layerView) {
+        renderer.layerView.viewScale *= 1.2;
+        renderer.render();
         return;
     }
-
     const cx = canvas.width / 2;
     const cy = canvas.height / 2;
     const factor = 1.2;
@@ -2171,11 +2174,12 @@ zoomInBtn.addEventListener('click', () => {
 });
 
 zoomOutBtn.addEventListener('click', () => {
-    if (appMode === 'map') {
-        bgMap.zoomOut(1);
+    if (appMode === 'map') { bgMap.zoomOut(1); return; }
+    if (appMode === 'layer' && renderer.layerView) {
+        renderer.layerView.viewScale /= 1.2;
+        renderer.render();
         return;
     }
-
     const cx = canvas.width / 2;
     const cy = canvas.height / 2;
     const factor = 1 / 1.2;
