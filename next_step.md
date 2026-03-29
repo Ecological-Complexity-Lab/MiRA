@@ -1,5 +1,8 @@
 # Next Step: SVG Export — File Save Not Working in Browser
 
+> Some tests in the suite were already failing before this work and are unrelated to it.
+> See [not_passing_tests.md](not_passing_tests.md) for the full list and root causes.
+
 ## What was done (session 2026-03-29)
 
 ### Issue #18 — Snapshot misses map layer dots ✅ FIXED
