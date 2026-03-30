@@ -56,6 +56,12 @@
           </div>
           <button class="btn" id="csvUploadBtn" style="width:100%;">📊 Load User Data (CSV)</button>
         </div>
+        <div class="checkbox-row" id="dbBipartiteRow" style="display:none;margin-top:10px;">
+          <label class="checkbox-label">
+            <input type="checkbox" id="dbBipartiteToggle" checked>
+            <span>Show bipartite detail</span>
+          </label>
+        </div>
       </div>
     </details>
 
@@ -259,30 +265,6 @@
       </div>
     </details>
 
-    <!-- 5. Dashboard controls -->
-    <details class="control-section" id="sectionDashboard" style="display:none">
-      <summary>Dashboard</summary>
-      <div class="section-body">
-        <label style="font-size:11px;color:#666;">Sort matrix rows</label>
-        <select id="dbSortSelect" class="styled-select">
-          <option value="participation">By participation</option>
-          <option value="name">By name</option>
-          <option value="set">By set</option>
-        </select>
-        <label style="font-size:11px;color:#666;margin-top:10px;display:block;">Highlight chart</label>
-        <select id="dbHighlightSelect" class="styled-select">
-          <option value="nodes">Nodes per layer</option>
-          <option value="edges">Edges per layer</option>
-          <option value="density">Density per layer</option>
-        </select>
-        <div class="checkbox-row" id="dbBipartiteRow" style="display:none;margin-top:10px;">
-          <label class="checkbox-label">
-            <input type="checkbox" id="dbBipartiteToggle" checked>
-            <span>Show bipartite detail</span>
-          </label>
-        </div>
-      </div>
-    </details>
 
     <!-- 6. Node Search -->
     <details class="control-section" id="sectionSearch" style="overflow:visible;">
