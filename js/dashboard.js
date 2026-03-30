@@ -219,14 +219,12 @@ export class Dashboard {
         this.onLayerClick = onLayerClick;
         this._collapsed        = new Set();
         this._sortOrder        = 'participation';
-        this._highlightMetric  = 'nodes';
         this._showBipartite    = true;
         this._matrixFlipped    = true; // false = Node rows × Layer cols; true = Layer rows × Node cols
         this._tip              = null;
     }
 
     setSortOrder(order)     { this._sortOrder = order;           this.render(); }
-    setHighlightMetric(m)   { this._highlightMetric = m;         this.render(); }
     setShowBipartite(val)   { this._showBipartite = val;         this.render(); }
     setMatrixFlipped(val)   { this._matrixFlipped = val;         this.render(); }
 
@@ -399,7 +397,6 @@ export class Dashboard {
 
     _sLayerCharts(s, bp) {
         const W = 280, H = 200;
-        const hl = this._highlightMetric;
 
         let nodeChart;
         if (bp) {
@@ -422,13 +419,11 @@ export class Dashboard {
             { width: W, height: H, yLabel: 'Density', fmt: fmtDecimal }
         );
 
-        const cls = m => `db-chart-box${hl === m ? ' db-chart-hl' : ''}`;
-
         return this._sec('layercharts', 'Per-Layer Overview', `
             <div class="db-charts-row">
-                <div class="${cls('nodes')}"><div class="db-chart-title">Nodes per layer</div>${nodeChart}</div>
-                <div class="${cls('edges')}"><div class="db-chart-title">Edges per layer</div>${edgeChart}</div>
-                <div class="${cls('density')}"><div class="db-chart-title">Density per layer</div>${densChart}</div>
+                <div class="db-chart-box"><div class="db-chart-title">Nodes per layer</div>${nodeChart}</div>
+                <div class="db-chart-box"><div class="db-chart-title">Edges per layer</div>${edgeChart}</div>
+                <div class="db-chart-box"><div class="db-chart-title">Density per layer</div>${densChart}</div>
             </div>`);
     }
 

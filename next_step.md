@@ -1,5 +1,7 @@
 # Next Step: SVG Export — File Save Not Working in Browser
 
+> **Code quality findings:** A latent TDZ bug surfaced during the 2026-03-30 dashboard refactor and revealed broader stability risks in `app.js`. See [app_js_stability.md](app_js_stability.md) for the full analysis and suggested remediation.
+
 > Some tests in the suite were already failing before this work and are unrelated to it.
 > See [not_passing_tests.md](not_passing_tests.md) for the full list and root causes.
 

@@ -15,6 +15,7 @@ import { Dashboard } from './dashboard.js';
 let model = null;
 let positions = null;
 let renderer = null;
+let committedSearchName = null;
 let colorMapper = new ColorMapper();
 let layout = new ForceLayout();
 
@@ -150,11 +151,9 @@ const lvSizeMultLabel         = document.getElementById('lvSizeMultLabel');
 const lvSpacing               = document.getElementById('lvSpacing');
 const lvSpacingLabel          = document.getElementById('lvSpacingLabel');
 const LV_SECTIONS = ['sectionLayerViewCircles','sectionLayerViewEdges'];
-const DB_SECTIONS = ['sectionDashboard'];
+const DB_SECTIONS = [];
 const dashboardBtn       = document.getElementById('dashboardBtn');
 const dashboardContainer = document.getElementById('dashboardContainer');
-const dbSortSelect       = document.getElementById('dbSortSelect');
-const dbHighlightSelect  = document.getElementById('dbHighlightSelect');
 const dbBipartiteToggle  = document.getElementById('dbBipartiteToggle');
 const dbBipartiteRow     = document.getElementById('dbBipartiteRow');
 let   dashboard          = null;
@@ -405,6 +404,10 @@ function loadData(json) {
         if (bipartiteOption) {
             bipartiteOption.style.display = hasAnyBipartite ? '' : 'none';
         }
+
+        // Show bipartite detail toggle in the Data section when relevant
+        dbBipartiteRow.style.display = hasAnyBipartite ? '' : 'none';
+        dbBipartiteToggle.checked = true;
 
         // Set layout type
         if (useBipartiteLayout) {
@@ -744,15 +747,6 @@ function toggleDashboard() {
     dashboardContainer.style.display = 'block';
     _showDashboardSidebar();
 
-    // Show bipartite toggle only when relevant
-    const hasBp = [...model.bipartiteInfo.values()].some(b => b.isBipartite);
-    dbBipartiteRow.style.display = hasBp ? '' : 'none';
-
-    // Reset sidebar controls
-    dbSortSelect.value      = 'participation';
-    dbHighlightSelect.value = 'nodes';
-    dbBipartiteToggle.checked = true;
-
     dashboard = new Dashboard(dashboardContainer, model, {
         onLayerClick: () => {
             _exitDashboard();
@@ -772,8 +766,6 @@ function goToNetworkMode() {
     if (appMode === 'dashboard') { _exitDashboard(); appMode = 'network'; renderer.render(); }
 }
 networkModeBtn.addEventListener('click', goToNetworkMode);
-dbSortSelect.addEventListener('change',      () => dashboard?.setSortOrder(dbSortSelect.value));
-dbHighlightSelect.addEventListener('change', () => dashboard?.setHighlightMetric(dbHighlightSelect.value));
 dbBipartiteToggle.addEventListener('change', () => dashboard?.setShowBipartite(dbBipartiteToggle.checked));
 
 function _syncLayerViewControls() {
@@ -3145,7 +3137,7 @@ const nodeSearchInput = document.getElementById('nodeSearchInput');
 const nodeSearchResults = document.getElementById('nodeSearchResults');
 const nodeSearchClearBtn = document.getElementById('nodeSearchClearBtn');
 
-let committedSearchName = null; // the last clicked/confirmed node name
+// committedSearchName declared at top of file with other state variables
 
 function closeSearchDropdown() {
     nodeSearchResults.style.display = 'none';
