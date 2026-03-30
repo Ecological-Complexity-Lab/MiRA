@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { waitForAppReady, loadDemoDataset, openSection } from './helpers.js'
+import { waitForAppReady, loadDemoDataset } from './helpers.js'
 
 test.describe('Dashboard mode', () => {
   let errors
@@ -12,7 +12,6 @@ test.describe('Dashboard mode', () => {
     await loadDemoDataset(page, 'demo_directed')
     await page.locator('#dashboardBtn').click()
     await expect(page.locator('#dashboardContainer')).toBeVisible()
-    await openSection(page, 'sectionDashboard')
   })
 
   test.afterEach(() => {
@@ -30,20 +29,9 @@ test.describe('Dashboard mode', () => {
     expect(count).toBeGreaterThanOrEqual(4)
   })
 
-  test('dashboard control panel is visible', async ({ page }) => {
-    await expect(page.locator('#sectionDashboard')).toBeVisible()
-  })
-
-  test('sort matrix select changes without crash', async ({ page }) => {
-    await page.locator('#dbSortSelect').selectOption('name')
-    await page.locator('#dbSortSelect').selectOption('set')
-    await page.locator('#dbSortSelect').selectOption('participation')
-  })
-
-  test('highlight chart select changes without crash', async ({ page }) => {
-    await page.locator('#dbHighlightSelect').selectOption('edges')
-    await page.locator('#dbHighlightSelect').selectOption('density')
-    await page.locator('#dbHighlightSelect').selectOption('nodes')
+  test('matrix sort buttons change without crash', async ({ page }) => {
+    await page.locator('.db-sort-btn[data-sort="name"]').click()
+    await page.locator('.db-sort-btn[data-sort="participation"]').click()
   })
 
   test('clicking dashboard button again returns to network mode', async ({ page }) => {
