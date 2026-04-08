@@ -261,7 +261,7 @@
 
   <!-- ── DATA FORMAT ───────────────────────────────────────────── -->
   <h2 class="sec mode-misc" id="data-format">📄 JSON Format Spec</h2>
-  <p>Prepare a <code>.json</code> file with the structure below. The key <code>links</code> is automatically remapped to <code>extended</code> internally — either name is accepted.</p>
+  <p>Prepare a <code>.json</code> file with the structure below.</p>
 
   <pre style="background:#f3f4f6;border:1px solid #e5e7eb;border-radius:6px;padding:16px;font-size:12px;overflow-x:auto;line-height:1.6"><code style="background:none;border:none;padding:0;color:#1f2937">{
   "directed": false,
@@ -271,7 +271,7 @@
   "nodes": [
     { "node_id": "sp_1", "node_name": "Bee", "node_type": "pollinator" }
   ],
-  "links": [
+  "extended": [
     { "layer_from": "Forest", "node_from": "Bee", "layer_to": "Forest", "node_to": "Flower", "weight": 1.5 }
   ],
   "state_nodes": [
@@ -301,7 +301,7 @@
     <li>Any extra columns become selectable attributes for color/size mapping.</li>
   </ul>
 
-  <h3><code>links</code> / <code>extended</code> array</h3>
+  <h3><code>extended</code> array</h3>
   <p>One row per edge. Intralayer and interlayer edges both go here.</p>
   <ul>
     <li><code>layer_from</code>, <code>node_from</code>, <code>layer_to</code>, <code>node_to</code> — required.</li>
