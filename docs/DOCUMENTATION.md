@@ -132,9 +132,9 @@ Always visible regardless of mode. Contains:
 * **Load User Data (JSON)**: Upload a local JSON dataset. See `README.md` for the required data format.
 * **Load User Data (CSV)**: Upload network data as CSV files — useful when working directly with outputs from the `emln` R package. A modal dialog presents three file pickers:
   * *Extended Edge List* **(required)** — one row per link with columns `layer_from`, `node_from`, `layer_to`, `node_to`, and optionally `weight`. Both intralayer and interlayer links go in this one file (matches `emln`'s `$extended` data frame).
-  * *Layer Attributes* **(optional)** — columns `layer_id`, `layer_name`, and optionally `latitude`, `longitude`. If omitted, unique layer names are derived automatically from the edge list.
-  * *Node Attributes* **(optional)** — columns `node_name`, and optionally `group` (or `node_type` / `type` for bipartite). If omitted, unique node names are derived from the edge list.
-  * **Directed / Bipartite checkboxes** — mark the network type before loading.
+  * *Layer Attributes* **(optional)** — columns `layer_id`, `layer_name`, optionally `latitude`, `longitude`, and **`bipartite`** (TRUE/FALSE per layer — required for any bipartite layer; the visualizer no longer auto-detects bipartite structure). If omitted entirely, unique layer names are derived from the edge list and all layers are unipartite.
+  * *Node Attributes* **(optional)** — columns `node_name`, plus **`node_type`** (required when any layer is marked bipartite — must contain exactly two distinct values across the file). If omitted, unique node names are derived from the edge list.
+  * **Directed checkbox** — mark the network as directed before loading. Bipartite is declared per layer in the layers CSV (see above), not via a checkbox.
   * If the layer or node files are omitted, an informational note confirms what was auto-derived. If the edge list lacks a `weight` column, a warning is shown and all weights are set to 1; you can confirm and load anyway. All three file formats auto-detect comma, tab, or semicolon delimiters.
 
 ### 2. Layers *(Network / Map Mode only)*

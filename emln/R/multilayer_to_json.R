@@ -7,9 +7,11 @@
 #'   or \code{load_emln}).
 #' @param file Optional file path to write the JSON to. If NULL, returns the JSON
 #'   string.
-#' @param bipartite Logical or NULL. Whether the network is bipartite. If NULL
-#'   (default), auto-detected from the presence of a \code{node_group} column in
-#'   the nodes table.
+#' @param bipartite Logical. Whether the network is bipartite. Defaults to
+#'   \code{FALSE}. The visualizer no longer auto-detects bipartite structure —
+#'   you must set this to \code{TRUE} explicitly. When \code{TRUE}, the nodes
+#'   table must contain a \code{node_group} (or \code{node_type}) column with
+#'   exactly two distinct values.
 #' @param directed Logical or NULL. Whether the network is directed. If NULL
 #'   (default), auto-detected by checking edge list symmetry.
 #'
@@ -50,16 +52,32 @@
 #' json_str <- multilayer_to_json(net)
 #' }
 
-multilayer_to_json <- function(multilayer, file = NULL, bipartite = NULL, directed = NULL) {
+multilayer_to_json <- function(multilayer, file = NULL, bipartite = FALSE, directed = NULL) {
 
   if (!inherits(multilayer, "multilayer")) {
     stop("Input must be a multilayer object (class 'multilayer').")
   }
 
-  # ---- Auto-detect bipartite ----
-  if (is.null(bipartite)) {
-    bipartite <- "node_group" %in% names(multilayer$nodes)
-    if (bipartite) message("Auto-detected bipartite network (node_group column found).")
+  if (!is.logical(bipartite) || length(bipartite) != 1) {
+    stop("`bipartite` must be a single TRUE/FALSE value (auto-detection has been removed).")
+  }
+
+  # Validate node_type / node_group when explicitly bipartite
+  if (isTRUE(bipartite)) {
+    type_col <- if ("node_type" %in% names(multilayer$nodes)) "node_type"
+                else if ("node_group" %in% names(multilayer$nodes)) "node_group"
+                else NA_character_
+    if (is.na(type_col)) {
+      stop("bipartite = TRUE but the nodes table has no `node_type` (or `node_group`) column.")
+    }
+    distinct_types <- unique(multilayer$nodes[[type_col]])
+    distinct_types <- distinct_types[!is.na(distinct_types)]
+    if (length(distinct_types) != 2) {
+      stop(sprintf(
+        "bipartite = TRUE requires exactly 2 distinct values in `%s` (found %d).",
+        type_col, length(distinct_types)
+      ))
+    }
   }
 
   # ---- Auto-detect directed ----

@@ -43,7 +43,6 @@ const csvLayersLabel  = document.getElementById('csvLayersLabel');
 const csvNodesFile    = document.getElementById('csvNodesFile');
 const csvNodesLabel   = document.getElementById('csvNodesLabel');
 const csvDirected     = document.getElementById('csvDirected');
-const csvBipartite    = document.getElementById('csvBipartite');
 const csvImportLoad   = document.getElementById('csvImportLoad');
 const csvImportCancel = document.getElementById('csvImportCancel');
 const csvImportError  = document.getElementById('csvImportError');
@@ -370,36 +369,12 @@ function loadData(json) {
         // Pass bipartite info to layout engine
         layout.bipartiteInfo = model.bipartiteInfo;
 
-        // Check for bipartite layers
-        let hasExplicitBipartite = false;
-        let hasAutoDetected = false;
+        // Check for bipartite layers (always explicit now)
+        let hasAnyBipartite = false;
         for (const [, info] of model.bipartiteInfo) {
-            if (info.isBipartite) {
-                if (info.explicit) hasExplicitBipartite = true;
-                else hasAutoDetected = true;
-            }
+            if (info.isBipartite) { hasAnyBipartite = true; break; }
         }
-
-        // Decide whether to use bipartite layout
-        let useBipartiteLayout = hasExplicitBipartite; // always use for explicit
-
-        // If auto-detected (not explicit), prompt the user
-        if (hasAutoDetected && !hasExplicitBipartite) {
-            useBipartiteLayout = confirm(
-                'Some layers appear to have a bipartite structure.\n\n' +
-                'Would you like to use the bipartite layout?\n' +
-                '(Two rows: one set on top, one on bottom)'
-            );
-        } else if (hasAutoDetected && hasExplicitBipartite) {
-            // Some explicit, some auto — ask about the auto ones
-            useBipartiteLayout = confirm(
-                'Additional layers were auto-detected as bipartite.\n\n' +
-                'Use bipartite layout for all bipartite layers?'
-            );
-        }
-
-        // Show or hide the Bipartite layout option in the dropdown
-        const hasAnyBipartite = hasExplicitBipartite || hasAutoDetected;
+        const useBipartiteLayout = hasAnyBipartite;
         const bipartiteOption = layoutSelect.querySelector('option[value="bipartite"]');
         if (bipartiteOption) {
             bipartiteOption.style.display = hasAnyBipartite ? '' : 'none';
@@ -1716,7 +1691,6 @@ csvUploadBtn.addEventListener('click', () => {
     csvLayersLabel.textContent = 'Choose file…';
     csvNodesLabel.textContent = 'Choose file…';
     csvDirected.checked = false;
-    csvBipartite.checked = false;
     csvImportLoad.disabled = true;
     csvImportLoad.style.opacity = '0.4';
     csvImportError.style.display = 'none';
@@ -1765,7 +1739,6 @@ csvImportLoad.addEventListener('click', () => {
     try {
         const { json, infoMessages, warnings } = csvToJson(_csvEdgeText, _csvLayersText, _csvNodesText, {
             directed: csvDirected.checked,
-            bipartite: csvBipartite.checked,
         });
         if (warnings.length) {
             csvImportWarn.textContent = '⚠ ' + warnings.join(' | ');
@@ -2725,6 +2698,14 @@ document.addEventListener('click', e => {
 });
 
 // ---- Screenshot Export ----
+const toggleLegendBtn = document.getElementById('toggleLegendBtn');
+let legendVisible = true;
+toggleLegendBtn.addEventListener('click', () => {
+    legendVisible = !legendVisible;
+    legendPanel.style.display = legendVisible ? 'flex' : 'none';
+    toggleLegendBtn.classList.toggle('active', !legendVisible);
+});
+
 const captureBtn = document.getElementById('captureBtn');
 const exportDialog = document.getElementById('exportDialog');
 const exportCancelBtn = document.getElementById('exportCancelBtn');

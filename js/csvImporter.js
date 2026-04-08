@@ -4,8 +4,10 @@
  *
  * Accepts:
  *   1. Extended edge list (required) — layer_from, node_from, layer_to, node_to, weight
- *   2. Layer attributes CSV (optional) — layer_id, layer_name, latitude, longitude, …
- *   3. Node attributes CSV (optional) — node_name, group (or node_type/type), …
+ *   2. Layer attributes CSV (optional) — layer_id, layer_name, latitude, longitude,
+ *        bipartite (TRUE/FALSE — required for any bipartite layer), …
+ *   3. Node attributes CSV (optional) — node_name, node_type (required when any
+ *        layer is bipartite — exactly two distinct values across the network), …
  */
 
 /**
@@ -36,11 +38,15 @@ export function parseCsv(text) {
  * @param {string}      edgeListText  — Required. Extended edge list CSV text.
  * @param {string|null} layersText    — Optional. Layer attributes CSV text.
  * @param {string|null} nodesText     — Optional. Node attributes CSV text.
- * @param {{ directed: boolean, bipartite: boolean }} options
+ * Bipartite layers must be declared via a "bipartite" column in the layers CSV
+ * (TRUE/FALSE per layer). Nodes participating in any bipartite layer must carry
+ * a "node_type" column with exactly two distinct values across the file.
+ *
+ * @param {{ directed: boolean }} options
  * @returns {{ json: object, infoMessages: string[] }}
  */
 export function csvToJson(edgeListText, layersText, nodesText, options = {}) {
-    const { directed = false, bipartite = false } = options;
+    const { directed = false } = options;
     const infoMessages = [];
 
     // ── Parse edge list ──────────────────────────────────────────────────────
@@ -79,6 +85,11 @@ export function csvToJson(edgeListText, layersText, nodesText, options = {}) {
             }
             if (out.latitude  !== undefined) out.latitude  = parseFloat(out.latitude);
             if (out.longitude !== undefined) out.longitude = parseFloat(out.longitude);
+            // Parse explicit bipartite flag (TRUE/FALSE/1/0/yes/no)
+            if (out.bipartite !== undefined) {
+                const v = String(out.bipartite).trim().toLowerCase();
+                out.bipartite = (v === 'true' || v === '1' || v === 'yes' || v === 't');
+            }
             return out;
         });
     } else {
@@ -115,11 +126,8 @@ export function csvToJson(edgeListText, layersText, nodesText, options = {}) {
         }
         for (const row of nodeRows) {
             const out = { ...row };
-            // Normalise node_type / type → group (for bipartite detection)
-            if (!out.group) {
-                if (out.node_type) { out.group = out.node_type; delete out.node_type; }
-                else if (out.type) { out.group = out.type; delete out.type; }
-            }
+            // Legacy "type" column → canonical "node_type"
+            if (out.type && !out.node_type) { out.node_type = out.type; delete out.type; }
             nodeAttribs.set(out.node_name, out);
         }
     }
@@ -179,9 +187,28 @@ export function csvToJson(edgeListText, layersText, nodesText, options = {}) {
         return out;
     });
 
+    // Validate bipartite declarations
+    const anyBipartite = layers.some(l => l.bipartite === true);
+    if (anyBipartite) {
+        const distinctTypes = new Set();
+        for (const n of nodes) {
+            if (n.node_type !== undefined && n.node_type !== null && n.node_type !== '') {
+                distinctTypes.add(n.node_type);
+            }
+        }
+        if (distinctTypes.size !== 2) {
+            warnings.push(
+                `One or more layers are marked bipartite, but the nodes file does not contain ` +
+                `a "node_type" column with exactly 2 distinct values (found ${distinctTypes.size}). ` +
+                `Bipartite layers will be displayed as unipartite.`
+            );
+        } else {
+            infoMessages.push(`Bipartite layers detected: ${layers.filter(l => l.bipartite).length}`);
+        }
+    }
+
     const json = {
         directed,
-        bipartite,
         layers,
         nodes,
         extended,

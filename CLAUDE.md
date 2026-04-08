@@ -79,7 +79,12 @@ The 3D effect is a hand-rolled oblique isometric projection — no 3D library. K
 
 ### Bipartite support
 
-Detected in `dataParser.js` via BFS 2-coloring (or explicit `layer.bipartite === true` + `node_type` attribute). The resulting `bipartiteInfo` map is consumed by renderer (set-color coding), layout (two-row positioning), layerView, and dashboard — detection is not repeated anywhere.
+Bipartite layers must be **declared explicitly** — auto-detection was removed (it produced false positives on forest/tree structures, issue #23). A layer is bipartite only when:
+
+1. `layer.bipartite === true` in the `layers` array (JSON), or `bipartite=TRUE` column in the layers CSV.
+2. The `nodes` array carries a `node_type` (or legacy `type`) attribute with **exactly two distinct values** across the network.
+
+If `bipartite: true` is set but `node_type` is missing/invalid, `dataParser.js` emits a console warning and treats the layer as unipartite. The resulting `bipartiteInfo` map is consumed by renderer (set-color coding), layout (two-row positioning), layerView, and dashboard.
 
 ## JSON Data Format
 
@@ -88,8 +93,8 @@ The visualizer requires this internal JSON shape (also produced by `csvToJson`):
 ```json
 {
   "directed": false,
-  "layers": [{ "layer_id": 1, "layer_name": "Forest", "latitude": 42.3, "longitude": 3.1 }],
-  "nodes":  [{ "node_id": "sp_1", "layer_name": "Forest", "node_name": "Bee", "group": "pollinator" }],
+  "layers": [{ "layer_id": 1, "layer_name": "Forest", "latitude": 42.3, "longitude": 3.1, "bipartite": false }],
+  "nodes":  [{ "node_id": "sp_1", "layer_name": "Forest", "node_name": "Bee", "node_type": "pollinator" }],
   "extended": [{ "layer_from": "Forest", "node_from": "Bee", "layer_to": "Forest", "node_to": "Flower", "weight": 1.5 }],
   "state_nodes": [{ "layer_name": "Forest", "node_name": "Bee" }]
 }
