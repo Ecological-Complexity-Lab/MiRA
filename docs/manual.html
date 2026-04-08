@@ -191,9 +191,20 @@
 <nav id="toc">
   <h2>Contents</h2>
 
+  <a href="#data-import" class="l1">📂 Data Import</a>
+  <a href="#import-example" class="l2">Example Data</a>
+  <a href="#import-json" class="l2">Load JSON</a>
+  <a href="#import-csv" class="l2">Load CSV</a>
+  <a href="#data-format" class="l2">JSON Format Spec</a>
+  <a href="#examples" class="l2">Built-in Datasets</a>
+
+  <div class="toc-sep"></div>
+
   <a href="#modes" class="l1">Visualization Modes</a>
   <a href="#network" class="l2">🕸️ Network Mode</a>
+  <a href="#network-controls" class="l3">Sidebar Controls</a>
   <a href="#map" class="l2">🗺️ Map Mode</a>
+  <a href="#map-controls" class="l3">Sidebar Controls</a>
   <a href="#dashboard" class="l2">📊 Dashboard Mode</a>
   <a href="#dashboard-kpi" class="l3">KPI Cards</a>
   <a href="#dashboard-bars" class="l3">Per-Layer Charts</a>
@@ -202,28 +213,15 @@
   <a href="#dashboard-degree" class="l3">Degree Distributions</a>
   <a href="#dashboard-participation" class="l3">Node Participation</a>
   <a href="#dashboard-setratio" class="l3">Set Size Ratio</a>
-  <a href="#layerview" class="l2">🔵 Layer View</a>
+  <a href="#layerview" class="l2">🔵 Layer Mode</a>
   <a href="#lv-interactions" class="l3">Interactions</a>
   <a href="#lv-controls" class="l3">Sidebar Controls</a>
 
   <div class="toc-sep"></div>
 
-  <a href="#panels" class="l1">Control Panels</a>
-  <a href="#panel-data" class="l2">1. Data</a>
-  <a href="#panel-layers" class="l2">2. Layers</a>
-  <a href="#panel-nodes" class="l2">3. Nodes</a>
-  <a href="#panel-links" class="l2">4. Links</a>
-
-  <div class="toc-sep"></div>
-
-  <a href="#legend" class="l1">Dynamic Legend</a>
   <a href="#toolbar" class="l1">Bottom-Left Toolbar</a>
+  <a href="#legend" class="l1">Dynamic Legend</a>
   <a href="#interactions" class="l1">Advanced Interactions</a>
-
-  <div class="toc-sep"></div>
-
-  <a href="#data-format" class="l1">Data Format (JSON)</a>
-  <a href="#examples" class="l1">Example Datasets</a>
 </nav>
 
 <!-- ══ Content ══════════════════════════════════════════════════════════ -->
@@ -239,195 +237,31 @@
 
   <hr>
 
-  <!-- ── MODES ─────────────────────────────────────────────────────── -->
-  <h2 class="sec mode-misc" id="modes">🌎 Visualization Modes</h2>
-  <p>The application supports <strong>four visualization modes</strong>. The active mode is controlled by the buttons in the bottom-left toolbar. The left-side control panel changes completely depending on which mode is active.</p>
+  <!-- ── DATA IMPORT ───────────────────────────────────────────── -->
+  <h2 class="sec mode-misc" id="data-import">📂 Data Import</h2>
+  <p>The <strong>Data</strong> panel is always visible in the left sidebar, regardless of active mode.</p>
 
-  <!-- Network Mode -->
-  <h2 class="sec mode-network" id="network">🕸️ Network Mode <span class="badge">Default</span></h2>
-  <p>All layers are rendered simultaneously within a continuous 3D coordinate space.</p>
+  <h3 id="import-example">Load Example Data</h3>
+  <p>Opens a dialog with seven built-in datasets. See <a href="#examples">Built-in Datasets</a> below for the full list.</p>
+
+  <h3 id="import-json">Load User Data (JSON)</h3>
+  <p>Upload a <code>.json</code> file formatted according to the <a href="#data-format">JSON Format Spec</a> below.</p>
+
+  <h3 id="import-csv">Load User Data (CSV)</h3>
+  <p>Load network data from CSV files. A modal dialog accepts up to three files:</p>
   <ul>
-    <li><span class="key">Rotate the 3D Space</span> — drag anywhere on the background.</li>
-    <li><span class="key">Pan</span> — hold <code>Shift</code> + drag.</li>
-    <li><span class="key">Drag Layers</span> — hold <code>Cmd</code> (Mac) / <code>Ctrl</code> (Win) + drag a layer outline to physically reposition it.</li>
+    <li><em>Extended Edge List</em> <strong>(required)</strong> — one row per link, columns: <code>layer_from</code>, <code>node_from</code>, <code>layer_to</code>, <code>node_to</code>, <code>weight</code> (optional). Both intralayer and interlayer links go in this single file.</li>
+    <li><em>Layer Attributes</em> (optional) — columns: <code>layer_id</code>, <code>layer_name</code>, <code>latitude</code>, <code>longitude</code>, and <code>bipartite</code> (TRUE/FALSE per layer). If omitted, layers are derived from the edge list and all treated as unipartite.</li>
+    <li><em>Node Attributes</em> (optional) — columns: <code>node_name</code>, plus <code>node_type</code> (required when any layer is marked bipartite — must have exactly two distinct values). If omitted, nodes are derived from the edge list.</li>
   </ul>
-  <p>The left panel shows four collapsible sections: <strong>Data</strong>, <strong>Layers</strong>, <strong>Nodes</strong>, and <strong>Links</strong>.</p>
-
-  <!-- Map Mode -->
-  <h2 class="sec mode-map" id="map">🗺️ Map Mode</h2>
-  <p>Bridges geographic analysis with network structure. Only available when the dataset includes <code>latitude</code> and <code>longitude</code> on its layers.</p>
-  <ul>
-    <li><span class="key">Layer Markers</span> — layers appear as interactive blue circle markers on a Leaflet world map.</li>
-    <li><span class="key">Pop-Out Layers</span> — click a marker to pop that layer into floating 3D space. Multiple layers can be popped simultaneously.</li>
-    <li><span class="key">Dynamic Close Buttons</span> — a red <code>✕</code> sticks to each popped layer; click it to return the layer to the map.</li>
-    <li><span class="key">Map Opacity Slider</span> — fade out the satellite imagery. Uncheck "Show Map" to remove it entirely while keeping geographic spacing.</li>
-    <li><span class="key">Map Navigation</span> — pan and zoom the Leaflet map freely. <code>Shift</code> + drag pans the map and carries any popped-out 3D layers with it.</li>
-  </ul>
-  <p>The left panel is the same as Network Mode, with a <strong>Map</strong> section added at the top.</p>
-
-  <!-- Dashboard Mode -->
-  <h2 class="sec mode-dashboard" id="dashboard">📊 Dashboard Mode</h2>
-  <p>Replaces the network canvas with quantitative analytics panels. All sections are <strong>collapsible</strong> — click a section header to expand or collapse it.</p>
-
-  <p><strong>Left panel controls (Dashboard-specific):</strong></p>
-  <ul>
-    <li><span class="key">Sort layers by</span> — order layers in all charts by: Participation, Nodes, Intra-links, Inter-links, or Density.</li>
-    <li><span class="key">Highlight metric</span> — which metric accent-colors the tallest bar in each chart.</li>
-    <li><span class="key">Show bipartite panels</span> — toggle (bipartite networks only): hide/show Set A / Set B split panels.</li>
-  </ul>
-
-  <h4 id="dashboard-kpi">KPI Cards</h4>
-  <p>Five headline numbers: total unique nodes, total layers, total intralayer links, total interlayer links, and mean edge density across all layers.</p>
-
-  <h4 id="dashboard-bars">Per-Layer Bar Charts</h4>
-  <p>Side-by-side bars for each layer showing node count, intralayer links, interlayer links, and edge density. The highest-value bar in each chart is accent-colored. For bipartite networks the node-count chart becomes a stacked bar split by <span style="color:#0072b2;font-weight:600">Set A</span> and <span style="color:#f472b6;font-weight:600">Set B</span>. Clicking a layer name highlights it in the background network.</p>
-
-  <h4 id="dashboard-matrix">Node × Layer Presence Matrix</h4>
-  <p>A heatmap showing which nodes appear in which layers. A toggle switches orientation:</p>
-  <ul>
-    <li><strong>Layer rows × Node cols</strong> (default) — exploits screen width when there are more nodes than layers.</li>
-    <li><strong>Node rows × Layer cols</strong> — traditional orientation.</li>
-  </ul>
-  <p>Sort buttons reorder rows/columns alphabetically or by participation count. Bipartite networks color rows by set membership.</p>
-
-  <h4 id="dashboard-jaccard">Layer Similarity (Jaccard)</h4>
-  <p>Square heatmaps where rows and columns are both layers. Each cell shows the Jaccard similarity (0 = white → 1 = full accent color).</p>
-  <ul>
-    <li><strong>Node identity</strong> — overlap in which physical nodes appear. Bipartite networks show separate <span style="color:#0072b2;font-weight:600">Set A</span> and <span style="color:#f472b6;font-weight:600">Set B</span> matrices (three matrices total).</li>
-    <li><strong>Edge identity</strong> — overlap in which edges (by node-pair key) appear across layers, shown in amber.</li>
-  </ul>
-  <p>The diagonal equals 1 by computation. Empty layers produce a gray cell (NaN).</p>
-
-  <h4 id="dashboard-degree">Degree Distributions</h4>
-  <p>Histograms of node degree for the full network and per layer. Bipartite networks show separate histograms for Set A and Set B.</p>
-
-  <h4 id="dashboard-participation">Node Participation</h4>
-  <p>Bar chart showing how many layers each node appears in, sorted by count. Bipartite networks show Set A and Set B separately.</p>
-
-  <h4 id="dashboard-setratio">Set Size Ratio <span class="pill pill-dashboard">bipartite only</span></h4>
-  <p>Bar chart showing the ratio of Set A to Set B nodes within each layer — a quick view of balance across layers.</p>
-
-  <!-- Layer View -->
-  <h2 class="sec mode-layer" id="layerview">🔵 Layer View (Meta-Graph Mode)</h2>
-  <p>A novel mode that abstracts away individual nodes and renders <strong>layers themselves</strong> as the primary objects. Each layer becomes an interactive bubble in a force-directed meta-graph.</p>
-  <ul>
-    <li>Inside each bubble, a <strong>micro-graph preview</strong> shows the internal topology (node positions and edges at reduced opacity).</li>
-    <li><strong>Blue solid lines</strong> between bubbles — interlayer links. Thickness = number of such links.</li>
-    <li><strong>Gray lines</strong> — shared physical nodes. Thickness = fraction of shared nodes.</li>
-    <li>Bubbles are arranged by <strong>Fruchterman-Reingold</strong> force layout. Isolated layers are kept close by stronger gravity.</li>
-  </ul>
-
-  <h3 id="lv-interactions">Interactions</h3>
-  <ul>
-    <li><span class="key">Drag</span> a bubble to pin it. Click <strong>Reset</strong> to unpin all and re-run layout.</li>
-    <li><span class="key">Click</span> a bubble to select it — others fade. A <strong>Layer Stats panel</strong> slides in showing identity, size, connectivity, and cross-layer connectivity.</li>
-    <li><span class="key">Cmd+click</span> (Mac) / <span class="key">Ctrl+click</span> (Win) a second bubble to open a <strong>Layer Comparison panel</strong>:
-      <ul>
-        <li><em>Size</em>: nodes and edges for A vs. B.</li>
-        <li><em>Overlap</em>: shared nodes (count and %), Jaccard index, shared edges.</li>
-        <li><em>Divergence</em>: density ratio, size ratio, overlaid degree-distribution histogram.</li>
-        <li><em>Cross-layer links</em>: interlayer link count between the two layers specifically.</li>
-      </ul>
-    </li>
-    <li><span class="key">Click empty space</span> to deselect and clear the stats panel.</li>
-    <li><span class="key">Scroll</span> to zoom (centered on cursor); <span class="key">drag background</span> to pan.</li>
-  </ul>
-
-  <h3 id="lv-controls">Sidebar Controls</h3>
-  <p><strong>Layers section:</strong></p>
-  <ul>
-    <li><span class="key">Size by</span> — bubble radius driven by: Number of nodes, Number of edges, Edge density, or Uniform.</li>
-    <li><span class="key">Color by</span> — Layer (categorical palette), Node count (YlOrRd scale), Edge density (YlOrRd scale), or Uniform.</li>
-    <li><span class="key">Size multiplier</span> — global scale slider (0.5× – 2.0×).</li>
-    <li><span class="key">Show layer name labels</span> — toggle text labels below bubbles.</li>
-    <li><span class="key">Label font size</span> — slider.</li>
-    <li><span class="key">Bubble spacing</span> — equilibrium distance in the force layout.</li>
-  </ul>
-  <p><strong>Edges section:</strong></p>
-  <ul>
-    <li><span class="key">Show edges</span> — toggle all meta-edges.</li>
-    <li><span class="key">Edge metric</span> — Interlayer links, Shared nodes, or Both.</li>
-    <li><span class="key">Min edge weight</span> — hide edges below this threshold.</li>
-    <li><span class="key">Show edge weight labels</span> — toggle numeric labels on edges.</li>
-  </ul>
-
-  <hr>
-
-  <!-- ── CONTROL PANELS ──────────────────────────────────────────── -->
-  <h2 class="sec mode-controls" id="panels">🎛️ Control Panels (Network / Map Mode)</h2>
-  <p>The side menu has four collapsible accordions, visible in Network and Map modes.</p>
-
-  <h3 id="panel-data">1. Data</h3>
-  <p>Always visible regardless of mode.</p>
-  <ul>
-    <li><span class="key">Load Example Data</span> — built-in datasets: Directed, Large Scale, Simple Bipartite, Complex Bipartite (Bartomeus), Pond Ecosystem, Synthetic Bipartite (10 layers), Synthetic Unipartite (10 layers).</li>
-    <li><span class="key">Load User Data (JSON)</span> — upload a local JSON file. See the JSON structure below.</li>
-    <li><span class="key">Load User Data (CSV)</span> — load directly from <code>emln</code> CSV output. A modal dialog accepts:
-      <ul>
-        <li><em>Extended Edge List</em> <strong>(required)</strong> — columns <code>layer_from</code>, <code>node_from</code>, <code>layer_to</code>, <code>node_to</code>, <code>weight</code> (optional). Both intralayer and interlayer links go here.</li>
-        <li><em>Layer Attributes</em> (optional) — <code>layer_id</code>, <code>layer_name</code>, <code>latitude</code>, <code>longitude</code>, and <code>bipartite</code> (TRUE/FALSE per layer — required to declare bipartite layers; auto-detection is not supported). Auto-derived if omitted.</li>
-        <li><em>Node Attributes</em> (optional) — <code>node_name</code>, plus <code>node_type</code> (required when any layer is marked bipartite — must contain exactly two distinct values). Auto-derived if omitted.</li>
-        <li><strong>Directed</strong> checkbox sets network type before loading. Bipartite is declared per layer via the <code>bipartite</code> column in the layers file.</li>
-        <li>Comma, tab, and semicolon delimiters are all auto-detected.</li>
-      </ul>
-    </li>
-  </ul>
-
-  <h3 id="panel-layers">2. Layers <span class="pill pill-network">Network / Map</span></h3>
-  <ul>
-    <li><span class="key">Layer Names</span> — toggle floating title tags above each plane.</li>
-    <li><span class="key">Stacking Mode</span> — <em>Horizontal</em> (layers recede into Z-axis, default) or <em>Vertical</em> (layers drop along Y-axis).</li>
-    <li><span class="key">Layer Spacing</span> — simulated physical distance between planes.</li>
-    <li><span class="key">Layout Algorithm</span> — Fruchterman-Reingold, Kamada-Kawai, Bipartite (two-row with optional nested sorting), Circle, Grid, or Random.</li>
-  </ul>
-
-  <h3 id="panel-nodes">3. Nodes <span class="pill pill-network">Network / Map</span></h3>
-  <ul>
-    <li><span class="key">Node Labels</span> — show node names on hover or permanently.</li>
-    <li><span class="key">Transform Nodes</span> — skew nodes to match the isometric perspective of their layer plane. Disable for large networks to improve performance.</li>
-    <li><span class="key">Color By</span> — Layer, Group, or Uniform. Bipartite networks show independent color pickers for Set A and Set B.</li>
-    <li><span class="key">Size By</span> — uniform Base Size slider, or scale by Node Degree.</li>
-  </ul>
-
-  <h3 id="panel-links">4. Links <span class="pill pill-network">Network / Map</span></h3>
-  <ul>
-    <li><span class="key">Show Interlayer Links</span> — toggle cross-layer edges.</li>
-    <li><span class="key">Color By</span> — by type (Inter vs. Intra) or by originating layer color.</li>
-  </ul>
-
-  <hr>
-
-  <!-- ── LEGEND ──────────────────────────────────────────────────── -->
-  <h2 class="sec mode-misc" id="legend">📊 Dynamic Legend</h2>
-  <p>A legend panel appears in the bottom-right corner whenever color or size mappings are active.</p>
-  <ul>
-    <li><span class="key">Draggable</span> — drag the title bar to reposition anywhere on screen.</li>
-    <li><span class="key">Collapsible</span> — click <strong>−</strong> to collapse to a tab; click the tab or <strong>+</strong> to expand again.</li>
-    <li><span class="key">Closeable</span> — click <strong>✕</strong> to dismiss. Reappears on new data load or setting change.</li>
-    <li><span class="key">Interactive toggle</span> (Layer View) — when coloring by Node count or Edge density, a button switches between a continuous gradient bar and a categorical list.</li>
-  </ul>
-
-  <hr>
-
-  <!-- ── TOOLBAR ─────────────────────────────────────────────────── -->
-  <h2 class="sec mode-misc" id="toolbar">📸 Bottom-Left Toolbar</h2>
-  <ul>
-    <li><span class="key">? (Manual)</span> — opens this manual in a new tab.</li>
-    <li><span class="key">Snapshot (camera icon)</span> — high-resolution export. Choose PNG, JPG, or PDF; optionally include the backdrop grid.</li>
-    <li><span class="key">+ / − / Reset</span> — zoom in/out and reset viewport. In Layer View, Reset also unpins all bubbles and re-runs the force layout.</li>
-    <li><span class="key">Dashboard (📊)</span> — toggle Dashboard Mode.</li>
-    <li><span class="key">Layer View (three circles)</span> — toggle Layer View / Meta-Graph Mode.</li>
-    <li><span class="key">Map Mode (map icon)</span> — toggle geographic Map Mode (only shown when the dataset has coordinates).</li>
-    <li><span class="key">Interaction Hints</span> — quick-reference cheatsheet for mouse bindings.</li>
-  </ul>
+  <div class="info-box"><strong>Bipartite declaration:</strong> bipartite is never auto-detected. Mark a layer as bipartite via the <code>bipartite=TRUE</code> column in the layers file, and provide a <code>node_type</code> column in the nodes file.</div>
+  <p>The <strong>Directed</strong> checkbox marks all edges as directed before loading. Comma, tab, and semicolon delimiters are auto-detected.</p>
 
   <hr>
 
   <!-- ── DATA FORMAT ───────────────────────────────────────────── -->
-  <h2 class="sec mode-misc" id="data-format">📄 Data Format (JSON)</h2>
-  <p>To load your own data without using the <code>emln</code> R package, prepare a <code>.json</code> file with the structure below and use <strong>Load User Data (JSON)</strong>.</p>
-
-  <div class="info-box">The key <code>links</code> in user-facing JSON is automatically remapped to <code>extended</code> internally — either name is accepted.</div>
+  <h2 class="sec mode-misc" id="data-format">📄 JSON Format Spec</h2>
+  <p>Prepare a <code>.json</code> file with the structure below. The key <code>links</code> is automatically remapped to <code>extended</code> internally — either name is accepted.</p>
 
   <pre style="background:#f3f4f6;border:1px solid #e5e7eb;border-radius:6px;padding:16px;font-size:12px;overflow-x:auto;line-height:1.6"><code style="background:none;border:none;padding:0;color:#1f2937">{
   "directed": false,
@@ -447,7 +281,7 @@
 
   <h3>Global fields</h3>
   <ul>
-    <li><code>directed</code> <em>(Boolean)</em> — whether edges are directed (renders arrowheads). Default: <code>false</code>.</li>
+    <li><code>directed</code> <em>(Boolean)</em> — renders arrowheads on all edges. Default: <code>false</code>.</li>
   </ul>
 
   <h3><code>layers</code> array</h3>
@@ -455,27 +289,28 @@
     <li><code>layer_id</code> — unique identifier.</li>
     <li><code>layer_name</code> — display name.</li>
     <li><code>latitude</code> / <code>longitude</code> <em>(optional)</em> — unlocks Map Mode.</li>
-    <li><code>bipartite</code> <em>(optional, Boolean)</em> — set <code>true</code> to mark this layer as bipartite. Requires nodes to carry a <code>node_type</code> attribute with exactly two distinct values. <strong>Bipartite is never auto-detected.</strong></li>
+    <li><code>bipartite</code> <em>(optional, Boolean)</em> — set <code>true</code> to mark this layer bipartite. Requires nodes to carry <code>node_type</code> with exactly two distinct values. Never auto-detected.</li>
+    <li>Any extra columns become selectable attributes for color/size mapping.</li>
   </ul>
 
   <h3><code>nodes</code> array</h3>
   <ul>
     <li><code>node_id</code> — unique identifier.</li>
     <li><code>node_name</code> — display label.</li>
-    <li><code>node_type</code> <em>(required for bipartite layers)</em> — exactly two distinct values across all nodes; determines Set A vs. Set B.</li>
+    <li><code>node_type</code> <em>(required for bipartite layers)</em> — exactly two distinct values; determines Set A vs. Set B.</li>
     <li>Any extra columns become selectable attributes for color/size mapping.</li>
   </ul>
 
   <h3><code>links</code> / <code>extended</code> array</h3>
-  <p>One row per edge (both intralayer and interlayer edges go in this single array).</p>
+  <p>One row per edge. Intralayer and interlayer edges both go here.</p>
   <ul>
     <li><code>layer_from</code>, <code>node_from</code>, <code>layer_to</code>, <code>node_to</code> — required.</li>
-    <li><code>weight</code> <em>(optional)</em> — controls line thickness/opacity. Defaults to 1.</li>
+    <li><code>weight</code> <em>(optional)</em> — line thickness/opacity. Defaults to 1.</li>
     <li>Any extra columns become selectable attributes for color/size mapping.</li>
   </ul>
 
   <h3><code>state_nodes</code> array</h3>
-  <p>Enumerates every (layer, node) pair present in the network. Required for correct rendering.</p>
+  <p>Enumerates every (layer, node) pair present. Required for correct rendering.</p>
   <ul>
     <li><code>layer_name</code>, <code>node_name</code> — required.</li>
   </ul>
@@ -484,7 +319,6 @@
 
   <!-- ── EXAMPLE DATASETS ───────────────────────────────────────── -->
   <h2 class="sec mode-misc" id="examples">📦 Built-in Example Datasets</h2>
-  <p>Available via <strong>Load Example Data</strong> in the Data panel.</p>
   <table style="width:100%;border-collapse:collapse;font-size:13px;">
     <thead>
       <tr style="background:#f3f4f6;">
@@ -500,10 +334,213 @@
       <tr><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Simple Bipartite</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Undirected bipartite</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">2</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Minimal bipartite example</td></tr>
       <tr><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Complex Bipartite (Bartomeus)</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Undirected bipartite</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">4</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Real pollination network</td></tr>
       <tr><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Pond Ecosystem</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Undirected unipartite</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">4</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Multi-trophic food-web</td></tr>
-      <tr><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Synthetic Bipartite (10 layers)</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Undirected bipartite</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">10</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Generated pollinator-plant network with clustered layers and one isolated layer</td></tr>
-      <tr><td style="padding:6px 10px;">Synthetic Unipartite (10 layers)</td><td style="padding:6px 10px;">Directed unipartite</td><td style="padding:6px 10px;">10</td><td style="padding:6px 10px;">Generated social/influence network with overlapping actor groups, a bridging layer, and one isolated layer</td></tr>
+      <tr><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Synthetic Bipartite (10 layers)</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Undirected bipartite</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">10</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Generated pollinator-plant network; clustered layers + one isolated layer</td></tr>
+      <tr><td style="padding:6px 10px;">Synthetic Unipartite (10 layers)</td><td style="padding:6px 10px;">Directed unipartite</td><td style="padding:6px 10px;">10</td><td style="padding:6px 10px;">Generated social/influence network; overlapping groups, bridging layer, one isolated layer</td></tr>
     </tbody>
   </table>
+
+  <hr>
+
+  <!-- ── MODES ─────────────────────────────────────────────────────── -->
+  <h2 class="sec mode-misc" id="modes">🌎 Visualization Modes</h2>
+  <p>Four modes are available, switched via the bottom-left toolbar. The left sidebar changes with each mode.</p>
+
+  <!-- Network Mode -->
+  <h2 class="sec mode-network" id="network">🕸️ Network Mode <span class="badge">Default</span></h2>
+  <p>All layers rendered simultaneously in a continuous 3D coordinate space.</p>
+  <ul>
+    <li><span class="key">Rotate</span> — drag the background.</li>
+    <li><span class="key">Pan</span> — <code>Shift</code> + drag.</li>
+    <li><span class="key">Drag a layer</span> — <code>Cmd</code> / <code>Ctrl</code> + drag a layer outline.</li>
+    <li><span class="key">Zoom</span> — scroll wheel or <code>+</code> / <code>−</code> toolbar buttons.</li>
+  </ul>
+
+  <h3 id="network-controls">Sidebar Controls</h3>
+  <h4>Layers</h4>
+  <ul>
+    <li><span class="key">Layer Names</span> — toggle floating title tags above each plane.</li>
+    <li><span class="key">Stacking Mode</span> — <em>Horizontal</em> (layers recede into Z-axis, default) or <em>Vertical</em> (layers drop along Y-axis).</li>
+    <li><span class="key">Layer Spacing</span> — simulated distance between planes.</li>
+    <li><span class="key">Layout Algorithm</span> — Fruchterman-Reingold, Kamada-Kawai, Bipartite (two-row, optional nested sorting), Circle, Grid, or Random.</li>
+  </ul>
+  <h4>Nodes</h4>
+  <ul>
+    <li><span class="key">Node Labels</span> — show names on hover or permanently.</li>
+    <li><span class="key">Transform Nodes</span> — skew nodes to match the isometric perspective. Disable for large networks.</li>
+    <li><span class="key">Color By</span> — Layer, Group, or Uniform. Bipartite networks show independent color pickers for Set A and Set B.</li>
+    <li><span class="key">Size By</span> — uniform Base Size slider, or scale by Node Degree.</li>
+  </ul>
+  <h4>Links</h4>
+  <ul>
+    <li><span class="key">Show Interlayer Links</span> — toggle cross-layer edges.</li>
+    <li><span class="key">Color By</span> — by type (Inter vs. Intra) or by originating layer color.</li>
+  </ul>
+
+  <!-- Map Mode -->
+  <h2 class="sec mode-map" id="map">🗺️ Map Mode</h2>
+  <p>Layers placed on an interactive Leaflet world map. Only available when the dataset includes <code>latitude</code> and <code>longitude</code> on its layers.</p>
+  <ul>
+    <li><span class="key">Layer Markers</span> — layers appear as blue circle markers on the map.</li>
+    <li><span class="key">Pop-Out Layers</span> — click a marker to pop that layer into floating 3D space. Multiple layers can be popped simultaneously.</li>
+    <li><span class="key">Close Popped Layer</span> — click the red <code>✕</code> on a floating layer to return it to the map.</li>
+    <li><span class="key">Map Opacity</span> — slider in the bottom bar fades the satellite imagery. Uncheck "Show Map" to remove it entirely.</li>
+    <li><span class="key">Map Navigation</span> — pan and zoom the Leaflet map freely. <code>Shift</code> + drag carries popped-out layers with it.</li>
+  </ul>
+
+  <h3 id="map-controls">Sidebar Controls</h3>
+  <p>Same as Network Mode (Layers, Nodes, Links sections), with an additional <strong>Map</strong> section at the top:</p>
+  <ul>
+    <li><span class="key">Map Opacity</span> — fade the base map.</li>
+    <li><span class="key">Show Map</span> — toggle the Leaflet tile layer entirely.</li>
+    <li><span class="key">Show Locations</span> — toggle the blue circle markers.</li>
+  </ul>
+
+  <!-- Dashboard Mode -->
+  <h2 class="sec mode-dashboard" id="dashboard">📊 Dashboard Mode</h2>
+  <p>Replaces the canvas with analytics panels. All sections are collapsible — click a header to expand/collapse.</p>
+
+  <h3>Sidebar Controls</h3>
+  <ul>
+    <li><span class="key">Sort layers by</span> — order layers in all charts by Participation, Nodes, Intra-links, Inter-links, or Density.</li>
+    <li><span class="key">Show bipartite panels</span> — (bipartite networks only) hide/show Set A / Set B split panels.</li>
+  </ul>
+
+  <h4 id="dashboard-kpi">KPI Cards</h4>
+  <p>Five headline numbers: total unique nodes, total layers, total intralayer links, total interlayer links, and mean edge density.</p>
+
+  <h4 id="dashboard-bars">Per-Layer Bar Charts</h4>
+  <p>Side-by-side bars per layer: node count, intralayer links, interlayer links, and edge density. The highest-value bar is accent-colored. For bipartite networks the node-count chart becomes a stacked bar split by <span style="color:#0072b2;font-weight:600">Set A</span> and <span style="color:#f472b6;font-weight:600">Set B</span>. Clicking a layer name highlights it in the background network.</p>
+
+  <h4 id="dashboard-matrix">Node × Layer Presence Matrix</h4>
+  <p>Heatmap of which nodes appear in which layers. A toggle switches orientation between <strong>Layer rows × Node cols</strong> (default, exploits screen width) and <strong>Node rows × Layer cols</strong>. Sort buttons reorder alphabetically or by participation count.</p>
+
+  <h4 id="dashboard-jaccard">Layer Similarity (Jaccard)</h4>
+  <p>Square heatmaps where rows and columns are layers. Each cell = Jaccard similarity (0 = white → 1 = accent).</p>
+  <ul>
+    <li><strong>Node identity</strong> — overlap in which physical nodes appear. Bipartite networks split into <span style="color:#0072b2;font-weight:600">Set A</span>, <span style="color:#f472b6;font-weight:600">Set B</span>, and edge matrices (three total).</li>
+    <li><strong>Edge identity</strong> — overlap in which edges appear across layers (amber).</li>
+  </ul>
+  <p>Diagonal = 1 by computation. Empty layers → gray (NaN).</p>
+
+  <h4 id="dashboard-degree">Degree Distributions</h4>
+  <p>Histograms of node degree for the full network and per layer. Bipartite: separate histograms for Set A and Set B.</p>
+
+  <h4 id="dashboard-participation">Node Participation</h4>
+  <p>Bar chart showing how many layers each node appears in, sorted by count. Bipartite: Set A and Set B shown separately.</p>
+
+  <h4 id="dashboard-setratio">Set Size Ratio <span class="pill pill-dashboard">bipartite only</span></h4>
+  <p>Bar chart showing the ratio of Set A to Set B nodes per layer — a quick view of balance across layers.</p>
+
+  <!-- Layer Mode -->
+  <h2 class="sec mode-layer" id="layerview">🔵 Layer Mode (Meta-Graph)</h2>
+  <p>Each layer becomes an interactive bubble in a force-directed meta-graph. Individual nodes are abstracted away.</p>
+  <ul>
+    <li>Inside each bubble: a <strong>micro-graph preview</strong> of internal topology.</li>
+    <li><strong>Blue solid lines</strong> — interlayer links. Thickness = count.</li>
+    <li><strong>Gray lines</strong> — shared physical nodes. Thickness = fraction shared.</li>
+  </ul>
+
+  <h3 id="lv-interactions">Interactions</h3>
+  <ul>
+    <li><span class="key">Drag</span> a bubble to pin it. <strong>Reset</strong> in the toolbar unpins all and re-runs layout.</li>
+    <li><span class="key">Click</span> a bubble — others fade; a <strong>Layer Stats panel</strong> shows identity, size, connectivity.</li>
+    <li><span class="key">Cmd+click</span> / <span class="key">Ctrl+click</span> a second bubble — opens a <strong>Layer Comparison panel</strong> with size, overlap (Jaccard, shared nodes/edges), divergence (density ratio, degree histogram), and cross-layer link count.</li>
+    <li><span class="key">Click empty space</span> — deselect and clear the stats panel.</li>
+    <li><span class="key">Scroll</span> — zoom centered on cursor. <span class="key">Drag background</span> — pan.</li>
+  </ul>
+
+  <h3 id="lv-controls">Sidebar Controls</h3>
+  <h4>Layers</h4>
+  <ul>
+    <li><span class="key">Size by</span> — bubble radius: Number of nodes, Number of edges, Edge density, or Uniform.</li>
+    <li><span class="key">Color by</span> — Layer (categorical), Node count (YlOrRd), Edge density (YlOrRd), or Uniform.</li>
+    <li><span class="key">Size multiplier</span> — global scale (0.5× – 2.0×).</li>
+    <li><span class="key">Show layer name labels</span> — toggle text labels below bubbles.</li>
+    <li><span class="key">Bubble spacing</span> — equilibrium distance in the force layout.</li>
+  </ul>
+  <h4>Edges</h4>
+  <ul>
+    <li><span class="key">Show edges</span> — toggle all meta-edges.</li>
+    <li><span class="key">Edge metric</span> — Interlayer links, Shared nodes, or Both.</li>
+    <li><span class="key">Min edge weight</span> — hide edges below this threshold.</li>
+    <li><span class="key">Show edge weight labels</span> — toggle numeric labels.</li>
+  </ul>
+
+  <hr>
+
+  <!-- ── TOOLBAR ─────────────────────────────────────────────────── -->
+  <h2 class="sec mode-misc" id="toolbar">🛠️ Bottom-Left Toolbar</h2>
+  <p>Buttons from left to right:</p>
+  <table style="width:100%;border-collapse:collapse;font-size:13px;margin-top:8px;">
+    <thead>
+      <tr style="background:#f3f4f6;">
+        <th style="text-align:left;padding:7px 10px;border-bottom:2px solid #e5e7eb;width:48px;">Icon</th>
+        <th style="text-align:left;padding:7px 10px;border-bottom:2px solid #e5e7eb;">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="padding:8px 10px;border-bottom:1px solid #f3f4f6;text-align:center;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#374151" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </td>
+        <td style="padding:8px 10px;border-bottom:1px solid #f3f4f6;"><span class="key">Help</span> — opens this manual in a new tab. In the app, clicking it first shows a context-sensitive quick-help popup for the current mode.</td>
+      </tr>
+      <tr>
+        <td style="padding:8px 10px;border-bottom:1px solid #f3f4f6;text-align:center;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#374151" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,7 12,13.5 22,7"/><polyline points="2,12 12,18.5 22,12"/><polyline points="2,16 12,22.5 22,16"/></svg>
+        </td>
+        <td style="padding:8px 10px;border-bottom:1px solid #f3f4f6;"><span class="key">Layer Mode</span> — toggle Layer Mode (meta-graph).</td>
+      </tr>
+      <tr>
+        <td style="padding:8px 10px;border-bottom:1px solid #f3f4f6;text-align:center;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="#374151"><rect x="3" y="12" width="5" height="9" rx="1"/><rect x="9.5" y="7" width="5" height="14" rx="1"/><rect x="16" y="3" width="5" height="18" rx="1"/></svg>
+        </td>
+        <td style="padding:8px 10px;border-bottom:1px solid #f3f4f6;"><span class="key">Dashboard Mode</span> — toggle Dashboard Mode.</td>
+      </tr>
+      <tr>
+        <td style="padding:8px 10px;border-bottom:1px solid #f3f4f6;text-align:center;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="#374151"><path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z"/></svg>
+        </td>
+        <td style="padding:8px 10px;border-bottom:1px solid #f3f4f6;"><span class="key">Map Mode</span> — toggle geographic Map Mode (only visible when dataset has coordinates).</td>
+      </tr>
+      <tr>
+        <td style="padding:8px 10px;border-bottom:1px solid #f3f4f6;text-align:center;font-weight:700;color:#374151;">+</td>
+        <td style="padding:8px 10px;border-bottom:1px solid #f3f4f6;"><span class="key">Zoom In</span></td>
+      </tr>
+      <tr>
+        <td style="padding:8px 10px;border-bottom:1px solid #f3f4f6;text-align:center;font-weight:700;color:#374151;">−</td>
+        <td style="padding:8px 10px;border-bottom:1px solid #f3f4f6;"><span class="key">Zoom Out</span></td>
+      </tr>
+      <tr>
+        <td style="padding:8px 10px;border-bottom:1px solid #f3f4f6;text-align:center;font-size:10px;color:#374151;">Reset</td>
+        <td style="padding:8px 10px;border-bottom:1px solid #f3f4f6;"><span class="key">Reset Viewport</span> — reset zoom and pan. In Layer Mode, also unpins all bubbles and re-runs the force layout.</td>
+      </tr>
+      <tr>
+        <td style="padding:8px 10px;border-bottom:1px solid #f3f4f6;text-align:center;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#374151" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="7" cy="9" r="1.3" fill="#374151"/><line x1="11" y1="9" x2="18" y2="9"/><circle cx="7" cy="14" r="1.3" fill="#374151"/><line x1="11" y1="14" x2="18" y2="14"/></svg>
+        </td>
+        <td style="padding:8px 10px;border-bottom:1px solid #f3f4f6;"><span class="key">Toggle Legend</span> — show or hide the dynamic legend panel.</td>
+      </tr>
+      <tr>
+        <td style="padding:8px 10px;text-align:center;">
+          <svg width="14" height="14" viewBox="0 0 512 512" fill="#374151"><path d="M149.1 64.8L138.7 96H64C28.7 96 0 124.7 0 160V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V160c0-35.3-28.7-64-64-64H373.3L362.9 64.8C356.4 45.2 338.1 32 317.4 32H194.6c-20.7 0-39 13.2-45.5 32.8zM256 384c-53 0-96-43-96-96s43-96 96-96s96 43 96 96s-43 96-96 96z"/></svg>
+        </td>
+        <td style="padding:8px 10px;"><span class="key">Snapshot</span> — high-resolution export. Choose PNG, JPG, or PDF; optionally include the backdrop grid.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr>
+
+  <!-- ── LEGEND ──────────────────────────────────────────────────── -->
+  <h2 class="sec mode-misc" id="legend">🏷️ Dynamic Legend</h2>
+  <p>A legend panel appears in the bottom-right corner whenever color or size mappings are active. Toggle visibility with the legend button in the toolbar.</p>
+  <ul>
+    <li><span class="key">Draggable</span> — drag the title bar to reposition anywhere on screen.</li>
+    <li><span class="key">Collapsible</span> — click <strong>−</strong> to collapse to a tab; <strong>+</strong> to expand again.</li>
+    <li><span class="key">Closeable</span> — click <strong>✕</strong> to dismiss. Reappears on new data load or setting change.</li>
+    <li><span class="key">Interactive toggle</span> (Layer Mode) — when coloring by Node count or Edge density, a button switches between a continuous gradient bar and a categorical list.</li>
+  </ul>
 
   <hr>
 
