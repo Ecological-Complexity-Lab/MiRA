@@ -1,9 +1,11 @@
 /**
  * dataParser.js — Parses EMLN multilayer JSON into an internal model
  *
- * Supports bipartite layers:
- *   - Explicit: layer has "bipartite": true, nodes have "node_type" attribute
- *   - Auto-detect: BFS 2-coloring on intralayer links when not explicit
+ * Bipartite layers must be declared explicitly:
+ *   - layer.bipartite === true (in the layers array)
+ *   - nodes carry a "node_type" attribute with exactly two distinct values
+ * Auto-detection (BFS 2-coloring) was removed because it produced false
+ * positives on forest/tree structures (issue #23).
  */
 
 export function parseMultilayerData(json) {
@@ -154,135 +156,68 @@ export function parseMultilayerData(json) {
 }
 
 /**
- * Detect bipartite structure for each layer.
+ * Resolve bipartite structure for each layer.
  * Returns Map<layerName, { isBipartite, setA, setB, setALabel, setBLabel, explicit }>
  *
- * Detection methods (in priority order):
- *   1. Explicit: layer.bipartite === true AND nodes have a "node_type" attribute
- *   2. Auto-detect: BFS 2-coloring on intralayer links succeeds
+ * Bipartite is only set when the user has explicitly declared it:
+ *   - layer.bipartite === true
+ *   - Nodes carry a "node_type" (or legacy "type") attribute with exactly
+ *     two distinct values across the network.
+ * If declared but the node_type data is missing/invalid, a console warning
+ * is emitted and the layer is treated as unipartite.
  */
 function detectBipartiteLayers(layers, nodes, intralayerLinks, nodesPerLayer, nodesByName) {
   const info = new Map();
 
-  // Check if nodes have a "node_type" or "type" attribute
-  const nodeTypeValues = new Map(); // nodeName -> node_type value
-  let hasNodeType = false;
+  // Collect node_type values (fallback to legacy "type")
+  const nodeTypeValues = new Map();
   for (const node of nodes) {
     const typeValue = node.node_type !== undefined ? node.node_type : node.type;
     if (typeValue !== undefined && typeValue !== null) {
       nodeTypeValues.set(node.node_name, typeValue);
-      hasNodeType = true;
     }
   }
-
-  // Collect distinct type values
-  const distinctTypes = hasNodeType ? [...new Set(nodeTypeValues.values())] : [];
+  const distinctTypes = [...new Set(nodeTypeValues.values())];
+  const hasValidNodeType = distinctTypes.length === 2;
 
   for (const layer of layers) {
     const layerName = layer.layer_name;
     const layerNodes = nodesPerLayer.get(layerName);
-    if (!layerNodes || layerNodes.size === 0) {
+
+    if (!layerNodes || layerNodes.size === 0 || layer.bipartite !== true) {
       info.set(layerName, { isBipartite: false });
       continue;
     }
 
-    const layerEdges = intralayerLinks.filter(l => l.layer_from === layerName);
-
-    // Method 1: Explicit declaration
-    if (layer.bipartite === true && hasNodeType && distinctTypes.length === 2) {
-      const setA = new Set();
-      const setB = new Set();
-      const typeA = distinctTypes[0];
-      const typeB = distinctTypes[1];
-
-      for (const nodeName of layerNodes) {
-        const nt = nodeTypeValues.get(nodeName);
-        if (nt === typeA) setA.add(nodeName);
-        else setB.add(nodeName);
-      }
-
-      info.set(layerName, {
-        isBipartite: true,
-        explicit: true,
-        setA,
-        setB,
-        setALabel: String(typeA),
-        setBLabel: String(typeB),
-      });
+    if (!hasValidNodeType) {
+      console.warn(
+        `Layer "${layerName}" is declared bipartite but nodes lack a valid "node_type" ` +
+        `attribute with exactly 2 distinct values. Treating as unipartite.`
+      );
+      info.set(layerName, { isBipartite: false });
       continue;
     }
 
-    // Method 2: Auto-detect via BFS 2-coloring
-    const result = tryBipartiteColoring(layerNodes, layerEdges);
-    if (result) {
-      info.set(layerName, {
-        isBipartite: true,
-        explicit: false,
-        setA: result.setA,
-        setB: result.setB,
-        setALabel: 'Set A',
-        setBLabel: 'Set B',
-      });
-    } else {
-      info.set(layerName, { isBipartite: false });
+    const [typeA, typeB] = distinctTypes;
+    const setA = new Set();
+    const setB = new Set();
+    for (const nodeName of layerNodes) {
+      const nt = nodeTypeValues.get(nodeName);
+      if (nt === typeA) setA.add(nodeName);
+      else if (nt === typeB) setB.add(nodeName);
     }
+
+    info.set(layerName, {
+      isBipartite: true,
+      explicit: true,
+      setA,
+      setB,
+      setALabel: String(typeA),
+      setBLabel: String(typeB),
+    });
   }
 
   return info;
-}
-
-/**
- * Attempt BFS 2-coloring on a layer's nodes and edges.
- * Returns { setA, setB } if bipartite, or null if not.
- */
-function tryBipartiteColoring(nodeSet, edges) {
-  const nodeArray = Array.from(nodeSet);
-  if (nodeArray.length <= 1) return null; // Trivial — not meaningful bipartite
-
-  // Build adjacency list
-  const adj = new Map();
-  for (const n of nodeArray) adj.set(n, []);
-  for (const e of edges) {
-    if (adj.has(e.node_from) && adj.has(e.node_to)) {
-      adj.get(e.node_from).push(e.node_to);
-      adj.get(e.node_to).push(e.node_from);
-    }
-  }
-
-  // Check that the graph actually has edges (isolated nodes are not bipartite)
-  if (edges.length === 0) return null;
-
-  // BFS 2-coloring
-  const color = new Map(); // nodeName -> 0 or 1
-  for (const start of nodeArray) {
-    if (color.has(start)) continue;
-    color.set(start, 0);
-    const queue = [start];
-    while (queue.length > 0) {
-      const node = queue.shift();
-      const c = color.get(node);
-      for (const neighbor of adj.get(node)) {
-        if (!color.has(neighbor)) {
-          color.set(neighbor, 1 - c);
-          queue.push(neighbor);
-        } else if (color.get(neighbor) === c) {
-          return null; // Odd cycle → not bipartite
-        }
-      }
-    }
-  }
-
-  const setA = new Set();
-  const setB = new Set();
-  for (const [node, c] of color) {
-    if (c === 0) setA.add(node);
-    else setB.add(node);
-  }
-
-  // Only consider it bipartite if both sets are non-empty
-  if (setA.size === 0 || setB.size === 0) return null;
-
-  return { setA, setB };
 }
 
 function extractExtraAttributes(arr, excludeKeys) {

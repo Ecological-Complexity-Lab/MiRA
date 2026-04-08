@@ -7,6 +7,16 @@
   <meta name="description"
     content="Interactive multilayer network visualizer for EMLN ecological network data with 3D-layered perspective rendering.">
   <title>Multilayer Network Visualizer</title>
+  <link rel="icon" type="image/png" href="assets/multiviz_favicon.png">
+
+  <!-- PapaParse — CSV parser -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.5.2/papaparse.min.js"></script>
+  <!-- d3 — force layout (forceSimulation) + number formatting (d3.format); full bundle avoids namespace collision between sub-packages -->
+  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+  <!-- Konva — hit-testing overlay for nodes, links, and layer polygons -->
+  <script src="https://cdn.jsdelivr.net/npm/konva@9/konva.min.js"></script>
+  <!-- chroma.js — color scales and palettes -->
+  <script src="https://cdn.jsdelivr.net/npm/chroma-js@2.4.2/chroma.min.js"></script>
 
   <!-- Leaflet CSS & JS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -45,6 +55,12 @@
             <input type="file" id="fileInput" accept=".json">
           </div>
           <button class="btn" id="csvUploadBtn" style="width:100%;">📊 Load User Data (CSV)</button>
+        </div>
+        <div class="checkbox-row" id="dbBipartiteRow" style="display:none;margin-top:10px;">
+          <label class="checkbox-label">
+            <input type="checkbox" id="dbBipartiteToggle" checked>
+            <span>Show bipartite detail</span>
+          </label>
         </div>
       </div>
     </details>
@@ -249,30 +265,6 @@
       </div>
     </details>
 
-    <!-- 5. Dashboard controls -->
-    <details class="control-section" id="sectionDashboard" style="display:none">
-      <summary>Dashboard</summary>
-      <div class="section-body">
-        <label style="font-size:11px;color:#666;">Sort matrix rows</label>
-        <select id="dbSortSelect" class="styled-select">
-          <option value="participation">By participation</option>
-          <option value="name">By name</option>
-          <option value="set">By set</option>
-        </select>
-        <label style="font-size:11px;color:#666;margin-top:10px;display:block;">Highlight chart</label>
-        <select id="dbHighlightSelect" class="styled-select">
-          <option value="nodes">Nodes per layer</option>
-          <option value="edges">Edges per layer</option>
-          <option value="density">Density per layer</option>
-        </select>
-        <div class="checkbox-row" id="dbBipartiteRow" style="display:none;margin-top:10px;">
-          <label class="checkbox-label">
-            <input type="checkbox" id="dbBipartiteToggle" checked>
-            <span>Show bipartite detail</span>
-          </label>
-        </div>
-      </div>
-    </details>
 
     <!-- 6. Node Search -->
     <details class="control-section" id="sectionSearch" style="overflow:visible;">
@@ -319,6 +311,13 @@
 
       <span class="toolbar-sep"></span>
 
+      <button id="networkModeBtn" class="btn zoom-btn" title="Network View">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round">
+          <polygon points="12,2 22,8.5 12,15 2,8.5"/>
+          <polyline points="2,12 12,18.5 22,12"/>
+          <polyline points="2,16 12,22.5 22,16"/>
+        </svg>
+      </button>
       <button id="layerViewBtn" class="btn zoom-btn" title="Toggle Layer Mode">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
           <circle cx="12" cy="5" r="2.5"/>
@@ -348,6 +347,15 @@
       <button id="zoomInBtn" class="btn zoom-btn">+</button>
       <button id="zoomOutBtn" class="btn zoom-btn">−</button>
       <button id="zoomResetBtn" class="btn" style="font-size: 11px;">Reset</button>
+      <button id="toggleLegendBtn" class="btn zoom-btn" title="Toggle legend panels">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="16" rx="2"/>
+          <circle cx="7" cy="9" r="1.3" fill="currentColor"/>
+          <line x1="11" y1="9" x2="18" y2="9"/>
+          <circle cx="7" cy="14" r="1.3" fill="currentColor"/>
+          <line x1="11" y1="14" x2="18" y2="14"/>
+        </svg>
+      </button>
       <button id="captureBtn" class="btn zoom-btn" title="Save screenshot">
         <svg width="14" height="14" viewBox="0 0 512 512" fill="currentColor">
           <path
@@ -372,7 +380,8 @@
 
   <!-- Bottom-right: Branding -->
   <div id="brandingPanel">
-    <span class="branding-title">Multilayer Viz</span>
+    <span class="branding-title">MultilayerViz</span>
+    <span class="branding-version">v0.9</span>
     <a href="https://github.com/Ecological-Complexity-Lab/multilayer_viz" target="_blank" rel="noopener"
       title="GitHub Repository" class="branding-link">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
@@ -511,9 +520,10 @@
         <label style="font-size:12px; display:flex; align-items:center; gap:6px; cursor:pointer;">
           <input type="checkbox" id="csvDirected"> Directed network
         </label>
-        <label style="font-size:12px; display:flex; align-items:center; gap:6px; cursor:pointer;">
-          <input type="checkbox" id="csvBipartite"> Bipartite network
-        </label>
+        <span style="font-size:11px; color:#6b7280; align-self:center;">
+          Bipartite layers must be declared via a <code>bipartite</code> column in the layers CSV
+          and a <code>node_type</code> column in the nodes CSV.
+        </span>
       </div>
 
       <!-- Info note (shown when layers/nodes are auto-derived) -->

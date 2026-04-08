@@ -347,6 +347,15 @@
       <button id="zoomInBtn" class="btn zoom-btn">+</button>
       <button id="zoomOutBtn" class="btn zoom-btn">−</button>
       <button id="zoomResetBtn" class="btn" style="font-size: 11px;">Reset</button>
+      <button id="toggleLegendBtn" class="btn zoom-btn" title="Toggle legend panels">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="16" rx="2"/>
+          <circle cx="7" cy="9" r="1.3" fill="currentColor"/>
+          <line x1="11" y1="9" x2="18" y2="9"/>
+          <circle cx="7" cy="14" r="1.3" fill="currentColor"/>
+          <line x1="11" y1="14" x2="18" y2="14"/>
+        </svg>
+      </button>
       <button id="captureBtn" class="btn zoom-btn" title="Save screenshot">
         <svg width="14" height="14" viewBox="0 0 512 512" fill="currentColor">
           <path
@@ -371,7 +380,8 @@
 
   <!-- Bottom-right: Branding -->
   <div id="brandingPanel">
-    <span class="branding-title">Multilayer Viz</span>
+    <span class="branding-title">MultilayerViz</span>
+    <span class="branding-version">v0.9</span>
     <a href="https://github.com/Ecological-Complexity-Lab/multilayer_viz" target="_blank" rel="noopener"
       title="GitHub Repository" class="branding-link">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
@@ -510,9 +520,10 @@
         <label style="font-size:12px; display:flex; align-items:center; gap:6px; cursor:pointer;">
           <input type="checkbox" id="csvDirected"> Directed network
         </label>
-        <label style="font-size:12px; display:flex; align-items:center; gap:6px; cursor:pointer;">
-          <input type="checkbox" id="csvBipartite"> Bipartite network
-        </label>
+        <span style="font-size:11px; color:#6b7280; align-self:center;">
+          Bipartite layers must be declared via a <code>bipartite</code> column in the layers CSV
+          and a <code>node_type</code> column in the nodes CSV.
+        </span>
       </div>
 
       <!-- Info note (shown when layers/nodes are auto-derived) -->

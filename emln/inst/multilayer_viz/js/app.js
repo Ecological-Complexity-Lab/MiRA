@@ -15,6 +15,7 @@ import { Dashboard } from './dashboard.js';
 let model = null;
 let positions = null;
 let renderer = null;
+let committedSearchName = null;
 let colorMapper = new ColorMapper();
 let layout = new ForceLayout();
 
@@ -42,7 +43,6 @@ const csvLayersLabel  = document.getElementById('csvLayersLabel');
 const csvNodesFile    = document.getElementById('csvNodesFile');
 const csvNodesLabel   = document.getElementById('csvNodesLabel');
 const csvDirected     = document.getElementById('csvDirected');
-const csvBipartite    = document.getElementById('csvBipartite');
 const csvImportLoad   = document.getElementById('csvImportLoad');
 const csvImportCancel = document.getElementById('csvImportCancel');
 const csvImportError  = document.getElementById('csvImportError');
@@ -121,6 +121,7 @@ window.addEventListener('mouseup', () => {
 const showLabelsCheckbox = document.getElementById('showLabelsCheckbox');
 const transformNodesCheckbox = document.getElementById('transformNodesCheckbox');
 const showLayerNamesCheckbox = document.getElementById('showLayerNamesCheckbox');
+const networkModeBtn  = document.getElementById('networkModeBtn');
 const mapModeBtn      = document.getElementById('mapModeBtn');
 const layerViewBtn    = document.getElementById('layerViewBtn');
 const layerDrillPanel   = document.getElementById('layerDrillPanel');
@@ -149,11 +150,9 @@ const lvSizeMultLabel         = document.getElementById('lvSizeMultLabel');
 const lvSpacing               = document.getElementById('lvSpacing');
 const lvSpacingLabel          = document.getElementById('lvSpacingLabel');
 const LV_SECTIONS = ['sectionLayerViewCircles','sectionLayerViewEdges'];
-const DB_SECTIONS = ['sectionDashboard'];
+const DB_SECTIONS = [];
 const dashboardBtn       = document.getElementById('dashboardBtn');
 const dashboardContainer = document.getElementById('dashboardContainer');
-const dbSortSelect       = document.getElementById('dbSortSelect');
-const dbHighlightSelect  = document.getElementById('dbHighlightSelect');
 const dbBipartiteToggle  = document.getElementById('dbBipartiteToggle');
 const dbBipartiteRow     = document.getElementById('dbBipartiteRow');
 let   dashboard          = null;
@@ -208,6 +207,7 @@ function resizeCanvas() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     if (renderer) {
+        renderer.resizeKonvaOverlay(canvas.width, canvas.height);
         renderer.render();
     }
 }
@@ -369,40 +369,20 @@ function loadData(json) {
         // Pass bipartite info to layout engine
         layout.bipartiteInfo = model.bipartiteInfo;
 
-        // Check for bipartite layers
-        let hasExplicitBipartite = false;
-        let hasAutoDetected = false;
+        // Check for bipartite layers (always explicit now)
+        let hasAnyBipartite = false;
         for (const [, info] of model.bipartiteInfo) {
-            if (info.isBipartite) {
-                if (info.explicit) hasExplicitBipartite = true;
-                else hasAutoDetected = true;
-            }
+            if (info.isBipartite) { hasAnyBipartite = true; break; }
         }
-
-        // Decide whether to use bipartite layout
-        let useBipartiteLayout = hasExplicitBipartite; // always use for explicit
-
-        // If auto-detected (not explicit), prompt the user
-        if (hasAutoDetected && !hasExplicitBipartite) {
-            useBipartiteLayout = confirm(
-                'Some layers appear to have a bipartite structure.\n\n' +
-                'Would you like to use the bipartite layout?\n' +
-                '(Two rows: one set on top, one on bottom)'
-            );
-        } else if (hasAutoDetected && hasExplicitBipartite) {
-            // Some explicit, some auto — ask about the auto ones
-            useBipartiteLayout = confirm(
-                'Additional layers were auto-detected as bipartite.\n\n' +
-                'Use bipartite layout for all bipartite layers?'
-            );
-        }
-
-        // Show or hide the Bipartite layout option in the dropdown
-        const hasAnyBipartite = hasExplicitBipartite || hasAutoDetected;
+        const useBipartiteLayout = hasAnyBipartite;
         const bipartiteOption = layoutSelect.querySelector('option[value="bipartite"]');
         if (bipartiteOption) {
             bipartiteOption.style.display = hasAnyBipartite ? '' : 'none';
         }
+
+        // Show bipartite detail toggle in the Data section when relevant
+        dbBipartiteRow.style.display = hasAnyBipartite ? '' : 'none';
+        dbBipartiteToggle.checked = true;
 
         // Set layout type
         if (useBipartiteLayout) {
@@ -545,6 +525,7 @@ function toggleLayerView() {
     if (appMode === 'dashboard') { _exitDashboard(); appMode = 'network'; }
     appMode = 'layer';
     renderer.layerView = new LayerView(model, positions);
+    window._layerView = renderer.layerView;
     renderer.layerViewMode = true;
     layerViewBtn.classList.add('active');
     canvas.style.cursor = 'grab';
@@ -705,6 +686,7 @@ function _showDashboardSidebar() {
     NETWORK_SECTIONS.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
     LV_SECTIONS.forEach(id => { document.getElementById(id).style.display = 'none'; });
     DB_SECTIONS.forEach(id => { document.getElementById(id).style.display = ''; });
+    legendPanel.innerHTML = '';
 }
 
 function _hideDashboardSidebar() {
@@ -740,15 +722,6 @@ function toggleDashboard() {
     dashboardContainer.style.display = 'block';
     _showDashboardSidebar();
 
-    // Show bipartite toggle only when relevant
-    const hasBp = [...model.bipartiteInfo.values()].some(b => b.isBipartite);
-    dbBipartiteRow.style.display = hasBp ? '' : 'none';
-
-    // Reset sidebar controls
-    dbSortSelect.value      = 'participation';
-    dbHighlightSelect.value = 'nodes';
-    dbBipartiteToggle.checked = true;
-
     dashboard = new Dashboard(dashboardContainer, model, {
         onLayerClick: () => {
             _exitDashboard();
@@ -760,8 +733,14 @@ function toggleDashboard() {
 }
 
 dashboardBtn.addEventListener('click', toggleDashboard);
-dbSortSelect.addEventListener('change',      () => dashboard?.setSortOrder(dbSortSelect.value));
-dbHighlightSelect.addEventListener('change', () => dashboard?.setHighlightMetric(dbHighlightSelect.value));
+
+function goToNetworkMode() {
+    if (!model || appMode === 'network') return;
+    if (appMode === 'map')       toggleMapMode();
+    if (appMode === 'layer')     { _exitLayerView(); appMode = 'network'; renderer.render(); }
+    if (appMode === 'dashboard') { _exitDashboard(); appMode = 'network'; renderer.render(); }
+}
+networkModeBtn.addEventListener('click', goToNetworkMode);
 dbBipartiteToggle.addEventListener('change', () => dashboard?.setShowBipartite(dbBipartiteToggle.checked));
 
 function _syncLayerViewControls() {
@@ -799,6 +778,7 @@ function _exitLayerView() {
     if (lvRAF) { cancelAnimationFrame(lvRAF); lvRAF = null; }
     renderer.layerViewMode = false;
     renderer.layerView = null;
+    window._layerView = null;
     layerViewBtn.classList.remove('active');
     canvas.style.cursor = '';
     tooltip.classList.remove('visible');
@@ -1711,7 +1691,6 @@ csvUploadBtn.addEventListener('click', () => {
     csvLayersLabel.textContent = 'Choose file…';
     csvNodesLabel.textContent = 'Choose file…';
     csvDirected.checked = false;
-    csvBipartite.checked = false;
     csvImportLoad.disabled = true;
     csvImportLoad.style.opacity = '0.4';
     csvImportError.style.display = 'none';
@@ -1760,7 +1739,6 @@ csvImportLoad.addEventListener('click', () => {
     try {
         const { json, infoMessages, warnings } = csvToJson(_csvEdgeText, _csvLayersText, _csvNodesText, {
             directed: csvDirected.checked,
-            bipartite: csvBipartite.checked,
         });
         if (warnings.length) {
             csvImportWarn.textContent = '⚠ ' + warnings.join(' | ');
@@ -2145,11 +2123,12 @@ layerColorSelect.addEventListener('change', updateLayerColors);
 
 // ---- Zoom Controls ----
 zoomInBtn.addEventListener('click', () => {
-    if (appMode === 'map') {
-        bgMap.zoomIn(1);
+    if (appMode === 'map') { bgMap.zoomIn(1); return; }
+    if (appMode === 'layer' && renderer.layerView) {
+        renderer.layerView.viewScale *= 1.2;
+        renderer.render();
         return;
     }
-
     const cx = canvas.width / 2;
     const cy = canvas.height / 2;
     const factor = 1.2;
@@ -2160,11 +2139,12 @@ zoomInBtn.addEventListener('click', () => {
 });
 
 zoomOutBtn.addEventListener('click', () => {
-    if (appMode === 'map') {
-        bgMap.zoomOut(1);
+    if (appMode === 'map') { bgMap.zoomOut(1); return; }
+    if (appMode === 'layer' && renderer.layerView) {
+        renderer.layerView.viewScale /= 1.2;
+        renderer.render();
         return;
     }
-
     const cx = canvas.width / 2;
     const cy = canvas.height / 2;
     const factor = 1 / 1.2;
@@ -2718,6 +2698,14 @@ document.addEventListener('click', e => {
 });
 
 // ---- Screenshot Export ----
+const toggleLegendBtn = document.getElementById('toggleLegendBtn');
+let legendVisible = true;
+toggleLegendBtn.addEventListener('click', () => {
+    legendVisible = !legendVisible;
+    legendPanel.style.display = legendVisible ? 'flex' : 'none';
+    toggleLegendBtn.classList.toggle('active', !legendVisible);
+});
+
 const captureBtn = document.getElementById('captureBtn');
 const exportDialog = document.getElementById('exportDialog');
 const exportCancelBtn = document.getElementById('exportCancelBtn');
@@ -2849,6 +2837,18 @@ async function exportScreenshot(format) {
     // Network canvas (nodes, edges, layer planes)
     ctx.drawImage(srcCanvas, 0, 0, offscreen.width, offscreen.height);
 
+    // In map mode: composite the map markers overlay on top of the network
+    if (appMode === 'map') {
+        try {
+            const markersCanvas = await html2canvas(mapMarkersOverlay, {
+                scale, useCORS: true, allowTaint: true,
+                backgroundColor: null, logging: false,
+                width: w, height: h, x: 0, y: 0,
+            });
+            ctx.drawImage(markersCanvas, 0, 0, offscreen.width, offscreen.height);
+        } catch (e) { console.warn('Map markers capture failed:', e); }
+    }
+
     // Restore grid
     renderer.showGrid = prevShowGrid;
     renderer.render();
@@ -2886,8 +2886,8 @@ async function _saveCanvas(offscreen, filename, mimeType, quality) {
 async function _exportSVG() {
     // Try multiple CDN sources for canvas2svg
     const C2S_URLS = [
-        'https://unpkg.com/canvas2svg@1.0.15/canvas2svg.js',
-        'https://cdn.jsdelivr.net/npm/canvas2svg@1.0.15/canvas2svg.js',
+        'https://cdn.jsdelivr.net/npm/canvas2svg@1.0.16/canvas2svg.js',
+        'https://unpkg.com/canvas2svg@1.0.16/canvas2svg.js',
     ];
     let loaded = false;
     for (const url of C2S_URLS) {
@@ -3055,6 +3055,18 @@ async function _exportPDF() {
 
         ctx.drawImage(srcCanvas, 0, 0, offscreen.width, offscreen.height);
 
+        // In map mode: composite the map markers overlay on top of the network
+        if (appMode === 'map') {
+            try {
+                const markersCanvas = await html2canvas(mapMarkersOverlay, {
+                    scale, useCORS: true, allowTaint: true,
+                    backgroundColor: null, logging: false,
+                    width: w, height: h, x: 0, y: 0,
+                });
+                ctx.drawImage(markersCanvas, 0, 0, offscreen.width, offscreen.height);
+            } catch (e) { console.warn('Map markers capture failed (PDF):', e); }
+        }
+
         renderer.showGrid = prevShowGrid;
         renderer.render();
 
@@ -3106,7 +3118,7 @@ const nodeSearchInput = document.getElementById('nodeSearchInput');
 const nodeSearchResults = document.getElementById('nodeSearchResults');
 const nodeSearchClearBtn = document.getElementById('nodeSearchClearBtn');
 
-let committedSearchName = null; // the last clicked/confirmed node name
+// committedSearchName declared at top of file with other state variables
 
 function closeSearchDropdown() {
     nodeSearchResults.style.display = 'none';
