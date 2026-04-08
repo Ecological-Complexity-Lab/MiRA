@@ -378,9 +378,8 @@ export class Renderer {
 
         // Focus set: 1-hop ego network of the selected node across all layers.
         // Built once per render; null when nothing is selected.
-        this._focusSet = this.selectedNode
-            ? this._computeFocusSet(this.selectedNode.nodeName)
-            : null;
+        const _focusName = this.selectedNode ? this.selectedNode.nodeName : this.searchedNodeName;
+        this._focusSet = _focusName ? this._computeFocusSet(_focusName) : null;
 
         const numLayers = this.model.layers.length;
 
@@ -548,7 +547,7 @@ export class Renderer {
             }
 
             const isHighlighted = this._isLinkHighlighted(link);
-            const _fn = this.selectedNode ? this.selectedNode.nodeName : null;
+            const _fn = this.selectedNode ? this.selectedNode.nodeName : this.searchedNodeName;
             const isFaded = !!this._focusSet && !!_fn &&
                 link.node_from !== _fn && link.node_to !== _fn;
 
@@ -586,7 +585,7 @@ export class Renderer {
             }
 
             const isHighlighted = this._isLinkHighlighted(link);
-            const _fn = this.selectedNode ? this.selectedNode.nodeName : null;
+            const _fn = this.selectedNode ? this.selectedNode.nodeName : this.searchedNodeName;
             const isFaded = !!this._focusSet && !!_fn &&
                 link.node_from !== _fn && link.node_to !== _fn;
 

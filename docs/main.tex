@@ -1,0 +1,271 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{underscore} % Allow underscores in \texttt{}
+\usepackage{natbib} % For \citep and other citation commands
+
+\usepackage{url} 
+\usepackage{natbib}  % for author-year citations
+\usepackage{hyperref} % makes citations clickable
+
+% Page layout
+\usepackage{geometry}
+\geometry{a4paper,left=20mm,right=20mm,top=25mm,bottom=25mm}
+\setlength{\marginparwidth}{35mm} % For the comment bubbles
+\usepackage{lineno}
+
+%\usepackage{nccmath}
+%\setlength{\parindent}{0em}
+%\setlength{\parskip}{4pt}
+
+ % Sections
+\usepackage{sectsty}
+\sectionfont{\fontsize{12}{12}\selectfont}
+\subsectionfont{\fontsize{11}{11}\selectfont}
+
+
+% Paragraph and spacing
+\usepackage{setspace}
+    \setlength{\parindent}{0em}
+    \setlength{\parskip}{4pt}
+\usepackage{titlesec}
+    \titlespacing{\section}{0pt}{\parskip}{2pt}
+    \titlespacing{\subsection}{0pt}{\parskip}{2pt}
+    \titlespacing{\subsubsection}{0pt}{\parskip}{2pt}
+    \titlespacing{\paragraph}{0pt}{\parskip}{6pt}
+
+
+% Fonts
+\usepackage[utf8]{inputenc}
+\usepackage{csquotes}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{enumitem}
+\usepackage[normalem]{ulem}
+
+% Figures and Tables
+\usepackage{placeins}
+\usepackage{tikz}
+\usepackage{multirow}
+\usepackage{booktabs} % For \toprule, \midrule
+\usepackage[flushleft]{threeparttable} % for tables with noted
+\usepackage{graphicx}
+\usepackage[]{caption}
+    \captionsetup{font={sf}, labelfont=bf, labelsep=colon}
+    \renewcommand{\figurename}{Fig.} 
+    \setlength{\textfloatsep}{10pt} % Control space between figure caption and text
+    \captionsetup[table]{singlelinecheck=false}
+\usepackage{wrapfig}
+\usepackage{floatrow}
+    \floatsetup[table]{capposition=top}
+
+% Colors
+\usepackage{xcolor}
+\newcommand\bcl[2]{\textcolor{#1}{{\fontseries{b}\selectfont #2}}}
+\usepackage{hyperref} % makes links
+\hypersetup{
+	colorlinks,
+	citecolor=blue,
+	filecolor=blue,
+	linkcolor=blue,
+	urlcolor=blue
+}
+\definecolor{TitlePurple}{RGB}{102, 102, 255}
+\definecolor{TitleBlue}{RGB}{4, 4, 204}
+\definecolor{AssignColor}{RGB}{212, 4, 49}
+\definecolor{BoxBack}{RGB}{222, 222, 222}
+\definecolor{BoxTitle}{RGB}{204, 2, 2}
+
+% Bibliography
+\usepackage[backend=bibtex,style=nature,natbib=true,url=false,date=year,doi=true,isbn=false,eprint=false]{biblatex}
+\AtEveryBibitem{\clearlist{language}}
+\renewcommand*{\multicitedelim}{\addcomma}
+\addbibresource{references.bib}
+
+
+
+%%%ORCID
+% Make Orcid icon
+\definecolor{lime}{HTML}{A6CE39}
+\DeclareRobustCommand{\orcidicon}{%
+	\begin{tikzpicture}
+	\draw[lime, fill=lime] (0,0) 
+	circle [radius=0.16] 
+	node[white] {{\fontfamily{qag}\selectfont \tiny ID}};
+	\draw[white, fill=white] (-0.0625,0.095) 
+	circle [radius=0.007];
+	\end{tikzpicture}
+	\hspace{-2mm}
+}
+
+\foreach \x in {A, ..., Z}{%
+	\expandafter\xdef\csname orcid\x\endcsname{\noexpand\href{https://orcid.org/\csname orcidauthor\x\endcsname}{\noexpand\orcidicon}}
+}
+
+% Define the ORCID iD command for each author separately. Here done only for shai.
+\newcommand{\orcidauthorA}{0000-0003-0430-5568} % Shai
+
+\usepackage[affil-it]{authblk}
+
+\title{multilayerviz}
+
+\author[1]{Yuval}
+\author[1]{Shir}
+\author[1]{Shai Pilosof\orcidA{}}
+\affil[1]{Department of Life Sciences, Ben-Gurion University of the Negev, Beer-Sheva, Israel}
+
+
+\date{March 2026}
+
+
+\usepackage{newfloat}
+\usepackage{subcaption}
+
+
+
+
+\begin{document}
+
+\maketitle
+% General note by Yuval Bloch
+% First, note that I am not a very experienced writer, so please take these comments with a grain of salt.
+% That said, I think that in Sections 2 and 3 you elaborate too much on specific features, which obscures the bigger picture of why the work is useful.
+% I also think the paper would benefit from including more figures.
+% I did not focus on typos or grammar, but I believe there are some that should be addressed.
+\section{Introduction}
+
+Network theory has become one of the most powerful frameworks for studying ecological complexity \cite{Poisot2016, Proulx2005-af}. In `classical' monolayer networks, individuals, species or locations (nodes), are connected with edges which represent biological interactions such as predation, pollination, or dispersal. However, ecological communities do not exist as single, isolated networks. Species interact with different partners across space and time, and the same organisms can participate in multiple interaction types such as pollination, seed dispersal, and herbivory \cite{Pilosof2017-gq}. The multilayer network framework, which encodes these multiple dimensions of complexity within a single mathematical object, provides a principled approach to address this limitation \cite{Kivela2014-ix, Pilosof2017-gq}. Dedicated analytical tools have been developed to help ecologists work with ecological multilayer networks. In particular, the EMLN R package provides standardised workflows for importing, storing, and converting multilayer data structures \cite{Frydman2023-qe}. However, the analytical workflow is only part of what ecologists need. Visualisation is an essential step in ecological network research, both for data exploration and for communicating results \cite{Pocock2016-jl}. Effective network visualisations rely on the human visual system's ability to detect patterns, identify outliers, and assimilate information at multiple levels of detail simultaneously \cite{Pocock2016-jl}, requiring a balance between clarity and sufficient complexity to support interpretation. 
+
+Visualizing monolayer networks is well-established across ecology and other fields, supported by a mature ecosystem of tools. In R, packages such as \texttt{igraph} \cite{Csardi2006} and \texttt{ggraph} offer flexible, programmatic control over node size, color, and shape, link width and color, and a range of layout algorithms including force-directed and bipartite layouts. Domain-specific packages such as \texttt{bipartite} \cite{Dormann2008} provide visualization tailored to ecological interaction networks. Standalone applications such as Gephi and Cytoscape have interactive, point-and-click interfaces suitable for users without programming expertise. Visualizing multilayer networks, however, poses fundamentally greater challenges. A central difficulty is that a multilayer network must simultaneously convey multiple structural features: within-layer topology, interlayer connectivity, node identity across layers, and — in spatially explicit datasets — geographic context. Unlike monolayer visualization, where a single canvas suffices, multilayer visualization must represent layers as distinct but interconnected objects, requiring the viewer to track both local structure within layers and global patterns across them \cite{McGee2019-yr}. 
+
+Existing multilayer visualisation tools address some of these needs but leave important gaps for ecologists. MuxViz \cite{De-Domenico2015-jj}  is the most established tool for multilayer network analysis and offers geographic embedding and annular visualisations of layer-level metrics. However, it requires programming knowledge in R, does not support bipartite network structures, and does not provide an interactive browser-based interface. Arena3Dweb \cite{Karatzas2021-yr, Kokoli2023-fu} is the most technically advanced web-based option, offering fully interactive 3D multilayer visualisation with force-directed layouts, node clustering, and an API for external integration. However, it was designed for the biomedical domain, and critical ecological use cases fall outside its scope. For instance, it does not support bipartite network structures, which are common in ecology, encompassing pollination, seed dispersal, and host–parasite systems. It also does not include a spatially explicit map mode in which layers are positioned at their geographic coordinates.
+
+Here, we present MultilayerViz, a browser-based, dependency-free web application. We followed guidelines for multilayer network visualization \cite{McGee2019-yr} but designed it with ecology in mind. Full technical documentation is maintained alongside the software and updated continuously, in a way that a static journal article cannot. This paper therefore focuses on the conceptual motivation and a structured overview of the tool's four visualization modes: (1) Network Mode, a 3D stacked-layer view for exploring within-layer topology and interlayer connectivity; (2) Map Mode, which positions geographic layers on an interactive satellite map; (3) Layer View, a meta-graph mode in which layers themselves become the primary objects in a force-directed layout (e.g., REF); and (4) Dashboard Mode, which provides a suite of descriptive statistics panels. MultilayerViz is tightly integrated with the EMLN R package \cite{Frydman2023-qe}; following a recent update to EMLN, objects of class \texttt{multilayer} can be directly visualized with a single line of code or exported to a JSON file that MultilayerViz can read. Network data can also be uploaded in CSV or JSON formats. 
+
+We emphasize that the goal of MultilayerViz is visualisation rather than analysis. Implementing analytical methods for multilayer networks is technically demanding, requires dedicated packages [REF], and would create an ongoing maintenance burden as algorithms evolve. Instead, analyses (e.g., centrality \cite{MuxViz}, or community detection \cite{Farage2021-lg}) should be performed upstream using dedicated tools, and their results incorporated as node, layer, or link attributes prior to visualization. MultilayerViz will then render these attributes visually, for example by scaling node size by centrality or coloring nodes by module membership.
+
+\section{Overview and Implementation}
+We developed MultilayerViz as a browser-based web application for interactive visualization of ecological multilayer networks. It requires no installation and runs directly in any web browser, making it immediately accessible. We implemented the tool entirely in JavaScript, using the Three.js library for 3D rendering and the Leaflet library for geographic map display. We initially developed the codebase with the assistance of Claude Code (an AI programming tool), and subsequently performed manual revision, debugging, and refinement to ensure correctness and maintainability. MultilayerViz is freely accessible at \url{https://ecological-complexity-lab.github.io/multilayer\_viz/} and can be used directly in any browser without installation.
+
+\section{Importing network data}
+
+Users can import data in three ways: (1) via the EMLN R package \cite{Frydman2023-qe}, (2) via CSV files, or (3) via a single JSON file. We recommend using EMLN, as multilayer network data are inherently complex, and EMLN's standardised data structure helps detect formatting errors and inconsistencies before visualisation. Once data are correctly structured in EMLN, MultilayerViz can visualize them directly with a single line of code, eliminating the need to manually prepare any input files. For users who prefer to work independently of EMLN, JSON and CSV uploads are fully supported (see below). MultilayerViz also includes a set of built-in example datasets for immediate exploration. Importing data and the example data sets are accessible from the Data panel, which appears in the top-left control panel regardless of the active visualization mode.
+
+\subsection{Importing data via EMLN}
+The tightest integration with MultilayerViz is through the EMLN R package \cite{Frydman2023-qe}. Once a multilayer network has been built and validated using EMLN's \texttt{create_multilayer_network()} function, it can be passed directly to \texttt{plot_multilayer()}, which converts the object to the required format and opens MultilayerViz in the default web browser automatically:
+
+\begin{verbatim}
+net <- load_emln(14)
+plot_multilayer(net, bipartite = TRUE)
+\end{verbatim}
+
+This is possible because the MultilayerViz application is bundled directly within the EMLN package, so no separate installation or configuration is required. Alternatively, \texttt{multilayer_to_json()} exports the network to a JSON file that can be loaded manually into MultilayerViz. In both cases, network properties such as whether the network is directed or bipartite can be specified explicitly (see \texttt{?plot_multilayer()}). Any node, layer, or link attributes present in the EMLN object are automatically carried through to the visualizer, where they can be used to scale node size or assign node color. Such attributes can include analytical results — such as module assignments or centrality scores — passed from upstream analyses.
+
+\subsection{Importing data via CSV or JSON}
+
+Network data can be loaded directly from CSV files using the "Load User Data (CSV)" option in the Data panel. This format is fully compatible with the output of the EMLN function \texttt{create\_multilayer\_network()}, allowing seamless integration between data preparation and visualization. Data are imported through a modal interface that accepts three types of input files:
+
+\textbf{Extended Edge List} - required and contains all network interactions, including both intralayer and interlayer links, specified by the columns \texttt{layer\_from}, \texttt{node\_from}, \texttt{layer\_to}, \texttt{node\_to}, and an optional \texttt{weight}. 
+
+\textbf{Layer Attributes} -  includes metadata such as \texttt{layer\_id}, \texttt{layer\_name}, and optionally geographic coordinates (\texttt{latitude}, \texttt{longitude}); if this file is not supplied, layer information is automatically derived from the edge list. 
+
+\textbf{Node Attributes} - may include node-level information such as \texttt{node\_name} and \texttt{group} (or \texttt{node\_type/type}) and is used for node classification and coloring; if omitted, nodes are automatically extracted from the edge list.  
+
+Network properties, such as whether the network is directed or bipartite, are specified via check boxes prior to loading.
+
+The JSON format encodes the same network information in a single structured file. This format is produced automatically by \texttt{multilayer_to_json()} and is therefore primarily relevant for users who prefer to export from EMLN manually rather than use \texttt{plot_multilayer()} directly, or for users building their own pipelines outside of EMLN. For the exact JSON structure, users should consult the online documentation, which is maintained alongside the software and updated as the format evolves.
+
+\subsection{Built-in example datasets}
+
+The tool comes with seven built-in datasets that can be loaded instantly via the "Load Example Data" button, without any file preparation Table~\ref{tab:datasets}.
+
+\begin{table}[h]
+\centering
+\caption{Built-in datasets included in the Multilayer Viz.}
+\label{tab:datasets}
+\begin{tabular}{llcp{8cm}}
+\hline
+\textbf{Dataset} & \textbf{Network type} & \textbf{Layers} & \textbf{Key features demonstrated} \\
+\hline
+Directed/Weighted   & Directed unipartite   & 3  & Directed edges, weighted links, basic navigation \\
+Large ER            & Undirected unipartite & 3  & High node count, random topology \\
+Large BA            & Undirected unipartite & 3  & Scale-free topology, 1,000 nodes per layer \\
+Simple Bipartite    & Undirected bipartite  & 2  & Bipartite two-row layout, Set A/B colouring \\
+Bartomeus           & Undirected bipartite  & 12  & Real pollination network, all four modes \\
+Synthetic Bipartite & Undirected bipartite  & 10 & Layer View, clustered structure, isolated layer \\
+Synthetic Unipartite & Directed unipartite  & 10 & Layer View, overlapping groups, bridging layer \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Visualization Modes}
+
+All four visualization modes share a common interface. The left-side control panel updates dynamically depending on the active mode and the loaded network, showing only relevant options. The bottom-left toolbar provides access to mode switching, zoom controls, a help button linking to the online manual, and an export function for saving the current view as an image. Full details on all interface controls are provided in the online documentation.
+
+\subsection{Network Mode (stacked-layer view)}
+
+Network Mode is the default visualization mode of MultilayerViz and provides an interactive 3D stacked-layer representation of the full multilayer network in a single view. Each layer is rendered as a distinct plane showing its internal topology (intralayer links), while interlayer links are displayed as dashed edges connecting nodes across planes. Users can navigate the network freely by rotating and panning the 3D space, zooming in and out, and repositioning individual layer planes by dragging. 
+
+The left-side menus enable controlling the visualisation of layers, nodes, and links. The options in these menus are dynamic and adjust to the network: only user-defined attributes are listed as coloring or sizing options, and bipartite-specific options are only available for bipartite networks. A dynamic legend in the bottom-right corner of the canvas updates automatically to reflect the active color and size mappings, and can be repositioned or collapsed as needed.
+
+\paragraph{Layers.} Layers can be stacked in two orientations: horizontal, in which layers recede along the depth axis, or vertical, in which layers are arranged top to bottom. Layer spacing is adjustable, allowing users to compress layers for a global overview or spread them apart to reduce visual clutter.
+The 2D layout of nodes within each layer plane can be computed using several algorithms: Fruchterman-Reingold and Kamada-Kawai force-directed algorithms, which draw ecologically connected species into proximity; circle, grid, or random layouts for schematic representations; and a bipartite two-row layout, which places the two node sets on parallel horizontal rows. The bipartite layout additionally supports a nested-sorting option to emphasise a nested interaction structure. 
+
+\paragraph{Nodes.} Node labels can be displayed on hover or permanently. Nodes can be colored according to network properties such as degree, strength or user-provided node attributes (e.g., body mass, taxonomy). In bipartite networks, the two node sets can be colored independently, providing a clear visual distinction between them. Node size can be set uniformly or scaled by degree, or user-provided network properties (e.g., abundance). Hovering over any node displays a tooltip with its name and attributes, and clicking a node isolates its neighborhood across all layers by dimming unconnected elements, facilitating the tracking of individual species roles throughout the multilayer structure. Clicking a node also opens a panel with information regarding the node and its connections within and across layers.
+
+\paragraph{Links} Interlayer links are rendered as dashed lines and can be toggled on or off independently of intralayer links. Both intralayer and interlayer links can be colored by type or set to inherit the color of their source layer. Links can also be colored by user attributes.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\linewidth]{fig.1.pdf}
+    \caption{need to add caption}
+    \label{fig:myfigure}
+\end{figure}
+
+\subsection{Map Mode}
+
+A defining characteristic of many ecological datasets is that network layers correspond to distinct geographic locations, such as sampling sites. In such spatial multilayer networks, the position of layers in geographic space is itself ecologically meaningful: nearby sites may share species or interaction partners, while distant sites may harbour structurally distinct communities shaped by local environmental conditions \cite{Poisot2012-hz, Pilosof2017-gq}. Visualizing these networks requires a representation that simultaneously conveys geographic context and network structure. Map Mode is designed precisely for this purpose.
+
+Map Mode is available when the loaded dataset includes latitude and longitude coordinates in the layer attributes table. When these coordinates are present, activating Map Mode replaces the 3D canvas with an interactive satellite world map. Each layer is represented on the map as a circular marker positioned at its geographic coordinates, providing an overview of the spatial distribution of sampling sites across the landscape or study region. Layers that lack coordinates are excluded from the map view. A map opacity slider allows users to fade or hide the satellite imagery, which is useful when popped-out network planes would otherwise overlap with the map background. The same Layers, Nodes, and Links controls available in Network Mode remain accessible in Map Mode.
+
+Map Mode also enables users to inspect individual layers in detail. Clicking a blue circle marker pops the corresponding layer out of the geographic canvas and into a floating 3D network plane positioned adjacent to the map. Multiple layers can be popped out simultaneously, enabling side-by-side visual comparison of network structure across sites. Each popped-out layer retains its full node and edge configuration, and is styled according to the same layout and color settings active in Network Mode. A close button attached to each floating layer returns it to its map marker position. This design preserves the geographic reference frame throughout the comparison, so that the user can simultaneously see where two sites are located and how their local networks differ.
+
+\subsection{Layer View}
+
+Layer View is a novel mode that abstracts away individual nodes and renders the layers themselves as the primary visual objects. Each layer is displayed as an interactive bubble, with a micro-graph preview of its internal network topology rendered inside — showing node positions and edges at reduced opacity, giving an immediate visual sense of each layer's internal structure. Connections between bubbles encode two distinct inter-layer relationships: blue lines represent interlayer links, with line thickness proportional to the number of such links, and gray lines represent shared physical nodes, with thickness proportional to the fraction of shared nodes. Bubble size and color can be set according to the number of nodes, number of edges, edge density, or kept uniform. The bubbles are positioned on the canvas using a force-directed algorithm, meaning that layers which share many species or have strong coupling links between them are drawn close together, while layers with little in common are pushed further apart. Layers that are entirely disconnected from the rest of the network (sharing no nodes and no interlayer links with any other layers) are placed near the main cluster but remain visually separated from it, making it easy to spot isolated components in the multilayer structure. Users can zoom, pan, and drag individual bubbles to reposition them.
+
+Clicking a bubble selects it and opens a Layer Stats panel containing identity information (layer name, interaction type, directed or undirected), size metrics (node count with set-type breakdown for bipartite layers, edge count), and connectivity metrics (edge density, mean degree, the node with the highest degree, and a degree distribution histogram). Cross-layer connectivity is also summarized, including the total number of interlayer links entering or leaving the layer and the number of distinct nodes that also appear in at least one other layer. 
+
+An additional feature is a pairwise comparison panel, activated by holding Cmd (Mac) or Ctrl (Windows) and clicking a second bubble while one is already selected. This opens a side-by-side comparison showing, for both layers simultaneously, their node and edge counts, the number and percentage of shared nodes, the Jaccard similarity index for node composition (a metric widely used to quantify compositional and link similarity between communities \cite{Poisot2012-hz}), the number of shared edges, their density ratio, their size ratio, and an overlaid degree distribution histogram in which the two layers' distributions are rendered together to reveal differences in connectivity structure.
+
+\subsection{Dashboard Mode (Statistical overview)}
+
+The three visualization modes described above are primarily graphic tools, designed to reveal structural patterns through interactive visual exploration. Dashboard Mode complements these with a set of descriptive statistical panels that provide a systematic numerical overview of the multilayer network. It is important to emphasise that Dashboard Mode is not an analysis tool: it does not perform statistical inference, hypothesis testing, or community detection. Its purpose is to characterize and show the basic structural properties of the network and its layers in a form that supports interpretation and guides further exploration.
+
+Activating Dashboard Mode replaces the network canvas with a series of collapsible panels arranged vertically. Each panel addresses a distinct aspect of multilayer network structure. The top of the Dashboard displays a row of headline summary statistics: total number of unique physical nodes,  total number of layers,  total number of intralayer links, total number of interlayer links, and the mean edge density averaged across all layers. These values provide a sense of the overall scale and connectivity of the network before inspecting individual layers. Below these, a set of per-layer bar charts shows, for each layer simultaneously, the node count, the intralayer link count, and the edge density. For bipartite networks, the node count chart is rendered as a stacked bar divided by Set A and Set B, making it easy to assess how the balance between the two groups varies across layers.
+
+The Node $\times$ Layer Presence Matrix displays which physical nodes appear in which layers as a heatmap, with filled cells indicating presence. This panel provides a compact view of node turnover across the multilayer structure — a key feature of ecological networks \cite{Pilosof2017-gq}, where species do not always appear in every layer and the pattern of presences and absences carries ecological information about phenology, habitat selectivity, or sampling completeness \cite{Poisot2012-hz}. The matrix can be oriented with layers as rows or nodes as rows, and nodes can be sorted alphabetically or by their participation count, so that generalist species appearing in many layers rise to the top. For bipartite networks, Set A and Set B nodes are separated into distinct row groups and color-coded accordingly.
+
+The Layer Similarity section displays two Jaccard heatmaps in which both rows and columns represent layers, and each cell encodes the pairwise similarity between two layers. The first heatmap is based on node identity, providing a view of compositional similarity across the multilayer network. In bipartite networks, this matrix is split into two separate heatmaps,  for Set A and Set B nodes. The second heatmap is based on link identity, computing the Jaccard overlap of interaction pairs across layers. Together, these matrices provide a quick overview of layer similarity across the entire multilayer network, revealing both compositional and interaction-level patterns simultaneously..
+
+The remaining panels show histograms of the degree distribution for the entire multilayer network. In bipartite networks, separate histograms are shown for Set A and Set B. A node participation bar chart ranks species by the number of layers in which they appear, highlighting the most widespread generalist nodes in the multilayer structure. For bipartite networks only, a set-size ratio chart shows the ratio of Set A to Set B nodes within each layer, revealing whether the balance between the two groups remains consistent; for example, if the ratio of plants to pollinators remains consistent across seasons or sampling sites.
+
+
+\section{Use cases with built-in examples}
+
+
+\section{Conclusion}
+MultilayerViz addresses the lack of accessible tools for visualising multilayer networks in ecology by offering an interactive, browser-based platform. Although designed with ecology in mind, the tool is domain-agnostic: nodes and links carry no discipline-specific interpretation, and the visualization framework applies equally to multilayer networks in any field. It can support researchers during exploratory analysis, aid in teaching multilayer network concepts through hands-on interactive exploration, and provide an intuitive way to explain complex ecological structures to broader audiences. 
+
+The widespread adoption of network approaches in ecology has been strongly facilitated by the availability of accessible software for analysis and visualization \cite{[REFS: bipartite and igraph]}. Multilayer networks represent a natural extension of this framework: virtually all ecological systems are multilayer in nature, even when interlayer links are not explicitly modelled, and capturing this structure provides a richer and more realistic representation of ecological complexity. Dedicated packages for multilayer network analysis \cite{De-Domenico2015-jj, Farage2021-lg,Frydman2023-qe} have begun to facilitate the adoption of this framework, but visualization tools have lagged behind, in part because they are considerably more complex to develop. MultilayerViz addresses this gap directly: by allowing users to visualize their multilayer data immediately and interactively, it lowers the barrier to entry for multilayer approaches across ecological systems and research contexts.
+
+This paper presents the core features of MultilayerViz at the time of writing. The tool will continue to evolve in response to user feedback and community needs, as we have done with other software developed by our group, including EMLN \cite{Frydman2023-qe} and infomapecology \cite{Farage2021-lg}. New visualization features and additional layout options are among the directions we anticipate. Users are encouraged to report issues, suggest features, and contribute through the project's GitHub repository.
+
+\section*{Code Availability}
+MultilayerViz is open-source and freely accessible at \url{https://ecological-complexity-lab.github.io/multilayer\_viz/}. The source code, full technical documentation, and installation instructions for local deployment are available at \url{https://github.com/Ecological-Complexity-Lab/multilayer\_viz}. The EMLN R package, including the \texttt{plot_multilayer()} and \texttt{multilayer_to_json()} functions described in this paper, is available at \url{https://github.com/Ecological-Complexity-Lab/emln}.
+
+\printbibliography
+
+\end{document}
+
+
+
+

@@ -16,6 +16,7 @@ let model = null;
 let positions = null;
 let renderer = null;
 let committedSearchName = null;
+let _nodeSelectedBySearch = false;
 let colorMapper = new ColorMapper();
 let layout = new ForceLayout();
 
@@ -325,6 +326,7 @@ function resetVisualizationOptions() {
     renderer.hoveredLink = null;
     renderer.searchedNodeName = null;
     committedSearchName = null;
+    _nodeSelectedBySearch = false;
     if (nodeSearchInput) nodeSearchInput.value = '';
     if (nodeSearchResults) nodeSearchResults.innerHTML = '';
 
@@ -3131,18 +3133,30 @@ function clearNodeSearch() {
     closeSearchDropdown();
     if (renderer) {
         renderer.searchedNodeName = null;
+        if (_nodeSelectedBySearch) {
+            renderer.selectedNode = null;
+            hideNodeInfo();
+        }
         renderer.render();
     }
+    _nodeSelectedBySearch = false;
 }
 
 function selectSearchNode(name) {
     committedSearchName = name;
     nodeSearchInput.value = name;
     closeSearchDropdown();
-    if (renderer) {
-        renderer.searchedNodeName = name;
-        renderer.render();
+    if (!renderer || !model) return;
+    // Find first layer this node appears in for the info panel
+    let firstLayer = null;
+    for (const [layerName, nodeSet] of model.nodesPerLayer) {
+        if (nodeSet.has(name)) { firstLayer = layerName; break; }
     }
+    renderer.searchedNodeName = null;
+    renderer.selectedNode = firstLayer ? { layerName: firstLayer, nodeName: name } : null;
+    _nodeSelectedBySearch = true;
+    if (firstLayer) showNodeInfo({ layerName: firstLayer, nodeName: name });
+    renderer.render();
 }
 
 nodeSearchInput.addEventListener('input', () => {
