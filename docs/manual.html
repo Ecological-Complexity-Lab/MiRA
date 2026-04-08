@@ -219,6 +219,11 @@
   <a href="#legend" class="l1">Dynamic Legend</a>
   <a href="#toolbar" class="l1">Bottom-Left Toolbar</a>
   <a href="#interactions" class="l1">Advanced Interactions</a>
+
+  <div class="toc-sep"></div>
+
+  <a href="#data-format" class="l1">Data Format (JSON)</a>
+  <a href="#examples" class="l1">Example Datasets</a>
 </nav>
 
 <!-- ══ Content ══════════════════════════════════════════════════════════ -->
@@ -360,9 +365,9 @@
     <li><span class="key">Load User Data (CSV)</span> — load directly from <code>emln</code> CSV output. A modal dialog accepts:
       <ul>
         <li><em>Extended Edge List</em> <strong>(required)</strong> — columns <code>layer_from</code>, <code>node_from</code>, <code>layer_to</code>, <code>node_to</code>, <code>weight</code> (optional). Both intralayer and interlayer links go here.</li>
-        <li><em>Layer Attributes</em> (optional) — <code>layer_id</code>, <code>layer_name</code>, <code>latitude</code>, <code>longitude</code>. Auto-derived if omitted.</li>
-        <li><em>Node Attributes</em> (optional) — <code>node_name</code>, <code>group</code> (or <code>node_type</code>/<code>type</code>). Auto-derived if omitted.</li>
-        <li>Directed / Bipartite checkboxes set network type before loading.</li>
+        <li><em>Layer Attributes</em> (optional) — <code>layer_id</code>, <code>layer_name</code>, <code>latitude</code>, <code>longitude</code>, and <code>bipartite</code> (TRUE/FALSE per layer — required to declare bipartite layers; auto-detection is not supported). Auto-derived if omitted.</li>
+        <li><em>Node Attributes</em> (optional) — <code>node_name</code>, plus <code>node_type</code> (required when any layer is marked bipartite — must contain exactly two distinct values). Auto-derived if omitted.</li>
+        <li><strong>Directed</strong> checkbox sets network type before loading. Bipartite is declared per layer via the <code>bipartite</code> column in the layers file.</li>
         <li>Comma, tab, and semicolon delimiters are all auto-detected.</li>
       </ul>
     </li>
@@ -415,6 +420,90 @@
     <li><span class="key">Map Mode (map icon)</span> — toggle geographic Map Mode (only shown when the dataset has coordinates).</li>
     <li><span class="key">Interaction Hints</span> — quick-reference cheatsheet for mouse bindings.</li>
   </ul>
+
+  <hr>
+
+  <!-- ── DATA FORMAT ───────────────────────────────────────────── -->
+  <h2 class="sec mode-misc" id="data-format">📄 Data Format (JSON)</h2>
+  <p>To load your own data without using the <code>emln</code> R package, prepare a <code>.json</code> file with the structure below and use <strong>Load User Data (JSON)</strong>.</p>
+
+  <div class="info-box">The key <code>links</code> in user-facing JSON is automatically remapped to <code>extended</code> internally — either name is accepted.</div>
+
+  <pre style="background:#f3f4f6;border:1px solid #e5e7eb;border-radius:6px;padding:16px;font-size:12px;overflow-x:auto;line-height:1.6"><code style="background:none;border:none;padding:0;color:#1f2937">{
+  "directed": false,
+  "layers": [
+    { "layer_id": 1, "layer_name": "Forest", "latitude": 42.3, "longitude": 3.1, "bipartite": true }
+  ],
+  "nodes": [
+    { "node_id": "sp_1", "node_name": "Bee", "node_type": "pollinator" }
+  ],
+  "links": [
+    { "layer_from": "Forest", "node_from": "Bee", "layer_to": "Forest", "node_to": "Flower", "weight": 1.5 }
+  ],
+  "state_nodes": [
+    { "layer_name": "Forest", "node_name": "Bee" }
+  ]
+}</code></pre>
+
+  <h3>Global fields</h3>
+  <ul>
+    <li><code>directed</code> <em>(Boolean)</em> — whether edges are directed (renders arrowheads). Default: <code>false</code>.</li>
+  </ul>
+
+  <h3><code>layers</code> array</h3>
+  <ul>
+    <li><code>layer_id</code> — unique identifier.</li>
+    <li><code>layer_name</code> — display name.</li>
+    <li><code>latitude</code> / <code>longitude</code> <em>(optional)</em> — unlocks Map Mode.</li>
+    <li><code>bipartite</code> <em>(optional, Boolean)</em> — set <code>true</code> to mark this layer as bipartite. Requires nodes to carry a <code>node_type</code> attribute with exactly two distinct values. <strong>Bipartite is never auto-detected.</strong></li>
+  </ul>
+
+  <h3><code>nodes</code> array</h3>
+  <ul>
+    <li><code>node_id</code> — unique identifier.</li>
+    <li><code>node_name</code> — display label.</li>
+    <li><code>node_type</code> <em>(required for bipartite layers)</em> — exactly two distinct values across all nodes; determines Set A vs. Set B.</li>
+    <li>Any extra columns become selectable attributes for color/size mapping.</li>
+  </ul>
+
+  <h3><code>links</code> / <code>extended</code> array</h3>
+  <p>One row per edge (both intralayer and interlayer edges go in this single array).</p>
+  <ul>
+    <li><code>layer_from</code>, <code>node_from</code>, <code>layer_to</code>, <code>node_to</code> — required.</li>
+    <li><code>weight</code> <em>(optional)</em> — controls line thickness/opacity. Defaults to 1.</li>
+    <li>Any extra columns become selectable attributes for color/size mapping.</li>
+  </ul>
+
+  <h3><code>state_nodes</code> array</h3>
+  <p>Enumerates every (layer, node) pair present in the network. Required for correct rendering.</p>
+  <ul>
+    <li><code>layer_name</code>, <code>node_name</code> — required.</li>
+  </ul>
+
+  <hr>
+
+  <!-- ── EXAMPLE DATASETS ───────────────────────────────────────── -->
+  <h2 class="sec mode-misc" id="examples">📦 Built-in Example Datasets</h2>
+  <p>Available via <strong>Load Example Data</strong> in the Data panel.</p>
+  <table style="width:100%;border-collapse:collapse;font-size:13px;">
+    <thead>
+      <tr style="background:#f3f4f6;">
+        <th style="text-align:left;padding:7px 10px;border-bottom:2px solid #e5e7eb;">Dataset</th>
+        <th style="text-align:left;padding:7px 10px;border-bottom:2px solid #e5e7eb;">Type</th>
+        <th style="text-align:left;padding:7px 10px;border-bottom:2px solid #e5e7eb;">Layers</th>
+        <th style="text-align:left;padding:7px 10px;border-bottom:2px solid #e5e7eb;">Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Directed</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Directed unipartite</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">3</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Minimal directed example</td></tr>
+      <tr><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Large Scale</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Undirected unipartite</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">3</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">High node count</td></tr>
+      <tr><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Simple Bipartite</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Undirected bipartite</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">2</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Minimal bipartite example</td></tr>
+      <tr><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Complex Bipartite (Bartomeus)</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Undirected bipartite</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">4</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Real pollination network</td></tr>
+      <tr><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Pond Ecosystem</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Undirected unipartite</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">4</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Multi-trophic food-web</td></tr>
+      <tr><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Synthetic Bipartite (10 layers)</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Undirected bipartite</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">10</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Generated pollinator-plant network with clustered layers and one isolated layer</td></tr>
+      <tr><td style="padding:6px 10px;">Synthetic Unipartite (10 layers)</td><td style="padding:6px 10px;">Directed unipartite</td><td style="padding:6px 10px;">10</td><td style="padding:6px 10px;">Generated social/influence network with overlapping actor groups, a bridging layer, and one isolated layer</td></tr>
+    </tbody>
+  </table>
 
   <hr>
 
