@@ -55,7 +55,9 @@ export class Renderer {
         // Color-by functions
         this.nodeColorFn = null;
         this.nodeSizeFn = null;
-        this.linkColorFn = null;
+        this.linkColorFn = null;          // attribute-based; overrides defaults below
+        this.defaultIntraColor = 'rgba(0,0,0,0.85)';
+        this.defaultInterColor = 'rgba(30,100,220,0.8)';
         this.layerColorFn = null; // (layerIndex, layer) -> { fill, border, text }
 
         this.arrowheadSize = 1; // multiplier, 1 = default
@@ -538,15 +540,9 @@ export class Renderer {
             const to = this.project(toPos.x, toPos.y, layerIndex);
 
             // Determine color
-            let color;
-            if (this.linkColorFn) {
-                color = this.linkColorFn(link);
-            } else if (useBipartiteGradient) {
-                // Black links for bipartite intralayer
-                color = 'rgba(0,0,0,0.85)';
-            } else {
-                color = 'rgba(0,0,0,0.85)';
-            }
+            const color = this.linkColorFn
+                ? this.linkColorFn(link)
+                : this.defaultIntraColor;
 
             const isHighlighted = this._isLinkHighlighted(link);
             const _fn = this.selectedNode ? this.selectedNode.nodeName : this.searchedNodeName;
@@ -581,10 +577,9 @@ export class Renderer {
             const toScreen = this.getNodeScreenPos(link.layer_to, link.node_to);
             if (!fromScreen || !toScreen) continue;
 
-            let color = 'rgba(30,100,220,0.8)';
-            if (this.linkColorFn) {
-                color = this.linkColorFn(link);
-            }
+            const color = this.linkColorFn
+                ? this.linkColorFn(link)
+                : this.defaultInterColor;
 
             const isHighlighted = this._isLinkHighlighted(link);
             const _fn = this.selectedNode ? this.selectedNode.nodeName : this.searchedNodeName;
@@ -806,11 +801,14 @@ export class Renderer {
     }
 
     _brighten(color) {
-        // Simple brighten: return white-ish version
+        // For highlighted links: full opacity, same color
         if (color.startsWith('rgba')) {
-            return color.replace(/[\d.]+\)$/, '0.9)');
+            return color.replace(/[\d.]+\)$/, '1)');
         }
-        return '#ffffff';
+        if (color.startsWith('rgb(')) {
+            return color.replace('rgb(', 'rgba(').replace(')', ',1)');
+        }
+        return color; // hex: unchanged, alpha handled by globalAlpha=1
     }
 
     /**

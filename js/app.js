@@ -71,7 +71,6 @@ const arrowheadSizeSlider    = document.getElementById('arrowheadSizeSlider');
 
 const LAYER_DEFAULT_HEX = '#8b5cf6';
 const NODE_DEFAULT_HEX  = '#a78bfa';
-const LINK_DEFAULT_HEX  = '#000000';
 
 // Legend Panel and State
 const legendPanel = document.getElementById('legendPanel');
@@ -322,7 +321,8 @@ function resetVisualizationOptions() {
     nodeColorSelect.value = '';
     nodeColorPicker.value = NODE_DEFAULT_HEX;
     linkColorSelect.value = '';
-    linkColorPicker.value = LINK_DEFAULT_HEX;
+    intraLinkColorPicker.value = '#000000';
+    interLinkColorPicker.value = '#1e64dc';
     arrowheadSizeSlider.value = 1;
     renderer.arrowheadSize = 1;
 
@@ -386,6 +386,7 @@ function loadData(json) {
         }
 
         arrowheadSizeControl.style.display = model.directed ? 'block' : 'none';
+        interLinkColorControl.style.display = model.interlayerLinks.length > 0 ? 'flex' : 'none';
 
         // Reset out of any non-network mode when loading new data
         if (appMode === 'map')       { toggleMapMode(); }
@@ -1935,10 +1936,12 @@ nodeColorPicker.addEventListener('input', () => {
     if (!nodeColorSelect.value) updateNodeColors();
 });
 
-const linkColorPicker = document.getElementById('linkColorPicker');
-linkColorPicker.addEventListener('input', () => {
-    if (!linkColorSelect.value) updateLinkColors();
-});
+const intraLinkColorPicker  = document.getElementById('intraLinkColorPicker');
+const interLinkColorPicker  = document.getElementById('interLinkColorPicker');
+const interLinkColorControl = document.getElementById('interLinkColorControl');
+
+intraLinkColorPicker.addEventListener('input', () => { if (!linkColorSelect.value) updateLinkColors(); });
+interLinkColorPicker.addEventListener('input', () => { if (!linkColorSelect.value) updateLinkColors(); });
 
 arrowheadSizeSlider.addEventListener('input', () => {
     renderer.arrowheadSize = parseFloat(arrowheadSizeSlider.value);
@@ -2141,8 +2144,10 @@ function updateLinkColors() {
     const attrName = linkColorSelect.value;
     linkColorSwatches.style.display = attrName ? 'none' : 'flex';
     if (!attrName || !model) {
-        const hex = linkColorPicker.value;
-        renderer.linkColorFn = () => hex;
+        renderer.linkColorFn = null;
+        renderer.defaultIntraColor = intraLinkColorPicker.value;
+        renderer.defaultInterColor = interLinkColorPicker.value;
+        renderer.render();
         renderLegends();
         return;
     }
