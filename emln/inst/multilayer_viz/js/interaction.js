@@ -49,14 +49,26 @@ export class InteractionHandler {
 
         // Mouse wheel → zoom
         this.canvas.addEventListener('wheel', (e) => {
-            if (this.renderer.layerViewMode) return;
             e.preventDefault();
             const rect = this.canvas.getBoundingClientRect();
             const mx = e.clientX - rect.left;
             const my = e.clientY - rect.top;
-
-            // Zoom toward cursor (Standard 3D Canvas)
             const zoomFactor = e.deltaY > 0 ? 0.92 : 1.08;
+
+            if (this.renderer.layerViewMode && this.renderer.layerView) {
+                const lv = this.renderer.layerView;
+                const cx = this.canvas.width / 2;
+                const cy = this.canvas.height / 2;
+                const oldScale = lv.viewScale;
+                const newScale = Math.max(0.1, Math.min(10, oldScale * zoomFactor));
+                lv.viewOffsetX = (mx - cx) - (mx - cx - lv.viewOffsetX) * (newScale / oldScale);
+                lv.viewOffsetY = (my - cy) - (my - cy - lv.viewOffsetY) * (newScale / oldScale);
+                lv.viewScale = newScale;
+                this.renderer.render();
+                return;
+            }
+
+            // Zoom toward cursor (network mode)
             const oldScale = this.renderer.scale;
             const newScale = Math.max(0.2, Math.min(5, oldScale * zoomFactor));
 
@@ -84,8 +96,8 @@ export class InteractionHandler {
             this.prevX = e.clientX;
             this.prevY = e.clientY;
 
-            // Cmd+click (metaKey on Mac) → drag layer
-            if (e.metaKey) {
+            // Cmd+click (Mac) or Ctrl+click (Win/Linux) → drag layer
+            if (e.metaKey || e.ctrlKey) {
                 const layerIdx = this.renderer.hitTestLayer(mx, my);
                 if (layerIdx >= 0) {
                     this.isDraggingLayer = true;
@@ -99,27 +111,24 @@ export class InteractionHandler {
                 }
             }
 
-            // Check if clicking a node first
-            let hit = this.renderer.hitTestNode(mx, my);
-            if (hit) {
-                this.renderer.selectedNode = hit;
+            // Check if clicking a node or link
+            const downHit = this.renderer.konvaHitAt(mx, my);
+            if (downHit.type === 'node') {
+                this.renderer.selectedNode = downHit.data;
                 this.renderer.selectedLink = null;
                 this.renderer.selectedLayer = null;
                 if (this.callbacks.onNodeSelect) {
-                    this.callbacks.onNodeSelect(hit);
+                    this.callbacks.onNodeSelect(downHit.data);
                 }
                 this.renderer.render();
                 return;
             }
-
-            // Check if clicking a link
-            let linkHit = this.renderer.hitTestLink(mx, my);
-            if (linkHit) {
+            if (downHit.type === 'link') {
                 this.renderer.selectedNode = null;
-                this.renderer.selectedLink = linkHit;
+                this.renderer.selectedLink = downHit.data;
                 this.renderer.selectedLayer = null;
                 if (this.callbacks.onLinkSelect) {
-                    this.callbacks.onLinkSelect(linkHit);
+                    this.callbacks.onLinkSelect(downHit.data);
                 }
                 this.renderer.render();
                 return;
@@ -162,7 +171,8 @@ export class InteractionHandler {
                 const my = e.clientY - rect.top;
 
                 // Don't fire layer select if a node or link was clicked
-                if (!this.renderer.hitTestNode(mx, my) && !this.renderer.hitTestLink(mx, my)) {
+                const upHit = this.renderer.konvaHitAt(mx, my);
+                if (upHit.type !== 'node' && upHit.type !== 'link') {
                     const layerIdx = this.renderer.hitTestLayer(mx, my);
                     if (layerIdx >= 0) {
                         this.renderer.selectedNode = null;
@@ -231,11 +241,9 @@ export class InteractionHandler {
             const prevHoveredNode = this.renderer.hoveredNode;
             const prevHoveredLink = this.renderer.hoveredLink;
 
-            const hitNode = this.renderer.hitTestNode(mx, my);
-            let hitLink = null;
-            if (!hitNode) {
-                hitLink = this.renderer.hitTestLink(mx, my);
-            }
+            const hoverHit = this.renderer.konvaHitAt(mx, my);
+            const hitNode = hoverHit.type === 'node' ? hoverHit.data : null;
+            const hitLink = hoverHit.type === 'link' ? hoverHit.data : null;
 
             this.renderer.hoveredNode = hitNode;
             this.renderer.hoveredLink = hitLink;
@@ -285,7 +293,8 @@ export class InteractionHandler {
             const rect = this.canvas.getBoundingClientRect();
             const mx = e.clientX - rect.left;
             const my = e.clientY - rect.top;
-            if (!this.renderer.hitTestNode(mx, my) && !this.renderer.hitTestLink(mx, my)) {
+            const dblHit = this.renderer.konvaHitAt(mx, my);
+            if (dblHit.type !== 'node' && dblHit.type !== 'link') {
                 this.renderer.selectedNode = null;
                 this.renderer.selectedLink = null;
                 if (this.callbacks.onNodeSelect) {
