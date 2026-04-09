@@ -2711,13 +2711,8 @@ toggleLegendBtn.addEventListener('click', () => {
 const captureBtn = document.getElementById('captureBtn');
 const exportDialog = document.getElementById('exportDialog');
 const exportCancelBtn = document.getElementById('exportCancelBtn');
-const exportSvgBtn = document.getElementById('exportSvgBtn');
-const exportSvgNote = document.getElementById('exportSvgNote');
 
 captureBtn.addEventListener('click', () => {
-    // SVG unavailable in map mode
-    exportSvgBtn.disabled = appMode === 'map';
-    exportSvgNote.style.display = appMode === 'map' ? '' : 'none';
     exportDialog.style.display = 'flex';
 });
 
@@ -2799,7 +2794,6 @@ async function _compositeOverlays(ctx, scale) {
 }
 
 async function exportScreenshot(format) {
-    if (format === 'svg') { await _exportSVG(); return; }
     if (format === 'pdf') { await _exportPDF(); return; }
 
     // Raster export (PNG / JPG)
@@ -2885,100 +2879,6 @@ async function _saveCanvas(offscreen, filename, mimeType, quality) {
     }
 }
 
-async function _exportSVG() {
-    // Try multiple CDN sources for canvas2svg
-    const C2S_URLS = [
-        'https://cdn.jsdelivr.net/npm/canvas2svg@1.0.16/canvas2svg.js',
-        'https://unpkg.com/canvas2svg@1.0.16/canvas2svg.js',
-    ];
-    let loaded = false;
-    for (const url of C2S_URLS) {
-        try { await _loadScript(url); loaded = true; break; } catch (_) {}
-    }
-    if (!loaded || typeof C2S === 'undefined') {
-        alert('Could not load SVG library. Please check your internet connection and try again.');
-        return;
-    }
-
-    const srcCanvas = document.getElementById('networkCanvas');
-    const w = srcCanvas.width, h = srcCanvas.height;
-
-    const includeGrid   = document.getElementById('exportGridCheckbox').checked;
-    const includePanels = document.getElementById('exportPanelsCheckbox').checked;
-
-    // Create canvas2svg context (drop-in Canvas 2D API → SVG)
-    const c2s = new C2S(w, h);
-
-    // White background
-    c2s.fillStyle = '#ffffff';
-    c2s.fillRect(0, 0, w, h);
-
-    // Swap renderer's context to the SVG context, render, restore
-    const savedCtx  = renderer.ctx;
-    const savedW    = renderer.canvas.width;
-    const savedH    = renderer.canvas.height;
-    renderer.ctx    = c2s;
-    // canvas.width/height are read by renderer — temporarily shim
-    const prevShowGrid = renderer.showGrid;
-    renderer.showGrid  = includeGrid;
-    try {
-        renderer.render();
-    } finally {
-        renderer.ctx    = savedCtx;
-        renderer.showGrid = prevShowGrid;
-        renderer.render(); // restore on-screen
-    }
-
-    // Branding (SVG context supports fillText)
-    _drawBranding(c2s, w, h, 1);
-
-    let svgStr = c2s.getSerializedSvg(true);
-
-    // Panels & legend: embed as foreign objects if requested
-    if (includePanels) {
-        // Append a note comment — full DOM embedding in SVG needs a browser-side polyfill;
-        // we add a high-res PNG overlay of the panels as <image> elements instead.
-        try {
-            await _loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
-            const panelEls = [
-                document.getElementById('legendPanel'),
-                document.getElementById('layerDrillPanel'),
-                document.getElementById('layerComparePanel'),
-            ].filter(el => el && (el.children.length > 0 || el.style.opacity === '1'));
-
-            const overlayFragments = [];
-            for (const el of panelEls) {
-                const rect = el.getBoundingClientRect();
-                if (rect.width === 0) continue;
-                const pc = await html2canvas(el, { scale: 2, useCORS: true, allowTaint: true, backgroundColor: null, logging: false });
-                const dataUrl = pc.toDataURL('image/png');
-                overlayFragments.push(
-                    `<image x="${rect.left}" y="${rect.top}" width="${rect.width}" height="${rect.height}" href="${dataUrl}" style="image-rendering:auto"/>`
-                );
-            }
-            if (overlayFragments.length) {
-                svgStr = svgStr.replace('</svg>', overlayFragments.join('\n') + '</svg>');
-            }
-        } catch (e) { console.warn('SVG panel overlay failed:', e); }
-    }
-
-    const blob = new Blob([svgStr], { type: 'image/svg+xml' });
-    if (window.showSaveFilePicker) {
-        try {
-            const handle = await window.showSaveFilePicker({
-                suggestedName: 'multilayer_network.svg',
-                types: [{ description: 'SVG Image', accept: { 'image/svg+xml': ['.svg'] } }],
-            });
-            const writable = await handle.createWritable();
-            await writable.write(blob); await writable.close();
-        } catch (err) { if (err.name !== 'AbortError') console.error(err); }
-    } else {
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.download = 'multilayer_network.svg'; a.href = url; a.click();
-        URL.revokeObjectURL(url);
-    }
-}
 
 function _drawBranding(ctx, canvasW, canvasH, scale) {
     const padding = 12 * scale;
