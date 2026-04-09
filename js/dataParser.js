@@ -125,8 +125,8 @@ export function parseMultilayerData(json) {
   // Extract attribute names for color mapping
   const nodeAttributeNames = extractExtraAttributes(json.nodes, ['node_id', 'node_name']);
   const stateNodeAttributeNames = extractExtraAttributes(json.state_nodes, ['layer_id', 'node_id', 'layer_name', 'node_name']);
-  const linkAttributeNames = extractExtraAttributes(json.extended, ['layer_from', 'node_from', 'layer_to', 'node_to', 'weight']);
-  const layerAttributeNames = extractExtraAttributes(json.layers, ['layer_id', 'layer_name']);
+  const linkAttributeNames = extractExtraAttributes(json.extended, ['layer_from', 'node_from', 'layer_to', 'node_to', 'weight', 'directed']);
+  const layerAttributeNames = extractExtraAttributes(json.layers, ['layer_id', 'layer_name', 'bipartite', 'latitude', 'longitude']);
 
   // ---- Bipartite detection ----
   const bipartiteInfo = detectBipartiteLayers(

@@ -63,6 +63,15 @@ const bipartiteColorLabelB = document.getElementById('bipartiteColorLabelB');
 const nodeSizeSelect = document.getElementById('nodeSizeSelect');
 const linkColorSelect = document.getElementById('linkColorSelect');
 const layerColorSelect = document.getElementById('layerColorSelect');
+const layerColorSwatches = document.getElementById('layerColorSwatches');
+const nodeColorSwatches  = document.getElementById('nodeColorSwatches');
+const linkColorSwatches      = document.getElementById('linkColorSwatches');
+const arrowheadSizeControl   = document.getElementById('arrowheadSizeControl');
+const arrowheadSizeSlider    = document.getElementById('arrowheadSizeSlider');
+
+const LAYER_DEFAULT_HEX = '#8b5cf6';
+const NODE_DEFAULT_HEX  = '#a78bfa';
+const LINK_DEFAULT_HEX  = '#000000';
 
 // Legend Panel and State
 const legendPanel = document.getElementById('legendPanel');
@@ -309,6 +318,13 @@ function resetVisualizationOptions() {
     nodeSizeSelect.value = '';
     linkColorSelect.value = '';
     layerColorSelect.value = '';
+    layerColorPicker.value = LAYER_DEFAULT_HEX;
+    nodeColorSelect.value = '';
+    nodeColorPicker.value = NODE_DEFAULT_HEX;
+    linkColorSelect.value = '';
+    linkColorPicker.value = LINK_DEFAULT_HEX;
+    arrowheadSizeSlider.value = 1;
+    renderer.arrowheadSize = 1;
 
     // Color functions
     renderer.nodeColorFn = null;
@@ -369,6 +385,8 @@ function loadData(json) {
             mapModeBtn.style.display = 'none';
         }
 
+        arrowheadSizeControl.style.display = model.directed ? 'block' : 'none';
+
         // Reset out of any non-network mode when loading new data
         if (appMode === 'map')       { toggleMapMode(); }
         if (appMode === 'layer')     { _exitLayerView(); appMode = 'network'; }
@@ -428,6 +446,9 @@ function loadData(json) {
 
         populateDropdowns();
         resetVisualizationOptions();
+        updateLayerColors();
+        updateNodeColors();
+        updateLinkColors();
 
         renderer.setData(model, positions);
         renderer.centerView();
@@ -1793,7 +1814,7 @@ function populateDropdowns() {
     if (!model) return;
 
     // Node color options
-    nodeColorSelect.innerHTML = '<option value="">Layer (default)</option>';
+    nodeColorSelect.innerHTML = '<option value="">Default</option>';
     for (const attr of model.nodeAttributeNames) {
         const opt = document.createElement('option');
         opt.value = `node:${attr}`;
@@ -1884,7 +1905,7 @@ function populateDropdowns() {
 
 
     // Link color options
-    linkColorSelect.innerHTML = '<option value="">Type (default)</option>';
+    linkColorSelect.innerHTML = '<option value="">Default</option>';
     for (const attr of model.linkAttributeNames) {
         const opt = document.createElement('option');
         opt.value = attr;
@@ -1893,7 +1914,7 @@ function populateDropdowns() {
     }
 
     // Layer color options
-    layerColorSelect.innerHTML = '<option value="">Default (purple)</option>';
+    layerColorSelect.innerHTML = '<option value="">Default</option>';
     for (const attr of model.layerAttributeNames) {
         const opt = document.createElement('option');
         opt.value = attr;
@@ -1901,7 +1922,28 @@ function populateDropdowns() {
         layerColorSelect.appendChild(opt);
     }
     layerColorSelect.disabled = model.layerAttributeNames.length === 0;
+
 }
+
+const layerColorPicker = document.getElementById('layerColorPicker');
+layerColorPicker.addEventListener('input', () => {
+    if (!layerColorSelect.value) updateLayerColors();
+});
+
+const nodeColorPicker = document.getElementById('nodeColorPicker');
+nodeColorPicker.addEventListener('input', () => {
+    if (!nodeColorSelect.value) updateNodeColors();
+});
+
+const linkColorPicker = document.getElementById('linkColorPicker');
+linkColorPicker.addEventListener('input', () => {
+    if (!linkColorSelect.value) updateLinkColors();
+});
+
+arrowheadSizeSlider.addEventListener('input', () => {
+    renderer.arrowheadSize = parseFloat(arrowheadSizeSlider.value);
+    renderer.render();
+});
 
 nodeColorSelect.addEventListener('change', () => {
     updateNodeColors();
@@ -2060,8 +2102,10 @@ function updateNodeColors() {
     }
 
     const val = nodeColorSelect.value;
+    nodeColorSwatches.style.display = val ? 'none' : 'flex';
     if (!val) {
-        renderer.nodeColorFn = null;
+        const hex = nodeColorPicker.value;
+        renderer.nodeColorFn = () => hex;
         renderLegends();
         return;
     }
@@ -2095,8 +2139,10 @@ function updateNodeColors() {
 function updateLinkColors() {
     activeLinkColorScale = null;
     const attrName = linkColorSelect.value;
+    linkColorSwatches.style.display = attrName ? 'none' : 'flex';
     if (!attrName || !model) {
-        renderer.linkColorFn = null;
+        const hex = linkColorPicker.value;
+        renderer.linkColorFn = () => hex;
         renderLegends();
         return;
     }
@@ -2123,20 +2169,22 @@ function _hexToRgba(color, alpha) {
 
 function updateLayerColors() {
     const attrName = layerColorSelect.value;
-    if (!attrName || !model) {
-        renderer.layerColorFn = null;
-        renderer.render();
-        return;
-    }
-    const sc = colorMapper.buildColorScale(model.layers, attrName);
-    renderer.layerColorFn = (layerIndex, layer) => {
-        const hex = sc.scaleFn(layer[attrName]);
-        return {
-            fill: _hexToRgba(hex, 0.18),
-            border: _hexToRgba(hex, 0.55),
-            text: hex,
+    layerColorSwatches.style.display = attrName ? 'none' : 'flex';
+
+    if (!model) { renderer.layerColorFn = null; renderer.render(); return; }
+
+    if (attrName) {
+        const sc = colorMapper.buildColorScale(model.layers, attrName);
+        renderer.layerColorFn = (layerIndex, layer) => {
+            const hex = sc.scaleFn(layer[attrName]);
+            return { fill: _hexToRgba(hex, 0.18), border: _hexToRgba(hex, 0.55), text: hex };
         };
-    };
+    } else {
+        const hex = layerColorPicker.value;
+        renderer.layerColorFn = (layerIndex, layer) => (
+            { fill: _hexToRgba(hex, 0.18), border: _hexToRgba(hex, 0.55), text: hex }
+        );
+    }
     renderer.render();
 }
 

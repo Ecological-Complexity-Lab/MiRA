@@ -100,8 +100,13 @@
         <div style="margin-top:6px;">
           <label style="font-size:11px;color:#666;">Color By</label>
           <select id="layerColorSelect" class="styled-select" disabled>
-            <option value="">Default (purple)</option>
+            <option value="">Default</option>
           </select>
+        </div>
+        <div id="layerColorSwatches" style="display:none; margin-top:6px; align-items:center; gap:6px;">
+          <label style="font-size:11px;color:#666;">Layer Color</label>
+          <input type="color" id="layerColorPicker" value="#8b5cf6"
+            style="width:22px; height:22px; border:none; border-radius:4px; padding:1px; cursor:pointer;">
         </div>
         <div style="margin-top:6px;">
           <label style="font-size:11px;color:#666;">Layout</label>
@@ -137,8 +142,13 @@
           <div style="margin-top:8px;" id="colorByContainer">
             <label style="font-size:11px;color:#666;">Color By</label>
             <select id="nodeColorSelect" class="styled-select" disabled>
-              <option value="">Layer (default)</option>
+              <option value="">Default</option>
             </select>
+            <div id="nodeColorSwatches" style="display:none; align-items:center; gap:6px; margin-top:4px;">
+              <label style="font-size:11px;color:#666;">Node Color</label>
+              <input type="color" id="nodeColorPicker" value="#a78bfa"
+                style="width:22px; height:22px; border:none; border-radius:4px; padding:1px; cursor:pointer;">
+            </div>
           </div>
           <div style="margin-top:8px; display:none;" id="bipartiteColorByContainer">
             <label style="font-size:11px;color:#666;" id="bipartiteColorLabelA">Color By Set A</label>
@@ -178,8 +188,17 @@
         <div style="margin-top:6px;">
           <label style="font-size:11px;color:#666;">Color By</label>
           <select id="linkColorSelect" class="styled-select" disabled>
-            <option value="">Type (default)</option>
+            <option value="">Default</option>
           </select>
+          <div id="linkColorSwatches" style="display:none; align-items:center; gap:6px; margin-top:4px;">
+            <label style="font-size:11px;color:#666;">Link Color</label>
+            <input type="color" id="linkColorPicker" value="#000000"
+              style="width:22px; height:22px; border:none; border-radius:4px; padding:1px; cursor:pointer;">
+          </div>
+        </div>
+        <div id="arrowheadSizeControl" style="display:none; margin-top:6px;">
+          <label style="font-size:11px;color:#666;">Arrowhead Size</label>
+          <input type="range" id="arrowheadSizeSlider" min="0" max="3" step="0.1" value="1" class="slider">
         </div>
       </div>
     </details>
@@ -455,25 +474,45 @@
 
   <!-- Demo selection dialog -->
   <div id="demoDialog" class="dialog-overlay" style="display:none;">
-    <div class="dialog-box" style="max-width: 300px;">
+    <div class="dialog-box" style="max-width: 340px;">
       <h4>Example Data</h4>
       <p>Select a demonstration dataset to load:</p>
 
       <div class="dialog-buttons" style="flex-direction: column; gap: 8px;">
-        <button class="btn btn-primary demo-dataset-btn" data-file="demo_directed" style="width:100%;">Directed/Weighted
-          (10)</button>
-        <button class="btn btn-primary demo-dataset-btn" data-file="demo_large" style="width:100%;">Large ER
-          (50)</button>
-        <button class="btn btn-primary demo-dataset-btn" data-file="demo_large_ba" style="width:100%;">Large BA
-          (3 × 1000)</button>
-        <button class="btn btn-primary demo-dataset-btn" data-file="demo_bipartite" style="width:100%;">Bipartite
-          (Basic)</button>
-        <button class="btn btn-primary demo-dataset-btn" data-file="demo_bipartite_bartomeus"
-          style="width:100%;">Bipartite (Bartomeus Modified)</button>
-        <button class="btn btn-primary demo-dataset-btn" data-file="synth_bipartite"
-          style="width:100%;">Synthetic Bipartite (10 layers)</button>
-        <button class="btn btn-primary demo-dataset-btn" data-file="synth_unipartite"
-          style="width:100%;">Synthetic Directed (10 layers)</button>
+
+        <div style="display:flex; align-items:center; gap:6px;">
+          <button class="btn btn-primary demo-dataset-btn" data-file="canary" style="flex:1; text-align:left;">
+            Canary Islands pollination (14 sites)
+          </button>
+          <a href="https://doi.org/10.1098/rspb.2014.2925" target="_blank" rel="noopener"
+            title="Carstensen et al. 2014 – Proc. R. Soc. B"
+            style="font-size:10px; color:#555; text-decoration:none; border:1px solid #ccc; border-radius:4px; padding:2px 5px; white-space:nowrap; flex-shrink:0;">
+            DOI
+          </a>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:6px;">
+          <button class="btn btn-primary demo-dataset-btn" data-file="kefi2015" style="flex:1; text-align:left;">
+            Kéfi et al. 2015 – Chilean rocky intertidal (3 layers)
+          </button>
+          <a href="https://doi.org/10.1890/13-1424.1" target="_blank" rel="noopener"
+            title="Kéfi et al. 2015 – Ecology"
+            style="font-size:10px; color:#555; text-decoration:none; border:1px solid #ccc; border-radius:4px; padding:2px 5px; white-space:nowrap; flex-shrink:0;">
+            DOI
+          </a>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:6px;">
+          <button class="btn btn-primary demo-dataset-btn" data-file="demo_bipartite_bartomeus" style="flex:1; text-align:left;">
+            Bartomeus et al. – Bipartite pollination (modified)
+          </button>
+          <a href="https://doi.org/10.1111/j.1461-0248.2008.01231.x" target="_blank" rel="noopener"
+            title="Bartomeus et al. 2008 – Ecology Letters"
+            style="font-size:10px; color:#555; text-decoration:none; border:1px solid #ccc; border-radius:4px; padding:2px 5px; white-space:nowrap; flex-shrink:0;">
+            DOI
+          </a>
+        </div>
+
         <button class="btn" id="demoCancelBtn" style="width:100%; margin-top: 8px;">Cancel</button>
       </div>
     </div>
