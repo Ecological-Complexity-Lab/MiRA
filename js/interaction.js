@@ -96,8 +96,8 @@ export class InteractionHandler {
             this.prevX = e.clientX;
             this.prevY = e.clientY;
 
-            // Cmd+click (metaKey on Mac) → drag layer
-            if (e.metaKey) {
+            // Cmd+click (Mac) or Ctrl+click (Win/Linux) → drag layer
+            if (e.metaKey || e.ctrlKey) {
                 const layerIdx = this.renderer.hitTestLayer(mx, my);
                 if (layerIdx >= 0) {
                     this.isDraggingLayer = true;

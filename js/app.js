@@ -630,7 +630,7 @@ function toggleLayerView() {
             const { mx, my } = canvasCoords(e);
             const hit = renderer.layerView.hitTestBubble(mx, my, canvas.width, canvas.height);
             const prevSel = renderer.layerView._selectedLayer;
-            if (e.metaKey && hit && prevSel && hit !== prevSel) {
+            if ((e.metaKey || e.ctrlKey) && hit && prevSel && hit !== prevSel) {
                 // Cmd+click on a different bubble → comparison mode
                 renderer.layerView.selectForComparison(prevSel, hit);
                 closeLayerDrillDown();
