@@ -161,6 +161,7 @@ const mapOpacityControl = document.getElementById('mapOpacityControl');
 const mapOpacitySlider = document.getElementById('mapOpacitySlider');
 const showMapImageCheckbox = document.getElementById('showMapImageCheckbox');
 const showLocationsCheckbox = document.getElementById('showLocationsCheckbox');
+const streetMapCheckbox = document.getElementById('streetMapCheckbox');
 const showSetNamesCheckbox = document.getElementById('showSetNamesCheckbox');
 const bipartiteNestedCheckbox = document.getElementById('bipartiteNestedCheckbox');
 const showInterlayerCheckbox = document.getElementById('showInterlayerCheckbox');
@@ -202,6 +203,11 @@ const bgMap = L.map('backgroundMap', {
 const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
     maxZoom: 18
 }).addTo(bgMap);
+
+const streetLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '© OpenStreetMap contributors'
+});
 
 // ---- Canvas Resize ----
 function resizeCanvas() {
@@ -1452,15 +1458,17 @@ function updateMapModeViews() {
 mapOpacitySlider.addEventListener('input', () => {
     const val = parseFloat(mapOpacitySlider.value);
     satelliteLayer.setOpacity(val);
+    streetLayer.setOpacity(val);
     mapMarkersOverlay.style.opacity = val;
 });
 
 showMapImageCheckbox.addEventListener('change', () => {
     const show = showMapImageCheckbox.checked;
+    const activeLayer = streetMapCheckbox.checked ? streetLayer : satelliteLayer;
     if (show) {
-        bgMap.addLayer(satelliteLayer);
+        bgMap.addLayer(activeLayer);
     } else {
-        bgMap.removeLayer(satelliteLayer);
+        bgMap.removeLayer(activeLayer);
     }
     renderer.showMapBackground = show;
     renderer.render();
@@ -1468,6 +1476,17 @@ showMapImageCheckbox.addEventListener('change', () => {
 
 showLocationsCheckbox.addEventListener('change', () => {
     mapMarkersOverlay.style.visibility = showLocationsCheckbox.checked ? 'visible' : 'hidden';
+});
+
+streetMapCheckbox.addEventListener('change', () => {
+    const mapVisible = showMapImageCheckbox.checked;
+    if (streetMapCheckbox.checked) {
+        bgMap.removeLayer(satelliteLayer);
+        if (mapVisible) bgMap.addLayer(streetLayer);
+    } else {
+        bgMap.removeLayer(streetLayer);
+        if (mapVisible) bgMap.addLayer(satelliteLayer);
+    }
 });
 
 function renderMapMarkers() {

@@ -15,7 +15,11 @@
       "Bash(Rscript -e ':*)",
       "Bash(wait)",
       "Bash(xargs kill:*)",
-      "Bash(grep -v \"^Loading\\\\|^Attach\\\\|masked\\\\|^The follow\\\\|^  num\\\\|^  na_if\\\\|Creating\\\\|^$\")"
+      "Bash(grep -v \"^Loading\\\\|^Attach\\\\|masked\\\\|^The follow\\\\|^  num\\\\|^  na_if\\\\|Creating\\\\|^$\")",
+      "Read(//Users/shai/GitHub/ecomplab/multilayer_viz/**)",
+      "Bash(lsof -iTCP -sTCP:LISTEN)",
+      "Bash(Rscript -e 'devtools::load_all\\(\".\",quiet=TRUE\\); net <- load_emln\\(14\\); cat\\(names\\(net$nodes\\), \"\\\\n\"\\)')",
+      "Bash(echo \"PID: $!\")"
     ],
     "additionalDirectories": [
       "/Users/shai/GitHub/ecomplab/emln"
