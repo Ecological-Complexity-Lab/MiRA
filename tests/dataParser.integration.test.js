@@ -223,16 +223,14 @@ describe('Group D — Known properties', () => {
     expect([...info.setB]).toContain('V1')
   })
 
-  it('D.3 synth_bipartite.json — all 10 layers are bipartite (BFS auto-detect)', () => {
-    // synth_bipartite is a synthetic pollinator-plant network. Every layer is
-    // bipartite. Nodes use the "type" field (not "node_type"), and layers have
-    // no bipartite:true flag — so the explicit detection path is NOT used here.
-    // All 10 must be found by BFS 2-colouring. If BFS is ever broken, this test
-    // will catch it on a realistic 10-layer network rather than a toy graph.
+  it('D.3 synth_bipartite.json — no layers detected as bipartite (no explicit layer.bipartite=true flags)', () => {
+    // synth_bipartite.json layers have no bipartite:true flag and nodes have no node_type.
+    // BFS auto-detection has been removed — without explicit layer.bipartite=true, no layer
+    // will be detected as bipartite regardless of its edge structure.
     const model = parseMultilayerData(load('synth_bipartite.json'))
     expect(model.layers).toHaveLength(10)
     for (const [layerName, info] of model.bipartiteInfo) {
-      expect(info.isBipartite, `layer "${layerName}" should be bipartite`).toBe(true)
+      expect(info.isBipartite, `layer "${layerName}" should NOT be bipartite`).toBe(false)
     }
   })
 })

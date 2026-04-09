@@ -231,22 +231,21 @@ describe('Group 6 — csvToJson: field normalisation', () => {
     expect(json.layers[0]).not.toHaveProperty('Latitude')
   })
 
-  it('6.2 "node_type" column in nodes CSV is renamed to "group"', () => {
-    // "node_type" is a common bipartite-set column name in ecological datasets.
-    // The app uses "group" for this concept everywhere.
+  it('6.2 "node_type" column is preserved as node_type', () => {
+    // "node_type" is preserved as-is; it is not renamed to "group".
     const edges = 'layer_from,node_from,layer_to,node_to\nL1,A,L1,B'
     const nodes = 'node_name,node_type\nA,plant\nB,pollinator'
     const { json } = csvToJson(edges, null, nodes)
-    expect(json.nodes[0]).toHaveProperty('group')
-    expect(json.nodes[0]).not.toHaveProperty('node_type')
+    expect(json.nodes[0]).toHaveProperty('node_type')
+    expect(json.nodes[0]).not.toHaveProperty('group')
   })
 
-  it('6.3 "type" column in nodes CSV is renamed to "group"', () => {
-    // Some datasets (including net22_nodes.csv) use bare "type" for the same purpose.
+  it('6.3 "type" column in nodes CSV is renamed to "node_type"', () => {
+    // Some datasets (including net22_nodes.csv) use bare "type" — it is renamed to node_type.
     const edges = 'layer_from,node_from,layer_to,node_to\nL1,A,L1,B'
     const nodes = 'node_name,type\nA,plant\nB,pollinator'
     const { json } = csvToJson(edges, null, nodes)
-    expect(json.nodes[0].group).toBe('plant')
+    expect(json.nodes[0].node_type).toBe('plant')
     expect(json.nodes[0]).not.toHaveProperty('type')
   })
 
@@ -272,9 +271,12 @@ describe('Group 7 — csvToJson: output shape', () => {
     expect(json.directed).toBe(true)
   })
 
-  it('7.2 { bipartite: true } option sets json.bipartite = true', () => {
+  it('7.2 { bipartite: true } option is accepted without error (bipartite is set per-layer via CSV)', () => {
+    // The bipartite option is not implemented at the root json level — bipartite is
+    // declared per-layer in the layers CSV (bipartite column). This option is silently ignored.
     const { json } = csvToJson(EDGES, null, null, { bipartite: true })
-    expect(json.bipartite).toBe(true)
+    expect(json.bipartite).toBeUndefined()
+    expect(json.directed).toBe(false)
   })
 
   it('7.3 extra columns in edge list are preserved in extended[] entries', () => {
@@ -370,10 +372,10 @@ describe('Group 9 — Integration: real net22 ecological dataset', () => {
     expect(model.layers).toHaveLength(5)
   })
 
-  it('9.3 "type" column from net22_nodes.csv is normalised to "group" in model', () => {
-    // If the renaming fails, nodeAttributeNames would contain "type" (the raw name)
-    // instead of "group" — and bipartite detection via the group field would break.
-    expect(model.nodeAttributeNames).toContain('group')
+  it('9.3 "type" column from net22_nodes.csv is normalised to "node_type" in model', () => {
+    // The "type" column is renamed to "node_type" by csvToJson.
+    // If the renaming fails, nodeAttributeNames would contain "type" (the raw name).
+    expect(model.nodeAttributeNames).toContain('node_type')
   })
 
   it('9.4 edge-list only (no layers/nodes CSVs) also produces a valid net22 model', () => {

@@ -1,9 +1,9 @@
 {
   "type": "module",
   "scripts": {
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:browser": "playwright test",
+    "test": "vitest run --config config/vitest.config.js",
+    "test:watch": "vitest --config config/vitest.config.js",
+    "test:browser": "playwright test --config config/playwright.config.js",
     "sync:emln": "rsync -av --delete --exclude='.git' --exclude='node_modules' --exclude='tests' --exclude='emln' --exclude='docs' --exclude='assets' --exclude='test' . ../emln/inst/multilayer_viz/"
   },
   "devDependencies": {

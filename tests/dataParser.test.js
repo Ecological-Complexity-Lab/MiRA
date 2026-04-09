@@ -452,16 +452,15 @@ describe('Group 7 — Bipartite detection: explicit', () => {
     expect(info.explicit).toBe(true)
   })
 
-  it('7.3 layer.bipartite=true with only 1 distinct node_type falls through to auto-detect', () => {
+  it('7.3 layer.bipartite=true with only 1 distinct node_type → warning logged, treated as unipartite', () => {
     // Explicit path requires exactly 2 distinct types. If all nodes have the
-    // same type, the condition fails and BFS is tried instead.
-    // The graph IS structurally bipartite here, so BFS should still find it.
+    // same type, the condition fails, a console.warn is emitted, and the layer
+    // is treated as unipartite. BFS auto-detect no longer runs as a fallback.
     const input = makeBipartiteExplicit()
     for (const node of input.nodes) node.node_type = 'plant' // all same type
     const model = parseMultilayerData(input)
     const info = model.bipartiteInfo.get('BL')
-    expect(info.isBipartite).toBe(true)
-    expect(info.explicit).toBe(false)
+    expect(info.isBipartite).toBe(false)
   })
 })
 
@@ -479,18 +478,12 @@ describe('Group 7 — Bipartite detection: explicit', () => {
 // so two separate bipartite components together are still bipartite overall.
 
 describe('Group 8 — Bipartite detection: auto-detect BFS', () => {
-  it('8.1 simple bipartite graph is detected; A1 and A2 land in the same set', () => {
+  it('8.1 without layer.bipartite=true, graph is not detected as bipartite even if structurally bipartite', () => {
+    // BFS auto-detection has been removed. Without an explicit layer.bipartite=true flag,
+    // the layer is always treated as unipartite regardless of its edge structure.
     const model = parseMultilayerData(makeBipartiteAuto())
     const info = model.bipartiteInfo.get('AL')
-    expect(info.isBipartite).toBe(true)
-    expect(info.explicit).toBe(false)
-    expect(info.setA.size + info.setB.size).toBe(4)
-    // We don't assert which is setA vs setB — BFS order is insertion-dependent.
-    // We DO assert that A1 and A2 are together, and B nodes are in the other set.
-    const setWithA1 = info.setA.has('A1') ? info.setA : info.setB
-    expect(setWithA1.has('A2')).toBe(true)
-    expect(setWithA1.has('B1')).toBe(false)
-    expect(setWithA1.has('B2')).toBe(false)
+    expect(info.isBipartite).toBe(false)
   })
 
   it('8.2 triangle (odd cycle) is not bipartite', () => {
@@ -518,9 +511,9 @@ describe('Group 8 — Bipartite detection: auto-detect BFS', () => {
     expect(model.bipartiteInfo.get('TL').isBipartite).toBe(false)
   })
 
-  it('8.3 two disconnected bipartite components are detected as bipartite', () => {
-    // BFS restarts from each unvisited node, so disconnected components are
-    // handled independently. Both A1─B1 and A2─B2 are bipartite pairs.
+  it('8.3 without layer.bipartite=true, disconnected bipartite components are not detected', () => {
+    // BFS auto-detection has been removed. Without an explicit layer.bipartite=true flag,
+    // the layer is always treated as unipartite regardless of its edge structure.
     const input = {
       layers: [{ layer_id: 1, layer_name: 'DL' }],
       nodes: [
@@ -542,8 +535,7 @@ describe('Group 8 — Bipartite detection: auto-detect BFS', () => {
     }
     const model = parseMultilayerData(input)
     const info = model.bipartiteInfo.get('DL')
-    expect(info.isBipartite).toBe(true)
-    expect(info.setA.size + info.setB.size).toBe(4)
+    expect(info.isBipartite).toBe(false)
   })
 
   it('8.4 single-node layer is not bipartite', () => {
@@ -599,11 +591,11 @@ describe('Group 8 — Bipartite detection: auto-detect BFS', () => {
 
 describe('Group 9 — Mixed multilayer', () => {
   it('9.1 bipartite and unipartite layers in the same network are independent', () => {
-    // Bip layer: A1─B1 (bipartite pair)
+    // Bip layer: A1─B1 (bipartite pair, declared with bipartite: true + node_type)
     // Uni layer: X─Y─Z─X (triangle, not bipartite)
     const input = {
       layers: [
-        { layer_id: 1, layer_name: 'Bip' },
+        { layer_id: 1, layer_name: 'Bip', bipartite: true },
         { layer_id: 2, layer_name: 'Uni' },
       ],
       nodes: [
@@ -632,21 +624,22 @@ describe('Group 9 — Mixed multilayer', () => {
     expect(model.bipartiteInfo.get('Uni').isBipartite).toBe(false)
   })
 
-  it('9.2 three layers — explicit bipartite, auto-detected bipartite, non-bipartite', () => {
-    // Explicit: layer.bipartite=true + node_type with 2 values (P1=plant, I1=insect)
-    // Auto:     no declaration, but A1─B1 is structurally bipartite
+  it('9.2 two explicit bipartite layers (one with node_type, one without) and one non-bipartite', () => {
+    // Explicit: layer.bipartite=true + node_type with 2 values (P1=setA, I1=setB)
+    // Auto:     layer.bipartite=true + same 2 node_type values (A1=setA, B1=setB) — also explicit
     // NonBip:   triangle X─Y─Z─X, not bipartite
+    // Note: node_type distinctness is checked globally — all bipartite nodes must share the same 2 values.
     const input = {
       layers: [
         { layer_id: 1, layer_name: 'Explicit', bipartite: true },
-        { layer_id: 2, layer_name: 'Auto' },
+        { layer_id: 2, layer_name: 'Auto', bipartite: true },
         { layer_id: 3, layer_name: 'NonBip' },
       ],
       nodes: [
-        { node_id: 'p1', node_name: 'P1', node_type: 'plant' },
-        { node_id: 'i1', node_name: 'I1', node_type: 'insect' },
-        { node_id: 'a1', node_name: 'A1' },
-        { node_id: 'b1', node_name: 'B1' },
+        { node_id: 'p1', node_name: 'P1', node_type: 'setA' },
+        { node_id: 'i1', node_name: 'I1', node_type: 'setB' },
+        { node_id: 'a1', node_name: 'A1', node_type: 'setA' },
+        { node_id: 'b1', node_name: 'B1', node_type: 'setB' },
         { node_id: 'x',  node_name: 'X' },
         { node_id: 'y',  node_name: 'Y' },
         { node_id: 'z',  node_name: 'Z' },
@@ -672,7 +665,7 @@ describe('Group 9 — Mixed multilayer', () => {
     expect(model.bipartiteInfo.get('Explicit').isBipartite).toBe(true)
     expect(model.bipartiteInfo.get('Explicit').explicit).toBe(true)
     expect(model.bipartiteInfo.get('Auto').isBipartite).toBe(true)
-    expect(model.bipartiteInfo.get('Auto').explicit).toBe(false)
+    expect(model.bipartiteInfo.get('Auto').explicit).toBe(true)
     expect(model.bipartiteInfo.get('NonBip').isBipartite).toBe(false)
   })
 })
