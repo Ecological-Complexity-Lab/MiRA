@@ -3,7 +3,8 @@
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:browser": "playwright test"
+    "test:browser": "playwright test",
+    "sync:emln": "rsync -av --delete --exclude='.git' --exclude='node_modules' --exclude='tests' --exclude='emln' --exclude='docs' --exclude='assets' --exclude='test' . ../emln/inst/multilayer_viz/"
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2",
