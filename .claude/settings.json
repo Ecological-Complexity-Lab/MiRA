@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/shai/GitHub/ecomplab/emln/R/**)",
+      "Bash(cp /Users/shai/GitHub/ecomplab/multilayer_viz/emln/R/multilayer_to_json.R /Users/shai/GitHub/ecomplab/emln/R/)",
+      "Bash(cp /Users/shai/GitHub/ecomplab/multilayer_viz/emln/R/plot_multilayer.R /Users/shai/GitHub/ecomplab/emln/R/)",
+      "Bash(rsync -a /Users/shai/GitHub/ecomplab/multilayer_viz/emln/inst/ /Users/shai/GitHub/ecomplab/emln/inst/)",
+      "Read(//Users/shai/GitHub/ecomplab/emln/**)",
+      "Bash(npm run:*)",
+      "Bash(Rscript -e 'devtools::load_all\\(\".\"\\); net <- load_emln\\(14\\); cat\\(\"=== nodes ===\\\\n\"\\); print\\(head\\(net$nodes\\)\\); cat\\(\"\\\\n=== state_nodes ===\\\\n\"\\); print\\(head\\(net$state_nodes\\)\\); cat\\(\"\\\\n=== layers ===\\\\n\"\\); print\\(net$layers\\)')",
+      "Bash(Rscript -e 'devtools::load_all\\(\".\"\\); net <- load_emln\\(14\\); srv <- plot_multilayer\\(net, bipartite = TRUE\\); Sys.sleep\\(1\\); httpuv::stopServer\\(srv\\); cat\\(\"OK\\\\n\"\\)')",
+      "Bash(Rscript run_integration_test.R)",
+      "Bash(grep -v \"^Loading\\\\|^Attaching\\\\|masked\\\\|^The follow\\\\|^  num\\\\|^  na_if\\\\|Creating\\\\|^$\")",
+      "Bash(Rscript -e 'devtools::load_all\\(\".\",quiet=TRUE\\); net <- load_emln\\(14\\); srv <- plot_multilayer\\(net,bipartite=TRUE,directed=FALSE\\); cat\\(class\\(srv\\),\"\\\\n\"\\); cat\\(names\\(srv\\),\"\\\\n\"\\); httpuv::stopServer\\(srv\\)')",
+      "Bash(Rscript -e ':*)",
+      "Bash(wait)",
+      "Bash(xargs kill:*)",
+      "Bash(grep -v \"^Loading\\\\|^Attach\\\\|masked\\\\|^The follow\\\\|^  num\\\\|^  na_if\\\\|Creating\\\\|^$\")"
+    ],
+    "additionalDirectories": [
+      "/Users/shai/GitHub/ecomplab/emln"
+    ]
+  }
+}

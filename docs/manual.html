@@ -222,6 +222,13 @@
   <a href="#toolbar" class="l1">Bottom-Left Toolbar</a>
   <a href="#legend" class="l1">Dynamic Legend</a>
   <a href="#interactions" class="l1">Advanced Interactions</a>
+
+  <div class="toc-sep"></div>
+
+  <a href="#emln" class="l1">📦 Integration with emln</a>
+  <a href="#emln-plot" class="l2">plot_multilayer()</a>
+  <a href="#emln-json" class="l2">multilayer_to_json()</a>
+  <a href="#emln-csv" class="l2">multilayer_to_csv()</a>
 </nav>
 
 <!-- ══ Content ══════════════════════════════════════════════════════════ -->
@@ -550,6 +557,64 @@
     <li><span class="key">Node / Link Hover</span> — highlights nearest connections and dims the rest. A tooltip shows exact node data.</li>
     <li><span class="key">Selection Focus</span> — click a node to lock its web of connections. Click the background to clear the selection.</li>
   </ul>
+
+  <hr>
+
+  <!-- ── EMLN INTEGRATION ──────────────────────────────────────────────── -->
+  <h2 class="sec mode-misc" id="emln">📦 Integration with the emln R Package</h2>
+  <p>The <a href="https://ecological-complexity-lab.github.io/emln_package/" target="_blank">emln</a> R package provides three functions to load and export multilayer networks directly into MultilayerViz — no manual file preparation required.</p>
+
+  <pre style="background:#f3f4f6;border:1px solid #e5e7eb;border-radius:6px;padding:14px;font-size:12px;line-height:1.7"><code style="background:none;border:none;padding:0;color:#1f2937">library(emln)
+net &lt;- load_emln(60)               # load a built-in dataset
+
+# Open directly in the browser
+srv &lt;- plot_multilayer(net, bipartite = TRUE)
+httpuv::stopServer(srv)            # stop server when done
+
+# Or export to JSON / CSV for manual upload
+multilayer_to_json(net, file = "network.json", bipartite = TRUE)
+multilayer_to_csv(net, dir = "out/", prefix = "net60", bipartite = TRUE)</code></pre>
+
+  <h3 id="emln-plot">plot_multilayer()</h3>
+  <p>Converts the multilayer object to JSON and opens MultilayerViz in the default browser, served over a local HTTP server. The network loads automatically — no file selection needed.</p>
+  <table style="width:100%;border-collapse:collapse;font-size:13px;margin-top:8px">
+    <thead><tr style="background:#f3f4f6"><th style="padding:6px 10px;text-align:left;border:1px solid #e5e7eb">Argument</th><th style="padding:6px 10px;text-align:left;border:1px solid #e5e7eb">Default</th><th style="padding:6px 10px;text-align:left;border:1px solid #e5e7eb">Description</th></tr></thead>
+    <tbody>
+      <tr><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>multilayer</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb">—</td><td style="padding:6px 10px;border:1px solid #e5e7eb">A multilayer object from <code>create_multilayer_network()</code> or <code>load_emln()</code>.</td></tr>
+      <tr><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>bipartite</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>FALSE</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb">Set <code>TRUE</code> explicitly for bipartite networks. Requires a <code>node_type</code> (or legacy <code>node_group</code> / <code>type</code>) column with exactly two distinct values.</td></tr>
+      <tr><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>directed</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>NULL</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb">If <code>NULL</code>, auto-detected from edge symmetry. Set explicitly if auto-detection is wrong (e.g. pollinator networks store edges one-way but are ecologically undirected).</td></tr>
+      <tr><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>port</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>8080</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb">Starting port for the local HTTP server. Next available port is tried automatically if busy. Actual port printed to console; retrieve with <code>srv$getPort()</code>.</td></tr>
+      <tr><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>viz_path</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>NULL</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb">Path to the MultilayerViz directory. If <code>NULL</code>, uses the copy bundled with the installed emln package. Pass explicitly to use a different version of the app.</td></tr>
+      <tr><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>browser</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>getOption("browser")</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb">Browser command. On macOS, <code>"chrome"</code> is automatically expanded to <code>open -a 'Google Chrome'</code>.</td></tr>
+    </tbody>
+  </table>
+  <p style="margin-top:8px"><strong>Returns:</strong> the httpuv server handle. Call <code>httpuv::stopServer(srv)</code> or close R to shut it down. To kill all app servers from the terminal: <code>lsof -ti TCP:8000-8200 | xargs kill -9</code></p>
+
+  <h3 id="emln-json">multilayer_to_json()</h3>
+  <p>Exports the network to the <a href="#data-format">JSON format</a> expected by MultilayerViz. Returns the JSON string, or writes it to a file.</p>
+  <table style="width:100%;border-collapse:collapse;font-size:13px;margin-top:8px">
+    <thead><tr style="background:#f3f4f6"><th style="padding:6px 10px;text-align:left;border:1px solid #e5e7eb">Argument</th><th style="padding:6px 10px;text-align:left;border:1px solid #e5e7eb">Default</th><th style="padding:6px 10px;text-align:left;border:1px solid #e5e7eb">Description</th></tr></thead>
+    <tbody>
+      <tr><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>multilayer</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb">—</td><td style="padding:6px 10px;border:1px solid #e5e7eb">A multilayer object.</td></tr>
+      <tr><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>file</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>NULL</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb">If provided, writes JSON to this file path. If <code>NULL</code>, returns the JSON string invisibly.</td></tr>
+      <tr><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>bipartite</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>FALSE</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb">Same as <code>plot_multilayer()</code>. Adds <code>bipartite: true</code> to every layer in the JSON.</td></tr>
+      <tr><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>directed</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>NULL</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb">Sets the top-level <code>directed</code> field in the JSON. Auto-detected if <code>NULL</code>.</td></tr>
+    </tbody>
+  </table>
+  <p style="margin-top:8px"><strong>Legacy column renaming:</strong> the nodes table column <code>node_group</code> or <code>type</code> is automatically renamed to <code>node_type</code> (the canonical name) in the output.</p>
+
+  <h3 id="emln-csv">multilayer_to_csv()</h3>
+  <p>Exports the network as three CSV files matching the <a href="#import-csv">CSV import</a> schema — ready to drag-and-drop into MultilayerViz.</p>
+  <table style="width:100%;border-collapse:collapse;font-size:13px;margin-top:8px">
+    <thead><tr style="background:#f3f4f6"><th style="padding:6px 10px;text-align:left;border:1px solid #e5e7eb">Argument</th><th style="padding:6px 10px;text-align:left;border:1px solid #e5e7eb">Default</th><th style="padding:6px 10px;text-align:left;border:1px solid #e5e7eb">Description</th></tr></thead>
+    <tbody>
+      <tr><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>multilayer</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb">—</td><td style="padding:6px 10px;border:1px solid #e5e7eb">A multilayer object.</td></tr>
+      <tr><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>dir</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb">—</td><td style="padding:6px 10px;border:1px solid #e5e7eb">Output directory. Created automatically if it does not exist.</td></tr>
+      <tr><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>prefix</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>"network"</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb">File name prefix. Produces <code>&lt;prefix&gt;_edges.csv</code>, <code>&lt;prefix&gt;_layers.csv</code>, <code>&lt;prefix&gt;_nodes.csv</code>.</td></tr>
+      <tr><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>bipartite</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>FALSE</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb">When <code>TRUE</code>, adds a <code>bipartite</code> column to the layers CSV and writes <code>node_type</code> to the nodes CSV.</td></tr>
+      <tr><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>directed</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>NULL</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb">Not written to files — set directed/undirected in the app's CSV import dialog at load time.</td></tr>
+    </tbody>
+  </table>
 
 </main>
 
