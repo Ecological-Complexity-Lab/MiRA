@@ -60,7 +60,9 @@ export class Renderer {
         this.defaultInterColor = 'rgba(30,100,220,0.8)';
         this.layerColorFn = null; // (layerIndex, layer) -> { fill, border, text }
 
-        this.arrowheadSize = 1; // multiplier, 1 = default
+        this.arrowheadSize = 1;       // multiplier, 1 = default
+        this.interlayerCurvature = 0.35; // fraction of link distance
+        this.interlayerMinWeight = 0;    // links below this weight are hidden
 
         this.showMapBackground = false;
         this.isMapMode = false;
@@ -573,6 +575,8 @@ export class Renderer {
                 continue;
             }
 
+            if (this.interlayerMinWeight > 0 && (link.weight || 0) < this.interlayerMinWeight) continue;
+
             const fromScreen = this.getNodeScreenPos(link.layer_from, link.node_from);
             const toScreen = this.getNodeScreenPos(link.layer_to, link.node_to);
             if (!fromScreen || !toScreen) continue;
@@ -593,7 +597,7 @@ export class Renderer {
             const dy = toScreen.y - fromScreen.y;
             const dist = Math.sqrt(dx * dx + dy * dy) || 1;
             // Perpendicular direction, with curvature proportional to distance
-            const curvature = dist * 0.35;
+            const curvature = dist * this.interlayerCurvature;
             const cpx = mx + (dy / dist) * curvature;
             const cpy = my - (dx / dist) * curvature;
 

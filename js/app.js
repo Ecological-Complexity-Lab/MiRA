@@ -325,6 +325,11 @@ function resetVisualizationOptions() {
     interLinkColorPicker.value = '#1e64dc';
     arrowheadSizeSlider.value = 1;
     renderer.arrowheadSize = 1;
+    interlayerCurvatureSlider.value = 0.35;
+    renderer.interlayerCurvature = 0.35;
+    interlayerWeightSlider.value = 0;
+    interlayerWeightLabel.textContent = '0';
+    renderer.interlayerMinWeight = 0;
 
     // Color functions
     renderer.nodeColorFn = null;
@@ -385,8 +390,18 @@ function loadData(json) {
             mapModeBtn.style.display = 'none';
         }
 
-        arrowheadSizeControl.style.display = model.directed ? 'block' : 'none';
-        interLinkColorControl.style.display = model.interlayerLinks.length > 0 ? 'flex' : 'none';
+        arrowheadSizeControl.style.display = (model.directed || model.directedInterlayer) ? 'block' : 'none';
+        const hasInterlayer = model.interlayerLinks.length > 0;
+        interLinkColorControl.style.display = hasInterlayer ? 'flex' : 'none';
+        interlayerControls.style.display    = hasInterlayer ? 'block' : 'none';
+        if (hasInterlayer) {
+            const weights = model.interlayerLinks.map(l => l.weight || 0).filter(w => w > 0);
+            const maxW = weights.length ? Math.max(...weights) : 1;
+            interlayerWeightSlider.max = maxW.toFixed(4);
+            interlayerWeightSlider.step = (maxW / 100).toFixed(4);
+            interlayerWeightSlider.value = 0;
+            interlayerWeightLabel.textContent = '0';
+        }
 
         // Reset out of any non-network mode when loading new data
         if (appMode === 'map')       { toggleMapMode(); }
@@ -1240,7 +1255,7 @@ function openLayerDrillDown(layerName) {
         section('Identity', [
             ['Layer name', layerName],
             ['Layer index', layerIdx],
-            ['Type', `${isDir ? 'Directed' : 'Undirected'} ${isBipartite ? 'bipartite' : 'unipartite'}`],
+            ['Type', `${isDir ? 'Directed' : (model.directedInterlayer ? 'Undirected (directed interlayer)' : 'Undirected')} ${isBipartite ? 'bipartite' : 'unipartite'}`],
         ]) +
         section('Size', sizeRows) +
         section('Connectivity', connectivityRows) +
@@ -1938,10 +1953,26 @@ nodeColorPicker.addEventListener('input', () => {
 
 const intraLinkColorPicker  = document.getElementById('intraLinkColorPicker');
 const interLinkColorPicker  = document.getElementById('interLinkColorPicker');
-const interLinkColorControl = document.getElementById('interLinkColorControl');
+const interLinkColorControl      = document.getElementById('interLinkColorControl');
+const interlayerControls         = document.getElementById('interlayerControls');
+const interlayerCurvatureSlider  = document.getElementById('interlayerCurvatureSlider');
+const interlayerWeightSlider     = document.getElementById('interlayerWeightSlider');
+const interlayerWeightLabel      = document.getElementById('interlayerWeightLabel');
 
 intraLinkColorPicker.addEventListener('input', () => { if (!linkColorSelect.value) updateLinkColors(); });
 interLinkColorPicker.addEventListener('input', () => { if (!linkColorSelect.value) updateLinkColors(); });
+
+interlayerCurvatureSlider.addEventListener('input', () => {
+    renderer.interlayerCurvature = parseFloat(interlayerCurvatureSlider.value);
+    renderer.render();
+});
+
+interlayerWeightSlider.addEventListener('input', () => {
+    const val = parseFloat(interlayerWeightSlider.value);
+    renderer.interlayerMinWeight = val;
+    interlayerWeightLabel.textContent = val.toFixed(2);
+    renderer.render();
+});
 
 arrowheadSizeSlider.addEventListener('input', () => {
     renderer.arrowheadSize = parseFloat(arrowheadSizeSlider.value);

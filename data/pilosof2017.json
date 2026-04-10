@@ -17773,5 +17773,6 @@
       "node_name": "Rhadinopsylla_integella",
       "abundance": 3
     }
-  ]
+  ],
+  "directed_interlayer": true
 }

@@ -19,7 +19,9 @@
       "Read(//Users/shai/GitHub/ecomplab/multilayer_viz/**)",
       "Bash(lsof -iTCP -sTCP:LISTEN)",
       "Bash(Rscript -e 'devtools::load_all\\(\".\",quiet=TRUE\\); net <- load_emln\\(14\\); cat\\(names\\(net$nodes\\), \"\\\\n\"\\)')",
-      "Bash(echo \"PID: $!\")"
+      "Bash(echo \"PID: $!\")",
+      "Bash(pkill -f \"python3 -m http.server 8000\")",
+      "Bash(echo \"Restarted PID: $!\")"
     ],
     "additionalDirectories": [
       "/Users/shai/GitHub/ecomplab/emln"

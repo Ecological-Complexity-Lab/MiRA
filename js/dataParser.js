@@ -101,18 +101,22 @@ export function parseMultilayerData(json) {
     }
   }
 
-  // Determine directed flag from any source: global flag, any layer flag, or any link flag.
-  // If any part of the network is directed, treat the whole network as directed.
+  // Determine directed flags.
+  // directed          — applies to intralayer links
+  // directedInterlayer — applies to interlayer links (defaults to same as directed)
   const directed = json.directed === true
     || json.layers.some(l => l.directed === true)
-    || json.extended.some(l => l.directed === true);
+    || intralayerLinks.some(l => l.directed === true);
 
-  // Propagate directed flag to all links so the renderer can draw arrowheads.
-  if (directed) {
-    for (const link of json.extended) link.directed = true;
-  }
+  const directedInterlayer = json.directed_interlayer === true
+    || directed  // if the whole network is directed, interlayer is too
+    || interlayerLinks.some(l => l.directed === true);
 
-  // If undirected, remove the in/out metrics to avoid cluttering attribute lists with zeros.
+  // Propagate directed flag per link type so the renderer can draw arrowheads.
+  for (const link of intralayerLinks)  link.directed = directed;
+  for (const link of interlayerLinks)  link.directed = directedInterlayer;
+
+  // If intralayer is undirected, remove in/out metrics to avoid cluttering attribute lists.
   if (!directed) {
     for (const sn of json.state_nodes) {
       delete sn.in_degree;
@@ -139,6 +143,7 @@ export function parseMultilayerData(json) {
     extended: json.extended,
     stateNodes: json.state_nodes,
     directed,
+    directedInterlayer,
     nodesById,
     nodesByName,
     layersById,
