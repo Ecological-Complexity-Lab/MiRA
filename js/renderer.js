@@ -563,7 +563,7 @@ export class Renderer {
 
             // Arrowhead for directed links
             if (link.directed) {
-                this._drawArrowhead(ctx, from.x, from.y, to.x, to.y, (14 + baseWidth * 1.5) * this.arrowheadSize, ctx.strokeStyle, isHighlighted ? 1 : 0.9);
+                this._drawArrowhead(ctx, from.x, from.y, to.x, to.y, (14 + baseWidth * 1.5) * this.arrowheadSize, ctx.strokeStyle, isFaded ? 0.04 : isHighlighted ? 1 : 0.9);
             }
         }
     }
@@ -620,7 +620,7 @@ export class Renderer {
                 const tangentY = toScreen.y - cpy;
                 const fakeFromX = toScreen.x - tangentX;
                 const fakeFromY = toScreen.y - tangentY;
-                this._drawArrowhead(ctx, fakeFromX, fakeFromY, toScreen.x, toScreen.y, (14 + baseWidth * 1.5) * this.arrowheadSize, ctx.strokeStyle, isHighlighted ? 1 : 0.7);
+                this._drawArrowhead(ctx, fakeFromX, fakeFromY, toScreen.x, toScreen.y, (14 + baseWidth * 1.5) * this.arrowheadSize, ctx.strokeStyle, isFaded ? 0.04 : isHighlighted ? 1 : 0.7);
             }
         }
     }

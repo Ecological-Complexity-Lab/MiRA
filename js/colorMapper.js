@@ -48,7 +48,11 @@ export class ColorMapper {
      */
     buildColorScale(items, attrName, forceType = null) {
         const values = items.map(item => item[attrName]).filter(v => v !== undefined && v !== null);
-        const uniqueValues = [...new Set(values)];
+        const uniqueValues = [...new Set(values)].sort((a, b) => {
+            const na = Number(a), nb = Number(b);
+            if (!isNaN(na) && !isNaN(nb)) return na - nb;
+            return String(a).localeCompare(String(b));
+        });
 
         // Check if numeric. We allow numbers and string-represented numbers (excluding pure whitespace).
         const allNumeric = values.length > 0 && values.every(v =>

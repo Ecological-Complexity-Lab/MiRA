@@ -15139,2639 +15139,3016 @@
       "node_id": 1,
       "layer_name": "1982",
       "node_name": "Apodemus_agrarius",
-      "abundance": 82
+      "abundance": 82,
+      "module": 3
     },
     {
       "layer_id": 1,
       "node_id": 2,
       "layer_name": "1982",
       "node_name": "Apodemus_peninsulae",
-      "abundance": 14
+      "abundance": 14,
+      "module": 3
     },
     {
       "layer_id": 1,
       "node_id": 3,
       "layer_name": "1982",
       "node_name": "Arvicola_terrestris",
-      "abundance": 29
+      "abundance": 29,
+      "module": 1
     },
     {
       "layer_id": 1,
       "node_id": 4,
       "layer_name": "1982",
       "node_name": "Asioscalops_altaica",
-      "abundance": 1
+      "abundance": 1,
+      "module": 2
     },
     {
       "layer_id": 1,
       "node_id": 5,
       "layer_name": "1982",
       "node_name": "Cricetus_cricetus",
-      "abundance": 7
+      "abundance": 7,
+      "module": 6
     },
     {
       "layer_id": 1,
       "node_id": 6,
       "layer_name": "1982",
       "node_name": "Eutamias_sibiricus",
-      "abundance": 13
+      "abundance": 13,
+      "module": 4
     },
     {
       "layer_id": 1,
       "node_id": 7,
       "layer_name": "1982",
       "node_name": "Microtus_agrestis",
-      "abundance": 31
+      "abundance": 31,
+      "module": 1
     },
     {
       "layer_id": 1,
       "node_id": 8,
       "layer_name": "1982",
       "node_name": "Microtus_arvalis",
-      "abundance": 9
+      "abundance": 9,
+      "module": 1
     },
     {
       "layer_id": 1,
       "node_id": 9,
       "layer_name": "1982",
       "node_name": "Microtus_gregalis",
-      "abundance": 234
+      "abundance": 234,
+      "module": 1
     },
     {
       "layer_id": 1,
       "node_id": 10,
       "layer_name": "1982",
       "node_name": "Microtus_minutus",
-      "abundance": 21
+      "abundance": 21,
+      "module": 1
     },
     {
       "layer_id": 1,
       "node_id": 11,
       "layer_name": "1982",
       "node_name": "Microtus_oeconomus",
-      "abundance": 63
+      "abundance": 63,
+      "module": 1
     },
     {
       "layer_id": 1,
       "node_id": 12,
       "layer_name": "1982",
       "node_name": "Mus_musculus",
-      "abundance": 20
+      "abundance": 20,
+      "module": 5
     },
     {
       "layer_id": 1,
       "node_id": 13,
       "layer_name": "1982",
       "node_name": "Myodes_glareolus",
-      "abundance": 30
+      "abundance": 30,
+      "module": 1
     },
     {
       "layer_id": 1,
       "node_id": 14,
       "layer_name": "1982",
       "node_name": "Myodes_rufocanus",
-      "abundance": 29
+      "abundance": 29,
+      "module": 1
     },
     {
       "layer_id": 1,
       "node_id": 15,
       "layer_name": "1982",
       "node_name": "Myodes_rutilus",
-      "abundance": 95
+      "abundance": 95,
+      "module": 1
     },
     {
       "layer_id": 1,
       "node_id": 17,
       "layer_name": "1982",
       "node_name": "Sicista_betulina",
-      "abundance": 95
+      "abundance": 95,
+      "module": 1
     },
     {
       "layer_id": 1,
       "node_id": 18,
       "layer_name": "1982",
       "node_name": "Sorex_araneus",
-      "abundance": 270
+      "abundance": 270,
+      "module": 2
     },
     {
       "layer_id": 1,
       "node_id": 19,
       "layer_name": "1982",
       "node_name": "Sorex_caecutiens",
-      "abundance": 17
+      "abundance": 17,
+      "module": 2
     },
     {
       "layer_id": 1,
       "node_id": 20,
       "layer_name": "1982",
       "node_name": "Sorex_isodon",
-      "abundance": 15
+      "abundance": 15,
+      "module": 2
     },
     {
       "layer_id": 1,
       "node_id": 21,
       "layer_name": "1982",
       "node_name": "Sorex_minutus",
-      "abundance": 102
+      "abundance": 102,
+      "module": 2
     },
     {
       "layer_id": 1,
       "node_id": 22,
       "layer_name": "1982",
       "node_name": "Sorex_tundrensis",
-      "abundance": 17
+      "abundance": 17,
+      "module": 2
     },
     {
       "layer_id": 1,
       "node_id": 70,
       "layer_name": "1982",
       "node_name": "Amalaraeus_penicilliger",
-      "abundance": 543
+      "abundance": 543,
+      "module": 1
     },
     {
       "layer_id": 1,
       "node_id": 24,
       "layer_name": "1982",
       "node_name": "Amerosejus_corbicula",
-      "abundance": 2
+      "abundance": 2,
+      "module": 5
     },
     {
       "layer_id": 1,
       "node_id": 65,
       "layer_name": "1982",
       "node_name": "Amphipsylla_sibirica",
-      "abundance": 4
+      "abundance": 4,
+      "module": 1
     },
     {
       "layer_id": 1,
       "node_id": 23,
       "layer_name": "1982",
       "node_name": "Androlaelaps_glasgowi",
-      "abundance": 968
+      "abundance": 968,
+      "module": 1
     },
     {
       "layer_id": 1,
       "node_id": 66,
       "layer_name": "1982",
       "node_name": "Ceratophyllus_indages",
-      "abundance": 7
+      "abundance": 7,
+      "module": 4
     },
     {
       "layer_id": 1,
       "node_id": 67,
       "layer_name": "1982",
       "node_name": "Ctenophthalmus_assimilis",
-      "abundance": 466
+      "abundance": 466,
+      "module": 1
     },
     {
       "layer_id": 1,
       "node_id": 27,
       "layer_name": "1982",
       "node_name": "Eulaelaps_stabularis",
-      "abundance": 105
+      "abundance": 105,
+      "module": 1
     },
     {
       "layer_id": 1,
       "node_id": 25,
       "layer_name": "1982",
       "node_name": "Euryparasitus_emarginatus",
-      "abundance": 22
+      "abundance": 22,
+      "module": 2
     },
     {
       "layer_id": 1,
       "node_id": 26,
       "layer_name": "1982",
       "node_name": "Euryparasitus_medius",
-      "abundance": 1
+      "abundance": 1,
+      "module": 4
     },
     {
       "layer_id": 1,
       "node_id": 72,
       "layer_name": "1982",
       "node_name": "Frontopsylla_elata",
-      "abundance": 4
+      "abundance": 4,
+      "module": 1
     },
     {
       "layer_id": 1,
       "node_id": 28,
       "layer_name": "1982",
       "node_name": "Haemogamasus_ambulans",
-      "abundance": 32
+      "abundance": 32,
+      "module": 1
     },
     {
       "layer_id": 1,
       "node_id": 29,
       "layer_name": "1982",
       "node_name": "Haemogamasus_mandschuricus",
-      "abundance": 27
+      "abundance": 27,
+      "module": 1
     },
     {
       "layer_id": 1,
       "node_id": 31,
       "layer_name": "1982",
       "node_name": "Haemogamasus_nidiformes",
-      "abundance": 10
+      "abundance": 10,
+      "module": 1
     },
     {
       "layer_id": 1,
       "node_id": 33,
       "layer_name": "1982",
       "node_name": "Hirstionyssus_criceti",
-      "abundance": 16
+      "abundance": 16,
+      "module": 6
     },
     {
       "layer_id": 1,
       "node_id": 34,
       "layer_name": "1982",
       "node_name": "Hirstionyssus_isabellinus",
-      "abundance": 160
+      "abundance": 160,
+      "module": 1
     },
     {
       "layer_id": 1,
       "node_id": 35,
       "layer_name": "1982",
       "node_name": "Hirstionyssus_soricis",
-      "abundance": 90
+      "abundance": 90,
+      "module": 2
     },
     {
       "layer_id": 1,
       "node_id": 73,
       "layer_name": "1982",
       "node_name": "Histrichopsylla_talpae",
-      "abundance": 234
+      "abundance": 234,
+      "module": 1
     },
     {
       "layer_id": 1,
       "node_id": 36,
       "layer_name": "1982",
       "node_name": "Holoparasitus_gontscharovae",
-      "abundance": 1
+      "abundance": 1,
+      "module": 3
     },
     {
       "layer_id": 1,
       "node_id": 37,
       "layer_name": "1982",
       "node_name": "Hyperlaelaps_arvalis",
-      "abundance": 1
+      "abundance": 1,
+      "module": 1
     },
     {
       "layer_id": 1,
       "node_id": 38,
       "layer_name": "1982",
       "node_name": "Iphidosoma_fimetarium",
-      "abundance": 6
+      "abundance": 6,
+      "module": 4
     },
     {
       "layer_id": 1,
       "node_id": 40,
       "layer_name": "1982",
       "node_name": "Laelaps_clethrionomydis",
-      "abundance": 324
+      "abundance": 324,
+      "module": 1
     },
     {
       "layer_id": 1,
       "node_id": 41,
       "layer_name": "1982",
       "node_name": "Laelaps_hilaris",
-      "abundance": 5
+      "abundance": 5,
+      "module": 1
     },
     {
       "layer_id": 1,
       "node_id": 43,
       "layer_name": "1982",
       "node_name": "Laelaps_muris",
-      "abundance": 212
+      "abundance": 212,
+      "module": 1
     },
     {
       "layer_id": 1,
       "node_id": 44,
       "layer_name": "1982",
       "node_name": "Laelaps_pavlovskyi",
-      "abundance": 64
+      "abundance": 64,
+      "module": 3
     },
     {
       "layer_id": 1,
       "node_id": 39,
       "layer_name": "1982",
       "node_name": "Laelaspis_astronomicus",
-      "abundance": 3
+      "abundance": 3,
+      "module": 1
     },
     {
       "layer_id": 1,
       "node_id": 46,
       "layer_name": "1982",
       "node_name": "Macrocheles_decoloratus",
-      "abundance": 6
+      "abundance": 6,
+      "module": 6
     },
     {
       "layer_id": 1,
       "node_id": 48,
       "layer_name": "1982",
       "node_name": "Macrocheles_glaber",
-      "abundance": 18
+      "abundance": 18,
+      "module": 1
     },
     {
       "layer_id": 1,
       "node_id": 45,
       "layer_name": "1982",
       "node_name": "Macrocheles_matrius",
-      "abundance": 30
+      "abundance": 30,
+      "module": 1
     },
     {
       "layer_id": 1,
       "node_id": 49,
       "layer_name": "1982",
       "node_name": "Macrocheles_nataliae",
-      "abundance": 10
+      "abundance": 10,
+      "module": 1
     },
     {
       "layer_id": 1,
       "node_id": 50,
       "layer_name": "1982",
       "node_name": "Macrocheles_rotundiscutus",
-      "abundance": 3
+      "abundance": 3,
+      "module": 2
     },
     {
       "layer_id": 1,
       "node_id": 69,
       "layer_name": "1982",
       "node_name": "Megabothris_rectangulatus",
-      "abundance": 272
+      "abundance": 272,
+      "module": 1
     },
     {
       "layer_id": 1,
       "node_id": 68,
       "layer_name": "1982",
       "node_name": "Megabothris_turbidus",
-      "abundance": 3
+      "abundance": 3,
+      "module": 1
     },
     {
       "layer_id": 1,
       "node_id": 47,
       "layer_name": "1982",
       "node_name": "Myonyssus_ingricus",
-      "abundance": 1
+      "abundance": 1,
+      "module": 3
     },
     {
       "layer_id": 1,
       "node_id": 75,
       "layer_name": "1982",
       "node_name": "Neopsylla_acanthina",
-      "abundance": 81
+      "abundance": 81,
+      "module": 3
     },
     {
       "layer_id": 1,
       "node_id": 76,
       "layer_name": "1982",
       "node_name": "Neopsylla_mana",
-      "abundance": 33
+      "abundance": 33,
+      "module": 3
     },
     {
       "layer_id": 1,
       "node_id": 77,
       "layer_name": "1982",
       "node_name": "Palaeopsylla_soricis",
-      "abundance": 821
+      "abundance": 821,
+      "module": 2
     },
     {
       "layer_id": 1,
       "node_id": 52,
       "layer_name": "1982",
       "node_name": "Parasitus_coleoptratorum",
-      "abundance": 4
+      "abundance": 4,
+      "module": 2
     },
     {
       "layer_id": 1,
       "node_id": 53,
       "layer_name": "1982",
       "node_name": "Parasitus_consanguineus",
-      "abundance": 121
+      "abundance": 121,
+      "module": 1
     },
     {
       "layer_id": 1,
       "node_id": 57,
       "layer_name": "1982",
       "node_name": "Parasitus_fimetorum",
-      "abundance": 9
+      "abundance": 9,
+      "module": 1
     },
     {
       "layer_id": 1,
       "node_id": 61,
       "layer_name": "1982",
       "node_name": "Parasitus_oudemansi",
-      "abundance": 27
+      "abundance": 27,
+      "module": 4
     },
     {
       "layer_id": 1,
       "node_id": 62,
       "layer_name": "1982",
       "node_name": "Parasitus_remberti",
-      "abundance": 3
+      "abundance": 3,
+      "module": 2
     },
     {
       "layer_id": 1,
       "node_id": 55,
       "layer_name": "1982",
       "node_name": "Pergamasus_crassipes",
-      "abundance": 14
+      "abundance": 14,
+      "module": 1
     },
     {
       "layer_id": 1,
       "node_id": 60,
       "layer_name": "1982",
       "node_name": "Poecilochirus_necrophori",
-      "abundance": 201
+      "abundance": 201,
+      "module": 1
     },
     {
       "layer_id": 1,
       "node_id": 63,
       "layer_name": "1982",
       "node_name": "Poecilochirus_subterraneus",
-      "abundance": 31
+      "abundance": 31,
+      "module": 2
     },
     {
       "layer_id": 1,
       "node_id": 64,
       "layer_name": "1982",
       "node_name": "Proctolaelaps_pygmaeus",
-      "abundance": 17
+      "abundance": 17,
+      "module": 5
     },
     {
       "layer_id": 1,
       "node_id": 78,
       "layer_name": "1982",
       "node_name": "Rhadinopsylla_integella",
-      "abundance": 3
+      "abundance": 3,
+      "module": 1
     },
     {
       "layer_id": 2,
       "node_id": 1,
       "layer_name": "1983",
       "node_name": "Apodemus_agrarius",
-      "abundance": 107
+      "abundance": 107,
+      "module": 3
     },
     {
       "layer_id": 2,
       "node_id": 2,
       "layer_name": "1983",
       "node_name": "Apodemus_peninsulae",
-      "abundance": 9
+      "abundance": 9,
+      "module": 3
     },
     {
       "layer_id": 2,
       "node_id": 3,
       "layer_name": "1983",
       "node_name": "Arvicola_terrestris",
-      "abundance": 47
+      "abundance": 47,
+      "module": 1
     },
     {
       "layer_id": 2,
       "node_id": 4,
       "layer_name": "1983",
       "node_name": "Asioscalops_altaica",
-      "abundance": 5
+      "abundance": 5,
+      "module": 2
     },
     {
       "layer_id": 2,
       "node_id": 5,
       "layer_name": "1983",
       "node_name": "Cricetus_cricetus",
-      "abundance": 3
+      "abundance": 3,
+      "module": 6
     },
     {
       "layer_id": 2,
       "node_id": 6,
       "layer_name": "1983",
       "node_name": "Eutamias_sibiricus",
-      "abundance": 7
+      "abundance": 7,
+      "module": 4
     },
     {
       "layer_id": 2,
       "node_id": 7,
       "layer_name": "1983",
       "node_name": "Microtus_agrestis",
-      "abundance": 41
+      "abundance": 41,
+      "module": 1
     },
     {
       "layer_id": 2,
       "node_id": 8,
       "layer_name": "1983",
       "node_name": "Microtus_arvalis",
-      "abundance": 41
+      "abundance": 41,
+      "module": 1
     },
     {
       "layer_id": 2,
       "node_id": 9,
       "layer_name": "1983",
       "node_name": "Microtus_gregalis",
-      "abundance": 284
+      "abundance": 284,
+      "module": 1
     },
     {
       "layer_id": 2,
       "node_id": 10,
       "layer_name": "1983",
       "node_name": "Microtus_minutus",
-      "abundance": 26
+      "abundance": 26,
+      "module": 1
     },
     {
       "layer_id": 2,
       "node_id": 11,
       "layer_name": "1983",
       "node_name": "Microtus_oeconomus",
-      "abundance": 41
+      "abundance": 41,
+      "module": 1
     },
     {
       "layer_id": 2,
       "node_id": 12,
       "layer_name": "1983",
       "node_name": "Mus_musculus",
-      "abundance": 31
+      "abundance": 31,
+      "module": 5
     },
     {
       "layer_id": 2,
       "node_id": 13,
       "layer_name": "1983",
       "node_name": "Myodes_glareolus",
-      "abundance": 8
+      "abundance": 8,
+      "module": 1
     },
     {
       "layer_id": 2,
       "node_id": 14,
       "layer_name": "1983",
       "node_name": "Myodes_rufocanus",
-      "abundance": 34
+      "abundance": 34,
+      "module": 1
     },
     {
       "layer_id": 2,
       "node_id": 15,
       "layer_name": "1983",
       "node_name": "Myodes_rutilus",
-      "abundance": 59
+      "abundance": 59,
+      "module": 1
     },
     {
       "layer_id": 2,
       "node_id": 16,
       "layer_name": "1983",
       "node_name": "Neomys_fodiens",
-      "abundance": 2
+      "abundance": 2,
+      "module": 2
     },
     {
       "layer_id": 2,
       "node_id": 17,
       "layer_name": "1983",
       "node_name": "Sicista_betulina",
-      "abundance": 56
+      "abundance": 56,
+      "module": 1
     },
     {
       "layer_id": 2,
       "node_id": 18,
       "layer_name": "1983",
       "node_name": "Sorex_araneus",
-      "abundance": 253
+      "abundance": 253,
+      "module": 2
     },
     {
       "layer_id": 2,
       "node_id": 19,
       "layer_name": "1983",
       "node_name": "Sorex_caecutiens",
-      "abundance": 12
+      "abundance": 12,
+      "module": 2
     },
     {
       "layer_id": 2,
       "node_id": 20,
       "layer_name": "1983",
       "node_name": "Sorex_isodon",
-      "abundance": 15
+      "abundance": 15,
+      "module": 2
     },
     {
       "layer_id": 2,
       "node_id": 21,
       "layer_name": "1983",
       "node_name": "Sorex_minutus",
-      "abundance": 35
+      "abundance": 35,
+      "module": 2
     },
     {
       "layer_id": 2,
       "node_id": 22,
       "layer_name": "1983",
       "node_name": "Sorex_tundrensis",
-      "abundance": 13
+      "abundance": 13,
+      "module": 2
     },
     {
       "layer_id": 2,
       "node_id": 70,
       "layer_name": "1983",
       "node_name": "Amalaraeus_penicilliger",
-      "abundance": 492
+      "abundance": 492,
+      "module": 1
     },
     {
       "layer_id": 2,
       "node_id": 24,
       "layer_name": "1983",
       "node_name": "Amerosejus_corbicula",
-      "abundance": 12
+      "abundance": 12,
+      "module": 5
     },
     {
       "layer_id": 2,
       "node_id": 65,
       "layer_name": "1983",
       "node_name": "Amphipsylla_sibirica",
-      "abundance": 4
+      "abundance": 4,
+      "module": 1
     },
     {
       "layer_id": 2,
       "node_id": 23,
       "layer_name": "1983",
       "node_name": "Androlaelaps_glasgowi",
-      "abundance": 1256
+      "abundance": 1256,
+      "module": 1
     },
     {
       "layer_id": 2,
       "node_id": 66,
       "layer_name": "1983",
       "node_name": "Ceratophyllus_indages",
-      "abundance": 25
+      "abundance": 25,
+      "module": 4
     },
     {
       "layer_id": 2,
       "node_id": 67,
       "layer_name": "1983",
       "node_name": "Ctenophthalmus_assimilis",
-      "abundance": 359
+      "abundance": 359,
+      "module": 1
     },
     {
       "layer_id": 2,
       "node_id": 27,
       "layer_name": "1983",
       "node_name": "Eulaelaps_stabularis",
-      "abundance": 89
+      "abundance": 89,
+      "module": 1
     },
     {
       "layer_id": 2,
       "node_id": 25,
       "layer_name": "1983",
       "node_name": "Euryparasitus_emarginatus",
-      "abundance": 10
+      "abundance": 10,
+      "module": 2
     },
     {
       "layer_id": 2,
       "node_id": 26,
       "layer_name": "1983",
       "node_name": "Euryparasitus_medius",
-      "abundance": 5
+      "abundance": 5,
+      "module": 2
     },
     {
       "layer_id": 2,
       "node_id": 28,
       "layer_name": "1983",
       "node_name": "Haemogamasus_ambulans",
-      "abundance": 21
+      "abundance": 21,
+      "module": 1
     },
     {
       "layer_id": 2,
       "node_id": 29,
       "layer_name": "1983",
       "node_name": "Haemogamasus_mandschuricus",
-      "abundance": 58
+      "abundance": 58,
+      "module": 1
     },
     {
       "layer_id": 2,
       "node_id": 30,
       "layer_name": "1983",
       "node_name": "Haemogamasus_nidi",
-      "abundance": 5
+      "abundance": 5,
+      "module": 1
     },
     {
       "layer_id": 2,
       "node_id": 31,
       "layer_name": "1983",
       "node_name": "Haemogamasus_nidiformes",
-      "abundance": 36
+      "abundance": 36,
+      "module": 1
     },
     {
       "layer_id": 2,
       "node_id": 33,
       "layer_name": "1983",
       "node_name": "Hirstionyssus_criceti",
-      "abundance": 1
+      "abundance": 1,
+      "module": 6
     },
     {
       "layer_id": 2,
       "node_id": 34,
       "layer_name": "1983",
       "node_name": "Hirstionyssus_isabellinus",
-      "abundance": 309
+      "abundance": 309,
+      "module": 1
     },
     {
       "layer_id": 2,
       "node_id": 35,
       "layer_name": "1983",
       "node_name": "Hirstionyssus_soricis",
-      "abundance": 182
+      "abundance": 182,
+      "module": 2
     },
     {
       "layer_id": 2,
       "node_id": 73,
       "layer_name": "1983",
       "node_name": "Histrichopsylla_talpae",
-      "abundance": 69
+      "abundance": 69,
+      "module": 1
     },
     {
       "layer_id": 2,
       "node_id": 40,
       "layer_name": "1983",
       "node_name": "Laelaps_clethrionomydis",
-      "abundance": 327
+      "abundance": 327,
+      "module": 1
     },
     {
       "layer_id": 2,
       "node_id": 41,
       "layer_name": "1983",
       "node_name": "Laelaps_hilaris",
-      "abundance": 21
+      "abundance": 21,
+      "module": 1
     },
     {
       "layer_id": 2,
       "node_id": 43,
       "layer_name": "1983",
       "node_name": "Laelaps_muris",
-      "abundance": 44
+      "abundance": 44,
+      "module": 1
     },
     {
       "layer_id": 2,
       "node_id": 44,
       "layer_name": "1983",
       "node_name": "Laelaps_pavlovskyi",
-      "abundance": 136
+      "abundance": 136,
+      "module": 3
     },
     {
       "layer_id": 2,
       "node_id": 39,
       "layer_name": "1983",
       "node_name": "Laelaspis_astronomicus",
-      "abundance": 1
+      "abundance": 1,
+      "module": 1
     },
     {
       "layer_id": 2,
       "node_id": 74,
       "layer_name": "1983",
       "node_name": "Leptopsylla_segnis",
-      "abundance": 14
+      "abundance": 14,
+      "module": 5
     },
     {
       "layer_id": 2,
       "node_id": 46,
       "layer_name": "1983",
       "node_name": "Macrocheles_decoloratus",
-      "abundance": 3
+      "abundance": 3,
+      "module": 2
     },
     {
       "layer_id": 2,
       "node_id": 48,
       "layer_name": "1983",
       "node_name": "Macrocheles_glaber",
-      "abundance": 34
+      "abundance": 34,
+      "module": 1
     },
     {
       "layer_id": 2,
       "node_id": 45,
       "layer_name": "1983",
       "node_name": "Macrocheles_matrius",
-      "abundance": 1
+      "abundance": 1,
+      "module": 1
     },
     {
       "layer_id": 2,
       "node_id": 49,
       "layer_name": "1983",
       "node_name": "Macrocheles_nataliae",
-      "abundance": 6
+      "abundance": 6,
+      "module": 1
     },
     {
       "layer_id": 2,
       "node_id": 50,
       "layer_name": "1983",
       "node_name": "Macrocheles_rotundiscutus",
-      "abundance": 9
+      "abundance": 9,
+      "module": 3
     },
     {
       "layer_id": 2,
       "node_id": 69,
       "layer_name": "1983",
       "node_name": "Megabothris_rectangulatus",
-      "abundance": 124
+      "abundance": 124,
+      "module": 1
     },
     {
       "layer_id": 2,
       "node_id": 68,
       "layer_name": "1983",
       "node_name": "Megabothris_turbidus",
-      "abundance": 2
+      "abundance": 2,
+      "module": 1
     },
     {
       "layer_id": 2,
       "node_id": 47,
       "layer_name": "1983",
       "node_name": "Myonyssus_ingricus",
-      "abundance": 1
+      "abundance": 1,
+      "module": 2
     },
     {
       "layer_id": 2,
       "node_id": 75,
       "layer_name": "1983",
       "node_name": "Neopsylla_acanthina",
-      "abundance": 35
+      "abundance": 35,
+      "module": 3
     },
     {
       "layer_id": 2,
       "node_id": 76,
       "layer_name": "1983",
       "node_name": "Neopsylla_mana",
-      "abundance": 14
+      "abundance": 14,
+      "module": 3
     },
     {
       "layer_id": 2,
       "node_id": 77,
       "layer_name": "1983",
       "node_name": "Palaeopsylla_soricis",
-      "abundance": 241
+      "abundance": 241,
+      "module": 2
     },
     {
       "layer_id": 2,
       "node_id": 52,
       "layer_name": "1983",
       "node_name": "Parasitus_coleoptratorum",
-      "abundance": 1
+      "abundance": 1,
+      "module": 1
     },
     {
       "layer_id": 2,
       "node_id": 53,
       "layer_name": "1983",
       "node_name": "Parasitus_consanguineus",
-      "abundance": 155
+      "abundance": 155,
+      "module": 1
     },
     {
       "layer_id": 2,
       "node_id": 57,
       "layer_name": "1983",
       "node_name": "Parasitus_fimetorum",
-      "abundance": 15
+      "abundance": 15,
+      "module": 1
     },
     {
       "layer_id": 2,
       "node_id": 59,
       "layer_name": "1983",
       "node_name": "Parasitus_magnus",
-      "abundance": 27
+      "abundance": 27,
+      "module": 2
     },
     {
       "layer_id": 2,
       "node_id": 61,
       "layer_name": "1983",
       "node_name": "Parasitus_oudemansi",
-      "abundance": 49
+      "abundance": 49,
+      "module": 4
     },
     {
       "layer_id": 2,
       "node_id": 62,
       "layer_name": "1983",
       "node_name": "Parasitus_remberti",
-      "abundance": 31
+      "abundance": 31,
+      "module": 2
     },
     {
       "layer_id": 2,
       "node_id": 55,
       "layer_name": "1983",
       "node_name": "Pergamasus_crassipes",
-      "abundance": 12
+      "abundance": 12,
+      "module": 1
     },
     {
       "layer_id": 2,
       "node_id": 56,
       "layer_name": "1983",
       "node_name": "Pergamasus_septentrionalis",
-      "abundance": 2
+      "abundance": 2,
+      "module": 3
     },
     {
       "layer_id": 2,
       "node_id": 60,
       "layer_name": "1983",
       "node_name": "Poecilochirus_necrophori",
-      "abundance": 342
+      "abundance": 342,
+      "module": 1
     },
     {
       "layer_id": 2,
       "node_id": 63,
       "layer_name": "1983",
       "node_name": "Poecilochirus_subterraneus",
-      "abundance": 90
+      "abundance": 90,
+      "module": 2
     },
     {
       "layer_id": 2,
       "node_id": 64,
       "layer_name": "1983",
       "node_name": "Proctolaelaps_pygmaeus",
-      "abundance": 18
+      "abundance": 18,
+      "module": 5
     },
     {
       "layer_id": 2,
       "node_id": 78,
       "layer_name": "1983",
       "node_name": "Rhadinopsylla_integella",
-      "abundance": 2
+      "abundance": 2,
+      "module": 1
     },
     {
       "layer_id": 3,
       "node_id": 1,
       "layer_name": "1984",
       "node_name": "Apodemus_agrarius",
-      "abundance": 106
+      "abundance": 106,
+      "module": 3
     },
     {
       "layer_id": 3,
       "node_id": 2,
       "layer_name": "1984",
       "node_name": "Apodemus_peninsulae",
-      "abundance": 6
+      "abundance": 6,
+      "module": 3
     },
     {
       "layer_id": 3,
       "node_id": 3,
       "layer_name": "1984",
       "node_name": "Arvicola_terrestris",
-      "abundance": 86
+      "abundance": 86,
+      "module": 1
     },
     {
       "layer_id": 3,
       "node_id": 4,
       "layer_name": "1984",
       "node_name": "Asioscalops_altaica",
-      "abundance": 11
+      "abundance": 11,
+      "module": 2
     },
     {
       "layer_id": 3,
       "node_id": 5,
       "layer_name": "1984",
       "node_name": "Cricetus_cricetus",
-      "abundance": 6
+      "abundance": 6,
+      "module": 6
     },
     {
       "layer_id": 3,
       "node_id": 6,
       "layer_name": "1984",
       "node_name": "Eutamias_sibiricus",
-      "abundance": 8
+      "abundance": 8,
+      "module": 4
     },
     {
       "layer_id": 3,
       "node_id": 7,
       "layer_name": "1984",
       "node_name": "Microtus_agrestis",
-      "abundance": 95
+      "abundance": 95,
+      "module": 1
     },
     {
       "layer_id": 3,
       "node_id": 8,
       "layer_name": "1984",
       "node_name": "Microtus_arvalis",
-      "abundance": 65
+      "abundance": 65,
+      "module": 1
     },
     {
       "layer_id": 3,
       "node_id": 9,
       "layer_name": "1984",
       "node_name": "Microtus_gregalis",
-      "abundance": 258
+      "abundance": 258,
+      "module": 1
     },
     {
       "layer_id": 3,
       "node_id": 10,
       "layer_name": "1984",
       "node_name": "Microtus_minutus",
-      "abundance": 10
+      "abundance": 10,
+      "module": 1
     },
     {
       "layer_id": 3,
       "node_id": 11,
       "layer_name": "1984",
       "node_name": "Microtus_oeconomus",
-      "abundance": 71
+      "abundance": 71,
+      "module": 1
     },
     {
       "layer_id": 3,
       "node_id": 12,
       "layer_name": "1984",
       "node_name": "Mus_musculus",
-      "abundance": 5
+      "abundance": 5,
+      "module": 5
     },
     {
       "layer_id": 3,
       "node_id": 13,
       "layer_name": "1984",
       "node_name": "Myodes_glareolus",
-      "abundance": 25
+      "abundance": 25,
+      "module": 1
     },
     {
       "layer_id": 3,
       "node_id": 14,
       "layer_name": "1984",
       "node_name": "Myodes_rufocanus",
-      "abundance": 35
+      "abundance": 35,
+      "module": 1
     },
     {
       "layer_id": 3,
       "node_id": 15,
       "layer_name": "1984",
       "node_name": "Myodes_rutilus",
-      "abundance": 127
+      "abundance": 127,
+      "module": 1
     },
     {
       "layer_id": 3,
       "node_id": 16,
       "layer_name": "1984",
       "node_name": "Neomys_fodiens",
-      "abundance": 11
+      "abundance": 11,
+      "module": 2
     },
     {
       "layer_id": 3,
       "node_id": 17,
       "layer_name": "1984",
       "node_name": "Sicista_betulina",
-      "abundance": 112
+      "abundance": 112,
+      "module": 1
     },
     {
       "layer_id": 3,
       "node_id": 18,
       "layer_name": "1984",
       "node_name": "Sorex_araneus",
-      "abundance": 205
+      "abundance": 205,
+      "module": 2
     },
     {
       "layer_id": 3,
       "node_id": 20,
       "layer_name": "1984",
       "node_name": "Sorex_isodon",
-      "abundance": 14
+      "abundance": 14,
+      "module": 2
     },
     {
       "layer_id": 3,
       "node_id": 21,
       "layer_name": "1984",
       "node_name": "Sorex_minutus",
-      "abundance": 11
+      "abundance": 11,
+      "module": 2
     },
     {
       "layer_id": 3,
       "node_id": 22,
       "layer_name": "1984",
       "node_name": "Sorex_tundrensis",
-      "abundance": 13
+      "abundance": 13,
+      "module": 2
     },
     {
       "layer_id": 3,
       "node_id": 70,
       "layer_name": "1984",
       "node_name": "Amalaraeus_penicilliger",
-      "abundance": 912
+      "abundance": 912,
+      "module": 1
     },
     {
       "layer_id": 3,
       "node_id": 24,
       "layer_name": "1984",
       "node_name": "Amerosejus_corbicula",
-      "abundance": 8
+      "abundance": 8,
+      "module": 5
     },
     {
       "layer_id": 3,
       "node_id": 65,
       "layer_name": "1984",
       "node_name": "Amphipsylla_sibirica",
-      "abundance": 18
+      "abundance": 18,
+      "module": 1
     },
     {
       "layer_id": 3,
       "node_id": 23,
       "layer_name": "1984",
       "node_name": "Androlaelaps_glasgowi",
-      "abundance": 1661
+      "abundance": 1661,
+      "module": 1
     },
     {
       "layer_id": 3,
       "node_id": 66,
       "layer_name": "1984",
       "node_name": "Ceratophyllus_indages",
-      "abundance": 7
+      "abundance": 7,
+      "module": 4
     },
     {
       "layer_id": 3,
       "node_id": 67,
       "layer_name": "1984",
       "node_name": "Ctenophthalmus_assimilis",
-      "abundance": 608
+      "abundance": 608,
+      "module": 1
     },
     {
       "layer_id": 3,
       "node_id": 27,
       "layer_name": "1984",
       "node_name": "Eulaelaps_stabularis",
-      "abundance": 135
+      "abundance": 135,
+      "module": 1
     },
     {
       "layer_id": 3,
       "node_id": 25,
       "layer_name": "1984",
       "node_name": "Euryparasitus_emarginatus",
-      "abundance": 19
+      "abundance": 19,
+      "module": 2
     },
     {
       "layer_id": 3,
       "node_id": 26,
       "layer_name": "1984",
       "node_name": "Euryparasitus_medius",
-      "abundance": 1
+      "abundance": 1,
+      "module": 4
     },
     {
       "layer_id": 3,
       "node_id": 28,
       "layer_name": "1984",
       "node_name": "Haemogamasus_ambulans",
-      "abundance": 86
+      "abundance": 86,
+      "module": 1
     },
     {
       "layer_id": 3,
       "node_id": 29,
       "layer_name": "1984",
       "node_name": "Haemogamasus_mandschuricus",
-      "abundance": 259
+      "abundance": 259,
+      "module": 1
     },
     {
       "layer_id": 3,
       "node_id": 30,
       "layer_name": "1984",
       "node_name": "Haemogamasus_nidi",
-      "abundance": 25
+      "abundance": 25,
+      "module": 1
     },
     {
       "layer_id": 3,
       "node_id": 31,
       "layer_name": "1984",
       "node_name": "Haemogamasus_nidiformes",
-      "abundance": 23
+      "abundance": 23,
+      "module": 1
     },
     {
       "layer_id": 3,
       "node_id": 34,
       "layer_name": "1984",
       "node_name": "Hirstionyssus_isabellinus",
-      "abundance": 602
+      "abundance": 602,
+      "module": 1
     },
     {
       "layer_id": 3,
       "node_id": 35,
       "layer_name": "1984",
       "node_name": "Hirstionyssus_soricis",
-      "abundance": 128
+      "abundance": 128,
+      "module": 2
     },
     {
       "layer_id": 3,
       "node_id": 73,
       "layer_name": "1984",
       "node_name": "Histrichopsylla_talpae",
-      "abundance": 120
+      "abundance": 120,
+      "module": 1
     },
     {
       "layer_id": 3,
       "node_id": 36,
       "layer_name": "1984",
       "node_name": "Holoparasitus_gontscharovae",
-      "abundance": 25
+      "abundance": 25,
+      "module": 3
     },
     {
       "layer_id": 3,
       "node_id": 38,
       "layer_name": "1984",
       "node_name": "Iphidosoma_fimetarium",
-      "abundance": 2
+      "abundance": 2,
+      "module": 1
     },
     {
       "layer_id": 3,
       "node_id": 40,
       "layer_name": "1984",
       "node_name": "Laelaps_clethrionomydis",
-      "abundance": 1167
+      "abundance": 1167,
+      "module": 1
     },
     {
       "layer_id": 3,
       "node_id": 41,
       "layer_name": "1984",
       "node_name": "Laelaps_hilaris",
-      "abundance": 73
+      "abundance": 73,
+      "module": 1
     },
     {
       "layer_id": 3,
       "node_id": 43,
       "layer_name": "1984",
       "node_name": "Laelaps_muris",
-      "abundance": 209
+      "abundance": 209,
+      "module": 1
     },
     {
       "layer_id": 3,
       "node_id": 44,
       "layer_name": "1984",
       "node_name": "Laelaps_pavlovskyi",
-      "abundance": 170
+      "abundance": 170,
+      "module": 3
     },
     {
       "layer_id": 3,
       "node_id": 74,
       "layer_name": "1984",
       "node_name": "Leptopsylla_segnis",
-      "abundance": 8
+      "abundance": 8,
+      "module": 5
     },
     {
       "layer_id": 3,
       "node_id": 46,
       "layer_name": "1984",
       "node_name": "Macrocheles_decoloratus",
-      "abundance": 5
+      "abundance": 5,
+      "module": 1
     },
     {
       "layer_id": 3,
       "node_id": 48,
       "layer_name": "1984",
       "node_name": "Macrocheles_glaber",
-      "abundance": 77
+      "abundance": 77,
+      "module": 1
     },
     {
       "layer_id": 3,
       "node_id": 45,
       "layer_name": "1984",
       "node_name": "Macrocheles_matrius",
-      "abundance": 4
+      "abundance": 4,
+      "module": 1
     },
     {
       "layer_id": 3,
       "node_id": 49,
       "layer_name": "1984",
       "node_name": "Macrocheles_nataliae",
-      "abundance": 3
+      "abundance": 3,
+      "module": 1
     },
     {
       "layer_id": 3,
       "node_id": 50,
       "layer_name": "1984",
       "node_name": "Macrocheles_rotundiscutus",
-      "abundance": 5
+      "abundance": 5,
+      "module": 2
     },
     {
       "layer_id": 3,
       "node_id": 69,
       "layer_name": "1984",
       "node_name": "Megabothris_rectangulatus",
-      "abundance": 589
+      "abundance": 589,
+      "module": 1
     },
     {
       "layer_id": 3,
       "node_id": 68,
       "layer_name": "1984",
       "node_name": "Megabothris_turbidus",
-      "abundance": 6
+      "abundance": 6,
+      "module": 1
     },
     {
       "layer_id": 3,
       "node_id": 75,
       "layer_name": "1984",
       "node_name": "Neopsylla_acanthina",
-      "abundance": 78
+      "abundance": 78,
+      "module": 3
     },
     {
       "layer_id": 3,
       "node_id": 76,
       "layer_name": "1984",
       "node_name": "Neopsylla_mana",
-      "abundance": 11
+      "abundance": 11,
+      "module": 3
     },
     {
       "layer_id": 3,
       "node_id": 77,
       "layer_name": "1984",
       "node_name": "Palaeopsylla_soricis",
-      "abundance": 719
+      "abundance": 719,
+      "module": 2
     },
     {
       "layer_id": 3,
       "node_id": 52,
       "layer_name": "1984",
       "node_name": "Parasitus_coleoptratorum",
-      "abundance": 10
+      "abundance": 10,
+      "module": 2
     },
     {
       "layer_id": 3,
       "node_id": 53,
       "layer_name": "1984",
       "node_name": "Parasitus_consanguineus",
-      "abundance": 281
+      "abundance": 281,
+      "module": 1
     },
     {
       "layer_id": 3,
       "node_id": 54,
       "layer_name": "1984",
       "node_name": "Parasitus_convexus",
-      "abundance": 21
+      "abundance": 21,
+      "module": 2
     },
     {
       "layer_id": 3,
       "node_id": 57,
       "layer_name": "1984",
       "node_name": "Parasitus_fimetorum",
-      "abundance": 83
+      "abundance": 83,
+      "module": 1
     },
     {
       "layer_id": 3,
       "node_id": 58,
       "layer_name": "1984",
       "node_name": "Parasitus_lunaris",
-      "abundance": 1
+      "abundance": 1,
+      "module": 2
     },
     {
       "layer_id": 3,
       "node_id": 59,
       "layer_name": "1984",
       "node_name": "Parasitus_magnus",
-      "abundance": 81
+      "abundance": 81,
+      "module": 2
     },
     {
       "layer_id": 3,
       "node_id": 61,
       "layer_name": "1984",
       "node_name": "Parasitus_oudemansi",
-      "abundance": 102
+      "abundance": 102,
+      "module": 4
     },
     {
       "layer_id": 3,
       "node_id": 62,
       "layer_name": "1984",
       "node_name": "Parasitus_remberti",
-      "abundance": 31
+      "abundance": 31,
+      "module": 2
     },
     {
       "layer_id": 3,
       "node_id": 55,
       "layer_name": "1984",
       "node_name": "Pergamasus_crassipes",
-      "abundance": 8
+      "abundance": 8,
+      "module": 1
     },
     {
       "layer_id": 3,
       "node_id": 56,
       "layer_name": "1984",
       "node_name": "Pergamasus_septentrionalis",
-      "abundance": 13
+      "abundance": 13,
+      "module": 1
     },
     {
       "layer_id": 3,
       "node_id": 60,
       "layer_name": "1984",
       "node_name": "Poecilochirus_necrophori",
-      "abundance": 736
+      "abundance": 736,
+      "module": 1
     },
     {
       "layer_id": 3,
       "node_id": 63,
       "layer_name": "1984",
       "node_name": "Poecilochirus_subterraneus",
-      "abundance": 81
+      "abundance": 81,
+      "module": 2
     },
     {
       "layer_id": 3,
       "node_id": 64,
       "layer_name": "1984",
       "node_name": "Proctolaelaps_pygmaeus",
-      "abundance": 95
+      "abundance": 95,
+      "module": 5
     },
     {
       "layer_id": 3,
       "node_id": 78,
       "layer_name": "1984",
       "node_name": "Rhadinopsylla_integella",
-      "abundance": 1
+      "abundance": 1,
+      "module": 1
     },
     {
       "layer_id": 4,
       "node_id": 1,
       "layer_name": "1985",
       "node_name": "Apodemus_agrarius",
-      "abundance": 70
+      "abundance": 70,
+      "module": 3
     },
     {
       "layer_id": 4,
       "node_id": 2,
       "layer_name": "1985",
       "node_name": "Apodemus_peninsulae",
-      "abundance": 2
+      "abundance": 2,
+      "module": 3
     },
     {
       "layer_id": 4,
       "node_id": 3,
       "layer_name": "1985",
       "node_name": "Arvicola_terrestris",
-      "abundance": 26
+      "abundance": 26,
+      "module": 1
     },
     {
       "layer_id": 4,
       "node_id": 4,
       "layer_name": "1985",
       "node_name": "Asioscalops_altaica",
-      "abundance": 10
+      "abundance": 10,
+      "module": 2
     },
     {
       "layer_id": 4,
       "node_id": 5,
       "layer_name": "1985",
       "node_name": "Cricetus_cricetus",
-      "abundance": 5
+      "abundance": 5,
+      "module": 6
     },
     {
       "layer_id": 4,
       "node_id": 6,
       "layer_name": "1985",
       "node_name": "Eutamias_sibiricus",
-      "abundance": 5
+      "abundance": 5,
+      "module": 4
     },
     {
       "layer_id": 4,
       "node_id": 7,
       "layer_name": "1985",
       "node_name": "Microtus_agrestis",
-      "abundance": 30
+      "abundance": 30,
+      "module": 1
     },
     {
       "layer_id": 4,
       "node_id": 8,
       "layer_name": "1985",
       "node_name": "Microtus_arvalis",
-      "abundance": 36
+      "abundance": 36,
+      "module": 1
     },
     {
       "layer_id": 4,
       "node_id": 9,
       "layer_name": "1985",
       "node_name": "Microtus_gregalis",
-      "abundance": 71
+      "abundance": 71,
+      "module": 1
     },
     {
       "layer_id": 4,
       "node_id": 10,
       "layer_name": "1985",
       "node_name": "Microtus_minutus",
-      "abundance": 29
+      "abundance": 29,
+      "module": 1
     },
     {
       "layer_id": 4,
       "node_id": 11,
       "layer_name": "1985",
       "node_name": "Microtus_oeconomus",
-      "abundance": 142
+      "abundance": 142,
+      "module": 1
     },
     {
       "layer_id": 4,
       "node_id": 12,
       "layer_name": "1985",
       "node_name": "Mus_musculus",
-      "abundance": 2
+      "abundance": 2,
+      "module": 5
     },
     {
       "layer_id": 4,
       "node_id": 13,
       "layer_name": "1985",
       "node_name": "Myodes_glareolus",
-      "abundance": 8
+      "abundance": 8,
+      "module": 1
     },
     {
       "layer_id": 4,
       "node_id": 14,
       "layer_name": "1985",
       "node_name": "Myodes_rufocanus",
-      "abundance": 37
+      "abundance": 37,
+      "module": 1
     },
     {
       "layer_id": 4,
       "node_id": 15,
       "layer_name": "1985",
       "node_name": "Myodes_rutilus",
-      "abundance": 137
+      "abundance": 137,
+      "module": 1
     },
     {
       "layer_id": 4,
       "node_id": 16,
       "layer_name": "1985",
       "node_name": "Neomys_fodiens",
-      "abundance": 59
+      "abundance": 59,
+      "module": 2
     },
     {
       "layer_id": 4,
       "node_id": 17,
       "layer_name": "1985",
       "node_name": "Sicista_betulina",
-      "abundance": 106
+      "abundance": 106,
+      "module": 1
     },
     {
       "layer_id": 4,
       "node_id": 18,
       "layer_name": "1985",
       "node_name": "Sorex_araneus",
-      "abundance": 1059
+      "abundance": 1059,
+      "module": 2
     },
     {
       "layer_id": 4,
       "node_id": 19,
       "layer_name": "1985",
       "node_name": "Sorex_caecutiens",
-      "abundance": 18
+      "abundance": 18,
+      "module": 2
     },
     {
       "layer_id": 4,
       "node_id": 20,
       "layer_name": "1985",
       "node_name": "Sorex_isodon",
-      "abundance": 50
+      "abundance": 50,
+      "module": 2
     },
     {
       "layer_id": 4,
       "node_id": 21,
       "layer_name": "1985",
       "node_name": "Sorex_minutus",
-      "abundance": 71
+      "abundance": 71,
+      "module": 2
     },
     {
       "layer_id": 4,
       "node_id": 22,
       "layer_name": "1985",
       "node_name": "Sorex_tundrensis",
-      "abundance": 36
+      "abundance": 36,
+      "module": 2
     },
     {
       "layer_id": 4,
       "node_id": 70,
       "layer_name": "1985",
       "node_name": "Amalaraeus_penicilliger",
-      "abundance": 277
+      "abundance": 277,
+      "module": 1
     },
     {
       "layer_id": 4,
       "node_id": 65,
       "layer_name": "1985",
       "node_name": "Amphipsylla_sibirica",
-      "abundance": 5
+      "abundance": 5,
+      "module": 1
     },
     {
       "layer_id": 4,
       "node_id": 23,
       "layer_name": "1985",
       "node_name": "Androlaelaps_glasgowi",
-      "abundance": 96
+      "abundance": 96,
+      "module": 1
     },
     {
       "layer_id": 4,
       "node_id": 66,
       "layer_name": "1985",
       "node_name": "Ceratophyllus_indages",
-      "abundance": 17
+      "abundance": 17,
+      "module": 4
     },
     {
       "layer_id": 4,
       "node_id": 67,
       "layer_name": "1985",
       "node_name": "Ctenophthalmus_assimilis",
-      "abundance": 396
+      "abundance": 396,
+      "module": 1
     },
     {
       "layer_id": 4,
       "node_id": 71,
       "layer_name": "1985",
       "node_name": "Doratopsylla_birulai",
-      "abundance": 25
+      "abundance": 25,
+      "module": 2
     },
     {
       "layer_id": 4,
       "node_id": 27,
       "layer_name": "1985",
       "node_name": "Eulaelaps_stabularis",
-      "abundance": 92
+      "abundance": 92,
+      "module": 1
     },
     {
       "layer_id": 4,
       "node_id": 25,
       "layer_name": "1985",
       "node_name": "Euryparasitus_emarginatus",
-      "abundance": 28
+      "abundance": 28,
+      "module": 2
     },
     {
       "layer_id": 4,
       "node_id": 72,
       "layer_name": "1985",
       "node_name": "Frontopsylla_elata",
-      "abundance": 13
+      "abundance": 13,
+      "module": 3
     },
     {
       "layer_id": 4,
       "node_id": 28,
       "layer_name": "1985",
       "node_name": "Haemogamasus_ambulans",
-      "abundance": 88
+      "abundance": 88,
+      "module": 1
     },
     {
       "layer_id": 4,
       "node_id": 29,
       "layer_name": "1985",
       "node_name": "Haemogamasus_mandschuricus",
-      "abundance": 13
+      "abundance": 13,
+      "module": 1
     },
     {
       "layer_id": 4,
       "node_id": 30,
       "layer_name": "1985",
       "node_name": "Haemogamasus_nidi",
-      "abundance": 11
+      "abundance": 11,
+      "module": 1
     },
     {
       "layer_id": 4,
       "node_id": 33,
       "layer_name": "1985",
       "node_name": "Hirstionyssus_criceti",
-      "abundance": 123
+      "abundance": 123,
+      "module": 6
     },
     {
       "layer_id": 4,
       "node_id": 34,
       "layer_name": "1985",
       "node_name": "Hirstionyssus_isabellinus",
-      "abundance": 214
+      "abundance": 214,
+      "module": 1
     },
     {
       "layer_id": 4,
       "node_id": 35,
       "layer_name": "1985",
       "node_name": "Hirstionyssus_soricis",
-      "abundance": 775
+      "abundance": 775,
+      "module": 2
     },
     {
       "layer_id": 4,
       "node_id": 73,
       "layer_name": "1985",
       "node_name": "Histrichopsylla_talpae",
-      "abundance": 192
+      "abundance": 192,
+      "module": 1
     },
     {
       "layer_id": 4,
       "node_id": 38,
       "layer_name": "1985",
       "node_name": "Iphidosoma_fimetarium",
-      "abundance": 3
+      "abundance": 3,
+      "module": 1
     },
     {
       "layer_id": 4,
       "node_id": 40,
       "layer_name": "1985",
       "node_name": "Laelaps_clethrionomydis",
-      "abundance": 85
+      "abundance": 85,
+      "module": 1
     },
     {
       "layer_id": 4,
       "node_id": 43,
       "layer_name": "1985",
       "node_name": "Laelaps_muris",
-      "abundance": 46
+      "abundance": 46,
+      "module": 1
     },
     {
       "layer_id": 4,
       "node_id": 44,
       "layer_name": "1985",
       "node_name": "Laelaps_pavlovskyi",
-      "abundance": 75
+      "abundance": 75,
+      "module": 3
     },
     {
       "layer_id": 4,
       "node_id": 74,
       "layer_name": "1985",
       "node_name": "Leptopsylla_segnis",
-      "abundance": 3
+      "abundance": 3,
+      "module": 5
     },
     {
       "layer_id": 4,
       "node_id": 48,
       "layer_name": "1985",
       "node_name": "Macrocheles_glaber",
-      "abundance": 2
+      "abundance": 2,
+      "module": 1
     },
     {
       "layer_id": 4,
       "node_id": 69,
       "layer_name": "1985",
       "node_name": "Megabothris_rectangulatus",
-      "abundance": 372
+      "abundance": 372,
+      "module": 1
     },
     {
       "layer_id": 4,
       "node_id": 47,
       "layer_name": "1985",
       "node_name": "Myonyssus_ingricus",
-      "abundance": 4
+      "abundance": 4,
+      "module": 1
     },
     {
       "layer_id": 4,
       "node_id": 75,
       "layer_name": "1985",
       "node_name": "Neopsylla_acanthina",
-      "abundance": 67
+      "abundance": 67,
+      "module": 6
     },
     {
       "layer_id": 4,
       "node_id": 77,
       "layer_name": "1985",
       "node_name": "Palaeopsylla_soricis",
-      "abundance": 1376
+      "abundance": 1376,
+      "module": 2
     },
     {
       "layer_id": 4,
       "node_id": 52,
       "layer_name": "1985",
       "node_name": "Parasitus_coleoptratorum",
-      "abundance": 13
+      "abundance": 13,
+      "module": 4
     },
     {
       "layer_id": 4,
       "node_id": 53,
       "layer_name": "1985",
       "node_name": "Parasitus_consanguineus",
-      "abundance": 96
+      "abundance": 96,
+      "module": 1
     },
     {
       "layer_id": 4,
       "node_id": 57,
       "layer_name": "1985",
       "node_name": "Parasitus_fimetorum",
-      "abundance": 4
+      "abundance": 4,
+      "module": 1
     },
     {
       "layer_id": 4,
       "node_id": 58,
       "layer_name": "1985",
       "node_name": "Parasitus_lunaris",
-      "abundance": 3
+      "abundance": 3,
+      "module": 1
     },
     {
       "layer_id": 4,
       "node_id": 61,
       "layer_name": "1985",
       "node_name": "Parasitus_oudemansi",
-      "abundance": 65
+      "abundance": 65,
+      "module": 4
     },
     {
       "layer_id": 4,
       "node_id": 62,
       "layer_name": "1985",
       "node_name": "Parasitus_remberti",
-      "abundance": 10
+      "abundance": 10,
+      "module": 1
     },
     {
       "layer_id": 4,
       "node_id": 55,
       "layer_name": "1985",
       "node_name": "Pergamasus_crassipes",
-      "abundance": 6
+      "abundance": 6,
+      "module": 1
     },
     {
       "layer_id": 4,
       "node_id": 56,
       "layer_name": "1985",
       "node_name": "Pergamasus_septentrionalis",
-      "abundance": 2
+      "abundance": 2,
+      "module": 1
     },
     {
       "layer_id": 4,
       "node_id": 60,
       "layer_name": "1985",
       "node_name": "Poecilochirus_necrophori",
-      "abundance": 672
+      "abundance": 672,
+      "module": 1
     },
     {
       "layer_id": 4,
       "node_id": 63,
       "layer_name": "1985",
       "node_name": "Poecilochirus_subterraneus",
-      "abundance": 91
+      "abundance": 91,
+      "module": 2
     },
     {
       "layer_id": 4,
       "node_id": 64,
       "layer_name": "1985",
       "node_name": "Proctolaelaps_pygmaeus",
-      "abundance": 10
+      "abundance": 10,
+      "module": 5
     },
     {
       "layer_id": 5,
       "node_id": 1,
       "layer_name": "1986",
       "node_name": "Apodemus_agrarius",
-      "abundance": 49
+      "abundance": 49,
+      "module": 3
     },
     {
       "layer_id": 5,
       "node_id": 2,
       "layer_name": "1986",
       "node_name": "Apodemus_peninsulae",
-      "abundance": 7
+      "abundance": 7,
+      "module": 3
     },
     {
       "layer_id": 5,
       "node_id": 3,
       "layer_name": "1986",
       "node_name": "Arvicola_terrestris",
-      "abundance": 15
+      "abundance": 15,
+      "module": 1
     },
     {
       "layer_id": 5,
       "node_id": 4,
       "layer_name": "1986",
       "node_name": "Asioscalops_altaica",
-      "abundance": 4
+      "abundance": 4,
+      "module": 2
     },
     {
       "layer_id": 5,
       "node_id": 5,
       "layer_name": "1986",
       "node_name": "Cricetus_cricetus",
-      "abundance": 3
+      "abundance": 3,
+      "module": 6
     },
     {
       "layer_id": 5,
       "node_id": 7,
       "layer_name": "1986",
       "node_name": "Microtus_agrestis",
-      "abundance": 24
+      "abundance": 24,
+      "module": 1
     },
     {
       "layer_id": 5,
       "node_id": 8,
       "layer_name": "1986",
       "node_name": "Microtus_arvalis",
-      "abundance": 23
+      "abundance": 23,
+      "module": 1
     },
     {
       "layer_id": 5,
       "node_id": 9,
       "layer_name": "1986",
       "node_name": "Microtus_gregalis",
-      "abundance": 22
+      "abundance": 22,
+      "module": 1
     },
     {
       "layer_id": 5,
       "node_id": 10,
       "layer_name": "1986",
       "node_name": "Microtus_minutus",
-      "abundance": 12
+      "abundance": 12,
+      "module": 1
     },
     {
       "layer_id": 5,
       "node_id": 11,
       "layer_name": "1986",
       "node_name": "Microtus_oeconomus",
-      "abundance": 106
+      "abundance": 106,
+      "module": 1
     },
     {
       "layer_id": 5,
       "node_id": 13,
       "layer_name": "1986",
       "node_name": "Myodes_glareolus",
-      "abundance": 20
+      "abundance": 20,
+      "module": 1
     },
     {
       "layer_id": 5,
       "node_id": 14,
       "layer_name": "1986",
       "node_name": "Myodes_rufocanus",
-      "abundance": 48
+      "abundance": 48,
+      "module": 1
     },
     {
       "layer_id": 5,
       "node_id": 15,
       "layer_name": "1986",
       "node_name": "Myodes_rutilus",
-      "abundance": 65
+      "abundance": 65,
+      "module": 1
     },
     {
       "layer_id": 5,
       "node_id": 16,
       "layer_name": "1986",
       "node_name": "Neomys_fodiens",
-      "abundance": 87
+      "abundance": 87,
+      "module": 2
     },
     {
       "layer_id": 5,
       "node_id": 17,
       "layer_name": "1986",
       "node_name": "Sicista_betulina",
-      "abundance": 116
+      "abundance": 116,
+      "module": 1
     },
     {
       "layer_id": 5,
       "node_id": 18,
       "layer_name": "1986",
       "node_name": "Sorex_araneus",
-      "abundance": 1665
+      "abundance": 1665,
+      "module": 2
     },
     {
       "layer_id": 5,
       "node_id": 19,
       "layer_name": "1986",
       "node_name": "Sorex_caecutiens",
-      "abundance": 6
+      "abundance": 6,
+      "module": 2
     },
     {
       "layer_id": 5,
       "node_id": 20,
       "layer_name": "1986",
       "node_name": "Sorex_isodon",
-      "abundance": 105
+      "abundance": 105,
+      "module": 2
     },
     {
       "layer_id": 5,
       "node_id": 21,
       "layer_name": "1986",
       "node_name": "Sorex_minutus",
-      "abundance": 68
+      "abundance": 68,
+      "module": 2
     },
     {
       "layer_id": 5,
       "node_id": 22,
       "layer_name": "1986",
       "node_name": "Sorex_tundrensis",
-      "abundance": 58
+      "abundance": 58,
+      "module": 2
     },
     {
       "layer_id": 5,
       "node_id": 70,
       "layer_name": "1986",
       "node_name": "Amalaraeus_penicilliger",
-      "abundance": 191
+      "abundance": 191,
+      "module": 1
     },
     {
       "layer_id": 5,
       "node_id": 65,
       "layer_name": "1986",
       "node_name": "Amphipsylla_sibirica",
-      "abundance": 1
+      "abundance": 1,
+      "module": 1
     },
     {
       "layer_id": 5,
       "node_id": 23,
       "layer_name": "1986",
       "node_name": "Androlaelaps_glasgowi",
-      "abundance": 26
+      "abundance": 26,
+      "module": 1
     },
     {
       "layer_id": 5,
       "node_id": 67,
       "layer_name": "1986",
       "node_name": "Ctenophthalmus_assimilis",
-      "abundance": 421
+      "abundance": 421,
+      "module": 1
     },
     {
       "layer_id": 5,
       "node_id": 71,
       "layer_name": "1986",
       "node_name": "Doratopsylla_birulai",
-      "abundance": 53
+      "abundance": 53,
+      "module": 2
     },
     {
       "layer_id": 5,
       "node_id": 27,
       "layer_name": "1986",
       "node_name": "Eulaelaps_stabularis",
-      "abundance": 90
+      "abundance": 90,
+      "module": 1
     },
     {
       "layer_id": 5,
       "node_id": 25,
       "layer_name": "1986",
       "node_name": "Euryparasitus_emarginatus",
-      "abundance": 43
+      "abundance": 43,
+      "module": 2
     },
     {
       "layer_id": 5,
       "node_id": 72,
       "layer_name": "1986",
       "node_name": "Frontopsylla_elata",
-      "abundance": 1
+      "abundance": 1,
+      "module": 3
     },
     {
       "layer_id": 5,
       "node_id": 28,
       "layer_name": "1986",
       "node_name": "Haemogamasus_ambulans",
-      "abundance": 106
+      "abundance": 106,
+      "module": 1
     },
     {
       "layer_id": 5,
       "node_id": 29,
       "layer_name": "1986",
       "node_name": "Haemogamasus_mandschuricus",
-      "abundance": 1
+      "abundance": 1,
+      "module": 1
     },
     {
       "layer_id": 5,
       "node_id": 30,
       "layer_name": "1986",
       "node_name": "Haemogamasus_nidi",
-      "abundance": 5
+      "abundance": 5,
+      "module": 1
     },
     {
       "layer_id": 5,
       "node_id": 32,
       "layer_name": "1986",
       "node_name": "Hirstionyssus_apodemi",
-      "abundance": 14
+      "abundance": 14,
+      "module": 3
     },
     {
       "layer_id": 5,
       "node_id": 34,
       "layer_name": "1986",
       "node_name": "Hirstionyssus_isabellinus",
-      "abundance": 46
+      "abundance": 46,
+      "module": 1
     },
     {
       "layer_id": 5,
       "node_id": 35,
       "layer_name": "1986",
       "node_name": "Hirstionyssus_soricis",
-      "abundance": 1140
+      "abundance": 1140,
+      "module": 2
     },
     {
       "layer_id": 5,
       "node_id": 73,
       "layer_name": "1986",
       "node_name": "Histrichopsylla_talpae",
-      "abundance": 227
+      "abundance": 227,
+      "module": 1
     },
     {
       "layer_id": 5,
       "node_id": 37,
       "layer_name": "1986",
       "node_name": "Hyperlaelaps_arvalis",
-      "abundance": 3
+      "abundance": 3,
+      "module": 1
     },
     {
       "layer_id": 5,
       "node_id": 38,
       "layer_name": "1986",
       "node_name": "Iphidosoma_fimetarium",
-      "abundance": 11
+      "abundance": 11,
+      "module": 1
     },
     {
       "layer_id": 5,
       "node_id": 40,
       "layer_name": "1986",
       "node_name": "Laelaps_clethrionomydis",
-      "abundance": 6
+      "abundance": 6,
+      "module": 1
     },
     {
       "layer_id": 5,
       "node_id": 41,
       "layer_name": "1986",
       "node_name": "Laelaps_hilaris",
-      "abundance": 21
+      "abundance": 21,
+      "module": 1
     },
     {
       "layer_id": 5,
       "node_id": 42,
       "layer_name": "1986",
       "node_name": "Laelaps_micromydis",
-      "abundance": 8
+      "abundance": 8,
+      "module": 1
     },
     {
       "layer_id": 5,
       "node_id": 43,
       "layer_name": "1986",
       "node_name": "Laelaps_muris",
-      "abundance": 33
+      "abundance": 33,
+      "module": 1
     },
     {
       "layer_id": 5,
       "node_id": 44,
       "layer_name": "1986",
       "node_name": "Laelaps_pavlovskyi",
-      "abundance": 39
+      "abundance": 39,
+      "module": 3
     },
     {
       "layer_id": 5,
       "node_id": 39,
       "layer_name": "1986",
       "node_name": "Laelaspis_astronomicus",
-      "abundance": 2
+      "abundance": 2,
+      "module": 2
     },
     {
       "layer_id": 5,
       "node_id": 74,
       "layer_name": "1986",
       "node_name": "Leptopsylla_segnis",
-      "abundance": 1
+      "abundance": 1,
+      "module": 5
     },
     {
       "layer_id": 5,
       "node_id": 69,
       "layer_name": "1986",
       "node_name": "Megabothris_rectangulatus",
-      "abundance": 249
+      "abundance": 249,
+      "module": 1
     },
     {
       "layer_id": 5,
       "node_id": 68,
       "layer_name": "1986",
       "node_name": "Megabothris_turbidus",
-      "abundance": 7
+      "abundance": 7,
+      "module": 1
     },
     {
       "layer_id": 5,
       "node_id": 47,
       "layer_name": "1986",
       "node_name": "Myonyssus_ingricus",
-      "abundance": 20
+      "abundance": 20,
+      "module": 1
     },
     {
       "layer_id": 5,
       "node_id": 75,
       "layer_name": "1986",
       "node_name": "Neopsylla_acanthina",
-      "abundance": 75
+      "abundance": 75,
+      "module": 3
     },
     {
       "layer_id": 5,
       "node_id": 76,
       "layer_name": "1986",
       "node_name": "Neopsylla_mana",
-      "abundance": 1
+      "abundance": 1,
+      "module": 3
     },
     {
       "layer_id": 5,
       "node_id": 77,
       "layer_name": "1986",
       "node_name": "Palaeopsylla_soricis",
-      "abundance": 3300
+      "abundance": 3300,
+      "module": 2
     },
     {
       "layer_id": 5,
       "node_id": 51,
       "layer_name": "1986",
       "node_name": "Parasitus_berlesei",
-      "abundance": 8
+      "abundance": 8,
+      "module": 2
     },
     {
       "layer_id": 5,
       "node_id": 52,
       "layer_name": "1986",
       "node_name": "Parasitus_coleoptratorum",
-      "abundance": 13
+      "abundance": 13,
+      "module": 4
     },
     {
       "layer_id": 5,
       "node_id": 53,
       "layer_name": "1986",
       "node_name": "Parasitus_consanguineus",
-      "abundance": 48
+      "abundance": 48,
+      "module": 1
     },
     {
       "layer_id": 5,
       "node_id": 58,
       "layer_name": "1986",
       "node_name": "Parasitus_lunaris",
-      "abundance": 2
+      "abundance": 2,
+      "module": 2
     },
     {
       "layer_id": 5,
       "node_id": 61,
       "layer_name": "1986",
       "node_name": "Parasitus_oudemansi",
-      "abundance": 140
+      "abundance": 140,
+      "module": 4
     },
     {
       "layer_id": 5,
       "node_id": 62,
       "layer_name": "1986",
       "node_name": "Parasitus_remberti",
-      "abundance": 60
+      "abundance": 60,
+      "module": 2
     },
     {
       "layer_id": 5,
       "node_id": 55,
       "layer_name": "1986",
       "node_name": "Pergamasus_crassipes",
-      "abundance": 4
+      "abundance": 4,
+      "module": 1
     },
     {
       "layer_id": 5,
       "node_id": 60,
       "layer_name": "1986",
       "node_name": "Poecilochirus_necrophori",
-      "abundance": 622
+      "abundance": 622,
+      "module": 1
     },
     {
       "layer_id": 5,
       "node_id": 63,
       "layer_name": "1986",
       "node_name": "Poecilochirus_subterraneus",
-      "abundance": 62
+      "abundance": 62,
+      "module": 2
     },
     {
       "layer_id": 5,
       "node_id": 64,
       "layer_name": "1986",
       "node_name": "Proctolaelaps_pygmaeus",
-      "abundance": 6
+      "abundance": 6,
+      "module": 5
     },
     {
       "layer_id": 5,
       "node_id": 78,
       "layer_name": "1986",
       "node_name": "Rhadinopsylla_integella",
-      "abundance": 2
+      "abundance": 2,
+      "module": 1
     },
     {
       "layer_id": 6,
       "node_id": 1,
       "layer_name": "1987",
       "node_name": "Apodemus_agrarius",
-      "abundance": 44
+      "abundance": 44,
+      "module": 3
     },
     {
       "layer_id": 6,
       "node_id": 2,
       "layer_name": "1987",
       "node_name": "Apodemus_peninsulae",
-      "abundance": 1
+      "abundance": 1,
+      "module": 3
     },
     {
       "layer_id": 6,
       "node_id": 3,
       "layer_name": "1987",
       "node_name": "Arvicola_terrestris",
-      "abundance": 13
+      "abundance": 13,
+      "module": 1
     },
     {
       "layer_id": 6,
       "node_id": 4,
       "layer_name": "1987",
       "node_name": "Asioscalops_altaica",
-      "abundance": 8
+      "abundance": 8,
+      "module": 2
     },
     {
       "layer_id": 6,
       "node_id": 5,
       "layer_name": "1987",
       "node_name": "Cricetus_cricetus",
-      "abundance": 2
+      "abundance": 2,
+      "module": 6
     },
     {
       "layer_id": 6,
       "node_id": 6,
       "layer_name": "1987",
       "node_name": "Eutamias_sibiricus",
-      "abundance": 4
+      "abundance": 4,
+      "module": 7
     },
     {
       "layer_id": 6,
       "node_id": 7,
       "layer_name": "1987",
       "node_name": "Microtus_agrestis",
-      "abundance": 10
+      "abundance": 10,
+      "module": 1
     },
     {
       "layer_id": 6,
       "node_id": 8,
       "layer_name": "1987",
       "node_name": "Microtus_arvalis",
-      "abundance": 22
+      "abundance": 22,
+      "module": 1
     },
     {
       "layer_id": 6,
       "node_id": 9,
       "layer_name": "1987",
       "node_name": "Microtus_gregalis",
-      "abundance": 5
+      "abundance": 5,
+      "module": 1
     },
     {
       "layer_id": 6,
       "node_id": 10,
       "layer_name": "1987",
       "node_name": "Microtus_minutus",
-      "abundance": 10
+      "abundance": 10,
+      "module": 1
     },
     {
       "layer_id": 6,
       "node_id": 11,
       "layer_name": "1987",
       "node_name": "Microtus_oeconomus",
-      "abundance": 68
+      "abundance": 68,
+      "module": 1
     },
     {
       "layer_id": 6,
       "node_id": 13,
       "layer_name": "1987",
       "node_name": "Myodes_glareolus",
-      "abundance": 5
+      "abundance": 5,
+      "module": 2
     },
     {
       "layer_id": 6,
       "node_id": 14,
       "layer_name": "1987",
       "node_name": "Myodes_rufocanus",
-      "abundance": 4
+      "abundance": 4,
+      "module": 1
     },
     {
       "layer_id": 6,
       "node_id": 15,
       "layer_name": "1987",
       "node_name": "Myodes_rutilus",
-      "abundance": 63
+      "abundance": 63,
+      "module": 1
     },
     {
       "layer_id": 6,
       "node_id": 16,
       "layer_name": "1987",
       "node_name": "Neomys_fodiens",
-      "abundance": 91
+      "abundance": 91,
+      "module": 2
     },
     {
       "layer_id": 6,
       "node_id": 17,
       "layer_name": "1987",
       "node_name": "Sicista_betulina",
-      "abundance": 87
+      "abundance": 87,
+      "module": 1
     },
     {
       "layer_id": 6,
       "node_id": 18,
       "layer_name": "1987",
       "node_name": "Sorex_araneus",
-      "abundance": 443
+      "abundance": 443,
+      "module": 2
     },
     {
       "layer_id": 6,
       "node_id": 20,
       "layer_name": "1987",
       "node_name": "Sorex_isodon",
-      "abundance": 75
+      "abundance": 75,
+      "module": 2
     },
     {
       "layer_id": 6,
       "node_id": 21,
       "layer_name": "1987",
       "node_name": "Sorex_minutus",
-      "abundance": 73
+      "abundance": 73,
+      "module": 2
     },
     {
       "layer_id": 6,
       "node_id": 22,
       "layer_name": "1987",
       "node_name": "Sorex_tundrensis",
-      "abundance": 11
+      "abundance": 11,
+      "module": 2
     },
     {
       "layer_id": 6,
       "node_id": 70,
       "layer_name": "1987",
       "node_name": "Amalaraeus_penicilliger",
-      "abundance": 130
+      "abundance": 130,
+      "module": 1
     },
     {
       "layer_id": 6,
       "node_id": 65,
       "layer_name": "1987",
       "node_name": "Amphipsylla_sibirica",
-      "abundance": 2
+      "abundance": 2,
+      "module": 1
     },
     {
       "layer_id": 6,
       "node_id": 23,
       "layer_name": "1987",
       "node_name": "Androlaelaps_glasgowi",
-      "abundance": 50
+      "abundance": 50,
+      "module": 1
     },
     {
       "layer_id": 6,
       "node_id": 66,
       "layer_name": "1987",
       "node_name": "Ceratophyllus_indages",
-      "abundance": 2
+      "abundance": 2,
+      "module": 2
     },
     {
       "layer_id": 6,
       "node_id": 67,
       "layer_name": "1987",
       "node_name": "Ctenophthalmus_assimilis",
-      "abundance": 196
+      "abundance": 196,
+      "module": 1
     },
     {
       "layer_id": 6,
       "node_id": 71,
       "layer_name": "1987",
       "node_name": "Doratopsylla_birulai",
-      "abundance": 142
+      "abundance": 142,
+      "module": 2
     },
     {
       "layer_id": 6,
       "node_id": 27,
       "layer_name": "1987",
       "node_name": "Eulaelaps_stabularis",
-      "abundance": 36
+      "abundance": 36,
+      "module": 1
     },
     {
       "layer_id": 6,
       "node_id": 25,
       "layer_name": "1987",
       "node_name": "Euryparasitus_emarginatus",
-      "abundance": 17
+      "abundance": 17,
+      "module": 2
     },
     {
       "layer_id": 6,
       "node_id": 28,
       "layer_name": "1987",
       "node_name": "Haemogamasus_ambulans",
-      "abundance": 61
+      "abundance": 61,
+      "module": 1
     },
     {
       "layer_id": 6,
       "node_id": 29,
       "layer_name": "1987",
       "node_name": "Haemogamasus_mandschuricus",
-      "abundance": 9
+      "abundance": 9,
+      "module": 2
     },
     {
       "layer_id": 6,
       "node_id": 30,
       "layer_name": "1987",
       "node_name": "Haemogamasus_nidi",
-      "abundance": 1
+      "abundance": 1,
+      "module": 1
     },
     {
       "layer_id": 6,
       "node_id": 31,
       "layer_name": "1987",
       "node_name": "Haemogamasus_nidiformes",
-      "abundance": 3
+      "abundance": 3,
+      "module": 1
     },
     {
       "layer_id": 6,
       "node_id": 34,
       "layer_name": "1987",
       "node_name": "Hirstionyssus_isabellinus",
-      "abundance": 97
+      "abundance": 97,
+      "module": 7
     },
     {
       "layer_id": 6,
       "node_id": 35,
       "layer_name": "1987",
       "node_name": "Hirstionyssus_soricis",
-      "abundance": 478
+      "abundance": 478,
+      "module": 2
     },
     {
       "layer_id": 6,
       "node_id": 73,
       "layer_name": "1987",
       "node_name": "Histrichopsylla_talpae",
-      "abundance": 79
+      "abundance": 79,
+      "module": 1
     },
     {
       "layer_id": 6,
       "node_id": 36,
       "layer_name": "1987",
       "node_name": "Holoparasitus_gontscharovae",
-      "abundance": 1
+      "abundance": 1,
+      "module": 3
     },
     {
       "layer_id": 6,
       "node_id": 37,
       "layer_name": "1987",
       "node_name": "Hyperlaelaps_arvalis",
-      "abundance": 1
+      "abundance": 1,
+      "module": 1
     },
     {
       "layer_id": 6,
       "node_id": 38,
       "layer_name": "1987",
       "node_name": "Iphidosoma_fimetarium",
-      "abundance": 2
+      "abundance": 2,
+      "module": 7
     },
     {
       "layer_id": 6,
       "node_id": 40,
       "layer_name": "1987",
       "node_name": "Laelaps_clethrionomydis",
-      "abundance": 8
+      "abundance": 8,
+      "module": 1
     },
     {
       "layer_id": 6,
       "node_id": 41,
       "layer_name": "1987",
       "node_name": "Laelaps_hilaris",
-      "abundance": 116
+      "abundance": 116,
+      "module": 1
     },
     {
       "layer_id": 6,
       "node_id": 43,
       "layer_name": "1987",
       "node_name": "Laelaps_muris",
-      "abundance": 53
+      "abundance": 53,
+      "module": 1
     },
     {
       "layer_id": 6,
       "node_id": 44,
       "layer_name": "1987",
       "node_name": "Laelaps_pavlovskyi",
-      "abundance": 30
+      "abundance": 30,
+      "module": 3
     },
     {
       "layer_id": 6,
       "node_id": 69,
       "layer_name": "1987",
       "node_name": "Megabothris_rectangulatus",
-      "abundance": 132
+      "abundance": 132,
+      "module": 1
     },
     {
       "layer_id": 6,
       "node_id": 47,
       "layer_name": "1987",
       "node_name": "Myonyssus_ingricus",
-      "abundance": 3
+      "abundance": 3,
+      "module": 1
     },
     {
       "layer_id": 6,
       "node_id": 75,
       "layer_name": "1987",
       "node_name": "Neopsylla_acanthina",
-      "abundance": 30
+      "abundance": 30,
+      "module": 3
     },
     {
       "layer_id": 6,
       "node_id": 77,
       "layer_name": "1987",
       "node_name": "Palaeopsylla_soricis",
-      "abundance": 2776
+      "abundance": 2776,
+      "module": 2
     },
     {
       "layer_id": 6,
       "node_id": 53,
       "layer_name": "1987",
       "node_name": "Parasitus_consanguineus",
-      "abundance": 3
+      "abundance": 3,
+      "module": 1
     },
     {
       "layer_id": 6,
       "node_id": 58,
       "layer_name": "1987",
       "node_name": "Parasitus_lunaris",
-      "abundance": 2
+      "abundance": 2,
+      "module": 2
     },
     {
       "layer_id": 6,
       "node_id": 61,
       "layer_name": "1987",
       "node_name": "Parasitus_oudemansi",
-      "abundance": 11
+      "abundance": 11,
+      "module": 4
     },
     {
       "layer_id": 6,
       "node_id": 62,
       "layer_name": "1987",
       "node_name": "Parasitus_remberti",
-      "abundance": 14
+      "abundance": 14,
+      "module": 2
     },
     {
       "layer_id": 6,
       "node_id": 60,
       "layer_name": "1987",
       "node_name": "Poecilochirus_necrophori",
-      "abundance": 171
+      "abundance": 171,
+      "module": 2
     },
     {
       "layer_id": 6,
       "node_id": 63,
       "layer_name": "1987",
       "node_name": "Poecilochirus_subterraneus",
-      "abundance": 29
+      "abundance": 29,
+      "module": 2
     },
     {
       "layer_id": 6,
       "node_id": 64,
       "layer_name": "1987",
       "node_name": "Proctolaelaps_pygmaeus",
-      "abundance": 1
+      "abundance": 1,
+      "module": 1
     },
     {
       "layer_id": 6,
       "node_id": 78,
       "layer_name": "1987",
       "node_name": "Rhadinopsylla_integella",
-      "abundance": 3
+      "abundance": 3,
+      "module": 1
     }
   ],
   "directed_interlayer": true
