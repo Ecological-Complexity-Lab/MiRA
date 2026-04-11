@@ -28,6 +28,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 4,
+      "functional_group": "Mobile consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -41,6 +42,7 @@
       "phylum": "Arthropoda",
       "subphylum": "Crustacae",
       "cluster": 1,
+      "functional_group": "Mobile consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -54,6 +56,7 @@
       "phylum": "Arthropoda",
       "subphylum": "Crustacae",
       "cluster": 1,
+      "functional_group": "Mobile consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -67,6 +70,7 @@
       "phylum": "Mollusca",
       "subphylum": "Polyplacophora",
       "cluster": 7,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -80,6 +84,7 @@
       "phylum": "Mollusca",
       "subphylum": "Polyplacophora",
       "cluster": 7,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -93,6 +98,7 @@
       "phylum": "Mollusca",
       "subphylum": "Polyplacophora",
       "cluster": 7,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -106,6 +112,7 @@
       "phylum": "Mollusca",
       "subphylum": "Polyplacophora",
       "cluster": 7,
+      "functional_group": "Mobile consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -119,6 +126,7 @@
       "phylum": "Mollusca",
       "subphylum": "Polyplacophora",
       "cluster": 7,
+      "functional_group": "Mobile consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -132,6 +140,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 9,
+      "functional_group": "Mobile consumers",
       "shore_height": "high, mid",
       "shore_height_ordinal": 2.5
     },
@@ -145,6 +154,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 1,
+      "functional_group": "Mobile consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -158,6 +168,7 @@
       "phylum": "Mollusca",
       "subphylum": "Polyplacophora",
       "cluster": 7,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -171,6 +182,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 7,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -184,6 +196,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 7,
+      "functional_group": "Mobile consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -197,6 +210,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 14,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -210,6 +224,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 7,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -223,6 +238,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 14,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -236,6 +252,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 14,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -249,6 +266,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 14,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -262,6 +280,7 @@
       "phylum": "Echinodermata",
       "subphylum": "Asteroidea",
       "cluster": 1,
+      "functional_group": "Mobile consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -275,6 +294,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 9,
+      "functional_group": "Mobile consumers",
       "shore_height": "high, mid, low",
       "shore_height_ordinal": 2.0
     },
@@ -288,6 +308,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 9,
+      "functional_group": "Mobile consumers",
       "shore_height": "high, mid",
       "shore_height_ordinal": 2.5
     },
@@ -301,6 +322,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 9,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -314,6 +336,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 9,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -327,6 +350,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 9,
+      "functional_group": "Mobile consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -340,6 +364,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 9,
+      "functional_group": "Mobile consumers",
       "shore_height": "high, mid, low",
       "shore_height_ordinal": 2.0
     },
@@ -353,6 +378,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 14,
+      "functional_group": "Mobile consumers",
       "shore_height": "high, mid",
       "shore_height_ordinal": 2.5
     },
@@ -366,6 +392,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 14,
+      "functional_group": "Mobile consumers",
       "shore_height": "high, mid",
       "shore_height_ordinal": 2.5
     },
@@ -379,6 +406,7 @@
       "phylum": "Echinodermata",
       "subphylum": "Asteroidea",
       "cluster": 1,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -392,6 +420,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 9,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -405,6 +434,7 @@
       "phylum": "Mollusca",
       "subphylum": "Polyplacophora",
       "cluster": 14,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -418,6 +448,7 @@
       "phylum": "Mollusca",
       "subphylum": "Polyplacophora",
       "cluster": 14,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -431,6 +462,7 @@
       "phylum": "Mollusca",
       "subphylum": "Polyplacophora",
       "cluster": 14,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -444,6 +476,7 @@
       "phylum": "Algae",
       "subphylum": "Phaeophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -457,6 +490,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -470,6 +504,7 @@
       "phylum": "Cnidaria",
       "subphylum": "Anthozoa",
       "cluster": 2,
+      "functional_group": "Sessile inedible consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -483,6 +518,7 @@
       "phylum": "Arthropoda",
       "subphylum": "Crustacae",
       "cluster": 13,
+      "functional_group": "Sessile facilitators/competitors",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -496,6 +532,7 @@
       "phylum": "Arthropoda",
       "subphylum": "Crustacae",
       "cluster": 6,
+      "functional_group": "Sessile facilitators/competitors",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -509,6 +546,7 @@
       "phylum": "Algae",
       "subphylum": "Bacillariophacea",
       "cluster": 3,
+      "functional_group": "Primary producers",
       "shore_height": "high, mid, low",
       "shore_height_ordinal": 2.0
     },
@@ -522,6 +560,7 @@
       "phylum": "Mollusca",
       "subphylum": "Bivalvia",
       "cluster": 4,
+      "functional_group": "Mobile consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -535,6 +574,7 @@
       "phylum": "Algae",
       "subphylum": "Chaetophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -548,6 +588,7 @@
       "phylum": "Cnidaria",
       "subphylum": "Anthozoa",
       "cluster": 2,
+      "functional_group": "Sessile inedible consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -561,6 +602,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -574,6 +616,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -587,6 +630,7 @@
       "phylum": "Algae",
       "subphylum": "Chaetophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -600,6 +644,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -613,6 +658,7 @@
       "phylum": "Algae",
       "subphylum": "Chaetophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -626,6 +672,7 @@
       "phylum": "Algae",
       "subphylum": "Chaetophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -639,6 +686,7 @@
       "phylum": "Algae",
       "subphylum": "Phaeophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -652,6 +700,7 @@
       "phylum": "Algae",
       "subphylum": "Phaeophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -665,6 +714,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 13,
+      "functional_group": "Sessile facilitators/competitors",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -678,6 +728,7 @@
       "phylum": "Algae",
       "subphylum": "Phaeophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -691,6 +742,7 @@
       "phylum": "Algae",
       "subphylum": "Phaeophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -704,6 +756,7 @@
       "phylum": "Algae",
       "subphylum": "Chaetophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -717,6 +770,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -730,6 +784,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 6,
+      "functional_group": "Sessile facilitators/competitors",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -743,6 +798,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -756,6 +812,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -769,6 +826,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -782,6 +840,7 @@
       "phylum": "Algae",
       "subphylum": "Chaetophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -795,6 +854,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -808,6 +868,7 @@
       "phylum": "Cnidaria",
       "subphylum": "Anthozoa",
       "cluster": 8,
+      "functional_group": "Sessile inedible consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -821,6 +882,7 @@
       "phylum": "Arthropoda",
       "subphylum": "Crustacae",
       "cluster": 10,
+      "functional_group": "Sessile facilitators/competitors",
       "shore_height": "high, mid",
       "shore_height_ordinal": 2.5
     },
@@ -834,6 +896,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -847,6 +910,7 @@
       "phylum": "Algae",
       "subphylum": "Phaeophyta",
       "cluster": 6,
+      "functional_group": "Sessile facilitators/competitors",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -860,6 +924,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 6,
+      "functional_group": "Sessile facilitators/competitors",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -873,6 +938,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 10,
+      "functional_group": "Sessile facilitators/competitors",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -886,6 +952,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -899,6 +966,7 @@
       "phylum": "Arthropoda",
       "subphylum": "Crustacae",
       "cluster": 6,
+      "functional_group": "Sessile facilitators/competitors",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -912,6 +980,7 @@
       "phylum": "Arthropoda",
       "subphylum": "Crustacae",
       "cluster": 10,
+      "functional_group": "Sessile facilitators/competitors",
       "shore_height": "high, mid",
       "shore_height_ordinal": 2.5
     },
@@ -925,6 +994,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -938,6 +1008,7 @@
       "phylum": "Cnidaria",
       "subphylum": "Anthozoa",
       "cluster": 2,
+      "functional_group": "Sessile inedible consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -951,6 +1022,7 @@
       "phylum": "Mollusca",
       "subphylum": "Bivalvia",
       "cluster": 5,
+      "functional_group": "Multiplex hub",
       "shore_height": "mid",
       "shore_height_ordinal": 2.0
     },
@@ -964,6 +1036,7 @@
       "phylum": "Algae",
       "subphylum": "Phaeophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -977,6 +1050,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -990,6 +1064,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 10,
+      "functional_group": "Sessile facilitators/competitors",
       "shore_height": "high, mid, low",
       "shore_height_ordinal": 2.0
     },
@@ -1003,6 +1078,7 @@
       "phylum": "Annelida",
       "subphylum": "Polychaeta",
       "cluster": 13,
+      "functional_group": "Sessile facilitators/competitors",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -1016,6 +1092,7 @@
       "phylum": "Cnidaria",
       "subphylum": "Anthozoa",
       "cluster": 2,
+      "functional_group": "Sessile inedible consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -1029,6 +1106,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -1042,6 +1120,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -1055,6 +1134,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 10,
+      "functional_group": "Sessile facilitators/competitors",
       "shore_height": "high",
       "shore_height_ordinal": 3.0
     },
@@ -1068,6 +1148,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -1081,6 +1162,7 @@
       "phylum": "Chordata",
       "subphylum": "Ascidiacea",
       "cluster": 13,
+      "functional_group": "Sessile facilitators/competitors",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -1094,6 +1176,7 @@
       "phylum": "Algae",
       "subphylum": "Phaeophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -1107,6 +1190,7 @@
       "phylum": "Algae",
       "subphylum": "Chaetophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -1120,6 +1204,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -1133,6 +1218,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -1146,6 +1232,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -1159,6 +1246,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -1172,6 +1260,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -1185,6 +1274,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -1198,6 +1288,7 @@
       "phylum": "Mollusca",
       "subphylum": "Bivalvia",
       "cluster": 5,
+      "functional_group": "Multiplex hub",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -1211,6 +1302,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -1224,6 +1316,7 @@
       "phylum": "Algae",
       "subphylum": "Chaetophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -1237,6 +1330,7 @@
       "phylum": "Algae",
       "subphylum": "Chaetophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "high, mid, low",
       "shore_height_ordinal": 2.0
     },
@@ -1250,6 +1344,7 @@
       "phylum": null,
       "subphylum": null,
       "cluster": 4,
+      "functional_group": "Mobile consumers",
       "shore_height": "high, mid, low",
       "shore_height_ordinal": 2.0
     },
@@ -1263,6 +1358,7 @@
       "phylum": "Chordata",
       "subphylum": "Aves",
       "cluster": 1,
+      "functional_group": "Mobile consumers",
       "shore_height": "high, mid, low",
       "shore_height_ordinal": 2.0
     },
@@ -1276,6 +1372,7 @@
       "phylum": "Chordata",
       "subphylum": "Aves",
       "cluster": 1,
+      "functional_group": "Mobile consumers",
       "shore_height": "high, mid, low",
       "shore_height_ordinal": 2.0
     },
@@ -1289,6 +1386,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 4,
+      "functional_group": "Mobile consumers",
       "shore_height": "high",
       "shore_height_ordinal": 3.0
     },
@@ -1302,6 +1400,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 4,
+      "functional_group": "Mobile consumers",
       "shore_height": "high",
       "shore_height_ordinal": 3.0
     },
@@ -1315,6 +1414,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 4,
+      "functional_group": "Mobile consumers",
       "shore_height": "high, mid, low",
       "shore_height_ordinal": 2.0
     },
@@ -1328,6 +1428,7 @@
       "phylum": "Arthropoda",
       "subphylum": "Crustacae",
       "cluster": 4,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -1341,6 +1442,7 @@
       "phylum": "Arthropoda",
       "subphylum": "Crustacae",
       "cluster": 4,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -1354,6 +1456,7 @@
       "phylum": "Arthropoda",
       "subphylum": "Crustacae",
       "cluster": 4,
+      "functional_group": "Mobile consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -1367,6 +1470,7 @@
       "phylum": "Arthropoda",
       "subphylum": "Crustacae",
       "cluster": 4,
+      "functional_group": "Mobile consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -1380,6 +1484,7 @@
       "phylum": "Arthropoda",
       "subphylum": "Crustacae",
       "cluster": 4,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -1393,6 +1498,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 4,
+      "functional_group": "Mobile consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -1406,6 +1512,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 4,
+      "functional_group": "Mobile consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -1419,6 +1526,7 @@
       "phylum": "Arthropoda",
       "subphylum": "Crustacae",
       "cluster": 1,
+      "functional_group": "Mobile consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -1432,6 +1540,7 @@
       "phylum": "Arthropoda",
       "subphylum": "Crustacae",
       "cluster": 1,
+      "functional_group": "Mobile consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -1445,6 +1554,7 @@
       "phylum": "Mollusca",
       "subphylum": "Polyplacophora",
       "cluster": 7,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -1458,6 +1568,7 @@
       "phylum": "Mollusca",
       "subphylum": "Polyplacophora",
       "cluster": 7,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -1471,6 +1582,7 @@
       "phylum": "Mollusca",
       "subphylum": "Polyplacophora",
       "cluster": 7,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -1484,6 +1596,7 @@
       "phylum": "Mollusca",
       "subphylum": "Polyplacophora",
       "cluster": 7,
+      "functional_group": "Mobile consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -1497,6 +1610,7 @@
       "phylum": "Mollusca",
       "subphylum": "Polyplacophora",
       "cluster": 7,
+      "functional_group": "Mobile consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -1510,6 +1624,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 9,
+      "functional_group": "Mobile consumers",
       "shore_height": "high, mid",
       "shore_height_ordinal": 2.5
     },
@@ -1523,6 +1638,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 1,
+      "functional_group": "Mobile consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -1536,6 +1652,7 @@
       "phylum": "Mollusca",
       "subphylum": "Polyplacophora",
       "cluster": 7,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -1549,6 +1666,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 7,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -1562,6 +1680,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 7,
+      "functional_group": "Mobile consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -1575,6 +1694,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 14,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -1588,6 +1708,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 7,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -1601,6 +1722,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 14,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -1614,6 +1736,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 14,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -1627,6 +1750,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 14,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -1640,6 +1764,7 @@
       "phylum": "Echinodermata",
       "subphylum": "Asteroidea",
       "cluster": 1,
+      "functional_group": "Mobile consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -1653,6 +1778,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 9,
+      "functional_group": "Mobile consumers",
       "shore_height": "high, mid, low",
       "shore_height_ordinal": 2.0
     },
@@ -1666,6 +1792,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 9,
+      "functional_group": "Mobile consumers",
       "shore_height": "high, mid",
       "shore_height_ordinal": 2.5
     },
@@ -1679,6 +1806,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 9,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -1692,6 +1820,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 9,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -1705,6 +1834,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 9,
+      "functional_group": "Mobile consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -1718,6 +1848,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 9,
+      "functional_group": "Mobile consumers",
       "shore_height": "high, mid, low",
       "shore_height_ordinal": 2.0
     },
@@ -1731,6 +1862,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 14,
+      "functional_group": "Mobile consumers",
       "shore_height": "high, mid",
       "shore_height_ordinal": 2.5
     },
@@ -1744,6 +1876,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 14,
+      "functional_group": "Mobile consumers",
       "shore_height": "high, mid",
       "shore_height_ordinal": 2.5
     },
@@ -1757,6 +1890,7 @@
       "phylum": "Echinodermata",
       "subphylum": "Asteroidea",
       "cluster": 1,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -1770,6 +1904,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 9,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -1783,6 +1918,7 @@
       "phylum": "Mollusca",
       "subphylum": "Polyplacophora",
       "cluster": 14,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -1796,6 +1932,7 @@
       "phylum": "Mollusca",
       "subphylum": "Polyplacophora",
       "cluster": 14,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -1809,6 +1946,7 @@
       "phylum": "Mollusca",
       "subphylum": "Polyplacophora",
       "cluster": 14,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -1822,6 +1960,7 @@
       "phylum": "Algae",
       "subphylum": "Phaeophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -1835,6 +1974,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -1848,6 +1988,7 @@
       "phylum": "Cnidaria",
       "subphylum": "Anthozoa",
       "cluster": 2,
+      "functional_group": "Sessile inedible consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -1861,6 +2002,7 @@
       "phylum": "Arthropoda",
       "subphylum": "Crustacae",
       "cluster": 13,
+      "functional_group": "Sessile facilitators/competitors",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -1874,6 +2016,7 @@
       "phylum": "Arthropoda",
       "subphylum": "Crustacae",
       "cluster": 6,
+      "functional_group": "Sessile facilitators/competitors",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -1887,6 +2030,7 @@
       "phylum": "Algae",
       "subphylum": "Bacillariophacea",
       "cluster": 3,
+      "functional_group": "Primary producers",
       "shore_height": "high, mid, low",
       "shore_height_ordinal": 2.0
     },
@@ -1900,6 +2044,7 @@
       "phylum": "Mollusca",
       "subphylum": "Bivalvia",
       "cluster": 4,
+      "functional_group": "Mobile consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -1913,6 +2058,7 @@
       "phylum": "Algae",
       "subphylum": "Chaetophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -1926,6 +2072,7 @@
       "phylum": "Cnidaria",
       "subphylum": "Anthozoa",
       "cluster": 2,
+      "functional_group": "Sessile inedible consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -1939,6 +2086,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -1952,6 +2100,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -1965,6 +2114,7 @@
       "phylum": "Algae",
       "subphylum": "Chaetophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -1978,6 +2128,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -1991,6 +2142,7 @@
       "phylum": "Algae",
       "subphylum": "Chaetophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2004,6 +2156,7 @@
       "phylum": "Algae",
       "subphylum": "Chaetophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2017,6 +2170,7 @@
       "phylum": "Algae",
       "subphylum": "Phaeophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2030,6 +2184,7 @@
       "phylum": "Algae",
       "subphylum": "Phaeophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2043,6 +2198,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 13,
+      "functional_group": "Sessile facilitators/competitors",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2056,6 +2212,7 @@
       "phylum": "Algae",
       "subphylum": "Phaeophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -2069,6 +2226,7 @@
       "phylum": "Algae",
       "subphylum": "Phaeophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2082,6 +2240,7 @@
       "phylum": "Algae",
       "subphylum": "Chaetophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2095,6 +2254,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -2108,6 +2268,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 6,
+      "functional_group": "Sessile facilitators/competitors",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2121,6 +2282,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2134,6 +2296,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2147,6 +2310,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2160,6 +2324,7 @@
       "phylum": "Algae",
       "subphylum": "Chaetophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2173,6 +2338,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2186,6 +2352,7 @@
       "phylum": "Cnidaria",
       "subphylum": "Anthozoa",
       "cluster": 8,
+      "functional_group": "Sessile inedible consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2199,6 +2366,7 @@
       "phylum": "Arthropoda",
       "subphylum": "Crustacae",
       "cluster": 10,
+      "functional_group": "Sessile facilitators/competitors",
       "shore_height": "high, mid",
       "shore_height_ordinal": 2.5
     },
@@ -2212,6 +2380,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2225,6 +2394,7 @@
       "phylum": "Algae",
       "subphylum": "Phaeophyta",
       "cluster": 6,
+      "functional_group": "Sessile facilitators/competitors",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -2238,6 +2408,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 6,
+      "functional_group": "Sessile facilitators/competitors",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2251,6 +2422,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 10,
+      "functional_group": "Sessile facilitators/competitors",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2264,6 +2436,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2277,6 +2450,7 @@
       "phylum": "Arthropoda",
       "subphylum": "Crustacae",
       "cluster": 6,
+      "functional_group": "Sessile facilitators/competitors",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2290,6 +2464,7 @@
       "phylum": "Arthropoda",
       "subphylum": "Crustacae",
       "cluster": 10,
+      "functional_group": "Sessile facilitators/competitors",
       "shore_height": "high, mid",
       "shore_height_ordinal": 2.5
     },
@@ -2303,6 +2478,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2316,6 +2492,7 @@
       "phylum": "Cnidaria",
       "subphylum": "Anthozoa",
       "cluster": 2,
+      "functional_group": "Sessile inedible consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2329,6 +2506,7 @@
       "phylum": "Mollusca",
       "subphylum": "Bivalvia",
       "cluster": 5,
+      "functional_group": "Multiplex hub",
       "shore_height": "mid",
       "shore_height_ordinal": 2.0
     },
@@ -2342,6 +2520,7 @@
       "phylum": "Algae",
       "subphylum": "Phaeophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2355,6 +2534,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2368,6 +2548,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 10,
+      "functional_group": "Sessile facilitators/competitors",
       "shore_height": "high, mid, low",
       "shore_height_ordinal": 2.0
     },
@@ -2381,6 +2562,7 @@
       "phylum": "Annelida",
       "subphylum": "Polychaeta",
       "cluster": 13,
+      "functional_group": "Sessile facilitators/competitors",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2394,6 +2576,7 @@
       "phylum": "Cnidaria",
       "subphylum": "Anthozoa",
       "cluster": 2,
+      "functional_group": "Sessile inedible consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2407,6 +2590,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -2420,6 +2604,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2433,6 +2618,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 10,
+      "functional_group": "Sessile facilitators/competitors",
       "shore_height": "high",
       "shore_height_ordinal": 3.0
     },
@@ -2446,6 +2632,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2459,6 +2646,7 @@
       "phylum": "Chordata",
       "subphylum": "Ascidiacea",
       "cluster": 13,
+      "functional_group": "Sessile facilitators/competitors",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2472,6 +2660,7 @@
       "phylum": "Algae",
       "subphylum": "Phaeophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2485,6 +2674,7 @@
       "phylum": "Algae",
       "subphylum": "Chaetophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2498,6 +2688,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2511,6 +2702,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2524,6 +2716,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2537,6 +2730,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2550,6 +2744,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2563,6 +2758,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2576,6 +2772,7 @@
       "phylum": "Mollusca",
       "subphylum": "Bivalvia",
       "cluster": 5,
+      "functional_group": "Multiplex hub",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2589,6 +2786,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2602,6 +2800,7 @@
       "phylum": "Algae",
       "subphylum": "Chaetophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2615,6 +2814,7 @@
       "phylum": "Algae",
       "subphylum": "Chaetophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "high, mid, low",
       "shore_height_ordinal": 2.0
     },
@@ -2628,6 +2828,7 @@
       "phylum": null,
       "subphylum": null,
       "cluster": 4,
+      "functional_group": "Mobile consumers",
       "shore_height": "high, mid, low",
       "shore_height_ordinal": 2.0
     },
@@ -2641,6 +2842,7 @@
       "phylum": "Chordata",
       "subphylum": "Aves",
       "cluster": 1,
+      "functional_group": "Mobile consumers",
       "shore_height": "high, mid, low",
       "shore_height_ordinal": 2.0
     },
@@ -2654,6 +2856,7 @@
       "phylum": "Chordata",
       "subphylum": "Aves",
       "cluster": 1,
+      "functional_group": "Mobile consumers",
       "shore_height": "high, mid, low",
       "shore_height_ordinal": 2.0
     },
@@ -2667,6 +2870,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 4,
+      "functional_group": "Mobile consumers",
       "shore_height": "high",
       "shore_height_ordinal": 3.0
     },
@@ -2680,6 +2884,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 4,
+      "functional_group": "Mobile consumers",
       "shore_height": "high",
       "shore_height_ordinal": 3.0
     },
@@ -2693,6 +2898,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 4,
+      "functional_group": "Mobile consumers",
       "shore_height": "high, mid, low",
       "shore_height_ordinal": 2.0
     },
@@ -2706,6 +2912,7 @@
       "phylum": "Arthropoda",
       "subphylum": "Crustacae",
       "cluster": 4,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -2719,6 +2926,7 @@
       "phylum": "Arthropoda",
       "subphylum": "Crustacae",
       "cluster": 4,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -2732,6 +2940,7 @@
       "phylum": "Arthropoda",
       "subphylum": "Crustacae",
       "cluster": 4,
+      "functional_group": "Mobile consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2745,6 +2954,7 @@
       "phylum": "Arthropoda",
       "subphylum": "Crustacae",
       "cluster": 4,
+      "functional_group": "Mobile consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2758,6 +2968,7 @@
       "phylum": "Arthropoda",
       "subphylum": "Crustacae",
       "cluster": 4,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -2771,6 +2982,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 4,
+      "functional_group": "Mobile consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2784,6 +2996,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 4,
+      "functional_group": "Mobile consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2797,6 +3010,7 @@
       "phylum": "Arthropoda",
       "subphylum": "Crustacae",
       "cluster": 1,
+      "functional_group": "Mobile consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2810,6 +3024,7 @@
       "phylum": "Arthropoda",
       "subphylum": "Crustacae",
       "cluster": 1,
+      "functional_group": "Mobile consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2823,6 +3038,7 @@
       "phylum": "Mollusca",
       "subphylum": "Polyplacophora",
       "cluster": 7,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -2836,6 +3052,7 @@
       "phylum": "Mollusca",
       "subphylum": "Polyplacophora",
       "cluster": 7,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -2849,6 +3066,7 @@
       "phylum": "Mollusca",
       "subphylum": "Polyplacophora",
       "cluster": 7,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -2862,6 +3080,7 @@
       "phylum": "Mollusca",
       "subphylum": "Polyplacophora",
       "cluster": 7,
+      "functional_group": "Mobile consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2875,6 +3094,7 @@
       "phylum": "Mollusca",
       "subphylum": "Polyplacophora",
       "cluster": 7,
+      "functional_group": "Mobile consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2888,6 +3108,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 9,
+      "functional_group": "Mobile consumers",
       "shore_height": "high, mid",
       "shore_height_ordinal": 2.5
     },
@@ -2901,6 +3122,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 1,
+      "functional_group": "Mobile consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2914,6 +3136,7 @@
       "phylum": "Mollusca",
       "subphylum": "Polyplacophora",
       "cluster": 7,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -2927,6 +3150,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 7,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -2940,6 +3164,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 7,
+      "functional_group": "Mobile consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -2953,6 +3178,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 14,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -2966,6 +3192,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 7,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -2979,6 +3206,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 14,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -2992,6 +3220,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 14,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -3005,6 +3234,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 14,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -3018,6 +3248,7 @@
       "phylum": "Echinodermata",
       "subphylum": "Asteroidea",
       "cluster": 1,
+      "functional_group": "Mobile consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3031,6 +3262,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 9,
+      "functional_group": "Mobile consumers",
       "shore_height": "high, mid, low",
       "shore_height_ordinal": 2.0
     },
@@ -3044,6 +3276,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 9,
+      "functional_group": "Mobile consumers",
       "shore_height": "high, mid",
       "shore_height_ordinal": 2.5
     },
@@ -3057,6 +3290,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 9,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -3070,6 +3304,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 9,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -3083,6 +3318,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 9,
+      "functional_group": "Mobile consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3096,6 +3332,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 9,
+      "functional_group": "Mobile consumers",
       "shore_height": "high, mid, low",
       "shore_height_ordinal": 2.0
     },
@@ -3109,6 +3346,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 14,
+      "functional_group": "Mobile consumers",
       "shore_height": "high, mid",
       "shore_height_ordinal": 2.5
     },
@@ -3122,6 +3360,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 14,
+      "functional_group": "Mobile consumers",
       "shore_height": "high, mid",
       "shore_height_ordinal": 2.5
     },
@@ -3135,6 +3374,7 @@
       "phylum": "Echinodermata",
       "subphylum": "Asteroidea",
       "cluster": 1,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -3148,6 +3388,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 9,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -3161,6 +3402,7 @@
       "phylum": "Mollusca",
       "subphylum": "Polyplacophora",
       "cluster": 14,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -3174,6 +3416,7 @@
       "phylum": "Mollusca",
       "subphylum": "Polyplacophora",
       "cluster": 14,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -3187,6 +3430,7 @@
       "phylum": "Mollusca",
       "subphylum": "Polyplacophora",
       "cluster": 14,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -3200,6 +3444,7 @@
       "phylum": "Algae",
       "subphylum": "Phaeophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3213,6 +3458,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3226,6 +3472,7 @@
       "phylum": "Cnidaria",
       "subphylum": "Anthozoa",
       "cluster": 2,
+      "functional_group": "Sessile inedible consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3239,6 +3486,7 @@
       "phylum": "Arthropoda",
       "subphylum": "Crustacae",
       "cluster": 13,
+      "functional_group": "Sessile facilitators/competitors",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -3252,6 +3500,7 @@
       "phylum": "Arthropoda",
       "subphylum": "Crustacae",
       "cluster": 6,
+      "functional_group": "Sessile facilitators/competitors",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3265,6 +3514,7 @@
       "phylum": "Algae",
       "subphylum": "Bacillariophacea",
       "cluster": 3,
+      "functional_group": "Primary producers",
       "shore_height": "high, mid, low",
       "shore_height_ordinal": 2.0
     },
@@ -3278,6 +3528,7 @@
       "phylum": "Mollusca",
       "subphylum": "Bivalvia",
       "cluster": 4,
+      "functional_group": "Mobile consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3291,6 +3542,7 @@
       "phylum": "Algae",
       "subphylum": "Chaetophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3304,6 +3556,7 @@
       "phylum": "Cnidaria",
       "subphylum": "Anthozoa",
       "cluster": 2,
+      "functional_group": "Sessile inedible consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3317,6 +3570,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3330,6 +3584,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3343,6 +3598,7 @@
       "phylum": "Algae",
       "subphylum": "Chaetophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3356,6 +3612,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3369,6 +3626,7 @@
       "phylum": "Algae",
       "subphylum": "Chaetophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3382,6 +3640,7 @@
       "phylum": "Algae",
       "subphylum": "Chaetophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3395,6 +3654,7 @@
       "phylum": "Algae",
       "subphylum": "Phaeophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3408,6 +3668,7 @@
       "phylum": "Algae",
       "subphylum": "Phaeophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3421,6 +3682,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 13,
+      "functional_group": "Sessile facilitators/competitors",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3434,6 +3696,7 @@
       "phylum": "Algae",
       "subphylum": "Phaeophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -3447,6 +3710,7 @@
       "phylum": "Algae",
       "subphylum": "Phaeophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3460,6 +3724,7 @@
       "phylum": "Algae",
       "subphylum": "Chaetophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3473,6 +3738,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -3486,6 +3752,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 6,
+      "functional_group": "Sessile facilitators/competitors",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3499,6 +3766,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3512,6 +3780,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3525,6 +3794,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3538,6 +3808,7 @@
       "phylum": "Algae",
       "subphylum": "Chaetophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3551,6 +3822,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3564,6 +3836,7 @@
       "phylum": "Cnidaria",
       "subphylum": "Anthozoa",
       "cluster": 8,
+      "functional_group": "Sessile inedible consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3577,6 +3850,7 @@
       "phylum": "Arthropoda",
       "subphylum": "Crustacae",
       "cluster": 10,
+      "functional_group": "Sessile facilitators/competitors",
       "shore_height": "high, mid",
       "shore_height_ordinal": 2.5
     },
@@ -3590,6 +3864,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3603,6 +3878,7 @@
       "phylum": "Algae",
       "subphylum": "Phaeophyta",
       "cluster": 6,
+      "functional_group": "Sessile facilitators/competitors",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -3616,6 +3892,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 6,
+      "functional_group": "Sessile facilitators/competitors",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3629,6 +3906,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 10,
+      "functional_group": "Sessile facilitators/competitors",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3642,6 +3920,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3655,6 +3934,7 @@
       "phylum": "Arthropoda",
       "subphylum": "Crustacae",
       "cluster": 6,
+      "functional_group": "Sessile facilitators/competitors",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3668,6 +3948,7 @@
       "phylum": "Arthropoda",
       "subphylum": "Crustacae",
       "cluster": 10,
+      "functional_group": "Sessile facilitators/competitors",
       "shore_height": "high, mid",
       "shore_height_ordinal": 2.5
     },
@@ -3681,6 +3962,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3694,6 +3976,7 @@
       "phylum": "Cnidaria",
       "subphylum": "Anthozoa",
       "cluster": 2,
+      "functional_group": "Sessile inedible consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3707,6 +3990,7 @@
       "phylum": "Mollusca",
       "subphylum": "Bivalvia",
       "cluster": 5,
+      "functional_group": "Multiplex hub",
       "shore_height": "mid",
       "shore_height_ordinal": 2.0
     },
@@ -3720,6 +4004,7 @@
       "phylum": "Algae",
       "subphylum": "Phaeophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3733,6 +4018,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3746,6 +4032,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 10,
+      "functional_group": "Sessile facilitators/competitors",
       "shore_height": "high, mid, low",
       "shore_height_ordinal": 2.0
     },
@@ -3759,6 +4046,7 @@
       "phylum": "Annelida",
       "subphylum": "Polychaeta",
       "cluster": 13,
+      "functional_group": "Sessile facilitators/competitors",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3772,6 +4060,7 @@
       "phylum": "Cnidaria",
       "subphylum": "Anthozoa",
       "cluster": 2,
+      "functional_group": "Sessile inedible consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3785,6 +4074,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -3798,6 +4088,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3811,6 +4102,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 10,
+      "functional_group": "Sessile facilitators/competitors",
       "shore_height": "high",
       "shore_height_ordinal": 3.0
     },
@@ -3824,6 +4116,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3837,6 +4130,7 @@
       "phylum": "Chordata",
       "subphylum": "Ascidiacea",
       "cluster": 13,
+      "functional_group": "Sessile facilitators/competitors",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3850,6 +4144,7 @@
       "phylum": "Algae",
       "subphylum": "Phaeophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3863,6 +4158,7 @@
       "phylum": "Algae",
       "subphylum": "Chaetophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3876,6 +4172,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3889,6 +4186,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3902,6 +4200,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3915,6 +4214,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3928,6 +4228,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3941,6 +4242,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3954,6 +4256,7 @@
       "phylum": "Mollusca",
       "subphylum": "Bivalvia",
       "cluster": 5,
+      "functional_group": "Multiplex hub",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3967,6 +4270,7 @@
       "phylum": "Algae",
       "subphylum": "Rhodophyta",
       "cluster": 12,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3980,6 +4284,7 @@
       "phylum": "Algae",
       "subphylum": "Chaetophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -3993,6 +4298,7 @@
       "phylum": "Algae",
       "subphylum": "Chaetophyta",
       "cluster": 11,
+      "functional_group": "Primary producers",
       "shore_height": "high, mid, low",
       "shore_height_ordinal": 2.0
     },
@@ -4006,6 +4312,7 @@
       "phylum": null,
       "subphylum": null,
       "cluster": 4,
+      "functional_group": "Mobile consumers",
       "shore_height": "high, mid, low",
       "shore_height_ordinal": 2.0
     },
@@ -4019,6 +4326,7 @@
       "phylum": "Chordata",
       "subphylum": "Aves",
       "cluster": 1,
+      "functional_group": "Mobile consumers",
       "shore_height": "high, mid, low",
       "shore_height_ordinal": 2.0
     },
@@ -4032,6 +4340,7 @@
       "phylum": "Chordata",
       "subphylum": "Aves",
       "cluster": 1,
+      "functional_group": "Mobile consumers",
       "shore_height": "high, mid, low",
       "shore_height_ordinal": 2.0
     },
@@ -4045,6 +4354,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 4,
+      "functional_group": "Mobile consumers",
       "shore_height": "high",
       "shore_height_ordinal": 3.0
     },
@@ -4058,6 +4368,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 4,
+      "functional_group": "Mobile consumers",
       "shore_height": "high",
       "shore_height_ordinal": 3.0
     },
@@ -4071,6 +4382,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 4,
+      "functional_group": "Mobile consumers",
       "shore_height": "high, mid, low",
       "shore_height_ordinal": 2.0
     },
@@ -4084,6 +4396,7 @@
       "phylum": "Arthropoda",
       "subphylum": "Crustacae",
       "cluster": 4,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -4097,6 +4410,7 @@
       "phylum": "Arthropoda",
       "subphylum": "Crustacae",
       "cluster": 4,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -4110,6 +4424,7 @@
       "phylum": "Arthropoda",
       "subphylum": "Crustacae",
       "cluster": 4,
+      "functional_group": "Mobile consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -4123,6 +4438,7 @@
       "phylum": "Arthropoda",
       "subphylum": "Crustacae",
       "cluster": 4,
+      "functional_group": "Mobile consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     },
@@ -4136,6 +4452,7 @@
       "phylum": "Arthropoda",
       "subphylum": "Crustacae",
       "cluster": 4,
+      "functional_group": "Mobile consumers",
       "shore_height": "low",
       "shore_height_ordinal": 1.0
     },
@@ -4149,6 +4466,7 @@
       "phylum": "Mollusca",
       "subphylum": "Gastropoda",
       "cluster": 4,
+      "functional_group": "Mobile consumers",
       "shore_height": "mid, low",
       "shore_height_ordinal": 1.5
     }

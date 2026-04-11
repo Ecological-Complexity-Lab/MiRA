@@ -69,7 +69,30 @@ print(f"NTI- edges: {len(edges_neg)}")
 
 
 # ---------------------------------------------------------------------------
-# 3. Parse metadata
+# 3. Cluster → multiplex functional group mapping (Kéfi et al. 2016 PLOS Bio)
+#    14 probabilistic clusters collapsed to 5 functional groups
+# ---------------------------------------------------------------------------
+
+FUNCTIONAL_GROUP = {
+    1:  "Mobile consumers",
+    4:  "Mobile consumers",
+    7:  "Mobile consumers",
+    9:  "Mobile consumers",
+    14: "Mobile consumers",
+    2:  "Sessile inedible consumers",
+    8:  "Sessile inedible consumers",
+    5:  "Multiplex hub",
+    3:  "Primary producers",
+    11: "Primary producers",
+    12: "Primary producers",
+    6:  "Sessile facilitators/competitors",
+    10: "Sessile facilitators/competitors",
+    13: "Sessile facilitators/competitors",
+}
+
+
+# ---------------------------------------------------------------------------
+# 4. Parse metadata
 # ---------------------------------------------------------------------------
 
 wb = xlrd.open_workbook(f"{DATA_DIR}/chilean_metadata.xls")
@@ -103,6 +126,7 @@ for row_i in range(1, ws.nrows):  # skip header
         "phylum": phylum if phylum else None,
         "subphylum": subphylum if subphylum else None,
         "cluster": cluster,
+        "functional_group": FUNCTIONAL_GROUP.get(cluster),
         "shore_height": shore_category if shore_category else None,
         "shore_height_ordinal": round(shore_ordinal, 1) if isinstance(shore_ordinal, float) else None,
     }
@@ -111,7 +135,7 @@ print(f"Metadata entries: {len(metadata)}")
 
 
 # ---------------------------------------------------------------------------
-# 4. Build the JSON structure
+# 5. Build the JSON structure
 # ---------------------------------------------------------------------------
 
 LAYERS = [
@@ -183,7 +207,7 @@ output = {
 
 
 # ---------------------------------------------------------------------------
-# 5. Write output
+# 6. Write output
 # ---------------------------------------------------------------------------
 
 OUT_PATH = "../../kefi2016.json"
