@@ -771,15 +771,13 @@ export class Dashboard {
                 Array.from({ length: n }, (_, j) => jaccard(layerB[i], layerB[j]))
             );
             content = `<div class="db-heatmap-col">
-                <div class="db-charts-row">
-                    <div class="db-chart-box">
-                        <div class="db-chart-title">${s.setALabel} node identity (Jaccard)</div>
-                        ${svgHeatmap(matA, L, { accentColor: SET_A_COLOR, cellSize })}
-                    </div>
-                    <div class="db-chart-box">
-                        <div class="db-chart-title">${s.setBLabel} node identity (Jaccard)</div>
-                        ${svgHeatmap(matB, L, { accentColor: SET_B_COLOR, cellSize })}
-                    </div>
+                <div class="db-chart-box">
+                    <div class="db-chart-title">${s.setALabel} node identity (Jaccard)</div>
+                    ${svgHeatmap(matA, L, { accentColor: SET_A_COLOR, cellSize })}
+                </div>
+                <div class="db-chart-box">
+                    <div class="db-chart-title">${s.setBLabel} node identity (Jaccard)</div>
+                    ${svgHeatmap(matB, L, { accentColor: SET_B_COLOR, cellSize })}
                 </div>
                 <div class="db-chart-box">
                     <div class="db-chart-title">Edge identity (Jaccard)</div>
