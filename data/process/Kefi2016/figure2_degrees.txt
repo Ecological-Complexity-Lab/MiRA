@@ -1,0 +1,106 @@
+"perumytilus purpuratus" 174 1 22 38 11 41 61
+"semimytilus algosus" 163 1 22 26 12 43 59
+"acanthocyclus gayi" 51 33 9 0 7 1 1
+"acanthocyclus hassleri" 42 29 9 0 2 1 1
+"concholepas concholepas" 31 20 9 1 1 0 0
+"heliaster helianthus" 48 42 1 0 0 4 1
+"stichaster striatus" 20 18 1 0 0 0 1
+"gulls" 43 41 0 0 0 0 2
+"cincloides" 20 19 0 0 0 0 1
+"acanthina monodon" 15 8 3 0 4 0 0
+"brachidontes granulata" 22 1 11 0 6 2 2
+"plankton" 15 0 15 0 0 0 0
+"nodolittorina peruviana" 21 13 5 0 3 0 0
+"austrolittorina araucana" 20 13 5 0 2 0 0
+"onchidella" 15 14 1 0 0 0 0
+"petrolisthes punctatus" 5 1 2 0 2 0 0
+"petrolisthes spinifrons" 12 1 2 0 9 0 0
+"petrolisthes angulosus" 5 1 2 0 2 0 0
+"petrolisthes tuberculatus" 5 1 2 0 2 0 0
+"petrolisthes tuberculosus" 5 1 2 0 2 0 0
+"trimusculus peruvianus" 13 11 0 0 2 0 0
+"acanthopleura echinata" 60 56 3 0 1 0 0
+"chaetopleura peruviana" 53 49 3 0 1 0 0
+"chiton  cummingii" 57 46 10 0 1 0 0
+"chiton  granosus" 64 48 10 0 5 1 0
+"chiton  latus" 58 47 10 0 1 0 0
+"enoplochiton  niger" 57 53 3 0 1 0 0
+"fissurella  costata" 65 49 10 1 4 0 1
+"fissurella  crassa" 73 52 10 2 6 1 2
+"fissurella  limbata" 75 55 11 2 6 0 1
+"fissurella  cummingii" 49 41 5 1 2 0 0
+"fissurella  maxima" 44 32 6 1 4 0 1
+"fissurella  picta" 39 31 5 1 2 0 0
+"fissurella  puhlcra" 39 31 5 1 2 0 0
+"scurria zebrina" 31 26 5 0 0 0 0
+"siphonaria lesoni" 45 37 4 0 3 0 1
+"tonicia  benaventii" 40 36 3 0 1 0 0
+"tonicia  chilensis" 40 36 3 0 1 0 0
+"tonicia  elegans" 40 36 3 0 1 0 0
+"lottia  orbigny" 35 24 11 0 0 0 0
+"scurria  araucana" 46 26 14 0 4 0 2
+"scurria  ceciliana" 45 26 12 0 7 0 0
+"scurria  plana" 38 26 11 0 1 0 0
+"scurria scurra" 38 27 8 0 3 0 0
+"scurria variabilis" 45 26 12 0 7 0 0
+"scurria viridula" 37 26 11 0 0 0 0
+"tegula atra" 42 24 14 0 3 0 1
+"anthotoe spp." 133 24 0 0 1 54 54
+"bunodactis spp." 134 24 0 0 2 54 54
+"parantheopsis" 135 24 0 0 0 55 56
+"phymactis spp." 139 24 0 1 2 54 58
+"isolauctis spp." 88 24 0 0 0 11 53
+"balanus laevis" 146 1 35 2 0 54 54
+"gelidium spp." 139 0 22 13 0 51 53
+"lessonia nigrescens" 150 0 14 25 0 58 53
+"lithothamnion spp." 135 0 20 7 0 55 53
+"nothobalanus flosculus" 151 1 36 3 0 55 56
+"jhelius cirratus" 52 1 28 4 0 9 10
+"mazzaella laminarioides" 58 0 18 10 1 14 15
+"nothochthamalus scabrosus" 67 1 33 5 0 13 15
+"peysonella spp." 47 0 19 0 0 13 15
+"porphyra_spp" 69 0 30 6 2 16 15
+"austromegabalanus psittacus" 123 1 13 1 0 54 54
+"corallina offcinalis var. chilensis" 122 0 3 11 0 55 53
+"phragmatopoma spp." 119 1 4 2 0 55 57
+"pyura chilensis" 113 1 2 0 0 54 56
+"benthic_diatoms" 103 0 30 0 2 25 46
+"bryopsis_spp" 136 0 27 0 2 55 52
+"centroceras spp." 136 0 27 0 2 55 52
+"ceramium spp." 136 0 27 0 2 55 52
+"chaetomorpha_spp" 136 0 27 0 2 55 52
+"cladophora spp." 142 0 30 0 2 58 52
+"ectocarpus silicosus" 145 0 29 0 2 60 54
+"enteromorpha compressa" 145 0 29 0 2 60 54
+"halopteris funicularis" 134 0 26 0 0 55 53
+"hildenbrandia lecanelieri" 135 0 27 0 0 55 53
+"polysiphonia_spp" 147 0 30 0 2 60 55
+"rama novazelandensis" 139 0 30 0 2 55 52
+"rhizoclonium cilindricum" 134 0 26 0 2 55 51
+"sarcothalia" 134 0 26 0 2 55 51
+"scythosiphon lomentaria" 146 0 29 0 2 58 57
+"ulva rigida" 151 0 30 2 3 60 56
+"ulvella spp." 147 0 30 0 0 60 57
+"adenocystis utricularis" 127 0 16 0 0 58 53
+"ahnfeltiopsis spp." 127 0 16 0 0 58 53
+"chondrus  canaliculatus" 124 0 16 0 0 55 53
+"codium dimorpha" 121 0 13 0 0 55 53
+"colpomenia phaeodactyla" 121 0 13 0 0 55 53
+"colpomenia sinuosa" 121 0 13 0 0 55 53
+"durvillaea antarctica" 117 0 13 0 0 54 50
+"gelidium rex" 120 0 11 0 0 56 53
+"glossophora kunthii" 117 0 9 0 0 55 53
+"grateloupia" 117 0 9 0 0 55 53
+"gymnogongrus furcellatus" 117 0 9 0 0 55 53
+"laurencia chilensis" 114 0 6 0 0 55 53
+"montemaria horridula" 129 0 15 6 0 55 53
+"nothogenia" 119 0 11 0 0 55 53
+"petalonia fascia" 119 0 11 0 1 54 53
+"petroglossum spp." 129 0 21 0 0 55 53
+"plocamium cartilageneum" 118 0 10 0 0 55 53
+"prionitis spp" 122 0 14 0 0 55 53
+"ralfsia californica" 127 0 12 0 0 60 55
+"rhodymenia sp" 113 0 5 0 0 55 53
+"schottera nicaensis" 126 0 18 0 0 55 53
+"schyzimenia doryophora" 119 0 11 0 0 55 53
+"trematocarpus" 116 0 8 0 0 55 53
