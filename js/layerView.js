@@ -65,21 +65,71 @@ export class LayerView {
      * Set bubble x/y from lat/lon projected through the given Leaflet map.
      * Canvas is assumed to be full-viewport (same as the map container).
      * Stops the force sim so bubbles stay pinned.
+     * Co-located layers (within GEO_CLUSTER_EPS degrees) are fanned out in a
+     * circle around their shared centroid so each bubble is individually selectable.
      */
     setGeoPositions(leafletMap, canvasWidth, canvasHeight) {
         if (this._sim) this._sim.stop();
+        const mapEl = leafletMap.getContainer();
+        const rect  = mapEl.getBoundingClientRect();
+        const scaleX = canvasWidth  / rect.width;
+        const scaleY = canvasHeight / rect.height;
+
         for (const bubble of this._bubbles) {
             const layer = this._model.layers.find(l => l.layer_name === bubble.layerName);
             if (!layer || layer.latitude == null) continue;
             const pt = leafletMap.latLngToContainerPoint([layer.latitude, layer.longitude]);
-            // Convert container point (CSS px) to canvas px
-            const mapEl = leafletMap.getContainer();
-            const rect = mapEl.getBoundingClientRect();
-            const scaleX = canvasWidth  / rect.width;
-            const scaleY = canvasHeight / rect.height;
-            // Store raw canvas coords; render() will use them directly (no viewOffset/viewScale)
-            bubble._geoX = pt.x * scaleX;
-            bubble._geoY = pt.y * scaleY;
+            bubble._trueGeoX = pt.x * scaleX;
+            bubble._trueGeoY = pt.y * scaleY;
+            bubble._lat = layer.latitude;
+            bubble._lon = layer.longitude;
+            // Start with spread == true position; clustering may override below
+            bubble._geoX = bubble._trueGeoX;
+            bubble._geoY = bubble._trueGeoY;
+        }
+
+        this._spreadGeoClusters();
+    }
+
+    /**
+     * Group bubbles that share nearly identical coordinates (within GEO_CLUSTER_EPS
+     * degrees) and fan each group out in a circle so bubbles don't overlap.
+     */
+    _spreadGeoClusters() {
+        const GEO_CLUSTER_EPS = 0.001; // ~100 m — treat as same location
+        const bubbles  = this._bubbles.filter(b => b._trueGeoX != null);
+        const assigned = new Set();
+
+        for (const seed of bubbles) {
+            if (assigned.has(seed.layerName)) continue;
+            const cluster = [seed];
+            assigned.add(seed.layerName);
+            for (const other of bubbles) {
+                if (assigned.has(other.layerName)) continue;
+                if (Math.abs(seed._lat - other._lat) < GEO_CLUSTER_EPS &&
+                    Math.abs(seed._lon - other._lon) < GEO_CLUSTER_EPS) {
+                    cluster.push(other);
+                    assigned.add(other.layerName);
+                }
+            }
+            if (cluster.length <= 1) continue;
+
+            // Centroid of the true canvas positions
+            const cx = cluster.reduce((s, b) => s + b._trueGeoX, 0) / cluster.length;
+            const cy = cluster.reduce((s, b) => s + b._trueGeoY, 0) / cluster.length;
+
+            // Radius: large enough that adjacent bubbles don't touch
+            const maxR  = Math.max(...cluster.map(b => b.r));
+            const gap   = 10; // px between bubble edges
+            const R     = (maxR + gap) / Math.sin(Math.PI / cluster.length);
+
+            // Fan out from top (-π/2)
+            const startAngle = -Math.PI / 2;
+            cluster.forEach((b, i) => {
+                const angle = startAngle + (2 * Math.PI * i) / cluster.length;
+                b._geoX = cx + R * Math.cos(angle);
+                b._geoY = cy + R * Math.sin(angle);
+            });
         }
     }
 
@@ -542,6 +592,34 @@ export class LayerView {
                 }
                 if (edgeFaded) ctx.globalAlpha = 1;
             }
+        }
+
+        // ── Geo tether lines (spread cluster → true location) ──
+        if (this.geoMode) {
+            ctx.save();
+            ctx.strokeStyle = 'rgba(80,80,80,0.35)';
+            ctx.lineWidth   = 1;
+            ctx.setLineDash([4, 4]);
+            for (const b of this._bubbles) {
+                if (b._trueGeoX == null) continue;
+                const dx = b.x - b._trueGeoX, dy = b.y - b._trueGeoY;
+                if (Math.hypot(dx, dy) < 2) continue; // not spread — skip
+                ctx.beginPath();
+                ctx.moveTo(b._trueGeoX, b._trueGeoY);
+                ctx.lineTo(b.x, b.y);
+                ctx.stroke();
+            }
+            ctx.setLineDash([]);
+            // Dot at true location
+            ctx.fillStyle = 'rgba(80,80,80,0.55)';
+            for (const b of this._bubbles) {
+                if (b._trueGeoX == null) continue;
+                if (Math.hypot(b.x - b._trueGeoX, b.y - b._trueGeoY) < 2) continue;
+                ctx.beginPath();
+                ctx.arc(b._trueGeoX, b._trueGeoY, 4, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.restore();
         }
 
         // ── Bubbles ──
