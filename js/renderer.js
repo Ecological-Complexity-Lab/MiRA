@@ -569,14 +569,18 @@ export class Renderer {
     }
 
     _drawInterlayerLinks(ctx) {
-        for (const link of this.model.interlayerLinks) {
-            // In Map Mode, only render links if BOTH connect to active map layers
-            if (this.activeMapLayers && (!this.activeMapLayers.has(link.layer_from) || !this.activeMapLayers.has(link.layer_to))) {
-                continue;
-            }
+        // Pre-compute weight range for normalized line width
+        const visibleLinks = this.model.interlayerLinks.filter(l => {
+            if (this.activeMapLayers && (!this.activeMapLayers.has(l.layer_from) || !this.activeMapLayers.has(l.layer_to))) return false;
+            if (this.interlayerMinWeight > 0 && (l.weight || 0) < this.interlayerMinWeight) return false;
+            return true;
+        });
+        const weights = visibleLinks.map(l => l.weight || 0).filter(w => w > 0);
+        const maxW = weights.length ? Math.max(...weights) : 1;
+        const minW = weights.length ? Math.min(...weights) : 0;
+        const wRange = maxW - minW || 1;
 
-            if (this.interlayerMinWeight > 0 && (link.weight || 0) < this.interlayerMinWeight) continue;
-
+        for (const link of visibleLinks) {
             const fromScreen = this.getNodeScreenPos(link.layer_from, link.node_from);
             const toScreen = this.getNodeScreenPos(link.layer_to, link.node_to);
             if (!fromScreen || !toScreen) continue;
@@ -601,7 +605,10 @@ export class Renderer {
             const cpx = mx + (dy / dist) * curvature;
             const cpy = my - (dx / dist) * curvature;
 
-            const baseWidth = link.weight ? Math.min(link.weight * 1.5, 6) : 2;
+            // Normalize weight to [0,1] across visible links, map to [0.8, 5] px
+            const w = link.weight || 0;
+            const t = w > 0 ? (w - minW) / wRange : 0;
+            const baseWidth = 0.8 + t * 4.2;
             ctx.beginPath();
             ctx.moveTo(fromScreen.x, fromScreen.y);
             ctx.quadraticCurveTo(cpx, cpy, toScreen.x, toScreen.y);
