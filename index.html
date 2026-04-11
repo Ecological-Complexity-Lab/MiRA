@@ -162,9 +162,19 @@
               <option value="">Set Default</option>
             </select>
           </div>
-          <div style="margin-top:8px;">
+          <div style="margin-top:8px;" id="sizeByContainer">
             <label style="font-size:11px;color:#666;">Size By</label>
             <select id="nodeSizeSelect" class="styled-select" disabled>
+              <option value="">Uniform (slider)</option>
+            </select>
+          </div>
+          <div style="margin-top:8px; display:none;" id="bipartiteSizeByContainer">
+            <label style="font-size:11px;color:#666;" id="bipartiteSizeLabelA">Size By Set A</label>
+            <select id="nodeSizeSelectSetA" class="styled-select" disabled>
+              <option value="">Uniform (slider)</option>
+            </select>
+            <label style="font-size:11px;color:#666; margin-top:6px; display:block;" id="bipartiteSizeLabelB">Size By Set B</label>
+            <select id="nodeSizeSelectSetB" class="styled-select" disabled>
               <option value="">Uniform (slider)</option>
             </select>
           </div>

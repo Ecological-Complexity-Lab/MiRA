@@ -62,6 +62,12 @@ const bipartiteColorByContainer = document.getElementById('bipartiteColorByConta
 const bipartiteColorLabelA = document.getElementById('bipartiteColorLabelA');
 const bipartiteColorLabelB = document.getElementById('bipartiteColorLabelB');
 const nodeSizeSelect = document.getElementById('nodeSizeSelect');
+const sizeByContainer = document.getElementById('sizeByContainer');
+const bipartiteSizeByContainer = document.getElementById('bipartiteSizeByContainer');
+const bipartiteSizeLabelA = document.getElementById('bipartiteSizeLabelA');
+const bipartiteSizeLabelB = document.getElementById('bipartiteSizeLabelB');
+const nodeSizeSelectSetA = document.getElementById('nodeSizeSelectSetA');
+const nodeSizeSelectSetB = document.getElementById('nodeSizeSelectSetB');
 const linkColorSelect = document.getElementById('linkColorSelect');
 const layerColorSelect = document.getElementById('layerColorSelect');
 const layerColorSwatches = document.getElementById('layerColorSwatches');
@@ -317,6 +323,8 @@ function resetVisualizationOptions() {
     nodeColorSelectSetA.value = '';
     nodeColorSelectSetB.value = '';
     nodeSizeSelect.value = '';
+    nodeSizeSelectSetA.value = '';
+    nodeSizeSelectSetB.value = '';
     linkColorSelect.value = '';
     layerColorSelect.value = '';
     layerColorPicker.value = LAYER_DEFAULT_HEX;
@@ -462,6 +470,8 @@ function loadData(json) {
         document.getElementById('setNamesContainer').style.display = isBipartiteLayout ? '' : 'none';
         colorByContainer.style.display = isBipartiteLayout ? 'none' : '';
         bipartiteColorByContainer.style.display = isBipartiteLayout ? '' : 'none';
+        sizeByContainer.style.display = isBipartiteLayout ? 'none' : '';
+        bipartiteSizeByContainer.style.display = isBipartiteLayout ? '' : 'none';
 
         populateDropdowns();
         resetVisualizationOptions();
@@ -478,6 +488,8 @@ function loadData(json) {
         nodeColorSelectSetA.disabled = false;
         nodeColorSelectSetB.disabled = false;
         nodeSizeSelect.disabled = false;
+        nodeSizeSelectSetA.disabled = nodeSizeSelectSetA.options.length <= 1;
+        nodeSizeSelectSetB.disabled = nodeSizeSelectSetB.options.length <= 1;
         linkColorSelect.disabled = false;
     } catch (err) {
         console.error('Failed to load data:', err);
@@ -1821,6 +1833,8 @@ layoutSelect.addEventListener('change', () => {
     document.getElementById('setNamesContainer').style.display = isBipartiteLayout ? '' : 'none';
     colorByContainer.style.display = isBipartiteLayout ? 'none' : '';
     bipartiteColorByContainer.style.display = isBipartiteLayout ? '' : 'none';
+    sizeByContainer.style.display = isBipartiteLayout ? 'none' : '';
+    bipartiteSizeByContainer.style.display = isBipartiteLayout ? '' : 'none';
 
     updateNodeColors();
     renderer.render();
@@ -2042,31 +2056,48 @@ function populateDropdowns() {
 
     // Node size options
     nodeSizeSelect.innerHTML = '<option value="">Uniform (slider)</option>';
-    // We only want continuous numeric attributes. This is a heuristic check on the first element.
-    const addContAttr = (source, attr, entities) => {
-        // Find first non-null
-        let sample = null;
+    nodeSizeSelectSetA.innerHTML = '<option value="">Uniform (slider)</option>';
+    nodeSizeSelectSetB.innerHTML = '<option value="">Uniform (slider)</option>';
+
+    // Only numeric attributes; heuristic: check sample value type
+    const isNumericAttr = (attr, entities) => {
         for (const e of entities) {
-            if (e[attr] !== undefined && e[attr] !== null) {
-                sample = e[attr];
-                break;
-            }
+            const v = e[attr];
+            if (v !== undefined && v !== null) return typeof v === 'number';
         }
-        if (typeof sample === 'number') {
-            const opt = document.createElement('option');
-            opt.value = `${source}:${attr}`;
-            opt.textContent = `${source === 'node' ? 'Node' : 'State'}: ${attr}`;
-            nodeSizeSelect.appendChild(opt);
-        }
+        return false;
+    };
+
+    const addSizeOpt = (select, source, attr) => {
+        const opt = document.createElement('option');
+        opt.value = `${source}:${attr}`;
+        opt.textContent = `${source === 'node' ? 'Node' : 'State'}: ${attr}`;
+        select.appendChild(opt);
     };
 
     for (const attr of model.nodeAttributeNames) {
-        addContAttr('node', attr, model.nodes);
+        if (isNumericAttr(attr, model.nodes)) addSizeOpt(nodeSizeSelect, 'node', attr);
     }
     for (const attr of Object.keys(model.stateNodes[0] || {})) {
         if (!['layer_name', 'node_name', 'layer_id', 'node_id'].includes(attr)) {
-            addContAttr('state', attr, model.stateNodes);
+            if (isNumericAttr(attr, model.stateNodes)) addSizeOpt(nodeSizeSelect, 'state', attr);
         }
+    }
+
+    // Bipartite size selects — only numeric attrs per set
+    if (hasBipartite) {
+        bipartiteSizeLabelA.textContent = `Size by ${labelA}`;
+        bipartiteSizeLabelB.textContent = `Size by ${labelB}`;
+
+        const addSetSizeOpts = (select, nodeAttrs, stateAttrs) => {
+            nodeAttrs.forEach(attr => { if (isNumericAttr(attr, model.nodes)) addSizeOpt(select, 'node', attr); });
+            stateAttrs.forEach(attr => { if (isNumericAttr(attr, model.stateNodes)) addSizeOpt(select, 'state', attr); });
+        };
+        addSetSizeOpts(nodeSizeSelectSetA, setA_nodeAttrs, setA_stateAttrs);
+        addSetSizeOpts(nodeSizeSelectSetB, setB_nodeAttrs, setB_stateAttrs);
+
+        nodeSizeSelectSetA.disabled = nodeSizeSelectSetA.options.length <= 1;
+        nodeSizeSelectSetB.disabled = nodeSizeSelectSetB.options.length <= 1;
     }
 
 
@@ -2144,10 +2175,9 @@ nodeColorSelectSetB.addEventListener('change', () => {
     renderer.render();
 });
 
-nodeSizeSelect.addEventListener('change', () => {
-    updateNodeSizes();
-    renderer.render();
-});
+nodeSizeSelect.addEventListener('change', () => { updateNodeSizes(); renderer.render(); });
+nodeSizeSelectSetA.addEventListener('change', () => { updateNodeSizes(); renderer.render(); });
+nodeSizeSelectSetB.addEventListener('change', () => { updateNodeSizes(); renderer.render(); });
 
 linkColorSelect.addEventListener('change', () => {
     updateLinkColors();
@@ -2156,59 +2186,63 @@ linkColorSelect.addEventListener('change', () => {
 
 
 
-function updateNodeSizes() {
-    const val = nodeSizeSelect.value;
-    if (!val || !model) {
-        renderer.nodeSizeFn = null;
-        return;
-    }
-
+function _buildSizeScaleFn(val, entities, stateEntities) {
+    if (!val) return null;
     const [source, attrName] = val.split(':');
+    const items = source === 'node' ? entities : stateEntities;
     let minVal = Infinity, maxVal = -Infinity;
+    for (const e of items) {
+        const v = e[attrName];
+        if (typeof v === 'number') {
+            if (v < minVal) minVal = v;
+            if (v > maxVal) maxVal = v;
+        }
+    }
+    const range = maxVal - minVal;
+    const scale = { type: 'size', min: minVal, max: maxVal, attrName };
+    const compute = (v) => {
+        if (typeof v !== 'number') return 1.0;
+        if (range === 0) return 1.0;
+        return 0.3 + ((v - minVal) / range) * 1.7;
+    };
+    const fn = source === 'node'
+        ? (layerName, nodeName) => { const n = model.nodesByName.get(nodeName); return n ? compute(n[attrName]) : 1.0; }
+        : (layerName, nodeName) => { const sn = model.stateNodeMap.get(`${layerName}::${nodeName}`); return sn ? compute(sn[attrName]) : 1.0; };
+    return { scale, fn };
+}
 
-    if (source === 'node') {
-        for (const n of model.nodes) {
-            const v = n[attrName];
-            if (typeof v === 'number') {
-                if (v < minVal) minVal = v;
-                if (v > maxVal) maxVal = v;
+function updateNodeSizes() {
+    if (!model) { renderer.nodeSizeFn = null; return; }
+
+    const isBipartiteLayout = layout.layoutType === 'bipartite';
+
+    if (isBipartiteLayout) {
+        const resA = _buildSizeScaleFn(nodeSizeSelectSetA.value, model.nodes, model.stateNodes);
+        const resB = _buildSizeScaleFn(nodeSizeSelectSetB.value, model.nodes, model.stateNodes);
+
+        activeNodeSizeScale = resA?.scale || resB?.scale || null;
+
+        if (!resA && !resB) {
+            renderer.nodeSizeFn = null;
+        } else {
+            // Determine which set each node belongs to (use first bipartite layer found)
+            const setANodes = new Set();
+            const setBNodes = new Set();
+            for (const [, info] of model.bipartiteInfo) {
+                if (!info.isBipartite) continue;
+                info.setA.forEach(n => setANodes.add(n));
+                info.setB.forEach(n => setBNodes.add(n));
             }
+            renderer.nodeSizeFn = (layerName, nodeName) => {
+                if (setANodes.has(nodeName)) return resA ? resA.fn(layerName, nodeName) : 1.0;
+                if (setBNodes.has(nodeName)) return resB ? resB.fn(layerName, nodeName) : 1.0;
+                return 1.0;
+            };
         }
     } else {
-        for (const sn of model.stateNodes) {
-            const v = sn[attrName];
-            if (typeof v === 'number') {
-                if (v < minVal) minVal = v;
-                if (v > maxVal) maxVal = v;
-            }
-        }
-    }
-
-    // Scale function: maps [minVal, maxVal] -> [0.3, 2.0]
-    // If all values are the same, just return 1.0 (uniform)
-    const range = maxVal - minVal;
-
-    // Save scale for legend
-    activeNodeSizeScale = { type: 'size', min: minVal, max: maxVal, attrName };
-
-    const computeScale = (val) => {
-        if (typeof val !== 'number') return 1.0;
-        if (range === 0) return 1.0;
-        const normalized = (val - minVal) / range; // 0.0 to 1.0
-        return 0.3 + (normalized * 1.7); // 0.3x smallest to 2.0x largest
-    };
-
-    if (source === 'node') {
-        renderer.nodeSizeFn = (layerName, nodeName) => {
-            const node = model.nodesByName.get(nodeName);
-            return node ? computeScale(node[attrName]) : 1.0;
-        };
-    } else if (source === 'state') {
-        renderer.nodeSizeFn = (layerName, nodeName) => {
-            const key = `${layerName}::${nodeName}`;
-            const sn = model.stateNodeMap.get(key);
-            return sn ? computeScale(sn[attrName]) : 1.0;
-        };
+        const res = _buildSizeScaleFn(nodeSizeSelect.value, model.nodes, model.stateNodes);
+        activeNodeSizeScale = res?.scale || null;
+        renderer.nodeSizeFn = res?.fn || null;
     }
 
     renderLegends();
