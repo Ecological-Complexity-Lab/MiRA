@@ -538,6 +538,18 @@ const DATASET_INFO = {
         nodeAttrs: ['node_type (host / parasite)', 'abundance', 'module (1–7, Infomap)'],
         linkAttrs: ['weight'],
     },
+    magrach2020: {
+        name: 'Basque Country spatial pollination network',
+        citation: 'Magrach et al. (EuPPollNet)',
+        doi: 'https://doi.org/10.1111/geb.70000',
+        dataDoi: 'https://github.com/JoseBSL/EuPPollNet',
+        layers: '5 layers — grassland sites, Orozko, Basque Country (Spain)',
+        nodes: '137 species (45 plants · 92 pollinators)',
+        links: '376 intralayer (interaction frequency) + 142 interlayer (Jaccard)',
+        network: 'Undirected · bipartite per layer · GPS coordinates (map mode)',
+        nodeAttrs: ['node_type (plant / pollinator)'],
+        linkAttrs: ['weight'],
+    },
     costa2020: {
         name: 'Portuguese temporal seed dispersal network',
         citation: 'Costa et al. 2020',
