@@ -208,6 +208,7 @@
   <a href="#dashboard" class="l2">📊 Dashboard Mode</a>
   <a href="#dashboard-kpi" class="l3">KPI Cards</a>
   <a href="#dashboard-bars" class="l3">Per-Layer Charts</a>
+  <a href="#dashboard-weights" class="l3">Link Weight Distributions</a>
   <a href="#dashboard-matrix" class="l3">Presence Matrix</a>
   <a href="#dashboard-jaccard" class="l3">Layer Similarity</a>
   <a href="#dashboard-degree" class="l3">Degree Distributions</a>
@@ -216,6 +217,7 @@
   <a href="#layerview" class="l2">🔵 Layer Mode</a>
   <a href="#lv-interactions" class="l3">Interactions</a>
   <a href="#lv-controls" class="l3">Sidebar Controls</a>
+  <a href="#lv-geo" class="l3">Geographic Mode</a>
 
   <div class="toc-sep"></div>
 
@@ -272,6 +274,7 @@
 
   <pre style="background:#f3f4f6;border:1px solid #e5e7eb;border-radius:6px;padding:16px;font-size:12px;overflow-x:auto;line-height:1.6"><code style="background:none;border:none;padding:0;color:#1f2937">{
   "directed": false,
+  "directed_interlayer": false,
   "layers": [
     { "layer_id": 1, "layer_name": "Forest", "latitude": 42.3, "longitude": 3.1, "bipartite": true }
   ],
@@ -289,6 +292,7 @@
   <h3>Global fields</h3>
   <ul>
     <li><code>directed</code> <em>(Boolean)</em> — renders arrowheads on all edges. Default: <code>false</code>.</li>
+    <li><code>directed_interlayer</code> <em>(Boolean, optional)</em> — when <code>true</code>, interlayer edges are treated as directed (arrowheads rendered) even if the overall network is undirected. Useful for temporal networks where direction represents time (e.g. year t → year t+1). Defaults to the value of <code>directed</code>.</li>
   </ul>
 
   <h3><code>layers</code> array</h3>
@@ -330,19 +334,55 @@
     <thead>
       <tr style="background:#f3f4f6;">
         <th style="text-align:left;padding:7px 10px;border-bottom:2px solid #e5e7eb;">Dataset</th>
+        <th style="text-align:left;padding:7px 10px;border-bottom:2px solid #e5e7eb;">Reference</th>
         <th style="text-align:left;padding:7px 10px;border-bottom:2px solid #e5e7eb;">Type</th>
         <th style="text-align:left;padding:7px 10px;border-bottom:2px solid #e5e7eb;">Layers</th>
         <th style="text-align:left;padding:7px 10px;border-bottom:2px solid #e5e7eb;">Notes</th>
       </tr>
     </thead>
     <tbody>
-      <tr><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Directed</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Directed unipartite</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">3</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Minimal directed example</td></tr>
-      <tr><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Large Scale</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Undirected unipartite</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">3</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">High node count</td></tr>
-      <tr><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Simple Bipartite</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Undirected bipartite</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">2</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Minimal bipartite example</td></tr>
-      <tr><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Complex Bipartite (Bartomeus)</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Undirected bipartite</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">4</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Real pollination network</td></tr>
-      <tr><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Pond Ecosystem</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Undirected unipartite</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">4</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Multi-trophic food-web</td></tr>
-      <tr><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Synthetic Bipartite (10 layers)</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Undirected bipartite</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">10</td><td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Generated pollinator-plant network; clustered layers + one isolated layer</td></tr>
-      <tr><td style="padding:6px 10px;">Synthetic Unipartite (10 layers)</td><td style="padding:6px 10px;">Directed unipartite</td><td style="padding:6px 10px;">10</td><td style="padding:6px 10px;">Generated social/influence network; overlapping groups, bridging layer, one isolated layer</td></tr>
+      <tr>
+        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Canary Islands pollination network</td>
+        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Vitali et al. 2024</td>
+        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Undirected bipartite</td>
+        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">5</td>
+        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Spatial pollination; GPS coordinates → Map Mode and geographic Layer View</td>
+      </tr>
+      <tr>
+        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Thousand Island Lake seed dispersal</td>
+        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Zhu et al. 2025</td>
+        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Undirected bipartite</td>
+        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">22</td>
+        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">GPS coordinates; layer attributes (area in ha, isolation in m)</td>
+      </tr>
+      <tr>
+        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Basque Country spatial pollination</td>
+        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Magrach et al. (EuPPollNet)</td>
+        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Undirected bipartite</td>
+        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">5</td>
+        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Spatial pollination; GPS coordinates</td>
+      </tr>
+      <tr>
+        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Portuguese temporal seed dispersal</td>
+        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Costa et al. 2020</td>
+        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Undirected bipartite, directed interlayer</td>
+        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">5</td>
+        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Temporal (annual 2012–2016); interlayer weights = abundance ratio t+1/t</td>
+      </tr>
+      <tr>
+        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Chilean intertidal food web</td>
+        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Kéfi et al. 2016</td>
+        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Directed unipartite</td>
+        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">3</td>
+        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Multiplex: trophic, positive non-trophic, negative non-trophic interactions</td>
+      </tr>
+      <tr>
+        <td style="padding:6px 10px;">Siberian host–parasite network</td>
+        <td style="padding:6px 10px;">Pilosof et al. 2017</td>
+        <td style="padding:6px 10px;">Undirected bipartite, directed interlayer</td>
+        <td style="padding:6px 10px;">6</td>
+        <td style="padding:6px 10px;">Temporal (annual 1982–1987)</td>
+      </tr>
     </tbody>
   </table>
 
@@ -369,18 +409,23 @@
     <li><span class="key">Stacking Mode</span> — <em>Horizontal</em> (layers recede into Z-axis, default) or <em>Vertical</em> (layers drop along Y-axis).</li>
     <li><span class="key">Layer Spacing</span> — simulated distance between planes.</li>
     <li><span class="key">Layout Algorithm</span> — Fruchterman-Reingold, Kamada-Kawai, Bipartite (two-row, optional nested sorting), Circle, Grid, or Random.</li>
+    <li><span class="key">Color By (layers)</span> — color layer planes by a numeric attribute (e.g. area, elevation). Produces a continuous Viridis legend.</li>
   </ul>
   <h4>Nodes</h4>
   <ul>
     <li><span class="key">Node Labels</span> — show names on hover or permanently.</li>
     <li><span class="key">Transform Nodes</span> — skew nodes to match the isometric perspective. Disable for large networks.</li>
     <li><span class="key">Color By</span> — Layer, Group, or Uniform. Bipartite networks show independent color pickers for Set A and Set B.</li>
-    <li><span class="key">Size By</span> — uniform Base Size slider, or scale by Node Degree.</li>
+    <li><span class="key">Size By</span> — uniform Base Size slider, or scale by Node Degree. Bipartite networks show independent Size By dropdowns for Set A and Set B.</li>
   </ul>
   <h4>Links</h4>
   <ul>
     <li><span class="key">Show Interlayer Links</span> — toggle cross-layer edges.</li>
     <li><span class="key">Color By</span> — by type (Inter vs. Intra) or by originating layer color.</li>
+  </ul>
+  <h4>Search</h4>
+  <ul>
+    <li><span class="key">Search Nodes</span> — type to filter the node list by name. Matching nodes are highlighted in the canvas; click a result to select and focus it.</li>
   </ul>
 
   <!-- Map Mode -->
@@ -395,11 +440,12 @@
   </ul>
 
   <h3 id="map-controls">Sidebar Controls</h3>
-  <p>Same as Network Mode (Layers, Nodes, Links sections), with an additional <strong>Map</strong> section at the top:</p>
+  <p>Same as Network Mode (Layers, Nodes, Links sections). Map-specific controls appear in the <strong>bottom bar</strong>:</p>
   <ul>
-    <li><span class="key">Map Opacity</span> — fade the base map.</li>
+    <li><span class="key">Map Opacity</span> — fade the base map tile layer.</li>
     <li><span class="key">Show Map</span> — toggle the Leaflet tile layer entirely.</li>
-    <li><span class="key">Show Locations</span> — toggle the blue circle markers.</li>
+    <li><span class="key">Show Locations</span> — toggle the blue circle layer markers.</li>
+    <li><span class="key">Street Map</span> — switch between satellite imagery (default) and OpenStreetMap street tiles.</li>
   </ul>
 
   <!-- Dashboard Mode -->
@@ -409,7 +455,7 @@
   <h3>Sidebar Controls</h3>
   <ul>
     <li><span class="key">Sort layers by</span> — order layers in all charts by Participation, Nodes, Intra-links, Inter-links, or Density.</li>
-    <li><span class="key">Show bipartite panels</span> — (bipartite networks only) hide/show Set A / Set B split panels.</li>
+    <li><span class="key">Show bipartite detail</span> — (bipartite networks only) hide/show Set A / Set B split panels. This checkbox appears in the sidebar only while Dashboard Mode is active.</li>
   </ul>
 
   <h4 id="dashboard-kpi">KPI Cards</h4>
@@ -417,6 +463,14 @@
 
   <h4 id="dashboard-bars">Per-Layer Bar Charts</h4>
   <p>Side-by-side bars per layer: node count, intralayer links, interlayer links, and edge density. The highest-value bar is accent-colored. For bipartite networks the node-count chart becomes a stacked bar split by <span style="color:#0072b2;font-weight:600">Set A</span> and <span style="color:#f472b6;font-weight:600">Set B</span>. Clicking a layer name highlights it in the background network.</p>
+
+  <h4 id="dashboard-weights">Link Weight Distributions</h4>
+  <p>Two histograms showing the distribution of edge weights across the network.</p>
+  <ul>
+    <li><strong>Intralayer</strong> — a dropdown above the histogram lets you choose <em>All layers</em> (aggregated, default) or any specific layer.</li>
+    <li><strong>Interlayer</strong> — histogram paired with a count heatmap to its left. Heatmap cells show the raw number of interlayer links between each pair of layers (amber colour scale). Click a non-empty cell to filter the histogram to that pair; a <strong>✕ Clear</strong> button resets to all pairs. For temporal networks with <code>directed_interlayer: true</code> the heatmap is asymmetric (e.g. 1982→1983 is distinct from 1983→1982).</li>
+  </ul>
+  <p>Only shown when the dataset has weighted edges (all weights = 1 still displays, confirming the network is unweighted).</p>
 
   <h4 id="dashboard-matrix">Node × Layer Presence Matrix</h4>
   <p>Heatmap of which nodes appear in which layers. A toggle switches orientation between <strong>Layer rows × Node cols</strong> (default, exploits screen width) and <strong>Node rows × Layer cols</strong>. Sort buttons reorder alphabetically or by participation count.</p>
@@ -471,6 +525,17 @@
     <li><span class="key">Edge metric</span> — Interlayer links, Shared nodes, or Both.</li>
     <li><span class="key">Min edge weight</span> — hide edges below this threshold.</li>
     <li><span class="key">Show edge weight labels</span> — toggle numeric labels.</li>
+  </ul>
+
+  <h3 id="lv-geo">Geographic Mode <span class="pill pill-layer">GPS datasets only</span></h3>
+  <p>When every layer in the dataset has <code>latitude</code> and <code>longitude</code>, Layer View activates in <strong>Geographic mode</strong> automatically — bubbles are pinned to their real-world coordinates on a Leaflet satellite map background.</p>
+  <ul>
+    <li>A <span class="key">Force Layout</span> toggle button at the top of the Layers sidebar section switches to the standard force-directed view and back.</li>
+    <li>Bubbles cannot be dragged — they are pinned to map coordinates.</li>
+    <li>Scroll and drag pan/zoom the Leaflet map (not the canvas).</li>
+    <li><span class="key">+</span> / <span class="key">−</span> toolbar buttons zoom the map; <span class="key">Reset</span> fits all layers into view.</li>
+    <li><strong>Map Opacity</strong>, <strong>Show Map</strong>, and <strong>Street Map</strong> controls appear in the bottom bar (same controls as Map Mode).</li>
+    <li>Hover tooltips, bubble selection, and Cmd+click comparison all work normally.</li>
   </ul>
 
   <hr>
