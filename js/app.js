@@ -26,6 +26,7 @@ let activeNodeColorScaleA = null;
 let activeNodeColorScaleB = null;
 let activeNodeSizeScale = null;
 let activeLinkColorScale = null;
+let activeLayerColorScale = null;
 const colorScaleOverrides = new Map(); // attrName -> 'categorical' | 'continuous'
 
 // ---- DOM Elements ----
@@ -341,6 +342,7 @@ function resetVisualizationOptions() {
     activeNodeColorScaleA = null;
     activeNodeColorScaleB = null;
     activeLinkColorScale = null;
+    activeLayerColorScale = null;
     colorScaleOverrides.clear();
 
     // Layer view
@@ -2341,20 +2343,24 @@ function updateLayerColors() {
     const attrName = layerColorSelect.value;
     layerColorSwatches.style.display = attrName ? 'none' : 'flex';
 
-    if (!model) { renderer.layerColorFn = null; renderer.render(); return; }
+    if (!model) { renderer.layerColorFn = null; activeLayerColorScale = null; renderer.render(); return; }
 
     if (attrName) {
-        const sc = colorMapper.buildColorScale(model.layers, attrName);
+        const override = colorScaleOverrides.get(attrName);
+        const sc = colorMapper.buildColorScale(model.layers, attrName, override);
+        activeLayerColorScale = sc;
         renderer.layerColorFn = (layerIndex, layer) => {
             const hex = sc.scaleFn(layer[attrName]);
-            return { fill: _hexToRgba(hex, 0.18), border: _hexToRgba(hex, 0.55), text: hex };
+            return { fill: _hexToRgba(hex, 0.35), border: _hexToRgba(hex, 0.7), text: hex };
         };
     } else {
+        activeLayerColorScale = null;
         const hex = layerColorPicker.value;
         renderer.layerColorFn = (layerIndex, layer) => (
             { fill: _hexToRgba(hex, 0.18), border: _hexToRgba(hex, 0.55), text: hex }
         );
     }
+    renderLegends();
     renderer.render();
 }
 
@@ -2650,6 +2656,7 @@ function renderLegends() {
 
     renderScaleLegend(activeNodeSizeScale, 'nodeSize', 'Node Size');
     renderScaleLegend(activeLinkColorScale, 'linkColor', 'Link Color');
+    renderScaleLegend(activeLayerColorScale, 'layerColor', 'Layer Color');
 }
 
 function createLegendDOM(titleText, scale, id) {
@@ -2682,6 +2689,7 @@ function createLegendDOM(titleText, scale, id) {
             colorScaleOverrides.set(scale.attrName, newType);
             updateNodeColors();
             updateLinkColors();
+            updateLayerColors();
             renderer.render();
         };
         controls.appendChild(toggleBtn);
