@@ -586,7 +586,7 @@ export class Dashboard {
     _sWeightDist(s) {
         const INTRA_COLOR  = BAR_FILL;
         const INTER_COLOR  = 'rgba(245,158,11,0.75)';
-        const W_HIST = 300, H_HIST = 180;
+        const W_HIST = 420, H_HIST = 220;
 
         const makeBins = (weights, nBins = 15) => {
             if (!weights.length) return [];
@@ -658,7 +658,7 @@ export class Dashboard {
         const maxCount = Math.max(...countMat.flat(), 1);
 
         // Normalised (0–1) for colour, raw count for cell text + data attrs
-        const cellSize = n <= 8 ? 44 : n <= 14 ? 32 : n <= 22 ? 22 : 14;
+        const cellSize = n <= 8 ? 28 : n <= 14 ? 20 : n <= 22 ? 14 : 10;
         const maxLen   = Math.max(...layerNames.map(l => l.length));
         const LABEL_W  = Math.min(maxLen * 6.2 + 10, 130);
         const HDR_H    = Math.min(maxLen * 6.2 + 10, 120);
@@ -684,7 +684,7 @@ export class Dashboard {
                 const fs     = Math.min(10, cellSize * 0.27);
                 const textFill = (1 + (((245*0.299+158*0.587+11*0.114)/255) - 1) * t) < 0.52 ? '#fff' : TEXT;
                 cells += `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" class="db-inter-cell" data-from="${rowLn}" data-to="${colLn}" style="cursor:${cnt > 0 ? 'pointer' : 'default'}"/>`;
-                if (cellSize >= 20 && cnt > 0) {
+                if (cellSize >= 14 && cnt > 0) {
                     cells += `<text x="${x + cellSize / 2}" y="${y + cellSize / 2 + fs * 0.4}" text-anchor="middle" font-size="${fs}" fill="${textFill}" pointer-events="none">${cnt}</text>`;
                 }
             });
@@ -714,12 +714,14 @@ export class Dashboard {
             ? `<p style="font-size:11px;color:${SUBTEXT};margin:8px 0;">No links for this pair.</p>`
             : svgHist(makeBins(interWeights), { width: W_HIST, height: H_HIST, color: INTER_COLOR, xLabel: 'Weight', yLabel: 'Links' });
 
-        const interPanel = `<div class="db-chart-box">
-            <div class="db-chart-title" style="display:flex;align-items:center;gap:6px;">${interTitle}${clearBtn}</div>
-            ${interHist}
-            <div style="margin-top:16px;">
-                <div class="db-chart-title" style="font-size:11px;color:${SUBTEXT};margin-bottom:4px;">Interlayer link counts (click cell to filter)</div>
+        const interPanel = `<div class="db-chart-box" style="display:flex;gap:20px;align-items:flex-start;">
+            <div style="flex:0 0 auto;">
+                <div class="db-chart-title" style="font-size:11px;color:${SUBTEXT};margin-bottom:4px;">Link counts (click to filter)</div>
                 <div style="overflow:auto;">${heatmapSvg}</div>
+            </div>
+            <div style="flex:1 1 0;min-width:0;">
+                <div class="db-chart-title" style="display:flex;align-items:center;gap:6px;">${interTitle}${clearBtn}</div>
+                ${interHist}
             </div>
         </div>`;
 
