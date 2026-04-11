@@ -37,7 +37,7 @@ body {
 }
 
 /* ---- Background Map ---- */
-#backgroundMap {
+#backgroundMap, #lvBackgroundMap {
   position: absolute;
   top: 0;
   left: 0;

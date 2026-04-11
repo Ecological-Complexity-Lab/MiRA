@@ -29,8 +29,11 @@
 
 <body>
 
-  <!-- Background Map (Leaflet) -->
+  <!-- Background Map (Leaflet) — network map mode -->
   <div id="backgroundMap"></div>
+
+  <!-- Layer View Map (Leaflet) — geo layer view mode -->
+  <div id="lvBackgroundMap"></div>
 
   <!-- Main Canvas -->
   <canvas id="networkCanvas"></canvas>
@@ -234,6 +237,9 @@
     <details class="control-section" id="sectionLayerViewCircles" style="display:none;" open>
       <summary>Layers</summary>
       <div class="section-body">
+        <div id="lvGeoToggleContainer" style="display:none; margin-bottom:10px;">
+          <button id="lvGeoToggleBtn" class="btn" style="width:100%; font-size:12px;">Force Layout</button>
+        </div>
         <div>
           <label style="font-size:11px;color:#666;">Size by</label>
           <select id="lvSizeBy" class="styled-select">
@@ -352,6 +358,22 @@
       </label>
       <label class="checkbox-label" style="margin:0; margin-left: 8px;" title="Switch between satellite and street map">
         <input type="checkbox" id="streetMapCheckbox">
+        <span style="font-size:11px; margin-left:2px;">Street Map</span>
+      </label>
+    </div>
+
+    <!-- Layer View Geo Map Controls (only visible in layer view geo mode) -->
+    <div id="lvMapOpacityControl"
+      style="display:none; flex-direction:row; align-items:center; gap:8px; margin-bottom:8px;">
+      <label style="font-size:11px; color:#333; margin-bottom:0;">Map Opacity</label>
+      <input type="range" id="lvMapOpacitySlider" min="0" max="1" step="0.05" value="1" style="width:70px; margin:0;"
+        title="Map Background Opacity">
+      <label class="checkbox-label" style="margin:0;" title="Toggle map image completely">
+        <input type="checkbox" id="lvShowMapImageCheckbox" checked>
+        <span style="font-size:11px; margin-left:2px;">Show Map</span>
+      </label>
+      <label class="checkbox-label" style="margin:0; margin-left: 8px;" title="Switch between satellite and street map">
+        <input type="checkbox" id="lvStreetMapCheckbox">
         <span style="font-size:11px; margin-left:2px;">Street Map</span>
       </label>
     </div>

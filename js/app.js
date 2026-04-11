@@ -177,6 +177,10 @@ const mapOpacitySlider = document.getElementById('mapOpacitySlider');
 const showMapImageCheckbox = document.getElementById('showMapImageCheckbox');
 const showLocationsCheckbox = document.getElementById('showLocationsCheckbox');
 const streetMapCheckbox = document.getElementById('streetMapCheckbox');
+const lvMapOpacityControl = document.getElementById('lvMapOpacityControl');
+const lvMapOpacitySlider = document.getElementById('lvMapOpacitySlider');
+const lvShowMapImageCheckbox = document.getElementById('lvShowMapImageCheckbox');
+const lvStreetMapCheckbox = document.getElementById('lvStreetMapCheckbox');
 const showSetNamesCheckbox = document.getElementById('showSetNamesCheckbox');
 const bipartiteNestedCheckbox = document.getElementById('bipartiteNestedCheckbox');
 const showInterlayerCheckbox = document.getElementById('showInterlayerCheckbox');
@@ -203,7 +207,7 @@ let activeMapLayers = new Set();
 const mapMarkersOverlay = document.getElementById('mapMarkersOverlay');
 const layerCloseButtonsContainer = document.getElementById('layerCloseButtons');
 
-// ---- Init Background Map ----
+// ---- Init Background Map (network map mode) ----
 const mapEl = document.getElementById('backgroundMap');
 const bgMap = L.map('backgroundMap', {
     zoomControl: false,
@@ -221,6 +225,28 @@ const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/
 }).addTo(bgMap);
 
 const streetLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '© OpenStreetMap contributors'
+});
+
+// ---- Init Layer View Map (layer view geo mode) ----
+const lvMapEl = document.getElementById('lvBackgroundMap');
+const lvMap = L.map('lvBackgroundMap', {
+    zoomControl: false,
+    dragging: true,
+    scrollWheelZoom: true,
+    doubleClickZoom: true,
+    boxZoom: false,
+    keyboard: false,
+    attributionControl: false,
+    zoomSnap: 0,
+}).setView([42.35, 3.17], 11);
+
+const lvSatelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    maxZoom: 18
+}).addTo(lvMap);
+
+const lvStreetLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '© OpenStreetMap contributors'
 });
@@ -738,10 +764,14 @@ function toggleLayerView() {
     canvas.style.cursor = 'grab';
     _showLayerViewSidebar();
 
-    // Auto-fit initial viewScale so all bubbles are visible
-    {
-        const lv = renderer.layerView;
-        const layoutR = lv.layoutRadius(); // bounding radius of initial circle
+    // Activate geo mode if data has coordinates
+    const lv = renderer.layerView;
+    if (lv.hasGeoData()) {
+        _activateLvGeoMode();
+    } else {
+        _deactivateLvGeoMode();
+        // Auto-fit initial viewScale so all bubbles are visible
+        const layoutR = lv.layoutRadius();
         const fitScale = Math.min(canvas.width, canvas.height) * 0.42 / Math.max(layoutR, 1);
         lv.viewScale = Math.min(Math.max(fitScale, 0.05), 0.85);
     }
@@ -765,19 +795,20 @@ function toggleLayerView() {
         mouseDownX = e.clientX; mouseDownY = e.clientY;
         const { mx, my } = canvasCoords(e);
         const lv = renderer.layerView;
-        const hitName = lv.startDragBubble(mx, my, canvas.width, canvas.height);
+        // In geo mode bubbles are pinned to map coordinates — dragging is disabled
+        const hitName = lv.geoMode ? null : lv.startDragBubble(mx, my, canvas.width, canvas.height);
         if (hitName) {
             isBubbleDrag = true;
             isDragging   = true;
             _ensureLayerViewLoop();
-        } else {
+        } else if (!lv.geoMode) {
             isBubbleDrag = false;
             isDragging   = true;
             dragStartX   = e.clientX; dragStartY   = e.clientY;
             offsetStartX = lv.viewOffsetX;
             offsetStartY = lv.viewOffsetY;
+            canvas.style.cursor = 'grabbing';
         }
-        canvas.style.cursor = 'grabbing';
     };
 
     const onMouseMove = (e) => {
@@ -983,6 +1014,7 @@ function _updateEdgeWeightSlider() {
 
 function _exitLayerView() {
     if (lvRAF) { cancelAnimationFrame(lvRAF); lvRAF = null; }
+    _deactivateLvGeoMode();
     renderer.layerViewMode = false;
     renderer.layerView = null;
     window._layerView = null;
@@ -1000,6 +1032,139 @@ function _exitLayerView() {
         layerViewHandlers = null;
     }
 }
+
+// ── Layer View Geo Mode ────────────────────────────────────────────────────
+
+let _lvMapMoveHandler = null;
+let _lvGeoMouseMoveHandler = null;
+let _lvGeoClickHandler = null;
+
+function _activateLvGeoMode() {
+    const lv = renderer.layerView;
+    if (!lv) return;
+    lv.geoMode = true;
+
+    // Fit map to layer coordinates
+    const coords = model.layers
+        .filter(l => l.latitude != null && l.longitude != null)
+        .map(l => [l.latitude, l.longitude]);
+    lvMapEl.style.display = 'block';
+    lvMap.invalidateSize();
+    if (coords.length === 1) {
+        lvMap.setView(coords[0], 10);
+    } else if (coords.length > 1) {
+        lvMap.fitBounds(coords, { padding: [60, 60] });
+    }
+
+    // Re-project bubbles on every map move/zoom (fitBounds triggers move events during animation)
+    _lvMapMoveHandler = () => {
+        if (renderer.layerView?.geoMode) {
+            renderer.layerView.setGeoPositions(lvMap, canvas.width, canvas.height);
+            renderer.render();
+        }
+    };
+    lvMap.on('move zoom', _lvMapMoveHandler);
+
+    // Initial projection — defer one frame so the map container has laid out
+    requestAnimationFrame(() => {
+        if (renderer.layerView?.geoMode) {
+            renderer.layerView.setGeoPositions(lvMap, canvas.width, canvas.height);
+            renderer.render();
+        }
+    });
+
+    // Let Leaflet receive mouse events for pan/zoom; tooltips via mousemove on lvMapEl
+    canvas.style.pointerEvents = 'none';
+    _lvGeoMouseMoveHandler = (e) => {
+        const lv = renderer.layerView;
+        if (!lv?.geoMode) return;
+        const rect = canvas.getBoundingClientRect();
+        const mx = (e.clientX - rect.left) * (canvas.width  / rect.width);
+        const my = (e.clientY - rect.top)  * (canvas.height / rect.height);
+        const hitBubble = lv.hitTestBubble(mx, my, canvas.width, canvas.height);
+        if (hitBubble) {
+            const info = lv.getBubbleInfo(hitBubble);
+            tooltip.textContent = `${hitBubble} — ${info.nodeCount} nodes, ${info.edgeCount} edges, density ${info.density.toFixed(3)}, avg deg ${info.avgDegree.toFixed(1)}`;
+            tooltip.classList.add('visible');
+            tooltip.style.left = (e.clientX + 14) + 'px';
+            tooltip.style.top  = (e.clientY - 8)  + 'px';
+        } else {
+            tooltip.classList.remove('visible');
+        }
+    };
+    lvMapEl.addEventListener('mousemove', _lvGeoMouseMoveHandler);
+
+    // Bubble click in geo mode (canvas has pointer-events:none so we listen on the map div)
+    _lvGeoClickHandler = (e) => {
+        const lv = renderer.layerView;
+        if (!lv?.geoMode) return;
+        const rect = canvas.getBoundingClientRect();
+        const mx = (e.clientX - rect.left) * (canvas.width  / rect.width);
+        const my = (e.clientY - rect.top)  * (canvas.height / rect.height);
+        const hit = lv.hitTestBubble(mx, my, canvas.width, canvas.height);
+        const prevSel = lv._selectedLayer;
+        if ((e.metaKey || e.ctrlKey) && hit && prevSel && hit !== prevSel) {
+            lv.selectForComparison(prevSel, hit);
+            closeLayerDrillDown();
+            openLayerComparison(prevSel, hit);
+        } else {
+            lv.selectBubble(hit);
+            closeLayerComparison();
+            if (hit) openLayerDrillDown(hit);
+            else closeLayerDrillDown();
+        }
+        renderer.render();
+    };
+    lvMapEl.addEventListener('click', _lvGeoClickHandler);
+
+    // Update toggle button
+    const btn = document.getElementById('lvGeoToggleBtn');
+    if (btn) btn.textContent = 'Force Layout';
+    document.getElementById('lvGeoToggleContainer').style.display = '';
+    document.getElementById('lvSpacing').closest('div').style.display = 'none';
+    lvMapOpacityControl.style.display = 'flex';
+}
+
+function _deactivateLvGeoMode() {
+    const lv = renderer.layerView;
+    if (lv) lv.geoMode = false;
+    lvMapEl.style.display = 'none';
+    if (_lvMapMoveHandler) {
+        lvMap.off('move zoom', _lvMapMoveHandler);
+        _lvMapMoveHandler = null;
+    }
+    canvas.style.pointerEvents = '';
+    lvMapOpacityControl.style.display = 'none';
+    if (_lvGeoMouseMoveHandler) {
+        lvMapEl.removeEventListener('mousemove', _lvGeoMouseMoveHandler);
+        _lvGeoMouseMoveHandler = null;
+    }
+    if (_lvGeoClickHandler) {
+        lvMapEl.removeEventListener('click', _lvGeoClickHandler);
+        _lvGeoClickHandler = null;
+    }
+    tooltip.classList.remove('visible');
+    document.getElementById('lvSpacing')?.closest('div')?.style.removeProperty('display');
+}
+
+document.getElementById('lvGeoToggleBtn').addEventListener('click', () => {
+    const lv = renderer.layerView;
+    if (!lv) return;
+    if (lv.geoMode) {
+        _deactivateLvGeoMode();
+        document.getElementById('lvGeoToggleBtn').textContent = 'Geographic Layout';
+        // Re-fit force layout
+        const layoutR = lv.layoutRadius();
+        const fitScale = Math.min(canvas.width, canvas.height) * 0.42 / Math.max(layoutR, 1);
+        lv.viewScale = Math.min(Math.max(fitScale, 0.05), 0.85);
+        lv.viewOffsetX = 0; lv.viewOffsetY = 0;
+        lv._initLayout();
+        _startLayerViewLoop();
+    } else {
+        _activateLvGeoMode();
+    }
+    renderer.render();
+});
 
 function closeLayerDrillDown() {
     layerDrillPanel.style.transform    = 'translateX(340px)';
@@ -1685,6 +1850,34 @@ streetMapCheckbox.addEventListener('change', () => {
     } else {
         bgMap.removeLayer(streetLayer);
         if (mapVisible) bgMap.addLayer(satelliteLayer);
+    }
+});
+
+// ==== Layer View Geo Map Controls ====
+lvMapOpacitySlider.addEventListener('input', () => {
+    const val = parseFloat(lvMapOpacitySlider.value);
+    lvSatelliteLayer.setOpacity(val);
+    lvStreetLayer.setOpacity(val);
+});
+
+lvShowMapImageCheckbox.addEventListener('change', () => {
+    const show = lvShowMapImageCheckbox.checked;
+    const activeLayer = lvStreetMapCheckbox.checked ? lvStreetLayer : lvSatelliteLayer;
+    if (show) {
+        lvMap.addLayer(activeLayer);
+    } else {
+        lvMap.removeLayer(activeLayer);
+    }
+});
+
+lvStreetMapCheckbox.addEventListener('change', () => {
+    const mapVisible = lvShowMapImageCheckbox.checked;
+    if (lvStreetMapCheckbox.checked) {
+        lvMap.removeLayer(lvSatelliteLayer);
+        if (mapVisible) lvMap.addLayer(lvStreetLayer);
+    } else {
+        lvMap.removeLayer(lvStreetLayer);
+        if (mapVisible) lvMap.addLayer(lvSatelliteLayer);
     }
 });
 
@@ -2418,6 +2611,7 @@ layerColorSelect.addEventListener('change', updateLayerColors);
 zoomInBtn.addEventListener('click', () => {
     if (appMode === 'map') { bgMap.zoomIn(1); return; }
     if (appMode === 'layer' && renderer.layerView) {
+        if (renderer.layerView.geoMode) { lvMap.zoomIn(1); return; }
         renderer.layerView.viewScale *= 1.2;
         renderer.render();
         return;
@@ -2434,6 +2628,7 @@ zoomInBtn.addEventListener('click', () => {
 zoomOutBtn.addEventListener('click', () => {
     if (appMode === 'map') { bgMap.zoomOut(1); return; }
     if (appMode === 'layer' && renderer.layerView) {
+        if (renderer.layerView.geoMode) { lvMap.zoomOut(1); return; }
         renderer.layerView.viewScale /= 1.2;
         renderer.render();
         return;
@@ -2454,6 +2649,15 @@ zoomResetBtn.addEventListener('click', () => {
     }
 
     if (appMode === 'layer' && renderer.layerView) {
+        if (renderer.layerView.geoMode) {
+            // Fit lvMap to layer coordinates
+            const coords = model.layers
+                .filter(l => l.latitude != null && l.longitude != null)
+                .map(l => [l.latitude, l.longitude]);
+            if (coords.length === 1) lvMap.setView(coords[0], 10);
+            else if (coords.length > 1) lvMap.fitBounds(coords, { padding: [60, 60] });
+            return;
+        }
         renderer.layerView.resetLayout();
         // Re-fit the viewport to the new layout
         const lr = renderer.layerView.layoutRadius();

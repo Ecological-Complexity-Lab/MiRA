@@ -47,9 +47,40 @@ export class LayerView {
             bubbleSpacing:   1.0,       // multiplier on ideal inter-bubble gap
         };
 
+        this.geoMode = false;  // true = bubbles pinned to lat/lon via Leaflet
+
         this._computeMetaGraph();
         this._refreshRadii();   // sets b.r + builds _microGraphs
         this._initLayout();
+    }
+
+    // ── Geographic layout ──────────────────────────────────────────────────
+
+    /** Returns true if every layer has latitude and longitude. */
+    hasGeoData() {
+        return this._model.layers.every(l => l.latitude != null && l.longitude != null);
+    }
+
+    /**
+     * Set bubble x/y from lat/lon projected through the given Leaflet map.
+     * Canvas is assumed to be full-viewport (same as the map container).
+     * Stops the force sim so bubbles stay pinned.
+     */
+    setGeoPositions(leafletMap, canvasWidth, canvasHeight) {
+        if (this._sim) this._sim.stop();
+        for (const bubble of this._bubbles) {
+            const layer = this._model.layers.find(l => l.layer_name === bubble.layerName);
+            if (!layer || layer.latitude == null) continue;
+            const pt = leafletMap.latLngToContainerPoint([layer.latitude, layer.longitude]);
+            // Convert container point (CSS px) to canvas px
+            const mapEl = leafletMap.getContainer();
+            const rect = mapEl.getBoundingClientRect();
+            const scaleX = canvasWidth  / rect.width;
+            const scaleY = canvasHeight / rect.height;
+            // Store raw canvas coords; render() will use them directly (no viewOffset/viewScale)
+            bubble._geoX = pt.x * scaleX;
+            bubble._geoY = pt.y * scaleY;
+        }
     }
 
     // ── Meta-graph computation ─────────────────────────────────────────────
@@ -433,12 +464,30 @@ export class LayerView {
     // ── Rendering ──────────────────────────────────────────────────────────
 
     render(ctx, w, h) {
-        ctx.fillStyle = '#f8f8fc';
-        ctx.fillRect(0, 0, w, h);
+        if (this.geoMode) {
+            // Transparent background — map tiles show through
+            ctx.clearRect(0, 0, w, h);
+        } else {
+            ctx.fillStyle = '#f8f8fc';
+            ctx.fillRect(0, 0, w, h);
+        }
 
-        ctx.save();
-        ctx.translate(w / 2 + this.viewOffsetX, h / 2 + this.viewOffsetY);
-        ctx.scale(this.viewScale, this.viewScale);
+        // In geo mode, bubbles are in raw canvas coords; skip the view transform
+        const useTransform = !this.geoMode;
+        if (useTransform) {
+            ctx.save();
+            ctx.translate(w / 2 + this.viewOffsetX, h / 2 + this.viewOffsetY);
+            ctx.scale(this.viewScale, this.viewScale);
+        }
+
+        // Temporarily set bubble x/y from geo coords for drawing
+        if (this.geoMode) {
+            for (const b of this._bubbles) {
+                b._savedX = b.x; b._savedY = b.y;
+                b.x = b._geoX ?? b.x;
+                b.y = b._geoY ?? b.y;
+            }
+        }
 
         const s = this.settings;
         const hl = this._highlightSet(); // null = no selection, Set = highlighted layers
@@ -462,7 +511,7 @@ export class LayerView {
                     && edge.sharedCount >= minW && edge.sharedCount > 0;
                 const off = (drawI && drawS) ? 3 : 0;
 
-                if (edgeFaded) ctx.globalAlpha = 0.08;
+                if (edgeFaded) ctx.globalAlpha = 0.25;
                 if (drawI) {
                     const lw = 1 + 4 * (edge.interlayerCount / maxI);
                     ctx.beginPath();
@@ -498,12 +547,20 @@ export class LayerView {
         // ── Bubbles ──
         for (const bubble of this._bubbles) {
             const faded = hl && !hl.has(bubble.layerName);
-            if (faded) ctx.globalAlpha = 0.12;
+            if (faded) ctx.globalAlpha = 0.35;
             this._drawBubble(ctx, bubble);
             if (faded) ctx.globalAlpha = 1;
         }
 
-        ctx.restore();
+        if (useTransform) ctx.restore();
+
+        // Restore saved x/y after geo draw
+        if (this.geoMode) {
+            for (const b of this._bubbles) {
+                b.x = b._savedX;
+                b.y = b._savedY;
+            }
+        }
     }
 
     _drawEdgeLabel(ctx, x1, y1, x2, y2, value) {
@@ -575,6 +632,12 @@ export class LayerView {
     // ── Hit testing ────────────────────────────────────────────────────────
 
     hitTestBubble(mx, my, w, h) {
+        if (this.geoMode) {
+            for (const b of this._bubbles) {
+                if (Math.hypot(mx - (b._geoX ?? b.x), my - (b._geoY ?? b.y)) <= b.r) return b.layerName;
+            }
+            return null;
+        }
         const { lx, ly } = this._toLocal(mx, my, w, h);
         for (const b of this._bubbles) {
             if (Math.hypot(lx - b.x, ly - b.y) <= b.r) return b.layerName;
@@ -583,6 +646,15 @@ export class LayerView {
     }
 
     hitTestEdge(mx, my, w, h) {
+        if (this.geoMode) {
+            for (const edge of this._metaEdges) {
+                const bi = this._bubbles[edge.a], bj = this._bubbles[edge.b];
+                const ax = bi._geoX ?? bi.x, ay = bi._geoY ?? bi.y;
+                const bx = bj._geoX ?? bj.x, by = bj._geoY ?? bj.y;
+                if (this._distToSegment(mx, my, ax, ay, bx, by) <= 8) return edge;
+            }
+            return null;
+        }
         const { lx, ly } = this._toLocal(mx, my, w, h);
         for (const edge of this._metaEdges) {
             const bi = this._bubbles[edge.a], bj = this._bubbles[edge.b];
