@@ -574,18 +574,6 @@ const DATASET_INFO = {
         nodeAttrs: ['node_type (plant / bird)', 'body_mass_g', 'HWI (hand-wing index)', 'migrant_status'],
         linkAttrs: ['weight (visit frequency)', 'role (meta-network)', 'c_value', 'z_value', 'compartment_group'],
     },
-    demo_bipartite_bartomeus: {
-        name: 'Mediterranean plant–pollinator network',
-        citation: 'Bartomeus et al. 2008',
-        doi: 'https://doi.org/10.1111/j.1461-0248.2008.01231.x',
-        dataDoi: null,
-        layers: '12 layers (sampling sites)',
-        nodes: '135 species (plants + pollinators)',
-        links: '1,227 intralayer interactions',
-        network: 'Undirected · bipartite per layer',
-        nodeAttrs: ['Plant_order', 'Plant_family', 'Plant_genus', 'Plant_abundance', 'Plant_module'],
-        linkAttrs: ['weight', 'Interaction type', 'Date', 'Sampling_method'],
-    },
 };
 
 function buildDatasetRow(file) {
