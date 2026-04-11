@@ -503,8 +503,8 @@ const DATASET_INFO = {
     canary_islands: {
         name: 'Canary Islands pollination network',
         citation: 'Vitali et al. 2024',
-        doi: 'https://doi.org/10.1098/rspb.2014.2925',
-        dataDoi: null,
+        doi: 'https://doi.org/10.1111/1365-2656.14174',
+        dataDoi: 'https://doi.org/10.5061/dryad.76173',
         layers: '5 layers — Fuerteventura, Gran Canaria, Tenerife, Gomera, Hierro',
         nodes: '235 species (34 plants · 201 pollinators)',
         links: '651 intralayer + 154 interlayer (Jaccard similarity of partner sets)',
@@ -516,7 +516,7 @@ const DATASET_INFO = {
         name: 'Chilean intertidal food web',
         citation: 'Kéfi et al. 2016',
         doi: 'https://doi.org/10.1371/journal.pbio.1002527',
-        dataDoi: null,
+        dataDoi: 'https://doi.org/10.5061/dryad.b4vg0',
         layers: '3 layers — Trophic, NTI positive, NTI negative',
         nodes: '106 species',
         links: '4,623 directed interactions',
@@ -529,7 +529,8 @@ const DATASET_INFO = {
         name: 'Siberian host–parasite network',
         citation: 'Pilosof et al. 2017',
         doi: 'https://doi.org/10.1038/s41559-017-0101',
-        dataDoi: null,
+        dataDoi: 'https://doi.org/10.1111/j.1600-0706.2009.17902.x',
+        dataLabel: 'Original data (Krasnov et al. 2009):',
         layers: '6 temporal layers — 1982–1987',
         nodes: '78 species (22 hosts · 56 parasites)',
         links: '1,817 intralayer + 284 interlayer',
@@ -607,8 +608,9 @@ function showDemoInfo(file) {
     const nodeAttrList = info.nodeAttrs.map(a => `<li>${a}</li>`).join('');
     const linkAttrList = info.linkAttrs.map(a => `<li>${a}</li>`).join('');
     const doiLink = `<a href="${info.doi}" target="_blank" rel="noopener" style="color:#5b6af0;">${info.doi}</a>`;
+    const dataLabel = info.dataLabel || 'Data:';
     const dataDoiLine = info.dataDoi
-        ? `<div><strong>Data:</strong> <a href="${info.dataDoi}" target="_blank" rel="noopener" style="color:#5b6af0;">${info.dataDoi}</a></div>`
+        ? `<div><strong>${dataLabel}</strong> <a href="${info.dataDoi}" target="_blank" rel="noopener" style="color:#5b6af0;">${info.dataDoi}</a></div>`
         : `<div style="color:#aaa;"><strong>Data source:</strong> see paper</div>`;
 
     document.getElementById('demoInfoContent').innerHTML = `
