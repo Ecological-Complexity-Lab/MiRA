@@ -701,7 +701,14 @@ body {
   padding: 24px 28px;
   width: 360px;
   box-sizing: border-box;
+  overflow: hidden;
   text-align: left;
+}
+
+#demoDatasetList .btn {
+  min-width: 0;
+  white-space: normal;
+  justify-content: flex-start;
 }
 
 .dialog-box h4 {
