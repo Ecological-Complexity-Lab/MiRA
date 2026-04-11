@@ -535,6 +535,18 @@ const DATASET_INFO = {
         nodeAttrs: ['node_type (host / parasite)', 'abundance', 'module (1–7, Infomap)'],
         linkAttrs: ['weight'],
     },
+    thousand_islands: {
+        name: 'Thousand Island Lake seed dispersal network',
+        citation: 'Zhu et al. 2025',
+        doi: 'https://doi.org/10.1073/pnas.2415846122',
+        dataDoi: 'https://doi.org/10.6084/m9.figshare.26095444',
+        layers: '22 layers — land-bridge islands (Thousand Island Lake, China)',
+        nodes: '70 species (31 plants · 39 birds)',
+        links: '1,157 intralayer (camera-trap visits) + 2,751 interlayer (Jaccard partner similarity)',
+        network: 'Undirected · bipartite per layer · layer attributes: area (ha) and isolation (m)',
+        nodeAttrs: ['node_type (plant / bird)', 'body_mass_g', 'HWI (hand-wing index)', 'migrant_status'],
+        linkAttrs: ['weight (visit frequency)', 'role (meta-network)', 'c_value', 'z_value', 'compartment_group'],
+    },
     demo_bipartite_bartomeus: {
         name: 'Mediterranean plant–pollinator network',
         citation: 'Bartomeus et al. 2008',
