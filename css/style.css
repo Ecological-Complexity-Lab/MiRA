@@ -699,8 +699,9 @@ body {
   border-radius: 14px;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
   padding: 24px 28px;
-  min-width: 260px;
-  text-align: center;
+  width: 360px;
+  box-sizing: border-box;
+  text-align: left;
 }
 
 .dialog-box h4 {
@@ -708,6 +709,7 @@ body {
   font-weight: 600;
   color: #1a1a2e;
   margin-bottom: 6px;
+  text-align: center;
 }
 
 .dialog-box p {
