@@ -2,12 +2,15 @@
 Generate costa2020.json — temporal seed-dispersal multilayer network.
 
 Sources (Costa et al. 2020, Journal of Ecology, doi:10.1111/1365-2745.13391):
-  multilayer_temporal_data.csv : plant × bird interaction matrix per year (seeds dispersed)
-  Dataset.xlsx                 : per-year node metrics (Birds/Seeds sheets) + versatility
+  multilayer_temporal_data.csv  : plant × bird interaction matrix per year (seeds dispersed)
+  Dataset.xlsx                  : per-year node metrics (Birds/Seeds sheets) + versatility
+  DisperserAbundanceMatrix.txt  : bird abundance per year
+  SeedsAbundanceMatrix.txt      : plant abundance per year
 
 5 temporal layers (2012–2016). Bipartite per layer.
 Intralayer links: undirected, weight = seed count.
-Interlayer links: directed t → t+1, weight = 1, same species across consecutive years.
+Interlayer links: directed t → t+1, weight = abundance(t+1) / abundance(t).
+  Species with zero abundance in year t are skipped (ratio undefined).
 """
 
 import json, re, openpyxl
@@ -69,29 +72,63 @@ for e in intralayer_edges:
     state_node_set.add((e["node_to"],   e["layer_to"]))
 
 # ---------------------------------------------------------------------------
-# 2. Interlayer links — directed t → t+1, weight=1, species must appear in both
+# 2. Abundance matrices — for interlayer weights
+# ---------------------------------------------------------------------------
+
+def parse_abundance_matrix(filepath):
+    """Return dict: normalize(species) -> {year -> abundance}"""
+    abund = {}
+    with open(filepath) as f:
+        header = f.readline().strip().split('\t')
+        years = [int(h) for h in header[1:]]
+        for line in f:
+            parts = line.strip().split('\t')
+            sp = normalize(parts[0])
+            abund[sp] = {yr: float(v) for yr, v in zip(years, parts[1:])}
+    return abund
+
+bird_abund  = parse_abundance_matrix(f"{DATA_DIR}/DisperserAbundanceMatrix.txt")
+plant_abund = parse_abundance_matrix(f"{DATA_DIR}/SeedsAbundanceMatrix.txt")
+
+def get_abundance(sp, year):
+    if sp in bird_abund:
+        return bird_abund[sp].get(year)
+    if sp in plant_abund:
+        return plant_abund[sp].get(year)
+    return None
+
+# ---------------------------------------------------------------------------
+# 3. Interlayer links — directed t → t+1, weight = abundance(t+1)/abundance(t)
 # ---------------------------------------------------------------------------
 
 interlayer_edges = []
+skipped = 0
 for i in range(len(YEARS) - 1):
-    y1, y2 = str(YEARS[i]), str(YEARS[i + 1])
-    present_y1 = {sp for (sp, yr) in state_node_set if yr == y1}
-    present_y2 = {sp for (sp, yr) in state_node_set if yr == y2}
+    y1, y2 = YEARS[i], YEARS[i + 1]
+    present_y1 = {sp for (sp, yr) in state_node_set if yr == str(y1)}
+    present_y2 = {sp for (sp, yr) in state_node_set if yr == str(y2)}
     shared = present_y1 & present_y2
     for sp in sorted(shared):
+        a1 = get_abundance(sp, y1)
+        a2 = get_abundance(sp, y2)
+        if a1 is None or a2 is None or a1 == 0:
+            skipped += 1
+            continue
         interlayer_edges.append({
-            "layer_from": y1,
+            "layer_from": str(y1),
             "node_from":  sp,
-            "layer_to":   y2,
+            "layer_to":   str(y2),
             "node_to":    sp,
-            "weight":     1,
+            "weight":     round(a2 / a1, 6),
             "directed":   True,
         })
+
+print(f"Interlayer edges: {len(interlayer_edges)} (skipped {skipped} with zero/missing abundance at t)")
 
 print(f"Interlayer edges: {len(interlayer_edges)}")
 
 # ---------------------------------------------------------------------------
-# 3. Node attributes from Dataset.xlsx
+# 4. Node attributes from Dataset.xlsx
 # ---------------------------------------------------------------------------
 
 wb = openpyxl.load_workbook(f"{DATA_DIR}/Dataset.xlsx", read_only=True, data_only=True)
@@ -145,7 +182,7 @@ for row in list(ws.iter_rows(values_only=True))[1:]:
     plant_versatility[normalize(sp)] = round(float(versatility), 6)
 
 # ---------------------------------------------------------------------------
-# 4. Build JSON structure
+# 5. Build JSON structure
 # ---------------------------------------------------------------------------
 
 layers = [
@@ -201,7 +238,7 @@ output = {
 }
 
 # ---------------------------------------------------------------------------
-# 5. Write output
+# 6. Write output
 # ---------------------------------------------------------------------------
 
 OUT_PATH = "../../costa2020.json"

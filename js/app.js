@@ -557,7 +557,7 @@ const DATASET_INFO = {
         dataDoi: 'https://doi.org/10.6084/m9.figshare.11985912',
         layers: '5 layers — 2012–2016 (annual)',
         nodes: '29 species (17 plants · 12 birds)',
-        links: '170 intralayer (seed counts) + 61 directed interlayer (t → t+1)',
+        links: '170 intralayer (seed counts) + 43 directed interlayer (t → t+1)',
         network: 'Undirected intralayer · directed interlayer · bipartite per layer',
         nodeAttrs: ['node_type (plant / bird)', 'group (resident / partial-migratory)', 'versatility', 'degree', 'strength', 'd_specialisation', 'n_years'],
         linkAttrs: ['weight (seed count)'],

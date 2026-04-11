@@ -2546,115 +2546,11 @@
       "weight": 4
     },
     {
-      "layer_from": "2012",
-      "node_from": "Cyanistes_caeruleus",
-      "layer_to": "2013",
-      "node_to": "Cyanistes_caeruleus",
-      "weight": 1,
-      "directed": true
-    },
-    {
-      "layer_from": "2012",
-      "node_from": "Erithacus_rubecula",
-      "layer_to": "2013",
-      "node_to": "Erithacus_rubecula",
-      "weight": 1,
-      "directed": true
-    },
-    {
-      "layer_from": "2012",
-      "node_from": "Ficedula_hypoleuca",
-      "layer_to": "2013",
-      "node_to": "Ficedula_hypoleuca",
-      "weight": 1,
-      "directed": true
-    },
-    {
-      "layer_from": "2012",
-      "node_from": "Ficus_carica",
-      "layer_to": "2013",
-      "node_to": "Ficus_carica",
-      "weight": 1,
-      "directed": true
-    },
-    {
-      "layer_from": "2012",
-      "node_from": "Rhamnus_alaternus",
-      "layer_to": "2013",
-      "node_to": "Rhamnus_alaternus",
-      "weight": 1,
-      "directed": true
-    },
-    {
-      "layer_from": "2012",
-      "node_from": "Rubus_ulmifolius",
-      "layer_to": "2013",
-      "node_to": "Rubus_ulmifolius",
-      "weight": 1,
-      "directed": true
-    },
-    {
-      "layer_from": "2012",
-      "node_from": "Smilax_aspera",
-      "layer_to": "2013",
-      "node_to": "Smilax_aspera",
-      "weight": 1,
-      "directed": true
-    },
-    {
-      "layer_from": "2012",
-      "node_from": "Solanum_nigrum",
-      "layer_to": "2013",
-      "node_to": "Solanum_nigrum",
-      "weight": 1,
-      "directed": true
-    },
-    {
-      "layer_from": "2012",
-      "node_from": "Sylvia_atricapilla",
-      "layer_to": "2013",
-      "node_to": "Sylvia_atricapilla",
-      "weight": 1,
-      "directed": true
-    },
-    {
-      "layer_from": "2012",
-      "node_from": "Sylvia_borin",
-      "layer_to": "2013",
-      "node_to": "Sylvia_borin",
-      "weight": 1,
-      "directed": true
-    },
-    {
-      "layer_from": "2012",
-      "node_from": "Sylvia_melanocephala",
-      "layer_to": "2013",
-      "node_to": "Sylvia_melanocephala",
-      "weight": 1,
-      "directed": true
-    },
-    {
-      "layer_from": "2012",
-      "node_from": "Turdus_merula",
-      "layer_to": "2013",
-      "node_to": "Turdus_merula",
-      "weight": 1,
-      "directed": true
-    },
-    {
-      "layer_from": "2012",
-      "node_from": "Vitis_vinifera",
-      "layer_to": "2013",
-      "node_to": "Vitis_vinifera",
-      "weight": 1,
-      "directed": true
-    },
-    {
       "layer_from": "2013",
       "node_from": "Cyanistes_caeruleus",
       "layer_to": "2014",
       "node_to": "Cyanistes_caeruleus",
-      "weight": 1,
+      "weight": 1.102941,
       "directed": true
     },
     {
@@ -2662,7 +2558,7 @@
       "node_from": "Erithacus_rubecula",
       "layer_to": "2014",
       "node_to": "Erithacus_rubecula",
-      "weight": 1,
+      "weight": 0.617122,
       "directed": true
     },
     {
@@ -2670,7 +2566,7 @@
       "node_from": "Ficedula_hypoleuca",
       "layer_to": "2014",
       "node_to": "Ficedula_hypoleuca",
-      "weight": 1,
+      "weight": 0.396825,
       "directed": true
     },
     {
@@ -2678,15 +2574,7 @@
       "node_from": "Ficus_carica",
       "layer_to": "2014",
       "node_to": "Ficus_carica",
-      "weight": 1,
-      "directed": true
-    },
-    {
-      "layer_from": "2013",
-      "node_from": "Phillyrea_latifolia",
-      "layer_to": "2014",
-      "node_to": "Phillyrea_latifolia",
-      "weight": 1,
+      "weight": 1.0,
       "directed": true
     },
     {
@@ -2694,7 +2582,7 @@
       "node_from": "Rhamnus_alaternus",
       "layer_to": "2014",
       "node_to": "Rhamnus_alaternus",
-      "weight": 1,
+      "weight": 0.076923,
       "directed": true
     },
     {
@@ -2702,7 +2590,7 @@
       "node_from": "Rubus_ulmifolius",
       "layer_to": "2014",
       "node_to": "Rubus_ulmifolius",
-      "weight": 1,
+      "weight": 1.0,
       "directed": true
     },
     {
@@ -2710,7 +2598,7 @@
       "node_from": "Smilax_aspera",
       "layer_to": "2014",
       "node_to": "Smilax_aspera",
-      "weight": 1,
+      "weight": 0.674089,
       "directed": true
     },
     {
@@ -2718,7 +2606,7 @@
       "node_from": "Solanum_nigrum",
       "layer_to": "2014",
       "node_to": "Solanum_nigrum",
-      "weight": 1,
+      "weight": 1.0,
       "directed": true
     },
     {
@@ -2726,7 +2614,7 @@
       "node_from": "Sylvia_atricapilla",
       "layer_to": "2014",
       "node_to": "Sylvia_atricapilla",
-      "weight": 1,
+      "weight": 1.797386,
       "directed": true
     },
     {
@@ -2734,7 +2622,7 @@
       "node_from": "Sylvia_borin",
       "layer_to": "2014",
       "node_to": "Sylvia_borin",
-      "weight": 1,
+      "weight": 0.588235,
       "directed": true
     },
     {
@@ -2742,7 +2630,7 @@
       "node_from": "Sylvia_melanocephala",
       "layer_to": "2014",
       "node_to": "Sylvia_melanocephala",
-      "weight": 1,
+      "weight": 0.895141,
       "directed": true
     },
     {
@@ -2750,7 +2638,7 @@
       "node_from": "Turdus_merula",
       "layer_to": "2014",
       "node_to": "Turdus_merula",
-      "weight": 1,
+      "weight": 0.544662,
       "directed": true
     },
     {
@@ -2758,7 +2646,7 @@
       "node_from": "Vitis_vinifera",
       "layer_to": "2014",
       "node_to": "Vitis_vinifera",
-      "weight": 1,
+      "weight": 1.0,
       "directed": true
     },
     {
@@ -2766,7 +2654,7 @@
       "node_from": "Arbutus_unedo",
       "layer_to": "2015",
       "node_to": "Arbutus_unedo",
-      "weight": 1,
+      "weight": 74.6,
       "directed": true
     },
     {
@@ -2774,7 +2662,7 @@
       "node_from": "Erithacus_rubecula",
       "layer_to": "2015",
       "node_to": "Erithacus_rubecula",
-      "weight": 1,
+      "weight": 1.62766,
       "directed": true
     },
     {
@@ -2782,7 +2670,7 @@
       "node_from": "Ficedula_hypoleuca",
       "layer_to": "2015",
       "node_to": "Ficedula_hypoleuca",
-      "weight": 1,
+      "weight": 2.175,
       "directed": true
     },
     {
@@ -2790,7 +2678,7 @@
       "node_from": "Ficus_carica",
       "layer_to": "2015",
       "node_to": "Ficus_carica",
-      "weight": 1,
+      "weight": 1.0,
       "directed": true
     },
     {
@@ -2798,7 +2686,7 @@
       "node_from": "Muscicapa_striata",
       "layer_to": "2015",
       "node_to": "Muscicapa_striata",
-      "weight": 1,
+      "weight": 2.55,
       "directed": true
     },
     {
@@ -2806,7 +2694,7 @@
       "node_from": "Phillyrea_latifolia",
       "layer_to": "2015",
       "node_to": "Phillyrea_latifolia",
-      "weight": 1,
+      "weight": 0.018868,
       "directed": true
     },
     {
@@ -2814,7 +2702,7 @@
       "node_from": "Pistacia_lentiscus",
       "layer_to": "2015",
       "node_to": "Pistacia_lentiscus",
-      "weight": 1,
+      "weight": 21.875,
       "directed": true
     },
     {
@@ -2822,15 +2710,7 @@
       "node_from": "Rhamnus_alaternus",
       "layer_to": "2015",
       "node_to": "Rhamnus_alaternus",
-      "weight": 1,
-      "directed": true
-    },
-    {
-      "layer_from": "2014",
-      "node_from": "Rubia_peregrina",
-      "layer_to": "2015",
-      "node_to": "Rubia_peregrina",
-      "weight": 1,
+      "weight": 93.0,
       "directed": true
     },
     {
@@ -2838,7 +2718,7 @@
       "node_from": "Rubus_ulmifolius",
       "layer_to": "2015",
       "node_to": "Rubus_ulmifolius",
-      "weight": 1,
+      "weight": 1.0,
       "directed": true
     },
     {
@@ -2846,7 +2726,7 @@
       "node_from": "Smilax_aspera",
       "layer_to": "2015",
       "node_to": "Smilax_aspera",
-      "weight": 1,
+      "weight": 2.174174,
       "directed": true
     },
     {
@@ -2854,7 +2734,7 @@
       "node_from": "Solanum_nigrum",
       "layer_to": "2015",
       "node_to": "Solanum_nigrum",
-      "weight": 1,
+      "weight": 1.0,
       "directed": true
     },
     {
@@ -2862,7 +2742,7 @@
       "node_from": "Sylvia_atricapilla",
       "layer_to": "2015",
       "node_to": "Sylvia_atricapilla",
-      "weight": 1,
+      "weight": 0.714773,
       "directed": true
     },
     {
@@ -2870,15 +2750,7 @@
       "node_from": "Sylvia_borin",
       "layer_to": "2015",
       "node_to": "Sylvia_borin",
-      "weight": 1,
-      "directed": true
-    },
-    {
-      "layer_from": "2014",
-      "node_from": "Sylvia_communis",
-      "layer_to": "2015",
-      "node_to": "Sylvia_communis",
-      "weight": 1,
+      "weight": 0.789286,
       "directed": true
     },
     {
@@ -2886,15 +2758,7 @@
       "node_from": "Sylvia_melanocephala",
       "layer_to": "2015",
       "node_to": "Sylvia_melanocephala",
-      "weight": 1,
-      "directed": true
-    },
-    {
-      "layer_from": "2014",
-      "node_from": "Sylvia_undata",
-      "layer_to": "2015",
-      "node_to": "Sylvia_undata",
-      "weight": 1,
+      "weight": 1.882143,
       "directed": true
     },
     {
@@ -2902,7 +2766,7 @@
       "node_from": "Turdus_merula",
       "layer_to": "2015",
       "node_to": "Turdus_merula",
-      "weight": 1,
+      "weight": 1.105,
       "directed": true
     },
     {
@@ -2910,7 +2774,7 @@
       "node_from": "Viburnum_tinus",
       "layer_to": "2015",
       "node_to": "Viburnum_tinus",
-      "weight": 1,
+      "weight": 19.146341,
       "directed": true
     },
     {
@@ -2918,7 +2782,7 @@
       "node_from": "Vitis_vinifera",
       "layer_to": "2015",
       "node_to": "Vitis_vinifera",
-      "weight": 1,
+      "weight": 1.0,
       "directed": true
     },
     {
@@ -2926,7 +2790,7 @@
       "node_from": "Erithacus_rubecula",
       "layer_to": "2016",
       "node_to": "Erithacus_rubecula",
-      "weight": 1,
+      "weight": 0.867725,
       "directed": true
     },
     {
@@ -2934,7 +2798,7 @@
       "node_from": "Ficedula_hypoleuca",
       "layer_to": "2016",
       "node_to": "Ficedula_hypoleuca",
-      "weight": 1,
+      "weight": 0.875753,
       "directed": true
     },
     {
@@ -2942,15 +2806,7 @@
       "node_from": "Ficus_carica",
       "layer_to": "2016",
       "node_to": "Ficus_carica",
-      "weight": 1,
-      "directed": true
-    },
-    {
-      "layer_from": "2015",
-      "node_from": "Lonicera_periclymenum",
-      "layer_to": "2016",
-      "node_to": "Lonicera_periclymenum",
-      "weight": 1,
+      "weight": 1.0,
       "directed": true
     },
     {
@@ -2958,7 +2814,7 @@
       "node_from": "Phillyrea_latifolia",
       "layer_to": "2016",
       "node_to": "Phillyrea_latifolia",
-      "weight": 1,
+      "weight": 1.0,
       "directed": true
     },
     {
@@ -2966,7 +2822,7 @@
       "node_from": "Rhamnus_alaternus",
       "layer_to": "2016",
       "node_to": "Rhamnus_alaternus",
-      "weight": 1,
+      "weight": 0.010753,
       "directed": true
     },
     {
@@ -2974,7 +2830,7 @@
       "node_from": "Rubus_ulmifolius",
       "layer_to": "2016",
       "node_to": "Rubus_ulmifolius",
-      "weight": 1,
+      "weight": 1.0,
       "directed": true
     },
     {
@@ -2982,7 +2838,7 @@
       "node_from": "Smilax_aspera",
       "layer_to": "2016",
       "node_to": "Smilax_aspera",
-      "weight": 1,
+      "weight": 0.679558,
       "directed": true
     },
     {
@@ -2990,7 +2846,7 @@
       "node_from": "Sylvia_atricapilla",
       "layer_to": "2016",
       "node_to": "Sylvia_atricapilla",
-      "weight": 1,
+      "weight": 1.389961,
       "directed": true
     },
     {
@@ -2998,7 +2854,7 @@
       "node_from": "Sylvia_borin",
       "layer_to": "2016",
       "node_to": "Sylvia_borin",
-      "weight": 1,
+      "weight": 3.076923,
       "directed": true
     },
     {
@@ -3006,7 +2862,7 @@
       "node_from": "Sylvia_communis",
       "layer_to": "2016",
       "node_to": "Sylvia_communis",
-      "weight": 1,
+      "weight": 1.666667,
       "directed": true
     },
     {
@@ -3014,7 +2870,7 @@
       "node_from": "Sylvia_melanocephala",
       "layer_to": "2016",
       "node_to": "Sylvia_melanocephala",
-      "weight": 1,
+      "weight": 0.706605,
       "directed": true
     },
     {
@@ -3022,7 +2878,7 @@
       "node_from": "Turdus_merula",
       "layer_to": "2016",
       "node_to": "Turdus_merula",
-      "weight": 1,
+      "weight": 0.586081,
       "directed": true
     },
     {
@@ -3030,7 +2886,7 @@
       "node_from": "Vitis_vinifera",
       "layer_to": "2016",
       "node_to": "Vitis_vinifera",
-      "weight": 1,
+      "weight": 1.0,
       "directed": true
     }
   ],
