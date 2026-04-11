@@ -540,7 +540,7 @@ demoDialog.addEventListener('click', (e) => {
 
 // ---- Example dataset metadata ----
 const DATASET_INFO = {
-    canary_islands: {
+    vitali2024: {
         name: 'Canary Islands pollination network',
         citation: 'Vitali et al. 2024',
         doi: 'https://doi.org/10.1111/1365-2656.14174',
