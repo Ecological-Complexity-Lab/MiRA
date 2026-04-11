@@ -492,58 +492,26 @@
 
   <!-- Demo selection dialog -->
   <div id="demoDialog" class="dialog-overlay" style="display:none;">
-    <div class="dialog-box" style="max-width: 340px;">
-      <h4>Example Data</h4>
-      <p>Select a demonstration dataset to load:</p>
+    <div class="dialog-box" style="max-width: 360px;">
 
-      <div class="dialog-buttons" style="flex-direction: column; gap: 8px;">
-
-        <div style="display:flex; align-items:center; gap:6px;">
-          <button class="btn btn-primary demo-dataset-btn" data-file="canary_islands" style="flex:1; text-align:left;">
-            Vitali et al. 2024 – Canary Islands pollination (5 islands)
-          </button>
-          <a href="https://doi.org/10.1098/rspb.2014.2925" target="_blank" rel="noopener"
-            title="Carstensen et al. 2014 – Proc. R. Soc. B"
-            style="font-size:10px; color:#555; text-decoration:none; border:1px solid #ccc; border-radius:4px; padding:2px 5px; white-space:nowrap; flex-shrink:0;">
-            DOI
-          </a>
-        </div>
-
-        <div style="display:flex; align-items:center; gap:6px;">
-          <button class="btn btn-primary demo-dataset-btn" data-file="kefi2016" style="flex:1; text-align:left;">
-            Kéfi et al. 2016 – Chilean rocky intertidal (3 layers)
-          </button>
-          <a href="https://doi.org/10.1111/ele.12665" target="_blank" rel="noopener"
-            title="Kéfi et al. 2016 – Ecology Letters"
-            style="font-size:10px; color:#555; text-decoration:none; border:1px solid #ccc; border-radius:4px; padding:2px 5px; white-space:nowrap; flex-shrink:0;">
-            DOI
-          </a>
-        </div>
-
-        <div style="display:flex; align-items:center; gap:6px;">
-          <button class="btn btn-primary demo-dataset-btn" data-file="pilosof2017" style="flex:1; text-align:left;">
-            Pilosof et al. 2017 – Host–parasite multilayer (6 years)
-          </button>
-          <a href="https://doi.org/10.1038/s41559-017-0101" target="_blank" rel="noopener"
-            title="Pilosof et al. 2017 – Nature Ecology &amp; Evolution"
-            style="font-size:10px; color:#555; text-decoration:none; border:1px solid #ccc; border-radius:4px; padding:2px 5px; white-space:nowrap; flex-shrink:0;">
-            DOI
-          </a>
-        </div>
-
-        <div style="display:flex; align-items:center; gap:6px;">
-          <button class="btn btn-primary demo-dataset-btn" data-file="demo_bipartite_bartomeus" style="flex:1; text-align:left;">
-            Bartomeus et al. – Bipartite pollination (modified)
-          </button>
-          <a href="https://doi.org/10.1111/j.1461-0248.2008.01231.x" target="_blank" rel="noopener"
-            title="Bartomeus et al. 2008 – Ecology Letters"
-            style="font-size:10px; color:#555; text-decoration:none; border:1px solid #ccc; border-radius:4px; padding:2px 5px; white-space:nowrap; flex-shrink:0;">
-            DOI
-          </a>
-        </div>
-
-        <button class="btn" id="demoCancelBtn" style="width:100%; margin-top: 8px;">Cancel</button>
+      <!-- List view -->
+      <div id="demoListView">
+        <h4>Example networks</h4>
+        <div id="demoDatasetList" style="display:flex; flex-direction:column; gap:6px; margin: 12px 0;"></div>
+        <button class="btn" id="demoCancelBtn" style="width:100%; margin-top:4px;">Cancel</button>
       </div>
+
+      <!-- Info view -->
+      <div id="demoInfoView" style="display:none;">
+        <button id="demoBackBtn" style="background:none; border:none; cursor:pointer; font-size:12px; color:#555; padding:0; margin-bottom:10px;">← Back</button>
+        <h4 id="demoInfoName" style="margin:0 0 4px;"></h4>
+        <p id="demoInfoCitation" style="margin:0 0 12px; font-size:11px; color:#888;"></p>
+        <div id="demoInfoContent" style="font-size:12px; line-height:1.7; color:#333;"></div>
+        <div style="display:flex; gap:8px; margin-top:16px;">
+          <button id="demoInfoLoadBtn" class="btn btn-primary" style="flex:1;">Load network</button>
+        </div>
+      </div>
+
     </div>
   </div>
 

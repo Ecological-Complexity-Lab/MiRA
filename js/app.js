@@ -496,20 +496,141 @@ demoDialog.addEventListener('click', (e) => {
     if (e.target === demoDialog) demoDialog.style.display = 'none';
 });
 
-document.querySelectorAll('.demo-dataset-btn').forEach(btn => {
-    btn.addEventListener('click', async () => {
-        demoDialog.style.display = 'none';
-        try {
-            const demoFile = btn.dataset.file;
-            const resp = await fetch(`data/${demoFile}.json`);
-            if (!resp.ok) throw new Error('Failed to fetch demo data');
-            const json = await resp.json();
-            loadData(json);
-        } catch (err) {
-            console.error(err);
-            alert('Failed to load demo data. Make sure to serve using a local server.');
-        }
-    });
+// ---- Example dataset metadata ----
+const DATASET_INFO = {
+    canary_islands: {
+        name: 'Canary Islands pollination network',
+        citation: 'Vitali et al. 2024',
+        doi: 'https://doi.org/10.1098/rspb.2014.2925',
+        dataDoi: null,
+        layers: '5 layers — Fuerteventura, Gran Canaria, Tenerife, Gomera, Hierro',
+        nodes: '235 species (34 plants · 201 pollinators)',
+        links: '651 intralayer + 154 interlayer (Jaccard similarity of partner sets)',
+        network: 'Undirected · bipartite per layer · GPS coordinates (map mode)',
+        nodeAttrs: ['node_type (plant / pollinator)', 'module (1–33, Infomap)'],
+        linkAttrs: ['weight'],
+    },
+    kefi2016: {
+        name: 'Chilean intertidal food web',
+        citation: 'Kéfi et al. 2016',
+        doi: 'https://doi.org/10.1371/journal.pbio.1002527',
+        dataDoi: null,
+        layers: '3 layers — Trophic, NTI positive, NTI negative',
+        nodes: '106 species',
+        links: '4,623 directed interactions',
+        network: 'Directed',
+        nodeAttrs: ['body_mass', 'mobility (sessile / mobile)', 'functional_role',
+                    'phylum', 'cluster (1–14)', 'functional_group (5 groups)', 'shore_height'],
+        linkAttrs: ['weight', 'type (trophic / non-trophic+ / non-trophic−)'],
+    },
+    pilosof2017: {
+        name: 'Siberian host–parasite network',
+        citation: 'Pilosof et al. 2017',
+        doi: 'https://doi.org/10.1038/s41559-017-0101',
+        dataDoi: null,
+        layers: '6 temporal layers — 1982–1987',
+        nodes: '78 species (22 hosts · 56 parasites)',
+        links: '1,817 intralayer + 284 interlayer',
+        network: 'Undirected intralayer · directed interlayer · bipartite per layer',
+        nodeAttrs: ['node_type (host / parasite)', 'abundance', 'module (1–7, Infomap)'],
+        linkAttrs: ['weight'],
+    },
+    demo_bipartite_bartomeus: {
+        name: 'Mediterranean plant–pollinator network',
+        citation: 'Bartomeus et al. 2008',
+        doi: 'https://doi.org/10.1111/j.1461-0248.2008.01231.x',
+        dataDoi: null,
+        layers: '12 layers (sampling sites)',
+        nodes: '135 species (plants + pollinators)',
+        links: '1,227 intralayer interactions',
+        network: 'Undirected · bipartite per layer',
+        nodeAttrs: ['Plant_order', 'Plant_family', 'Plant_genus', 'Plant_abundance', 'Plant_module'],
+        linkAttrs: ['weight', 'Interaction type', 'Date', 'Sampling_method'],
+    },
+};
+
+function buildDatasetRow(file) {
+    const info = DATASET_INFO[file];
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex; align-items:center; gap:6px;';
+
+    const loadBtn = document.createElement('button');
+    loadBtn.className = 'btn btn-primary';
+    loadBtn.style.cssText = 'flex:1; text-align:left; padding:7px 10px; line-height:1.3;';
+    loadBtn.innerHTML = `<span style="display:block; font-size:12px; font-weight:600;">${info.name}</span>
+                         <span style="display:block; font-size:10px; opacity:0.7; font-weight:400;">${info.citation}</span>`;
+    loadBtn.addEventListener('click', () => loadDemoFile(file));
+
+    const infoBtn = document.createElement('button');
+    infoBtn.className = 'btn';
+    infoBtn.style.cssText = 'flex-shrink:0; width:28px; height:28px; padding:0; font-size:13px;';
+    infoBtn.textContent = 'ⓘ';
+    infoBtn.title = 'More info';
+    infoBtn.addEventListener('click', () => showDemoInfo(file));
+
+    row.appendChild(loadBtn);
+    row.appendChild(infoBtn);
+    return row;
+}
+
+function showDemoInfo(file) {
+    const info = DATASET_INFO[file];
+    document.getElementById('demoInfoName').textContent = info.name;
+    document.getElementById('demoInfoCitation').textContent = info.citation;
+
+    const nodeAttrList = info.nodeAttrs.map(a => `<li>${a}</li>`).join('');
+    const linkAttrList = info.linkAttrs.map(a => `<li>${a}</li>`).join('');
+    const doiLink = `<a href="${info.doi}" target="_blank" rel="noopener" style="color:#5b6af0;">${info.doi}</a>`;
+    const dataDoiLine = info.dataDoi
+        ? `<div><strong>Data:</strong> <a href="${info.dataDoi}" target="_blank" rel="noopener" style="color:#5b6af0;">${info.dataDoi}</a></div>`
+        : `<div style="color:#aaa;"><strong>Data source:</strong> see paper</div>`;
+
+    document.getElementById('demoInfoContent').innerHTML = `
+        <div style="margin-bottom:8px;"><strong>Layers:</strong> ${info.layers}</div>
+        <div style="margin-bottom:8px;"><strong>Nodes:</strong> ${info.nodes}</div>
+        <div style="margin-bottom:8px;"><strong>Links:</strong> ${info.links}</div>
+        <div style="margin-bottom:12px;"><strong>Network type:</strong> ${info.network}</div>
+        <div style="margin-bottom:4px;"><strong>Node attributes:</strong></div>
+        <ul style="margin:0 0 8px; padding-left:16px;">${nodeAttrList}</ul>
+        <div style="margin-bottom:4px;"><strong>Link attributes:</strong></div>
+        <ul style="margin:0 0 12px; padding-left:16px;">${linkAttrList}</ul>
+        <div><strong>Paper:</strong> ${doiLink}</div>
+        ${dataDoiLine}
+    `;
+
+    document.getElementById('demoInfoLoadBtn').dataset.file = file;
+    document.getElementById('demoListView').style.display = 'none';
+    document.getElementById('demoInfoView').style.display = '';
+}
+
+document.getElementById('demoBackBtn').addEventListener('click', () => {
+    document.getElementById('demoInfoView').style.display = 'none';
+    document.getElementById('demoListView').style.display = '';
+});
+
+document.getElementById('demoInfoLoadBtn').addEventListener('click', () => {
+    const file = document.getElementById('demoInfoLoadBtn').dataset.file;
+    loadDemoFile(file);
+});
+
+async function loadDemoFile(file) {
+    demoDialog.style.display = 'none';
+    document.getElementById('demoInfoView').style.display = 'none';
+    document.getElementById('demoListView').style.display = '';
+    try {
+        const resp = await fetch(`data/${file}.json`);
+        if (!resp.ok) throw new Error('Failed to fetch demo data');
+        const json = await resp.json();
+        loadData(json);
+    } catch (err) {
+        console.error(err);
+        alert('Failed to load demo data. Make sure to serve using a local server.');
+    }
+}
+
+// Build dataset rows on load
+Object.keys(DATASET_INFO).forEach(file => {
+    document.getElementById('demoDatasetList').appendChild(buildDatasetRow(file));
 });
 
 // ---- Map Mode Logic ----
