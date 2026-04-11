@@ -185,6 +185,7 @@ const infoPanel = document.getElementById('infoPanel');
 const infoTitle = document.getElementById('infoTitle');
 const infoContent = document.getElementById('infoContent');
 const closeInfoBtn = document.getElementById('closeInfoBtn');
+const collapseInfoBtn = document.getElementById('collapseInfoBtn');
 const tooltip = document.getElementById('tooltip');
 
 // ---- Application State ----
@@ -2361,6 +2362,8 @@ function showNodeInfo(hit) {
 
     infoContent.innerHTML = html;
     infoPanel.classList.add('visible');
+    infoPanel.classList.remove('collapsed');
+    collapseInfoBtn.textContent = '›';
 }
 
 function showLinkInfo(link) {
@@ -2390,10 +2393,14 @@ function showLinkInfo(link) {
 
     infoContent.innerHTML = html;
     infoPanel.classList.add('visible');
+    infoPanel.classList.remove('collapsed');
+    collapseInfoBtn.textContent = '›';
 }
 
 function hideNodeInfo() {
     infoPanel.classList.remove('visible');
+    infoPanel.classList.remove('collapsed');
+    collapseInfoBtn.textContent = '›';
 }
 
 function showLayerInfo(layerIndex) {
@@ -2411,6 +2418,8 @@ function showLayerInfo(layerIndex) {
 
     infoContent.innerHTML = html;
     infoPanel.classList.add('visible');
+    infoPanel.classList.remove('collapsed');
+    collapseInfoBtn.textContent = '›';
 }
 
 closeInfoBtn.addEventListener('click', () => {
@@ -2418,6 +2427,11 @@ closeInfoBtn.addEventListener('click', () => {
     renderer.selectedLayer = null;
     hideNodeInfo();
     renderer.render();
+});
+
+collapseInfoBtn.addEventListener('click', () => {
+    const isCollapsed = infoPanel.classList.toggle('collapsed');
+    collapseInfoBtn.textContent = isCollapsed ? '‹' : '›';
 });
 
 // ---- Tooltip ----
