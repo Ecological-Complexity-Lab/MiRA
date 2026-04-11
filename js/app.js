@@ -537,6 +537,18 @@ const DATASET_INFO = {
         nodeAttrs: ['node_type (host / parasite)', 'abundance', 'module (1–7, Infomap)'],
         linkAttrs: ['weight'],
     },
+    costa2020: {
+        name: 'Portuguese temporal seed dispersal network',
+        citation: 'Costa et al. 2020',
+        doi: 'https://doi.org/10.1111/1365-2745.13391',
+        dataDoi: 'https://doi.org/10.6084/m9.figshare.11985912',
+        layers: '5 layers — 2012–2016 (annual)',
+        nodes: '29 species (17 plants · 12 birds)',
+        links: '170 intralayer (seed counts) + 61 directed interlayer (t → t+1)',
+        network: 'Undirected intralayer · directed interlayer · bipartite per layer',
+        nodeAttrs: ['node_type (plant / bird)', 'group (resident / partial-migratory)', 'versatility', 'degree', 'strength', 'd_specialisation', 'n_years'],
+        linkAttrs: ['weight (seed count)'],
+    },
     thousand_islands: {
         name: 'Thousand Island Lake seed dispersal network',
         citation: 'Zhu et al. 2025',
