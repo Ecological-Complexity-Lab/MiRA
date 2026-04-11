@@ -648,11 +648,12 @@ export class Dashboard {
         const idx = Object.fromEntries(layerNames.map((ln, i) => [ln, i]));
         const n   = layerNames.length;
         const countMat = Array.from({ length: n }, () => new Array(n).fill(0));
+        const directedInter = this.model.directedInterlayer ?? this.model.directed ?? false;
         for (const lk of interLinks) {
             const i = idx[lk.layer_from], j = idx[lk.layer_to];
             if (i !== undefined && j !== undefined) {
                 countMat[i][j]++;
-                if (!this.model.directed) countMat[j][i]++;
+                if (!directedInter) countMat[j][i]++;
             }
         }
         const maxCount = Math.max(...countMat.flat(), 1);
@@ -697,7 +698,7 @@ export class Dashboard {
             .filter(lk => {
                 if (!this._interPair) return true;
                 const fwd = lk.layer_from === this._interPair.from && lk.layer_to === this._interPair.to;
-                const rev = !this.model.directed && lk.layer_from === this._interPair.to && lk.layer_to === this._interPair.from;
+                const rev = !directedInter && lk.layer_from === this._interPair.to && lk.layer_to === this._interPair.from;
                 return fwd || rev;
             })
             .map(lk => lk.weight ?? 1);
@@ -856,9 +857,10 @@ export class Dashboard {
             cell.addEventListener('click', () => {
                 const from = cell.dataset.from, to = cell.dataset.to;
                 // Check there are actually links for this pair
+                const dirInter = this.model.directedInterlayer ?? this.model.directed ?? false;
                 const hasLinks = this.model.interlayerLinks.some(lk => {
                     const fwd = lk.layer_from === from && lk.layer_to === to;
-                    const rev = !this.model.directed && lk.layer_from === to && lk.layer_to === from;
+                    const rev = !dirInter && lk.layer_from === to && lk.layer_to === from;
                     return fwd || rev;
                 });
                 if (!hasLinks) return;
