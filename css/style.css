@@ -711,6 +711,10 @@ body {
   justify-content: flex-start;
 }
 
+#demoDatasetList .demo-info-btn {
+  justify-content: center;
+}
+
 .dialog-box h4 {
   font-size: 14px;
   font-weight: 600;

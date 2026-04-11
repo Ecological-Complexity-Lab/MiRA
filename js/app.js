@@ -562,7 +562,7 @@ function buildDatasetRow(file) {
     loadBtn.addEventListener('click', () => loadDemoFile(file));
 
     const infoBtn = document.createElement('button');
-    infoBtn.className = 'btn';
+    infoBtn.className = 'btn demo-info-btn';
     infoBtn.style.cssText = 'flex-shrink:0; width:28px; height:28px; padding:0; font-size:13px;';
     infoBtn.textContent = 'ⓘ';
     infoBtn.title = 'More info';
