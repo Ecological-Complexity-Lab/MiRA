@@ -21,7 +21,19 @@
       "Bash(Rscript -e 'devtools::load_all\\(\".\",quiet=TRUE\\); net <- load_emln\\(14\\); cat\\(names\\(net$nodes\\), \"\\\\n\"\\)')",
       "Bash(echo \"PID: $!\")",
       "Bash(pkill -f \"python3 -m http.server 8000\")",
-      "Bash(echo \"Restarted PID: $!\")"
+      "Bash(echo \"Restarted PID: $!\")",
+      "Bash(git -C /Users/shai/GitHub/ecomplab/multilayer_viz log --oneline --follow docs/manual.html)",
+      "Bash(git -C /Users/shai/GitHub/ecomplab/multilayer_viz log --oneline -20)",
+      "Bash(grep -n \"export class\" /Users/shai/GitHub/ecomplab/multilayer_viz/js/*.js)",
+      "Bash(grep -i \"layer color attribute\\\\|layer.*color\" /Users/shai/GitHub/ecomplab/multilayer_viz/js/*.js)",
+      "Bash(git -C /Users/shai/GitHub/ecomplab/multilayer_viz log --all --oneline)",
+      "Bash(git -C /Users/shai/GitHub/ecomplab/multilayer_viz show --stat caf6ad8)",
+      "Bash(git -C /Users/shai/GitHub/ecomplab/multilayer_viz log --all --oneline --grep=\"docs\")",
+      "Bash(git -C /Users/shai/GitHub/ecomplab/multilayer_viz show bdd648e --stat)",
+      "Bash(git -C /Users/shai/GitHub/ecomplab/multilayer_viz show 0c1e346 --stat)",
+      "Bash(git log:*)",
+      "Bash(git -C /Users/shai/GitHub/ecomplab/multilayer_viz show 50dbd9f --stat)",
+      "Bash(git -C /Users/shai/GitHub/ecomplab/multilayer_viz show 8dbc033 --stat)"
     ],
     "additionalDirectories": [
       "/Users/shai/GitHub/ecomplab/emln"
