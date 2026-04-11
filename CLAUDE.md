@@ -18,18 +18,7 @@ Work only inside `multilayer_viz/`. Ignore `_archive/` — legacy files only.
 
 ## Git Workflow (always follow this)
 
-1. All work is done on the `minimal_varsion` branch to keep context clean.
-2. When a task is complete and committed on `minimal_varsion`, cherry-pick the commit(s) to `refactor/phase1`.
-3. Push from `refactor/phase1`.
-
-```bash
-# After committing on minimal_varsion:
-git log --oneline -3                      # note the commit SHA
-git checkout refactor/phase1
-git cherry-pick <sha>
-git push
-git checkout minimal_varsion             # return to working branch
-```
+All work is committed and pushed directly on `main`.
 
 ---
 
