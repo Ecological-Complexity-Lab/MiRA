@@ -222,6 +222,8 @@ export class Dashboard {
         this._showBipartite    = true;
         this._matrixFlipped    = true; // false = Node rows × Layer cols; true = Layer rows × Node cols
         this._tip              = null;
+        this._intraLayer       = 'all'; // 'all' or a layer name
+        this._interPair        = null;  // null = all, or { from, to }
     }
 
     setSortOrder(order)     { this._sortOrder = order;           this.render(); }
@@ -238,6 +240,7 @@ export class Dashboard {
         this.container.innerHTML = `<div class="db-root">
             ${this._sKPI(s, bp)}
             ${this._sLayerCharts(s, bp)}
+            ${this._sWeightDist(s)}
             ${this._sMatrix(s, bp)}
             ${this._sLayerSimilarity(s, bp)}
             ${this._sDegree(s, bp)}
@@ -580,6 +583,150 @@ export class Dashboard {
         );
     }
 
+    _sWeightDist(s) {
+        const INTRA_COLOR  = BAR_FILL;
+        const INTER_COLOR  = 'rgba(245,158,11,0.75)';
+        const W_HIST = 300, H_HIST = 180;
+
+        const makeBins = (weights, nBins = 15) => {
+            if (!weights.length) return [];
+            const mn = Math.min(...weights), mx = Math.max(...weights);
+            if (mn === mx) return [{ x0: parseFloat(mn.toFixed(3)), count: weights.length }];
+            const bw = (mx - mn) / nBins;
+            const bins = Array.from({ length: nBins }, (_, i) => ({
+                x0: parseFloat((mn + i * bw).toFixed(3)), count: 0
+            }));
+            for (const w of weights) {
+                const idx = Math.min(Math.floor((w - mn) / bw), nBins - 1);
+                bins[idx].count++;
+            }
+            while (bins.length > 1 && bins.at(-1).count === 0) bins.pop();
+            return bins;
+        };
+
+        // ── Intralayer ──
+        const intraLinks = this.model.intralayerLinks;
+        const layerNames = s.layerNames;
+
+        const intraWeightsFor = (layerName) =>
+            intraLinks
+                .filter(lk => layerName === 'all' || lk.layer_from === layerName)
+                .map(lk => lk.weight ?? 1);
+
+        const intraWeights = intraWeightsFor(this._intraLayer);
+        const allUniform   = intraWeights.every(w => w === intraWeights[0]);
+
+        const dropdownOpts = [`<option value="all"${this._intraLayer === 'all' ? ' selected' : ''}>All layers</option>`]
+            .concat(layerNames.map(ln =>
+                `<option value="${ln}"${this._intraLayer === ln ? ' selected' : ''}>${ln}</option>`
+            )).join('');
+
+        const intraTitle = this._intraLayer === 'all'
+            ? 'Intralayer link weights (all layers)'
+            : `Intralayer link weights — ${this._intraLayer}`;
+
+        const intraHist = intraWeights.length === 0
+            ? `<p style="font-size:11px;color:${SUBTEXT};margin:8px 0;">No intralayer links.</p>`
+            : svgHist(makeBins(intraWeights), { width: W_HIST, height: H_HIST, color: INTRA_COLOR, xLabel: 'Weight', yLabel: 'Links' });
+
+        const intraPanel = `<div class="db-chart-box">
+            <div class="db-chart-title">${intraTitle}</div>
+            <div style="margin-bottom:8px;">
+                <select id="dbIntraLayerSelect" class="db-weight-select">${dropdownOpts}</select>
+            </div>
+            ${intraHist}
+        </div>`;
+
+        // ── Interlayer ──
+        const interLinks = this.model.interlayerLinks;
+        if (!interLinks.length) {
+            return this._sec('weightdist', 'Link Weight Distributions',
+                `<div class="db-charts-row">${intraPanel}</div>`);
+        }
+
+        // Count matrix: interCount[i][j] = number of links between layerNames[i] and layerNames[j]
+        const idx = Object.fromEntries(layerNames.map((ln, i) => [ln, i]));
+        const n   = layerNames.length;
+        const countMat = Array.from({ length: n }, () => new Array(n).fill(0));
+        for (const lk of interLinks) {
+            const i = idx[lk.layer_from], j = idx[lk.layer_to];
+            if (i !== undefined && j !== undefined) {
+                countMat[i][j]++;
+                if (!this.model.directed) countMat[j][i]++;
+            }
+        }
+        const maxCount = Math.max(...countMat.flat(), 1);
+
+        // Normalised (0–1) for colour, raw count for cell text + data attrs
+        const cellSize = n <= 8 ? 44 : n <= 14 ? 32 : n <= 22 ? 22 : 14;
+        const maxLen   = Math.max(...layerNames.map(l => l.length));
+        const LABEL_W  = Math.min(maxLen * 6.2 + 10, 130);
+        const HDR_H    = Math.min(maxLen * 6.2 + 10, 120);
+
+        let colLabels = '', rowLabels = '', cells = '';
+        layerNames.forEach((ln, j) => {
+            const x   = LABEL_W + j * cellSize + cellSize / 2;
+            const lbl = ln.length > 18 ? ln.slice(0, 17) + '…' : ln;
+            colLabels += `<text transform="translate(${x},${HDR_H - 4}) rotate(-45)" text-anchor="start" font-size="10" fill="${TEXT}">${lbl}</text>`;
+        });
+        layerNames.forEach((rowLn, i) => {
+            const y   = HDR_H + i * cellSize;
+            const lbl = rowLn.length > 18 ? rowLn.slice(0, 17) + '…' : rowLn;
+            rowLabels += `<text x="${LABEL_W - 5}" y="${y + cellSize / 2 + 3}" text-anchor="end" font-size="10" fill="${TEXT}">${lbl}</text>`;
+            layerNames.forEach((colLn, j) => {
+                const cnt  = countMat[i][j];
+                const t    = cnt / maxCount;
+                const fill = _lerpColor(t, '#f59e0b');
+                const x    = LABEL_W + j * cellSize;
+                const isSelected = this._interPair && this._interPair.from === rowLn && this._interPair.to === colLn;
+                const stroke = isSelected ? '#1f2937' : GRID;
+                const sw     = isSelected ? 2 : 0.5;
+                const fs     = Math.min(10, cellSize * 0.27);
+                const textFill = (1 + (((245*0.299+158*0.587+11*0.114)/255) - 1) * t) < 0.52 ? '#fff' : TEXT;
+                cells += `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" class="db-inter-cell" data-from="${rowLn}" data-to="${colLn}" style="cursor:${cnt > 0 ? 'pointer' : 'default'}"/>`;
+                if (cellSize >= 20 && cnt > 0) {
+                    cells += `<text x="${x + cellSize / 2}" y="${y + cellSize / 2 + fs * 0.4}" text-anchor="middle" font-size="${fs}" fill="${textFill}" pointer-events="none">${cnt}</text>`;
+                }
+            });
+        });
+        const hmW = LABEL_W + n * cellSize, hmH = HDR_H + n * cellSize;
+        const heatmapSvg = `<svg width="${hmW}" height="${hmH}" id="dbInterHeatmap" style="overflow:visible;cursor:default">${colLabels}${rowLabels}${cells}</svg>`;
+
+        // Interlayer histogram
+        const interWeights = interLinks
+            .filter(lk => {
+                if (!this._interPair) return true;
+                const fwd = lk.layer_from === this._interPair.from && lk.layer_to === this._interPair.to;
+                const rev = !this.model.directed && lk.layer_from === this._interPair.to && lk.layer_to === this._interPair.from;
+                return fwd || rev;
+            })
+            .map(lk => lk.weight ?? 1);
+
+        const interTitle = this._interPair
+            ? `Interlayer weights — ${this._interPair.from} ↔ ${this._interPair.to}`
+            : 'Interlayer link weights (all pairs)';
+
+        const clearBtn = this._interPair
+            ? `<button id="dbInterClearBtn" class="db-sort-btn" style="margin-left:8px;">✕ Clear</button>`
+            : '';
+
+        const interHist = interWeights.length === 0
+            ? `<p style="font-size:11px;color:${SUBTEXT};margin:8px 0;">No links for this pair.</p>`
+            : svgHist(makeBins(interWeights), { width: W_HIST, height: H_HIST, color: INTER_COLOR, xLabel: 'Weight', yLabel: 'Links' });
+
+        const interPanel = `<div class="db-chart-box">
+            <div class="db-chart-title" style="display:flex;align-items:center;gap:6px;">${interTitle}${clearBtn}</div>
+            ${interHist}
+            <div style="margin-top:16px;">
+                <div class="db-chart-title" style="font-size:11px;color:${SUBTEXT};margin-bottom:4px;">Interlayer link counts (click cell to filter)</div>
+                <div style="overflow:auto;">${heatmapSvg}</div>
+            </div>
+        </div>`;
+
+        return this._sec('weightdist', 'Link Weight Distributions',
+            `<div class="db-charts-row">${intraPanel}${interPanel}</div>`);
+    }
+
     _sLayerSimilarity(s, bp) {
         const L = s.layerNames;
         const n = L.length;
@@ -692,6 +839,40 @@ export class Dashboard {
                 this.render();
             });
         });
+
+        // Weight distribution: intralayer dropdown
+        const intraSelect = root.querySelector('#dbIntraLayerSelect');
+        if (intraSelect) {
+            intraSelect.addEventListener('change', () => {
+                this._intraLayer = intraSelect.value;
+                this.render();
+            });
+        }
+
+        // Weight distribution: interlayer heatmap cell clicks
+        root.querySelectorAll('.db-inter-cell').forEach(cell => {
+            cell.addEventListener('click', () => {
+                const from = cell.dataset.from, to = cell.dataset.to;
+                // Check there are actually links for this pair
+                const hasLinks = this.model.interlayerLinks.some(lk => {
+                    const fwd = lk.layer_from === from && lk.layer_to === to;
+                    const rev = !this.model.directed && lk.layer_from === to && lk.layer_to === from;
+                    return fwd || rev;
+                });
+                if (!hasLinks) return;
+                this._interPair = { from, to };
+                this.render();
+            });
+        });
+
+        // Weight distribution: clear interlayer filter
+        const clearBtn = root.querySelector('#dbInterClearBtn');
+        if (clearBtn) {
+            clearBtn.addEventListener('click', () => {
+                this._interPair = null;
+                this.render();
+            });
+        }
 
         // Presence matrix: node tooltip
         const tip = document.createElement('div');

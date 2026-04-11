@@ -172,6 +172,7 @@ const dashboardContainer = document.getElementById('dashboardContainer');
 const dbBipartiteToggle  = document.getElementById('dbBipartiteToggle');
 const dbBipartiteRow     = document.getElementById('dbBipartiteRow');
 let   dashboard          = null;
+let   _hasAnyBipartite   = false;
 const mapOpacityControl = document.getElementById('mapOpacityControl');
 const mapOpacitySlider = document.getElementById('mapOpacitySlider');
 const showMapImageCheckbox = document.getElementById('showMapImageCheckbox');
@@ -459,8 +460,9 @@ function loadData(json) {
             bipartiteOption.style.display = hasAnyBipartite ? '' : 'none';
         }
 
-        // Show bipartite detail toggle in the Data section when relevant
-        dbBipartiteRow.style.display = hasAnyBipartite ? '' : 'none';
+        // Track for dashboard sidebar (shown/hidden with dashboard mode)
+        _hasAnyBipartite = hasAnyBipartite;
+        dbBipartiteRow.style.display = 'none'; // only shown in dashboard mode
         dbBipartiteToggle.checked = true;
 
         // Set layout type
@@ -924,11 +926,13 @@ function _showDashboardSidebar() {
     NETWORK_SECTIONS.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
     LV_SECTIONS.forEach(id => { document.getElementById(id).style.display = 'none'; });
     DB_SECTIONS.forEach(id => { document.getElementById(id).style.display = ''; });
+    dbBipartiteRow.style.display = _hasAnyBipartite ? '' : 'none';
     legendPanel.innerHTML = '';
 }
 
 function _hideDashboardSidebar() {
     DB_SECTIONS.forEach(id => { document.getElementById(id).style.display = 'none'; });
+    dbBipartiteRow.style.display = 'none';
     NETWORK_SECTIONS.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = ''; });
     renderLegends();
 }

@@ -892,6 +892,17 @@ body {
   border-color: #6366f1;
 }
 
+.db-weight-select {
+  font-size: 11px;
+  padding: 3px 6px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  background: #fff;
+  color: #374151;
+  cursor: pointer;
+  max-width: 220px;
+}
+
 .db-heatmap-col {
   display: flex;
   flex-direction: column;
