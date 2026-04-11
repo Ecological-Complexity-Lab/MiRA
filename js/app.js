@@ -602,7 +602,7 @@ const DATASET_INFO = {
         nodeAttrs: ['node_type (plant / bird)', 'group (resident / partial-migratory)', 'versatility', 'degree', 'strength', 'd_specialisation', 'n_years'],
         linkAttrs: ['weight (seed count)'],
     },
-    thousand_islands: {
+    zhu2025: {
         name: 'Thousand Island Lake seed dispersal network',
         citation: 'Zhu et al. 2025',
         doi: 'https://doi.org/10.1073/pnas.2415846122',
