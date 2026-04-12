@@ -532,6 +532,50 @@ body {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
+/* ---- Map mode layer list ---- */
+.map-layer-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background 0.12s, border-color 0.12s;
+}
+.map-layer-item:hover {
+  background: #f0f0ff;
+  border-color: #c7c7f0;
+}
+.map-layer-item.active {
+  background: #ebebff;
+  border-color: #4f46e5;
+  font-weight: 600;
+}
+.map-layer-item .map-layer-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: #4f46e5;
+}
+.map-layer-item.active .map-layer-dot {
+  background: #22c55e;
+}
+.map-layer-item .map-layer-close {
+  margin-left: auto;
+  font-size: 11px;
+  color: #999;
+  line-height: 1;
+  padding: 1px 3px;
+  border-radius: 3px;
+}
+.map-layer-item .map-layer-close:hover {
+  color: #ef4444;
+  background: #fee2e2;
+}
+
 @keyframes pulseGlow {
   0% {
     opacity: 0.6;

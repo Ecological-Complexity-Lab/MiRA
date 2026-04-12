@@ -207,6 +207,8 @@ let lvRAF  = null; // requestAnimationFrame id for meta-graph animation
 let activeMapLayers = new Set();
 const mapMarkersOverlay = document.getElementById('mapMarkersOverlay');
 const layerCloseButtonsContainer = document.getElementById('layerCloseButtons');
+const sectionMapLayers = document.getElementById('sectionMapLayers');
+const mapLayerList     = document.getElementById('mapLayerList');
 
 // ---- Init Background Map (network map mode) ----
 const mapEl = document.getElementById('backgroundMap');
@@ -719,6 +721,7 @@ function toggleMapMode() {
         renderer.showMapBackground = showMapImageCheckbox.checked;
         renderer.isMapMode = true;
         mapOpacityControl.style.display = 'flex';
+        sectionMapLayers.style.display = '';
     } else {
         mapModeBtn.classList.remove('active');
         mapEl.style.display = 'none';
@@ -726,6 +729,7 @@ function toggleMapMode() {
         renderer.showMapBackground = false;
         renderer.isMapMode = false;
         mapOpacityControl.style.display = 'none';
+        sectionMapLayers.style.display = 'none';
     }
 
     updateMapModeViews();
@@ -1817,6 +1821,7 @@ function updateMapModeViews() {
         }
 
         renderMapMarkers();
+        renderMapLayerList();
         updateCloseButtons();
         renderer.render();
     }
@@ -1924,6 +1929,47 @@ function renderMapMarkers() {
             }
         }
     });
+}
+
+function renderMapLayerList() {
+    mapLayerList.innerHTML = '';
+    if (appMode !== 'map' || !model || !model.layers) return;
+
+    for (const layer of model.layers) {
+        const isActive = activeMapLayers.has(layer.layer_name);
+        const li = document.createElement('li');
+        li.className = 'map-layer-item' + (isActive ? ' active' : '');
+
+        const dot = document.createElement('span');
+        dot.className = 'map-layer-dot';
+        li.appendChild(dot);
+
+        const name = document.createElement('span');
+        name.textContent = layer.layer_name;
+        li.appendChild(name);
+
+        if (isActive) {
+            const closeBtn = document.createElement('span');
+            closeBtn.className = 'map-layer-close';
+            closeBtn.textContent = '✕';
+            closeBtn.title = 'Close layer';
+            closeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                activeMapLayers.delete(layer.layer_name);
+                updateMapModeViews();
+            });
+            li.appendChild(closeBtn);
+        }
+
+        li.addEventListener('click', () => {
+            if (!isActive) {
+                activeMapLayers.add(layer.layer_name);
+                updateMapModeViews();
+            }
+        });
+
+        mapLayerList.appendChild(li);
+    }
 }
 
 function updateCloseButtons() {
