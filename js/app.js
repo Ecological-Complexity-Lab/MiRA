@@ -135,47 +135,6 @@ window.addEventListener('mouseup', () => {
     }
 });
 
-// ── Select Layers panel drag + collapse ──────────────────────────────────
-let _mlpDragging = false, _mlpHasDragged = false;
-let _mlpStartX, _mlpStartY, _mlpStartLeft, _mlpStartTop;
-let _mlpCollapsed = false;
-
-mapLayerPanel.addEventListener('mousedown', (e) => {
-    if (e.target.closest('.legend-no-drag')) return;
-    const rect = mapLayerPanel.getBoundingClientRect();
-    mapLayerPanel.style.left = rect.left + 'px';
-    mapLayerPanel.style.top  = rect.top  + 'px';
-    _mlpDragging = true; _mlpHasDragged = false;
-    _mlpStartX = e.clientX; _mlpStartY = e.clientY;
-    _mlpStartLeft = parseFloat(mapLayerPanel.style.left);
-    _mlpStartTop  = parseFloat(mapLayerPanel.style.top);
-    mapLayerPanel.style.cursor = 'grabbing';
-    document.body.style.cursor = 'grabbing';
-});
-
-window.addEventListener('mousemove', (e) => {
-    if (!_mlpDragging) return;
-    const dx = e.clientX - _mlpStartX, dy = e.clientY - _mlpStartY;
-    if (Math.abs(dx) > 3 || Math.abs(dy) > 3) _mlpHasDragged = true;
-    mapLayerPanel.style.left = (_mlpStartLeft + dx) + 'px';
-    mapLayerPanel.style.top  = (_mlpStartTop  + dy) + 'px';
-});
-
-window.addEventListener('mouseup', () => {
-    if (_mlpDragging) {
-        _mlpDragging = false;
-        mapLayerPanel.style.cursor = 'grab';
-        document.body.style.cursor = '';
-    }
-});
-
-mapLayerPanelToggle.addEventListener('click', () => {
-    if (_mlpHasDragged) return;
-    _mlpCollapsed = !_mlpCollapsed;
-    mapLayerPanelBody.style.display = _mlpCollapsed ? 'none' : '';
-    mapLayerPanelToggle.textContent  = _mlpCollapsed ? '+' : '−';
-    mapLayerPanelToggle.title        = _mlpCollapsed ? 'Expand' : 'Collapse';
-});
 const showLabelsCheckbox = document.getElementById('showLabelsCheckbox');
 const transformNodesCheckbox = document.getElementById('transformNodesCheckbox');
 const showLayerNamesCheckbox = document.getElementById('showLayerNamesCheckbox');
@@ -254,6 +213,48 @@ const mapLayerPanelHeader = document.getElementById('mapLayerPanelHeader');
 const mapLayerPanelBody   = document.getElementById('mapLayerPanelBody');
 const mapLayerPanelToggle = document.getElementById('mapLayerPanelToggle');
 const mapLayerList        = document.getElementById('mapLayerList');
+
+// ── Select Layers panel drag + collapse ──────────────────────────────────
+let _mlpDragging = false, _mlpHasDragged = false;
+let _mlpStartX, _mlpStartY, _mlpStartLeft, _mlpStartTop;
+let _mlpCollapsed = false;
+
+mapLayerPanel.addEventListener('mousedown', (e) => {
+    if (e.target.closest('.legend-no-drag')) return;
+    const rect = mapLayerPanel.getBoundingClientRect();
+    mapLayerPanel.style.left = rect.left + 'px';
+    mapLayerPanel.style.top  = rect.top  + 'px';
+    _mlpDragging = true; _mlpHasDragged = false;
+    _mlpStartX = e.clientX; _mlpStartY = e.clientY;
+    _mlpStartLeft = parseFloat(mapLayerPanel.style.left);
+    _mlpStartTop  = parseFloat(mapLayerPanel.style.top);
+    mapLayerPanel.style.cursor = 'grabbing';
+    document.body.style.cursor = 'grabbing';
+});
+
+window.addEventListener('mousemove', (e) => {
+    if (!_mlpDragging) return;
+    const dx = e.clientX - _mlpStartX, dy = e.clientY - _mlpStartY;
+    if (Math.abs(dx) > 3 || Math.abs(dy) > 3) _mlpHasDragged = true;
+    mapLayerPanel.style.left = (_mlpStartLeft + dx) + 'px';
+    mapLayerPanel.style.top  = (_mlpStartTop  + dy) + 'px';
+});
+
+window.addEventListener('mouseup', () => {
+    if (_mlpDragging) {
+        _mlpDragging = false;
+        mapLayerPanel.style.cursor = 'grab';
+        document.body.style.cursor = '';
+    }
+});
+
+mapLayerPanelToggle.addEventListener('click', () => {
+    if (_mlpHasDragged) return;
+    _mlpCollapsed = !_mlpCollapsed;
+    mapLayerPanelBody.style.display = _mlpCollapsed ? 'none' : '';
+    mapLayerPanelToggle.textContent  = _mlpCollapsed ? '+' : '−';
+    mapLayerPanelToggle.title        = _mlpCollapsed ? 'Expand' : 'Collapse';
+});
 
 // ---- Init Background Map (network map mode) ----
 const mapEl = document.getElementById('backgroundMap');
