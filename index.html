@@ -338,15 +338,6 @@
       </div>
     </details>
 
-    <!-- Map Mode: Layer selection list (shown only in map mode) -->
-    <details class="control-section" id="sectionMapLayers" style="display:none;" open>
-      <summary>Layers</summary>
-      <div class="section-body" style="padding-top:4px;">
-        <p style="font-size:11px;color:#888;margin:0 0 6px;">Click a layer to open it on the map.</p>
-        <ul id="mapLayerList" style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:3px;"></ul>
-      </div>
-    </details>
-
   </div>
 
   <!-- Bottom-left: Zoom & interaction hints -->
@@ -487,6 +478,17 @@
     <button id="closeInfoBtn" class="close-btn">✕</button>
     <h3 id="infoTitle">Node Info</h3>
     <div id="infoContent"></div>
+  </div>
+
+  <!-- Map Mode: Select Layers floating panel -->
+  <div id="mapLayerPanel" style="display:none; position:absolute; top:16px; left:16px; z-index:20; background:rgba(255,255,255,0.95); border:1px solid rgba(0,0,0,0.1); border-radius:8px; box-shadow:0 4px 6px rgba(0,0,0,0.08); font-family:Inter,system-ui,sans-serif; min-width:160px; max-width:220px; pointer-events:auto; cursor:grab; user-select:none; backdrop-filter:blur(8px);">
+    <div id="mapLayerPanelHeader" style="display:flex; align-items:center; justify-content:space-between; padding:8px 12px; border-bottom:1px solid rgba(0,0,0,0.07);">
+      <span style="font-size:11px; font-weight:700; color:#1a1a2e; text-transform:uppercase; letter-spacing:0.5px;">Select Layers</span>
+      <button id="mapLayerPanelToggle" class="legend-no-drag" style="background:none; border:none; cursor:pointer; color:#6b7280; font-size:13px; padding:0 2px; line-height:1;" title="Collapse">−</button>
+    </div>
+    <div id="mapLayerPanelBody" style="padding:6px 8px; max-height:55vh; overflow-y:auto;">
+      <ul id="mapLayerList" style="list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px;"></ul>
+    </div>
   </div>
 
   <!-- Layer Stats Panel (shown in Layer View mode) -->
