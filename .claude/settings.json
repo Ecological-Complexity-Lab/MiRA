@@ -37,7 +37,9 @@
       "WebFetch(domain:zenodo.org)",
       "WebFetch(domain:pubmed.ncbi.nlm.nih.gov)",
       "Bash(git revert:*)",
-      "Bash(node -e ':*)"
+      "Bash(node -e ':*)",
+      "Bash(lsof -ti:8080)",
+      "Bash(node --input-type=module)"
     ],
     "additionalDirectories": [
       "/Users/shai/GitHub/ecomplab/emln"
