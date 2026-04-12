@@ -39,7 +39,8 @@
       "Bash(git revert:*)",
       "Bash(node -e ':*)",
       "Bash(lsof -ti:8080)",
-      "Bash(node --input-type=module)"
+      "Bash(node --input-type=module)",
+      "Bash(git -C /Users/shai/GitHub/ecomplab/multilayer_viz log --oneline -5)"
     ],
     "additionalDirectories": [
       "/Users/shai/GitHub/ecomplab/emln"
