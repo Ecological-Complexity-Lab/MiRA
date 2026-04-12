@@ -1889,41 +1889,87 @@ function renderMapMarkers() {
     mapMarkersOverlay.innerHTML = '';
     if (appMode !== 'map' || !model || !model.layers) return;
 
-    model.layers.forEach(layer => {
+    // Build list of visible layers with canvas positions
+    const GEO_CLUSTER_EPS = 0.001; // ~100 m
+    const MARKER_R = 10; // px (half of 20px marker size)
+    const entries = [];
+    for (const layer of model.layers) {
+        if (activeMapLayers.has(layer.layer_name)) continue;
         const latVal = layer.latitude !== undefined ? layer.latitude : layer.Latitude;
         const lngVal = layer.longitude !== undefined ? layer.longitude : layer.Longitude;
-        if (latVal !== undefined && lngVal !== undefined) {
-            const lat = parseFloat(latVal);
-            const lng = parseFloat(lngVal);
-            if (!isNaN(lat) && !isNaN(lng)) {
-                const pos = bgMap.latLngToContainerPoint([lat, lng]);
+        if (latVal === undefined || lngVal === undefined) continue;
+        const lat = parseFloat(latVal), lng = parseFloat(lngVal);
+        if (isNaN(lat) || isNaN(lng)) continue;
+        const pos = bgMap.latLngToContainerPoint([lat, lng]);
+        entries.push({ layer, lat, lng, trueX: pos.x, trueY: pos.y, x: pos.x, y: pos.y });
+    }
 
-                // Hide marker if the layer is currently popped out
-                if (activeMapLayers.has(layer.layer_name)) return;
-
-                const marker = document.createElement('div');
-                marker.className = 'map-marker';
-                marker.style.left = pos.x + 'px';
-                marker.style.top = pos.y + 'px';
-                marker.title = layer.layer_name;
-
-                if (renderer.showLayerNames) {
-                    const label = document.createElement('div');
-                    label.className = 'map-marker-label';
-                    label.innerText = layer.layer_name;
-                    marker.appendChild(label);
-                }
-
-                marker.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    activeMapLayers.add(layer.layer_name);
-                    updateMapModeViews();
-                });
-
-                mapMarkersOverlay.appendChild(marker);
+    // Fan out co-located clusters
+    const assigned = new Set();
+    for (const seed of entries) {
+        if (assigned.has(seed.layer.layer_name)) continue;
+        const cluster = [seed];
+        assigned.add(seed.layer.layer_name);
+        for (const other of entries) {
+            if (assigned.has(other.layer.layer_name)) continue;
+            if (Math.abs(seed.lat - other.lat) < GEO_CLUSTER_EPS &&
+                Math.abs(seed.lng - other.lng) < GEO_CLUSTER_EPS) {
+                cluster.push(other);
+                assigned.add(other.layer.layer_name);
             }
         }
-    });
+        if (cluster.length <= 1) continue;
+        const cx = cluster.reduce((s, e) => s + e.trueX, 0) / cluster.length;
+        const cy = cluster.reduce((s, e) => s + e.trueY, 0) / cluster.length;
+        const R  = (MARKER_R + 6) / Math.sin(Math.PI / cluster.length);
+        cluster.forEach((e, i) => {
+            const angle = -Math.PI / 2 + (2 * Math.PI * i) / cluster.length;
+            e.x = cx + R * Math.cos(angle);
+            e.y = cy + R * Math.sin(angle);
+        });
+
+        // Draw a dot at the true location + dashed lines to each spread marker
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;';
+        for (const e of cluster) {
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.setAttribute('x1', cx); line.setAttribute('y1', cy);
+            line.setAttribute('x2', e.x); line.setAttribute('y2', e.y);
+            line.setAttribute('stroke', 'rgba(80,80,80,0.4)');
+            line.setAttribute('stroke-width', '1');
+            line.setAttribute('stroke-dasharray', '4 4');
+            svg.appendChild(line);
+        }
+        const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        dot.setAttribute('cx', cx); dot.setAttribute('cy', cy); dot.setAttribute('r', 4);
+        dot.setAttribute('fill', 'rgba(80,80,80,0.55)');
+        svg.appendChild(dot);
+        mapMarkersOverlay.appendChild(svg);
+    }
+
+    // Render markers at their (possibly spread) positions
+    for (const { layer, x, y } of entries) {
+        const marker = document.createElement('div');
+        marker.className = 'map-marker';
+        marker.style.left = x + 'px';
+        marker.style.top  = y + 'px';
+        marker.title = layer.layer_name;
+
+        if (renderer.showLayerNames) {
+            const label = document.createElement('div');
+            label.className = 'map-marker-label';
+            label.innerText = layer.layer_name;
+            marker.appendChild(label);
+        }
+
+        marker.addEventListener('click', (e) => {
+            e.stopPropagation();
+            activeMapLayers.add(layer.layer_name);
+            updateMapModeViews();
+        });
+
+        mapMarkersOverlay.appendChild(marker);
+    }
 }
 
 function updateCloseButtons() {
