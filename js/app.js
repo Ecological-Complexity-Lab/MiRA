@@ -222,8 +222,9 @@ let _mlpCollapsed = false;
 mapLayerPanel.addEventListener('mousedown', (e) => {
     if (e.target.closest('.legend-no-drag')) return;
     const rect = mapLayerPanel.getBoundingClientRect();
-    mapLayerPanel.style.left = rect.left + 'px';
-    mapLayerPanel.style.top  = rect.top  + 'px';
+    mapLayerPanel.style.right = 'auto';
+    mapLayerPanel.style.left  = rect.left + 'px';
+    mapLayerPanel.style.top   = rect.top  + 'px';
     _mlpDragging = true; _mlpHasDragged = false;
     _mlpStartX = e.clientX; _mlpStartY = e.clientY;
     _mlpStartLeft = parseFloat(mapLayerPanel.style.left);
@@ -245,6 +246,7 @@ window.addEventListener('mouseup', () => {
         _mlpDragging = false;
         mapLayerPanel.style.cursor = 'grab';
         document.body.style.cursor = '';
+        setTimeout(() => { _mlpHasDragged = false; }, 0);
     }
 });
 
