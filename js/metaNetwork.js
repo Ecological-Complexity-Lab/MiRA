@@ -255,17 +255,19 @@ export class MetaNetwork {
         this._d3Links = this._mnEdges.map(e => ({ source: e.source, target: e.target, _edge: e }));
 
         this._sim = d3.forceSimulation(this._mnNodes)
-            .force('charge',  d3.forceManyBody().strength(-300))
+            .force('charge',  d3.forceManyBody().strength(-200))
             .force('link',    d3.forceLink(this._d3Links).id(n => n.name).distance(80).strength(0.4))
             .force('x',       d3.forceX(0).strength(bipartite ? 0.02 : 0.05))
             .force('y',       d3.forceY(0).strength(bipartite ? 0    : 0.05))
             .force('collide', d3.forceCollide(n => n.r + 4).iterations(3))
-            .alphaDecay(0.003)
             .stop();
 
-        // Pre-settle before first paint
-        for (let i = 0; i < 200; i++) this._sim.tick();
-        this._sim.alpha(0.3).restart();
+        // Pre-settle to convergence (cap at 500 ticks for safety on huge graphs)
+        for (let i = 0; i < 500 && this._sim.alpha() > this._sim.alphaMin(); i++) {
+            this._sim.tick();
+        }
+        // Brief gentle animation so the user sees the network is "live" (drag-able)
+        this._sim.alpha(0.05).restart();
     }
 
     resetLayout() {
