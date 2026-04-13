@@ -1018,13 +1018,7 @@ function toggleDashboard() {
     dashboardContainer.style.display = 'block';
     _showDashboardSidebar();
 
-    dashboard = new Dashboard(dashboardContainer, model, {
-        onLayerClick: () => {
-            _exitDashboard();
-            appMode = 'network';
-            renderer.render();
-        },
-    });
+    dashboard = new Dashboard(dashboardContainer, model, {});
     dashboard.render();
 }
 
