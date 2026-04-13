@@ -40,7 +40,12 @@
       "Bash(node -e ':*)",
       "Bash(lsof -ti:8080)",
       "Bash(node --input-type=module)",
-      "Bash(git -C /Users/shai/GitHub/ecomplab/multilayer_viz log --oneline -5)"
+      "Bash(git -C /Users/shai/GitHub/ecomplab/multilayer_viz log --oneline -5)",
+      "Bash(grep -n \"class LayerView\\\\|class Dashboard\" /Users/shai/GitHub/ecomplab/multilayer_viz/js/*.js)",
+      "Bash(npm install:*)",
+      "Bash(node_modules/.bin/vitest run:*)",
+      "Bash(../node_modules/.bin/vitest run:*)",
+      "Bash(ls data/*.json)"
     ],
     "additionalDirectories": [
       "/Users/shai/GitHub/ecomplab/emln"

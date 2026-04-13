@@ -8,11 +8,11 @@
  *     Responsibilities: delimiter detection, quoted-field parsing, line-ending
  *     normalisation, blank-line skipping, whitespace trimming.
  *
- *   csvToJson(edgeListText, layersText, nodesText, options)
- *     Converts the three optional CSVs into the JSON shape expected by
+ *   csvToJson(edgeListText, layersText, nodesText, stateNodesText, options)
+ *     Converts the four optional CSVs into the JSON shape expected by
  *     parseMultilayerData(). Responsibilities: column validation, layer/node
  *     auto-derivation, field normalisation (lat/lon casing, node_type → group),
- *     weight defaulting, state_node generation.
+ *     weight defaulting, state_node generation, per-(layer,node) attribute merging.
  *
  * TEST STRUCTURE
  * ──────────────
@@ -267,14 +267,14 @@ describe('Group 7 — csvToJson: output shape', () => {
   const EDGES = 'layer_from,node_from,layer_to,node_to,weight\nL1,A,L1,B,2\nL1,B,L2,B,1'
 
   it('7.1 { directed: true } option sets json.directed = true', () => {
-    const { json } = csvToJson(EDGES, null, null, { directed: true })
+    const { json } = csvToJson(EDGES, null, null, null, { directed: true })
     expect(json.directed).toBe(true)
   })
 
   it('7.2 { bipartite: true } option is accepted without error (bipartite is set per-layer via CSV)', () => {
     // The bipartite option is not implemented at the root json level — bipartite is
     // declared per-layer in the layers CSV (bipartite column). This option is silently ignored.
-    const { json } = csvToJson(EDGES, null, null, { bipartite: true })
+    const { json } = csvToJson(EDGES, null, null, null, { bipartite: true })
     expect(json.bipartite).toBeUndefined()
     expect(json.directed).toBe(false)
   })
@@ -299,6 +299,23 @@ describe('Group 7 — csvToJson: output shape', () => {
     // EDGES: L1::A, L1::B, L2::B → 3 distinct pairs
     const { json } = csvToJson(EDGES)
     expect(json.state_nodes).toHaveLength(3)
+  })
+
+  it('7.6 state_node attributes CSV merges per-layer-node attributes into state_nodes', () => {
+    // Node B appears in L1 and L2 — it can have a different abundance in each layer.
+    const stateNodes = 'layer_name,node_name,abundance\nL1,A,0.5\nL1,B,1.2\nL2,B,0.8'
+    const { json } = csvToJson(EDGES, null, null, stateNodes)
+    const snL1B = json.state_nodes.find(s => s.layer_name === 'L1' && s.node_name === 'B')
+    const snL2B = json.state_nodes.find(s => s.layer_name === 'L2' && s.node_name === 'B')
+    expect(snL1B).toHaveProperty('abundance', '1.2')
+    expect(snL2B).toHaveProperty('abundance', '0.8')
+    // The two entries for B have different values — same physical node, different state
+    expect(snL1B.abundance).not.toBe(snL2B.abundance)
+  })
+
+  it('7.7 state_node attributes CSV missing required columns throws', () => {
+    const bad = 'layer_name,abundance\nL1,0.5'
+    expect(() => csvToJson(EDGES, null, null, bad)).toThrow(/node_name/)
   })
 })
 
