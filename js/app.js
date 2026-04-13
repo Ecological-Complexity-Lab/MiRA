@@ -1158,7 +1158,7 @@ function _startMetaNetworkLoop() {
     function loop() {
         if (appMode !== 'metanetwork' || !metaNetwork) { mnRAF = null; return; }
         const stillHot = metaNetwork.tick();
-        metaNetwork.render(ctx, canvas.width, canvas.height);
+        metaNetwork.render(renderer.ctx, canvas.width, canvas.height);
         mnRAF = stillHot ? requestAnimationFrame(loop) : null;
     }
     mnRAF = requestAnimationFrame(loop);
@@ -1182,6 +1182,7 @@ function toggleMetaNetwork() {
 
     appMode = 'metanetwork';
     metaNetworkBtn.classList.add('active');
+    renderer.metaNetworkMode = true;
     canvas.style.display = '';
     canvas.style.cursor  = 'grab';
 
@@ -1345,6 +1346,7 @@ function toggleMetaNetwork() {
 
 function _exitMetaNetwork() {
     if (mnRAF) { cancelAnimationFrame(mnRAF); mnRAF = null; }
+    renderer.metaNetworkMode = false;
     if (_mnMouseHandlers) {
         canvas.removeEventListener('mousedown', _mnMouseHandlers.onMouseDown);
         canvas.removeEventListener('mousemove', _mnMouseHandlers.onMouseMove);
