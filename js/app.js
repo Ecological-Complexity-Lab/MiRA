@@ -1107,7 +1107,7 @@ function _showMetaNetworkSidebar() {
     DB_SECTIONS.forEach(id => document.getElementById(id).style.display = 'none');
     META_SECTIONS.forEach(id => document.getElementById(id).style.display = '');
     mnLayerPanel.style.display = '';
-    legendPanel.innerHTML = '';
+    renderMetaNetworkLegend();
 }
 
 function _hideMetaNetworkSidebar() {
@@ -1414,12 +1414,14 @@ mnLayoutSelect.addEventListener('change', () => {
 mnColorBySelect.addEventListener('change', () => {
     if (!metaNetwork) return;
     metaNetwork.updateSetting('colorBy', mnColorBySelect.value);
+    renderMetaNetworkLegend();
     _ensureMetaNetworkLoop();
 });
 
 mnSizeBySelect.addEventListener('change', () => {
     if (!metaNetwork) return;
     metaNetwork.updateSetting('sizeBy', mnSizeBySelect.value);
+    renderMetaNetworkLegend();
     _ensureMetaNetworkLoop();
 });
 
@@ -3545,7 +3547,8 @@ function createLegendDOM(titleText, scale, id) {
 
         const track = document.createElement('div');
         if (scale.type === 'continuous') {
-            track.style.cssText = 'height: 12px; border-radius: 6px; background: linear-gradient(to right, rgb(68,1,84), rgb(49,104,142), rgb(53,183,121), rgb(253,231,37));';
+            const grad = scale.gradient || 'linear-gradient(to right, rgb(68,1,84), rgb(49,104,142), rgb(53,183,121), rgb(253,231,37))';
+            track.style.cssText = `height: 12px; border-radius: 6px; background: ${grad};`;
         } else {
             track.style.cssText = 'height: 24px; position: relative; border-bottom: 1px solid #e5e7eb; display: flex; align-items: flex-end; justify-content: space-between; padding-bottom: 4px;';
             const dot1 = document.createElement('div');
@@ -3574,6 +3577,43 @@ function createLegendDOM(titleText, scale, id) {
     }
 
     return wrapper;
+}
+
+// ── Meta-network Legend ────────────────────────────────────────────────────
+
+const MN_ICE_GRADIENT = 'linear-gradient(to right, #cde9f0, #6cb8d8, #0c6a9e, #092651, #060d35)';
+
+function renderMetaNetworkLegend() {
+    if (appMode !== 'metanetwork' || !metaNetwork) return;
+    legendPanel.innerHTML = '';
+    const nodes = metaNetwork._mnNodes;
+    if (!nodes.length) return;
+
+    const { colorBy, sizeBy } = metaNetwork.settings;
+    const ATTR_LABELS = { participation: 'Participation', metaDegree: 'Meta-degree', uniform: 'Uniform' };
+
+    // ── Color legend
+    if (colorBy !== 'uniform') {
+        const vals = nodes.map(n => colorBy === 'participation' ? n.participation : n.metaDegree);
+        const min  = Math.min(...vals), max = Math.max(...vals);
+        const colorScale = {
+            type: 'continuous', attrName: ATTR_LABELS[colorBy],
+            min, max, canToggle: false,
+            gradient: MN_ICE_GRADIENT,
+        };
+        renderScaleLegend(colorScale, 'mnColor', 'Node Color');
+    }
+
+    // ── Size legend
+    if (sizeBy !== 'uniform') {
+        const vals = nodes.map(n => sizeBy === 'participation' ? n.participation : n.metaDegree);
+        const min  = Math.min(...vals), max = Math.max(...vals);
+        const sizeScale = {
+            type: 'size', attrName: ATTR_LABELS[sizeBy],
+            min, max, canToggle: false,
+        };
+        renderScaleLegend(sizeScale, 'mnSize', 'Node Size');
+    }
 }
 
 // ── Layer View Legend ──────────────────────────────────────────────────────

@@ -501,29 +501,42 @@ export class MetaNetwork {
         const name = this.hitTestNode(mx, my, w, h);
         if (!name) return null;
         const node = this._nodeMap.get(name);
-        this._draggedNode = node;
-        node.fx = node.x;
-        // For non-bipartite or untyped nodes, also pin fy; bipartite nodes keep their row pin
-        if (!this._useBipartiteLayout || node.nodeType === null) node.fy = node.y;
-        // Do NOT reheat the sim here — only heat it when the mouse actually moves
+        this._draggedNode   = node;
+        this._didActualDrag = false;  // set to true only when mouse actually moves
+        // Snapshot position so we can unpin on a plain click
+        this._dragStartX = node.x;
+        this._dragStartY = node.y;
         return name;
     }
 
     moveDragNode(mx, my, w, h) {
         if (!this._draggedNode) return;
+        if (!this._didActualDrag) {
+            // First real movement — pin the node and heat the sim
+            this._draggedNode.fx = this._dragStartX;
+            if (!this._useBipartiteLayout || this._draggedNode.nodeType === null) {
+                this._draggedNode.fy = this._dragStartY;
+            }
+            this._didActualDrag = true;
+            this._sim?.alphaTarget(0.3).restart();
+        }
         const { sx, sy } = this._screenToSim(mx, my, w, h);
         this._draggedNode.fx = sx;
         if (!this._useBipartiteLayout || this._draggedNode.nodeType === null) {
             this._draggedNode.fy = sy;
         }
-        // Heat up sim only once a real drag has started
-        if (this._sim?.alphaTarget() < 0.3) this._sim?.alphaTarget(0.3).restart();
     }
 
     endDragNode() {
         if (!this._draggedNode) return;
+        if (!this._didActualDrag) {
+            // Plain click — do not pin the node at all
+            this._draggedNode.fx = undefined;
+            this._draggedNode.fy = undefined;
+        }
         this._sim?.alphaTarget(0);
-        this._draggedNode = null;
+        this._draggedNode   = null;
+        this._didActualDrag = false;
     }
 
     // ── Settings ─────────────────────────────────────────────────────────────
