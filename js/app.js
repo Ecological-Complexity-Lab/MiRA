@@ -1370,9 +1370,12 @@ function _showMnNodeInfo(nodeName) {
     const layerList = [...node.layers].sort().join(', ');
     infoTitle.textContent = `Node: ${nodeName}`;
     infoContent.innerHTML = `
-        <p><b>Layers (${node.layers.size}):</b> ${layerList}</p>
-        <p>Meta-degree: <b>${node.metaDegree}</b>&nbsp;&nbsp;Meta-strength: <b>${node.metaStrength.toFixed(2)}</b></p>
-        <p>Participation: <b>${node.participation}</b></p>`;
+        <ul style="margin:6px 0 0; padding-left:18px; font-size:12px; line-height:1.7;">
+          <li><b>Participation:</b> ${node.participation}</li>
+          <li><b>Layers:</b> ${layerList}</li>
+          <li><b>Meta-degree:</b> ${node.metaDegree}</li>
+          <li><b>Meta-strength:</b> ${node.metaStrength.toFixed(2)}</li>
+        </ul>`;
     infoPanel.classList.add('visible');
     infoPanel.classList.remove('collapsed');
 }
