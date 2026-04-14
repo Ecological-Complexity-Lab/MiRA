@@ -177,11 +177,16 @@ const mnAggregationSelect  = document.getElementById('mnAggregationSelect');
 const mnLayoutSelect       = document.getElementById('mnLayoutSelect');
 const mnColorBySelect      = document.getElementById('mnColorBySelect');
 const mnSizeBySelect       = document.getElementById('mnSizeBySelect');
+const mnBaseSizeSlider     = document.getElementById('mnBaseSizeSlider');
+const mnBaseSizeLabel      = document.getElementById('mnBaseSizeLabel');
 const mnMinWeightSlider    = document.getElementById('mnMinWeightSlider');
 const mnMinWeightLabel     = document.getElementById('mnMinWeightLabel');
 const mnNestedSortCheckbox = document.getElementById('mnNestedSortCheckbox');
 const mnShowLabelsCheckbox = document.getElementById('mnShowLabelsCheckbox');
 const mnResetLayoutBtn     = document.getElementById('mnResetLayoutBtn');
+const mnSearchInput        = document.getElementById('mnSearchInput');
+const mnSearchResults      = document.getElementById('mnSearchResults');
+const mnSearchClearBtn     = document.getElementById('mnSearchClearBtn');
 const dashboardBtn       = document.getElementById('dashboardBtn');
 const dashboardContainer = document.getElementById('dashboardContainer');
 const dbBipartiteToggle  = document.getElementById('dbBipartiteToggle');
@@ -1124,6 +1129,8 @@ function _syncMetaNetworkControls() {
     mnLayoutSelect.value           = s.layout;
     mnColorBySelect.value          = s.colorBy;
     mnSizeBySelect.value           = s.sizeBy;
+    mnBaseSizeSlider.value         = s.baseSize;
+    mnBaseSizeLabel.textContent    = s.baseSize.toFixed(1) + '×';
     mnNestedSortCheckbox.checked   = s.nestedSort;
     mnShowLabelsCheckbox.checked   = s.showLabels;
     // Set slider range from maxEdgeWeight
@@ -1132,6 +1139,8 @@ function _syncMetaNetworkControls() {
     mnMinWeightSlider.step  = (maxW / 100).toFixed(4);
     mnMinWeightSlider.value = 0;
     mnMinWeightLabel.textContent = '0';
+    mnSearchInput.value  = '';
+    mnSearchResults.style.display = 'none';
 }
 
 function _buildMnLayerPanel() {
@@ -1451,6 +1460,76 @@ mnShowLabelsCheckbox.addEventListener('change', () => {
 mnResetLayoutBtn.addEventListener('click', () => {
     if (!metaNetwork) return;
     metaNetwork.resetLayout();
+    _ensureMetaNetworkLoop();
+});
+
+mnBaseSizeSlider.addEventListener('input', () => {
+    if (!metaNetwork) return;
+    const val = parseFloat(mnBaseSizeSlider.value);
+    mnBaseSizeLabel.textContent = val.toFixed(1) + '×';
+    metaNetwork.updateSetting('baseSize', val);
+    renderMetaNetworkLegend();
+    _ensureMetaNetworkLoop();
+});
+
+// ── Meta-network search ────────────────────────────────────────────────────
+
+function _mnCloseDrop() {
+    mnSearchResults.style.display = 'none';
+    mnSearchResults.innerHTML = '';
+}
+
+function _mnSelectNode(name) {
+    if (!metaNetwork) return;
+    mnSearchInput.value = name;
+    _mnCloseDrop();
+    metaNetwork.state.selectedNode = name;
+    metaNetwork.state.selectedEdge = null;
+    metaNetwork._computeFocusSet(name);
+    _showMnNodeInfo(name);
+    _ensureMetaNetworkLoop();
+}
+
+mnSearchInput.addEventListener('input', () => {
+    const query = mnSearchInput.value.trim().toLowerCase();
+    if (!metaNetwork || !query) { _mnCloseDrop(); return; }
+    const matches = [...metaNetwork._nodeMap.keys()]
+        .filter(n => n.toLowerCase().includes(query))
+        .slice(0, 12);
+    if (!matches.length) {
+        mnSearchResults.innerHTML = '<div style="font-size:11px;color:#999;padding:6px 10px;">No results</div>';
+        mnSearchResults.style.display = 'block';
+        return;
+    }
+    mnSearchResults.innerHTML = matches.map(n =>
+        `<div data-name="${n}" style="font-size:11px;padding:6px 10px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${n}</div>`
+    ).join('');
+    mnSearchResults.style.display = 'block';
+    mnSearchResults.querySelectorAll('[data-name]').forEach(el => {
+        el.addEventListener('mouseover', () => { el.style.background = 'rgba(0,0,0,0.06)'; });
+        el.addEventListener('mouseout',  () => { el.style.background = ''; });
+        el.addEventListener('mousedown', (e) => { e.preventDefault(); _mnSelectNode(el.dataset.name); });
+    });
+});
+
+mnSearchInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') { _mnCloseDrop(); mnSearchInput.value = ''; }
+    if (e.key === 'Enter') {
+        const first = mnSearchResults.querySelector('[data-name]');
+        if (first) _mnSelectNode(first.dataset.name);
+    }
+});
+
+mnSearchInput.addEventListener('blur', () => { setTimeout(_mnCloseDrop, 150); });
+
+mnSearchClearBtn.addEventListener('click', () => {
+    mnSearchInput.value = '';
+    _mnCloseDrop();
+    if (!metaNetwork) return;
+    metaNetwork.state.selectedNode = null;
+    metaNetwork.state.selectedEdge = null;
+    metaNetwork._focusSet = null;
+    infoPanel.classList.remove('visible');
     _ensureMetaNetworkLoop();
 });
 

@@ -67,6 +67,7 @@ export class MetaNetwork {
             showLabels:    true,
             labelFontSize: 12,
             nestedSort:    true,
+            baseSize:      1.0,   // multiplier applied to all node radii
         };
 
         this.state = {
@@ -206,7 +207,7 @@ export class MetaNetwork {
     _updateNodeStyles() {
         const nodes = this._mnNodes;
         if (!nodes.length) return;
-        const { colorBy, sizeBy } = this.settings;
+        const { colorBy, sizeBy, baseSize } = this.settings;
 
         const maxPart = Math.max(...nodes.map(n => n.participation), 1);
         const minPart = Math.min(...nodes.map(n => n.participation), 0);
@@ -215,14 +216,16 @@ export class MetaNetwork {
 
         for (const n of nodes) {
             // ── Size
+            let r;
             if (sizeBy === 'uniform') {
-                n.r = MN_DEFAULT_R;
+                r = MN_DEFAULT_R;
             } else {
                 const [val, lo, hi] = sizeBy === 'participation'
                     ? [n.participation, minPart, maxPart]
                     : [n.metaDegree,    minDeg,  maxDeg];
-                n.r = MN_MIN_R + (MN_MAX_R - MN_MIN_R) * (val - lo) / Math.max(hi - lo, 1);
+                r = MN_MIN_R + (MN_MAX_R - MN_MIN_R) * (val - lo) / Math.max(hi - lo, 1);
             }
+            n.r = r * baseSize;
 
             // ── Color
             if (colorBy === 'uniform') {
@@ -589,6 +592,7 @@ export class MetaNetwork {
                 break;
             case 'colorBy':
             case 'sizeBy':
+            case 'baseSize':
                 this._updateNodeStyles();
                 break;
             case 'nestedSort':

@@ -375,6 +375,10 @@
           </select>
         </div>
         <div style="margin-bottom:8px;">
+          <label style="font-size:11px;color:#666;">Node Size &nbsp;<span id="mnBaseSizeLabel">1.0×</span></label>
+          <input type="range" id="mnBaseSizeSlider" min="0.2" max="3" step="0.1" value="1" class="slider">
+        </div>
+        <div style="margin-bottom:8px;">
           <label style="font-size:11px;color:#666;">Min Link Weight &nbsp;<span id="mnMinWeightLabel">0</span></label>
           <input type="range" id="mnMinWeightSlider" min="0" max="1" step="0.01" value="0" class="slider">
         </div>
@@ -389,6 +393,19 @@
             <input type="checkbox" id="mnShowLabelsCheckbox" checked>
             <span>Show labels</span>
           </label>
+        </div>
+        <div style="margin-top:8px; position:relative;">
+          <div style="display:flex; gap:4px;">
+            <input type="text" id="mnSearchInput" class="styled-select"
+              placeholder="Search node…"
+              style="margin-top:0; padding:4px 8px; flex:1;" autocomplete="off">
+            <button id="mnSearchClearBtn" class="btn" style="padding:0 9px; font-size:14px; line-height:1;" title="Clear">×</button>
+          </div>
+          <div id="mnSearchResults"
+            style="display:none; position:absolute; left:0; right:0; top:calc(100% + 3px);
+                   background:rgba(255,255,255,0.97); border:1px solid rgba(0,0,0,0.12);
+                   border-radius:8px; box-shadow:0 4px 16px rgba(0,0,0,0.12);
+                   max-height:160px; overflow-y:auto; z-index:1000;"></div>
         </div>
         <div style="margin-top:8px;">
           <button id="mnResetLayoutBtn" class="btn" style="width:100%; font-size:11px;">Reset layout</button>
