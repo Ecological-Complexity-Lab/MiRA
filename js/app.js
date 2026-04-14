@@ -1284,7 +1284,7 @@ function toggleMetaNetwork() {
                 metaNetwork.state.selectedNode = null;
                 metaNetwork.state.selectedEdge = null;
                 metaNetwork._focusSet = null;
-                infoPanel.style.display = 'none';
+                infoPanel.classList.remove('visible');
             } else {
                 metaNetwork.state.selectedNode = hitName;
                 metaNetwork.state.selectedEdge = null;
@@ -1301,7 +1301,7 @@ function toggleMetaNetwork() {
                 metaNetwork.state.selectedEdge = null;
                 metaNetwork.state.selectedNode = null;
                 metaNetwork._focusSet = null;
-                infoPanel.style.display = 'none';
+                infoPanel.classList.remove('visible');
             } else {
                 metaNetwork.state.selectedEdge = hitEdge;
                 metaNetwork.state.selectedNode = null;
@@ -1359,7 +1359,7 @@ function _exitMetaNetwork() {
     metaNetworkBtn.classList.remove('active');
     canvas.style.cursor = '';
     tooltip.classList.remove('visible');
-    infoPanel.style.display = 'none';
+    infoPanel.classList.remove('visible');
     _hideMetaNetworkSidebar();
 }
 
@@ -1371,19 +1371,21 @@ function _showMnNodeInfo(nodeName) {
         <p><b>Layers (${node.layers.size}):</b> ${layerList}</p>
         <p>Meta-degree: <b>${node.metaDegree}</b>&nbsp;&nbsp;Meta-strength: <b>${node.metaStrength.toFixed(2)}</b></p>
         <p>Participation: <b>${node.participation}</b></p>`;
-    infoPanel.style.display = '';
+    infoPanel.classList.add('visible');
+    infoPanel.classList.remove('collapsed');
 }
 
 function _showMnEdgeInfo(edge) {
-    const arrow    = metaNetwork?._model?.directed ? '→' : '—';
-    const srcName  = typeof edge.source === 'string' ? edge.source : edge.source.name;
-    const tgtName  = typeof edge.target === 'string' ? edge.target : edge.target.name;
-    const barData  = edge.perLayer.map(({ layerName, weight }) => ({ label: layerName, value: weight }));
+    const arrow   = metaNetwork?._model?.directed ? '→' : '—';
+    const srcName = typeof edge.source === 'string' ? edge.source : edge.source.name;
+    const tgtName = typeof edge.target === 'string' ? edge.target : edge.target.name;
+    const barData = edge.perLayer.map(({ layerName, weight }) => ({ label: layerName, value: weight }));
     infoTitle.textContent = `Link: ${srcName} ${arrow} ${tgtName}`;
     infoContent.innerHTML = `
         <p>Appears in <b>${edge.perLayer.length}</b> layer${edge.perLayer.length !== 1 ? 's' : ''}:</p>
         ${svgBar(barData, { width: 240, height: 160, yLabel: 'weight' })}`;
-    infoPanel.style.display = '';
+    infoPanel.classList.add('visible');
+    infoPanel.classList.remove('collapsed');
 }
 
 metaNetworkBtn.addEventListener('click', toggleMetaNetwork);

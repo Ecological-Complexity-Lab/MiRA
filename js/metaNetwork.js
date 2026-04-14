@@ -471,7 +471,7 @@ export class MetaNetwork {
         node.fx = node.x;
         // For non-bipartite or untyped nodes, also pin fy; bipartite nodes keep their row pin
         if (!this._useBipartiteLayout || node.nodeType === null) node.fy = node.y;
-        this._sim?.alphaTarget(0.3).restart();
+        // Do NOT reheat the sim here — only heat it when the mouse actually moves
         return name;
     }
 
@@ -482,6 +482,8 @@ export class MetaNetwork {
         if (!this._useBipartiteLayout || this._draggedNode.nodeType === null) {
             this._draggedNode.fy = sy;
         }
+        // Heat up sim only once a real drag has started
+        if (this._sim?.alphaTarget() < 0.3) this._sim?.alphaTarget(0.3).restart();
     }
 
     endDragNode() {
