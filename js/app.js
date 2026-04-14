@@ -1179,6 +1179,15 @@ function _ensureMetaNetworkLoop() {
     if (!mnRAF && appMode === 'metanetwork' && metaNetwork) _startMetaNetworkLoop();
 }
 
+// Render one frame immediately (synchronous), then keep the loop alive if the
+// sim is still hot. Use this whenever state changes need instant visual feedback.
+function _mnRenderSync() {
+    if (!metaNetwork || appMode !== 'metanetwork') return;
+    if (mnRAF) { cancelAnimationFrame(mnRAF); mnRAF = null; }
+    metaNetwork.render(renderer.ctx, canvas.width, canvas.height);
+    if (metaNetwork.tick()) _startMetaNetworkLoop();
+}
+
 function toggleMetaNetwork() {
     if (!model) return;
     if (appMode === 'metanetwork') {
@@ -1460,7 +1469,7 @@ mnShowLabelsCheckbox.addEventListener('change', () => {
 mnResetLayoutBtn.addEventListener('click', () => {
     if (!metaNetwork) return;
     metaNetwork.resetLayout();
-    _ensureMetaNetworkLoop();
+    _mnRenderSync();
 });
 
 mnBaseSizeSlider.addEventListener('input', () => {
@@ -1487,11 +1496,7 @@ function _mnSelectNode(name) {
     metaNetwork.state.selectedEdge = null;
     metaNetwork._computeFocusSet(name);
     _showMnNodeInfo(name);
-    // Cancel any in-flight RAF and start a fresh loop so the new selectedNode
-    // state is guaranteed to appear in the very next frame, regardless of
-    // whether the sim was already running (force) or stopped (circular).
-    if (mnRAF) { cancelAnimationFrame(mnRAF); mnRAF = null; }
-    _startMetaNetworkLoop();
+    _mnRenderSync();
 }
 
 mnSearchInput.addEventListener('input', () => {
@@ -1509,9 +1514,26 @@ mnSearchInput.addEventListener('input', () => {
         `<div data-name="${n}" style="font-size:11px;padding:6px 10px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${n}</div>`
     ).join('');
     mnSearchResults.style.display = 'block';
+    // Shared closure: saves the committed selection before any hover preview
+    let _hoverSavedNode = null, _hoverSavedFocus = null;
     mnSearchResults.querySelectorAll('[data-name]').forEach(el => {
-        el.addEventListener('mouseover', () => { el.style.background = 'rgba(0,0,0,0.06)'; });
-        el.addEventListener('mouseout',  () => { el.style.background = ''; });
+        el.addEventListener('mouseover', () => {
+            el.style.background = 'rgba(0,0,0,0.06)';
+            if (!metaNetwork) return;
+            _hoverSavedNode  = metaNetwork.state.selectedNode;
+            _hoverSavedFocus = metaNetwork._focusSet;
+            metaNetwork.state.selectedNode = el.dataset.name;
+            metaNetwork.state.selectedEdge = null;
+            metaNetwork._computeFocusSet(el.dataset.name);
+            _mnRenderSync();
+        });
+        el.addEventListener('mouseout', () => {
+            el.style.background = '';
+            if (!metaNetwork) return;
+            metaNetwork.state.selectedNode = _hoverSavedNode;
+            metaNetwork._focusSet          = _hoverSavedFocus;
+            _mnRenderSync();
+        });
         el.addEventListener('mousedown', (e) => { e.preventDefault(); _mnSelectNode(el.dataset.name); });
     });
 });
@@ -1534,7 +1556,7 @@ mnSearchClearBtn.addEventListener('click', () => {
     metaNetwork.state.selectedEdge = null;
     metaNetwork._focusSet = null;
     infoPanel.classList.remove('visible');
-    _ensureMetaNetworkLoop();
+    _mnRenderSync();
 });
 
 document.getElementById('mnSelectAllLayers').addEventListener('click', () => {
