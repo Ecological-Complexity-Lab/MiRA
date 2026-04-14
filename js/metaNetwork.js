@@ -77,6 +77,11 @@ export class MetaNetwork {
         };
 
         this._aggregate();
+
+        // Auto-select bipartite two-row layout when the model has bipartite layers
+        const hasBipartite = [...model.bipartiteInfo.values()].some(i => i.isBipartite);
+        if (hasBipartite) this.settings.layout = 'bipartite';
+
         this._initLayout();
     }
 

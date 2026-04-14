@@ -1487,6 +1487,9 @@ function _mnSelectNode(name) {
     metaNetwork.state.selectedEdge = null;
     metaNetwork._computeFocusSet(name);
     _showMnNodeInfo(name);
+    // Render immediately so the ego-network highlight appears even in static (circular) mode
+    // where the RAF loop may already be stopped.
+    metaNetwork.render(renderer.ctx, canvas.width, canvas.height);
     _ensureMetaNetworkLoop();
 }
 
