@@ -322,10 +322,18 @@ export class MetaNetwork {
      * and pin fx so nodes spread evenly, producing a visually nested pattern.
      */
     _applyNestedSort() {
+        // Use 80% of canvas width as the max row span (sim coords = canvas px at scale 1).
+        // This means nodes overlap when the row is dense — intentional for large networks.
+        const maxRowW = this._canvasW * 0.80;
+
         const sortRow = (nodes) => {
             nodes.sort((a, b) => b.metaDegree - a.metaDegree);
-            const n     = nodes.length;
-            const totalW = Math.max(300, n * 50);
+            const n = nodes.length;
+            if (n === 0) return;
+            // Natural spacing: diameter + small gap
+            const avgDiam  = nodes.reduce((s, nd) => s + nd.r * 2, 0) / n;
+            const naturalW = (n - 1) * (avgDiam + 4);
+            const totalW   = Math.min(naturalW, maxRowW);
             nodes.forEach((node, i) => {
                 node.fx = (n === 1) ? 0 : (i / (n - 1) - 0.5) * totalW;
                 node.x  = node.fx;
