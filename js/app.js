@@ -1318,7 +1318,7 @@ function toggleMetaNetwork() {
             metaNetwork.state.selectedNode = null;
             metaNetwork.state.selectedEdge = null;
             metaNetwork._focusSet = null;
-            infoPanel.style.display = 'none';
+            infoPanel.classList.remove('visible');
             _ensureMetaNetworkLoop();
         }
     };

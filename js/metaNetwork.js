@@ -59,7 +59,7 @@ export class MetaNetwork {
         this.settings = {
             aggregation:   'sumOccurrence', // 'union' | 'sumWeights' | 'sumOccurrence'
             colorBy:       'participation', // 'participation' | 'metaDegree' | 'uniform'
-            sizeBy:        'participation', // 'participation' | 'metaDegree' | 'uniform'
+            sizeBy:        'metaDegree',    // 'participation' | 'metaDegree' | 'uniform'
             layout:        'auto',          // 'auto' | 'force' | 'bipartite'
             minWeight:     0,
             showLabels:    true,
@@ -397,8 +397,11 @@ export class MetaNetwork {
                 ctx.font         = `${this.settings.labelFontSize}px Inter, sans-serif`;
                 ctx.textAlign    = 'left';
                 ctx.textBaseline = 'middle';
-                ctx.translate(node.x, node.y + node.r + 3);
-                ctx.rotate(Math.PI / 4);
+                // Top-row bipartite nodes (Set A): label above, angled up-right (−45°)
+                // All other nodes: label below, angled down-right (+45°)
+                const above = node.nodeType === 'A';
+                ctx.translate(node.x, node.y + (above ? -(node.r + 3) : (node.r + 3)));
+                ctx.rotate(above ? -Math.PI / 4 : Math.PI / 4);
                 ctx.fillText(node.name, 0, 0);
                 ctx.restore();
             }
