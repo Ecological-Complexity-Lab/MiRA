@@ -1311,7 +1311,7 @@ function toggleMetaNetwork() {
                 metaNetwork._computeFocusSet(hitName);
                 _showMnNodeInfo(hitName);
             }
-            _ensureMetaNetworkLoop();
+            _mnRenderSync();
             return;
         }
         const hitEdge = metaNetwork.hitTestEdge(mx, my, canvas.width, canvas.height);
@@ -1328,7 +1328,7 @@ function toggleMetaNetwork() {
                 metaNetwork._focusSet = null;
                 _showMnEdgeInfo(hitEdge);
             }
-            _ensureMetaNetworkLoop();
+            _mnRenderSync();
             return;
         }
         // Click on empty space: deselect
@@ -1337,7 +1337,7 @@ function toggleMetaNetwork() {
             metaNetwork.state.selectedEdge = null;
             metaNetwork._focusSet = null;
             infoPanel.classList.remove('visible');
-            _ensureMetaNetworkLoop();
+            _mnRenderSync();
         }
     };
 

@@ -415,14 +415,38 @@ export class MetaNetwork {
             ctx.restore();
         }
 
+        // ── Selected edge highlight (drawn on top of all other edges)
+        if (this.state.selectedEdge) {
+            const selLink = this._d3Links.find(l => l._edge === this.state.selectedEdge);
+            if (selLink) {
+                const src = selLink.source, tgt = selLink.target;
+                if (typeof src !== 'string' && typeof tgt !== 'string') {
+                    const w = this.state.selectedEdge.weight;
+                    ctx.save();
+                    ctx.globalAlpha = 1.0;
+                    ctx.strokeStyle = '#1d4ed8';
+                    ctx.lineWidth   = (0.5 + 3.5 * (w / maxW)) + 2;
+                    ctx.beginPath();
+                    ctx.moveTo(src.x, src.y);
+                    ctx.lineTo(tgt.x, tgt.y);
+                    ctx.stroke();
+                    if (this._model.directed) this._drawArrowhead(ctx, src, tgt);
+                    ctx.restore();
+                }
+            }
+        }
+
         // ── Nodes
         for (const node of this._mnNodes) {
             const alpha = this._nodeAlpha(node);
             ctx.save();
             ctx.globalAlpha = alpha;
 
-            // Selection ring
-            if (node.name === this.state.selectedNode) {
+            // Selection ring — for selected node or edge endpoints
+            const selEdge = this.state.selectedEdge;
+            const isRinged = node.name === this.state.selectedNode
+                || (selEdge && (node.name === selEdge.source || node.name === selEdge.target));
+            if (isRinged) {
                 ctx.strokeStyle = '#1d4ed8';
                 ctx.lineWidth   = 2.5;
                 ctx.beginPath();
@@ -485,8 +509,16 @@ export class MetaNetwork {
 
     _nodeAlpha(node) {
         const selNode   = this.state.selectedNode;
+        const selEdge   = this.state.selectedEdge;
         const selLayers = this.state.selectedLayers;
-        const inEgo    = !selNode || node.name === selNode || (this._focusSet?.has(node.name) ?? true);
+
+        let inEgo;
+        if (selEdge) {
+            inEgo = node.name === selEdge.source || node.name === selEdge.target;
+        } else {
+            inEgo = !selNode || node.name === selNode || (this._focusSet?.has(node.name) ?? true);
+        }
+
         const inFilter = selLayers.size === 0 || [...node.layers].some(l => selLayers.has(l));
         return (inEgo && inFilter) ? 1.0 : MN_DIM_NODE;
     }
@@ -494,10 +526,18 @@ export class MetaNetwork {
     _edgeAlpha(link) {
         const edge      = link._edge;
         const selNode   = this.state.selectedNode;
+        const selEdge   = this.state.selectedEdge;
         const selLayers = this.state.selectedLayers;
         const sn = typeof link.source === 'string' ? link.source : link.source.name;
         const tn = typeof link.target === 'string' ? link.target : link.target.name;
-        const inEgo    = !selNode || sn === selNode || tn === selNode;
+
+        let inEgo;
+        if (selEdge) {
+            inEgo = link._edge === selEdge;
+        } else {
+            inEgo = !selNode || sn === selNode || tn === selNode;
+        }
+
         const inFilter = selLayers.size === 0 || [...edge._layers].some(l => selLayers.has(l));
         return (inEgo && inFilter) ? MN_EDGE_ALPHA : MN_DIM_EDGE;
     }
