@@ -48,7 +48,8 @@
       "Bash(ls data/*.json)",
       "Bash(git stash:*)",
       "Bash(curl -s http://localhost:8765/js/metaNetwork.js)",
-      "Bash(pkill -f \"python3 -m http.server 8765\")"
+      "Bash(pkill -f \"python3 -m http.server 8765\")",
+      "Bash(gh issue:*)"
     ],
     "additionalDirectories": [
       "/Users/shai/GitHub/ecomplab/emln"
