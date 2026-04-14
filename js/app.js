@@ -1487,10 +1487,11 @@ function _mnSelectNode(name) {
     metaNetwork.state.selectedEdge = null;
     metaNetwork._computeFocusSet(name);
     _showMnNodeInfo(name);
-    // Render immediately so the ego-network highlight appears even in static (circular) mode
-    // where the RAF loop may already be stopped.
-    metaNetwork.render(renderer.ctx, canvas.width, canvas.height);
-    _ensureMetaNetworkLoop();
+    // Cancel any in-flight RAF and start a fresh loop so the new selectedNode
+    // state is guaranteed to appear in the very next frame, regardless of
+    // whether the sim was already running (force) or stopped (circular).
+    if (mnRAF) { cancelAnimationFrame(mnRAF); mnRAF = null; }
+    _startMetaNetworkLoop();
 }
 
 mnSearchInput.addEventListener('input', () => {

@@ -76,12 +76,11 @@ export class MetaNetwork {
             selectedLayers: new Set(),
         };
 
-        this._aggregate();
-
-        // Auto-select bipartite two-row layout when the model has bipartite layers
+        // Auto-detect bipartite BEFORE _aggregate so nodeType is assigned correctly
         const hasBipartite = [...model.bipartiteInfo.values()].some(i => i.isBipartite);
         if (hasBipartite) this.settings.layout = 'bipartite';
 
+        this._aggregate();
         this._initLayout();
     }
 
