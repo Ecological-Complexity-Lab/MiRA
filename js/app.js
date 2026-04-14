@@ -3592,6 +3592,10 @@ function renderMetaNetworkLegend() {
     const { colorBy, sizeBy } = metaNetwork.settings;
     const ATTR_LABELS = { participation: 'Participation', metaDegree: 'Meta-degree', uniform: 'Uniform' };
 
+    // Ensure meta-network legend items are always shown expanded
+    expandedLegends.add('mnColor');
+    expandedLegends.add('mnSize');
+
     // ── Color legend
     if (colorBy !== 'uniform') {
         const vals = nodes.map(n => colorBy === 'participation' ? n.participation : n.metaDegree);
