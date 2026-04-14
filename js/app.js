@@ -1188,7 +1188,7 @@ function toggleMetaNetwork() {
     canvas.style.display = '';
     canvas.style.cursor  = 'grab';
 
-    metaNetwork = new MetaNetwork(model);
+    metaNetwork = new MetaNetwork(model, canvas.width, canvas.height);
     _showMetaNetworkSidebar();
     _syncMetaNetworkControls();
     _buildMnLayerPanel();

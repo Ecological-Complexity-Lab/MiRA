@@ -41,8 +41,10 @@ function _ptSegDist(px, py, ax, ay, bx, by) {
 // ─── MetaNetwork class ───────────────────────────────────────────────────────
 
 export class MetaNetwork {
-    constructor(model) {
+    constructor(model, canvasWidth = 800, canvasHeight = 600) {
         this._model       = model;
+        this._canvasW     = canvasWidth;
+        this._canvasH     = canvasHeight;
         this._sim         = null;
         this._mnNodes     = [];        // node objects (also the d3 node array)
         this._mnEdges     = [];        // raw edge objects (source/target = strings)
@@ -293,7 +295,12 @@ export class MetaNetwork {
         // Sort by metaDegree descending so high-degree nodes are evenly spread
         const sorted = [...this._mnNodes].sort((a, b) => b.metaDegree - a.metaDegree);
         const n = sorted.length;
-        const R = Math.max(150, n * 22);  // radius scales with node count
+        // Target: fit within 40% of the smaller canvas dimension (sim coords = pixels at scale 1)
+        const fitR   = Math.min(this._canvasW, this._canvasH) * 0.40;
+        // Floor: nodes shouldn't overlap — circumference must hold n nodes of their avg radius
+        const avgR   = this._mnNodes.reduce((s, nd) => s + nd.r, 0) / Math.max(n, 1);
+        const minR   = (n * (avgR + 4)) / (2 * Math.PI);
+        const R      = Math.max(minR, fitR);
         sorted.forEach((node, i) => {
             const angle = (2 * Math.PI * i) / n - Math.PI / 2; // start at top
             node.x  = R * Math.cos(angle);
