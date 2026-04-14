@@ -1514,12 +1514,16 @@ mnSearchInput.addEventListener('input', () => {
         `<div data-name="${n}" style="font-size:11px;padding:6px 10px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${n}</div>`
     ).join('');
     mnSearchResults.style.display = 'block';
-    // Shared closure: saves the committed selection before any hover preview
-    let _hoverSavedNode = null, _hoverSavedFocus = null;
+    // Shared closure state for hover preview/restore.
+    // _hoverCommitted prevents mouseout from undoing a click-committed selection:
+    // closing the dropdown (display:none) fires mouseout asynchronously *after*
+    // _mnSelectNode has already run, so without the flag mouseout would clear it.
+    let _hoverSavedNode = null, _hoverSavedFocus = null, _hoverCommitted = false;
     mnSearchResults.querySelectorAll('[data-name]').forEach(el => {
         el.addEventListener('mouseover', () => {
             el.style.background = 'rgba(0,0,0,0.06)';
             if (!metaNetwork) return;
+            _hoverCommitted  = false;
             _hoverSavedNode  = metaNetwork.state.selectedNode;
             _hoverSavedFocus = metaNetwork._focusSet;
             metaNetwork.state.selectedNode = el.dataset.name;
@@ -1529,12 +1533,16 @@ mnSearchInput.addEventListener('input', () => {
         });
         el.addEventListener('mouseout', () => {
             el.style.background = '';
-            if (!metaNetwork) return;
+            if (!metaNetwork || _hoverCommitted) return; // click already committed
             metaNetwork.state.selectedNode = _hoverSavedNode;
             metaNetwork._focusSet          = _hoverSavedFocus;
             _mnRenderSync();
         });
-        el.addEventListener('mousedown', (e) => { e.preventDefault(); _mnSelectNode(el.dataset.name); });
+        el.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            _hoverCommitted = true; // block the deferred mouseout from undoing this
+            _mnSelectNode(el.dataset.name);
+        });
     });
 });
 
