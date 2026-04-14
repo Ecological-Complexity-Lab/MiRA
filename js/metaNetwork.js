@@ -60,7 +60,7 @@ export class MetaNetwork {
             aggregation:   'sumOccurrence', // 'union' | 'sumWeights' | 'sumOccurrence'
             colorBy:       'participation', // 'participation' | 'metaDegree' | 'uniform'
             sizeBy:        'metaDegree',    // 'participation' | 'metaDegree' | 'uniform'
-            layout:        'auto',          // 'auto' | 'force' | 'bipartite'
+            layout:        'circular',      // 'circular' | 'force' | 'bipartite'
             minWeight:     0,
             showLabels:    true,
             labelFontSize: 12,
@@ -80,11 +80,11 @@ export class MetaNetwork {
     // ── Bipartite helpers ────────────────────────────────────────────────────
 
     get _useBipartiteLayout() {
-        const l = this.settings.layout;
-        if (l === 'bipartite') return true;
-        if (l === 'force')     return false;
-        // 'auto' — bipartite if any layer is bipartite
-        return [...this._model.bipartiteInfo.values()].some(i => i.isBipartite);
+        return this.settings.layout === 'bipartite';
+    }
+
+    get _useCircularLayout() {
+        return this.settings.layout === 'circular';
     }
 
     _buildBipartiteSets() {
@@ -242,41 +242,67 @@ export class MetaNetwork {
 
         const bipartite = this._useBipartiteLayout;
 
-        // Set bipartite row pins (clear any pre-existing fx/fy from dragging)
+        const circular  = this._useCircularLayout;
+
+        // Clear all pins; set row pins for bipartite
         for (const n of this._mnNodes) {
-            n.fx = undefined;
+            n.fx = undefined; n.fy = undefined;
             if (bipartite && n.nodeType === 'A') {
-                n.fy = -MN_ROW_SPACING;
-                n.y  = -MN_ROW_SPACING;
+                n.fy = -MN_ROW_SPACING; n.y = -MN_ROW_SPACING;
             } else if (bipartite && n.nodeType === 'B') {
-                n.fy =  MN_ROW_SPACING;
-                n.y  =  MN_ROW_SPACING;
-            } else {
-                n.fy = undefined;
+                n.fy =  MN_ROW_SPACING; n.y =  MN_ROW_SPACING;
             }
-            n.x = (Math.random() - 0.5) * 200;
+            if (!circular) { n.x = (Math.random() - 0.5) * 200; }
             n.vx = 0; n.vy = 0;
         }
 
         if (bipartite && this.settings.nestedSort) this._applyNestedSort();
+        if (circular)  this._applyCircularLayout();
 
         // d3 replaces source/target strings with node object refs in-place
         this._d3Links = this._mnEdges.map(e => ({ source: e.source, target: e.target, _edge: e }));
 
-        this._sim = d3.forceSimulation(this._mnNodes)
-            .force('charge',  d3.forceManyBody().strength(-200))
-            .force('link',    d3.forceLink(this._d3Links).id(n => n.name).distance(80).strength(0.4))
-            .force('x',       d3.forceX(0).strength(bipartite ? 0.02 : 0.05))
-            .force('y',       d3.forceY(0).strength(bipartite ? 0    : 0.05))
-            .force('collide', d3.forceCollide(n => n.r + 4).iterations(3))
-            .stop();
-
-        // Pre-settle to convergence (cap at 500 ticks for safety on huge graphs)
-        for (let i = 0; i < 500 && this._sim.alpha() > this._sim.alphaMin(); i++) {
+        if (circular) {
+            // Nodes are pinned — run one tick just to resolve source/target refs
+            this._sim = d3.forceSimulation(this._mnNodes)
+                .force('link', d3.forceLink(this._d3Links).id(n => n.name))
+                .stop();
             this._sim.tick();
+            // No animation needed; keep sim stopped
+        } else {
+            this._sim = d3.forceSimulation(this._mnNodes)
+                .force('charge',  d3.forceManyBody().strength(-200))
+                .force('link',    d3.forceLink(this._d3Links).id(n => n.name).distance(80).strength(0.4))
+                .force('x',       d3.forceX(0).strength(bipartite ? 0.02 : 0.05))
+                .force('y',       d3.forceY(0).strength(bipartite ? 0    : 0.05))
+                .force('collide', d3.forceCollide(n => n.r + 4).iterations(3))
+                .stop();
+
+            // Pre-settle to convergence (cap at 500 ticks for safety on huge graphs)
+            for (let i = 0; i < 500 && this._sim.alpha() > this._sim.alphaMin(); i++) {
+                this._sim.tick();
+            }
+            // Brief gentle animation so the user sees the network is "live" (drag-able)
+            this._sim.alpha(0.05).restart();
         }
-        // Brief gentle animation so the user sees the network is "live" (drag-able)
-        this._sim.alpha(0.05).restart();
+    }
+
+    // ── Circular layout ──────────────────────────────────────────────────────
+
+    _applyCircularLayout() {
+        // Sort by metaDegree descending so high-degree nodes are evenly spread
+        const sorted = [...this._mnNodes].sort((a, b) => b.metaDegree - a.metaDegree);
+        const n = sorted.length;
+        const R = Math.max(150, n * 22);  // radius scales with node count
+        sorted.forEach((node, i) => {
+            const angle = (2 * Math.PI * i) / n - Math.PI / 2; // start at top
+            node.x  = R * Math.cos(angle);
+            node.y  = R * Math.sin(angle);
+            node.fx = node.x;
+            node.fy = node.y;
+            node.vx = 0;
+            node.vy = 0;
+        });
     }
 
     // ── Nested sort ──────────────────────────────────────────────────────────
@@ -312,6 +338,7 @@ export class MetaNetwork {
     // ── Tick & Render ────────────────────────────────────────────────────────
 
     tick() {
+        if (this._useCircularLayout) return false;
         return this._sim ? this._sim.alpha() > this._sim.alphaMin() : false;
     }
 
