@@ -22,6 +22,12 @@ const MN_UNIFORM_COLOR = '#6ee7b7';
 const MN_ARROW_SIZE    = 8;     // px in sim coords
 const MN_HIT_THRESHOLD = 6;     // px in sim coords for edge hit
 
+// cmocean 'ice' palette — reversed so low = light cyan, high = dark navy
+const MN_ICE_COLORS = [
+    '#cde9f0', '#9dd1e5', '#6cb8d8', '#3f9ec8', '#1e84b5',
+    '#0c6a9e', '#0a5085', '#0a3a6b', '#092651', '#060d35',
+];
+
 // ─── Geometry helper ─────────────────────────────────────────────────────────
 
 function _ptSegDist(px, py, ax, ay, bx, by) {
@@ -58,6 +64,7 @@ export class MetaNetwork {
             minWeight:     0,
             showLabels:    true,
             labelFontSize: 12,
+            nestedSort:    true,
         };
 
         this.state = {
@@ -223,7 +230,7 @@ export class MetaNetwork {
                     ? [n.participation, minPart, maxPart]
                     : [n.metaDegree,    minDeg,  maxDeg];
                 const t = (val - lo) / Math.max(hi - lo, 1);
-                n.color = globalThis.chroma.scale('Viridis')(t).hex();
+                n.color = globalThis.chroma.scale(MN_ICE_COLORS)(t).hex();
             }
         }
     }
@@ -251,6 +258,8 @@ export class MetaNetwork {
             n.vx = 0; n.vy = 0;
         }
 
+        if (bipartite && this.settings.nestedSort) this._applyNestedSort();
+
         // d3 replaces source/target strings with node object refs in-place
         this._d3Links = this._mnEdges.map(e => ({ source: e.source, target: e.target, _edge: e }));
 
@@ -268,6 +277,26 @@ export class MetaNetwork {
         }
         // Brief gentle animation so the user sees the network is "live" (drag-able)
         this._sim.alpha(0.05).restart();
+    }
+
+    // ── Nested sort ──────────────────────────────────────────────────────────
+
+    /**
+     * For bipartite two-row layout: sort each row by meta-degree descending
+     * and pin fx so nodes spread evenly, producing a visually nested pattern.
+     */
+    _applyNestedSort() {
+        const sortRow = (nodes) => {
+            nodes.sort((a, b) => b.metaDegree - a.metaDegree);
+            const n     = nodes.length;
+            const totalW = Math.max(300, n * 50);
+            nodes.forEach((node, i) => {
+                node.fx = (n === 1) ? 0 : (i / (n - 1) - 0.5) * totalW;
+                node.x  = node.fx;
+            });
+        };
+        sortRow(this._mnNodes.filter(n => n.nodeType === 'A'));
+        sortRow(this._mnNodes.filter(n => n.nodeType === 'B'));
     }
 
     resetLayout() {
@@ -363,12 +392,14 @@ export class MetaNetwork {
 
             if (this.settings.showLabels) {
                 ctx.save();
-                ctx.globalAlpha    = alpha;
-                ctx.fillStyle      = '#374151';
-                ctx.font           = `${this.settings.labelFontSize}px Inter, sans-serif`;
-                ctx.textAlign      = 'center';
-                ctx.textBaseline   = 'top';
-                ctx.fillText(node.name, node.x, node.y + node.r + 2);
+                ctx.globalAlpha  = alpha;
+                ctx.fillStyle    = '#374151';
+                ctx.font         = `${this.settings.labelFontSize}px Inter, sans-serif`;
+                ctx.textAlign    = 'left';
+                ctx.textBaseline = 'middle';
+                ctx.translate(node.x, node.y + node.r + 3);
+                ctx.rotate(Math.PI / 4);
+                ctx.fillText(node.name, 0, 0);
                 ctx.restore();
             }
         }
@@ -509,6 +540,19 @@ export class MetaNetwork {
             case 'colorBy':
             case 'sizeBy':
                 this._updateNodeStyles();
+                break;
+            case 'nestedSort':
+                if (this._useBipartiteLayout) {
+                    if (value) {
+                        this._applyNestedSort();
+                    } else {
+                        // Remove fx pins so the force sim can move nodes freely again
+                        for (const n of this._mnNodes) {
+                            if (n.nodeType === 'A' || n.nodeType === 'B') n.fx = undefined;
+                        }
+                        this._sim?.alpha(0.15).restart();
+                    }
+                }
                 break;
             // minWeight, showLabels, labelFontSize — re-render only (caller handles)
         }

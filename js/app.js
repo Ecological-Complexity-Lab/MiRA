@@ -179,6 +179,7 @@ const mnColorBySelect      = document.getElementById('mnColorBySelect');
 const mnSizeBySelect       = document.getElementById('mnSizeBySelect');
 const mnMinWeightSlider    = document.getElementById('mnMinWeightSlider');
 const mnMinWeightLabel     = document.getElementById('mnMinWeightLabel');
+const mnNestedSortCheckbox = document.getElementById('mnNestedSortCheckbox');
 const mnShowLabelsCheckbox = document.getElementById('mnShowLabelsCheckbox');
 const mnResetLayoutBtn     = document.getElementById('mnResetLayoutBtn');
 const dashboardBtn       = document.getElementById('dashboardBtn');
@@ -1123,6 +1124,7 @@ function _syncMetaNetworkControls() {
     mnLayoutSelect.value           = s.layout;
     mnColorBySelect.value          = s.colorBy;
     mnSizeBySelect.value           = s.sizeBy;
+    mnNestedSortCheckbox.checked   = s.nestedSort;
     mnShowLabelsCheckbox.checked   = s.showLabels;
     // Set slider range from maxEdgeWeight
     const maxW = metaNetwork.maxEdgeWeight;
@@ -1426,6 +1428,12 @@ mnMinWeightSlider.addEventListener('input', () => {
     const val = parseFloat(mnMinWeightSlider.value);
     mnMinWeightLabel.textContent = val.toFixed(2);
     metaNetwork.settings.minWeight = val;
+    _ensureMetaNetworkLoop();
+});
+
+mnNestedSortCheckbox.addEventListener('change', () => {
+    if (!metaNetwork) return;
+    metaNetwork.updateSetting('nestedSort', mnNestedSortCheckbox.checked);
     _ensureMetaNetworkLoop();
 });
 
