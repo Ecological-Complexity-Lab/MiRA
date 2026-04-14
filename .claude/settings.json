@@ -45,7 +45,10 @@
       "Bash(npm install:*)",
       "Bash(node_modules/.bin/vitest run:*)",
       "Bash(../node_modules/.bin/vitest run:*)",
-      "Bash(ls data/*.json)"
+      "Bash(ls data/*.json)",
+      "Bash(git stash:*)",
+      "Bash(curl -s http://localhost:8765/js/metaNetwork.js)",
+      "Bash(pkill -f \"python3 -m http.server 8765\")"
     ],
     "additionalDirectories": [
       "/Users/shai/GitHub/ecomplab/emln"
