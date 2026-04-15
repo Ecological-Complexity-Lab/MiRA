@@ -1217,6 +1217,7 @@ function toggleMetaNetwork() {
     let _mouseDownX    = 0, _mouseDownY = 0;
     let _dragStartX    = 0, _dragStartY = 0;
     let _offsetStartX  = 0, _offsetStartY = 0;
+    let _mouseDownOnCanvas = false; // true only when mousedown originated on the canvas
 
     const canvasCoords = (e) => {
         const rect = canvas.getBoundingClientRect();
@@ -1228,6 +1229,7 @@ function toggleMetaNetwork() {
 
     const onMouseDown = (e) => {
         if (e.button !== 0) return;
+        _mouseDownOnCanvas = true;
         _mouseDownX = e.clientX; _mouseDownY = e.clientY;
         const { mx, my } = canvasCoords(e);
         const hitName = metaNetwork.startDragNode(mx, my, canvas.width, canvas.height);
@@ -1284,6 +1286,8 @@ function toggleMetaNetwork() {
     };
 
     const onMouseUp = (e) => {
+        if (!_mouseDownOnCanvas) return; // mousedown was on another element (e.g. search dropdown)
+        _mouseDownOnCanvas = false;
         const wasDragging = _isDragging;
         const wasNodeDrag = _isNodeDrag;
         _isDragging = false;
