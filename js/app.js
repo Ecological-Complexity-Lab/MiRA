@@ -188,7 +188,9 @@ const mnLabelSizeLabel     = document.getElementById('mnLabelSizeLabel');
 const mnLabelSizeRow       = document.getElementById('mnLabelSizeRow');
 const mnBpColorRow         = document.getElementById('mnBpColorRow');
 const mnColorSetA          = document.getElementById('mnColorSetA');
+const mnColorSetALabel     = document.getElementById('mnColorSetALabel');
 const mnColorSetB          = document.getElementById('mnColorSetB');
+const mnColorSetBLabel     = document.getElementById('mnColorSetBLabel');
 const mnResetLayoutBtn     = document.getElementById('mnResetLayoutBtn');
 const mnSearchInput        = document.getElementById('mnSearchInput');
 const mnSearchResults      = document.getElementById('mnSearchResults');
@@ -1131,6 +1133,11 @@ function _hideMetaNetworkSidebar() {
 function _updateMnBpColorPickerVisibility() {
     const show = metaNetwork && metaNetwork.hasBipartite && metaNetwork.settings.colorBy === 'uniform';
     mnBpColorRow.style.display = show ? '' : 'none';
+    if (show) {
+        const { labelA, labelB } = metaNetwork.bipartiteSetLabels;
+        mnColorSetALabel.textContent = labelA + ' color';
+        mnColorSetBLabel.textContent = labelB + ' color';
+    }
 }
 
 function _syncMetaNetworkControls() {

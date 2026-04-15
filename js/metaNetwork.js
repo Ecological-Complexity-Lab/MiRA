@@ -103,6 +103,14 @@ export class MetaNetwork {
         return this._mnNodes.some(n => n.nodeType !== null);
     }
 
+    /** Labels for Set A and Set B from the first bipartite layer, falling back to generic names. */
+    get bipartiteSetLabels() {
+        for (const info of this._model.bipartiteInfo.values()) {
+            if (info.isBipartite) return { labelA: info.setALabel, labelB: info.setBLabel };
+        }
+        return { labelA: 'Set A', labelB: 'Set B' };
+    }
+
     _buildBipartiteSets() {
         const setA = new Set(), setB = new Set();
         for (const info of this._model.bipartiteInfo.values()) {
