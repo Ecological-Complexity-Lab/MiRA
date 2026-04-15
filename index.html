@@ -366,6 +366,16 @@
             <option value="uniform">Uniform</option>
           </select>
         </div>
+        <div id="mnBpColorRow" style="display:none; margin-bottom:8px; margin-top:-2px;">
+          <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;">
+            <label style="font-size:11px;color:#666;flex:1;">Set A color</label>
+            <input type="color" id="mnColorSetA" value="#0072b2" style="width:32px;height:22px;padding:1px 2px;border:1px solid rgba(0,0,0,0.15);border-radius:4px;cursor:pointer;">
+          </div>
+          <div style="display:flex; align-items:center; gap:6px;">
+            <label style="font-size:11px;color:#666;flex:1;">Set B color</label>
+            <input type="color" id="mnColorSetB" value="#f472b6" style="width:32px;height:22px;padding:1px 2px;border:1px solid rgba(0,0,0,0.15);border-radius:4px;cursor:pointer;">
+          </div>
+        </div>
         <div style="margin-bottom:8px;">
           <label style="font-size:11px;color:#666;">Size By</label>
           <select id="mnSizeBySelect" class="styled-select">
@@ -397,16 +407,6 @@
         <div id="mnLabelSizeRow" style="margin-top:6px;">
           <label style="font-size:11px;color:#666;">Label Size &nbsp;<span id="mnLabelSizeLabel">12px</span></label>
           <input type="range" id="mnLabelSizeSlider" min="8" max="24" value="12" class="slider">
-        </div>
-        <div id="mnBpColorRow" style="display:none; margin-top:8px;">
-          <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;">
-            <label style="font-size:11px;color:#666;flex:1;">Set A color</label>
-            <input type="color" id="mnColorSetA" value="#0072b2" style="width:32px;height:22px;padding:1px 2px;border:1px solid rgba(0,0,0,0.15);border-radius:4px;cursor:pointer;">
-          </div>
-          <div style="display:flex; align-items:center; gap:6px;">
-            <label style="font-size:11px;color:#666;flex:1;">Set B color</label>
-            <input type="color" id="mnColorSetB" value="#f472b6" style="width:32px;height:22px;padding:1px 2px;border:1px solid rgba(0,0,0,0.15);border-radius:4px;cursor:pointer;">
-          </div>
         </div>
         <div style="margin-top:8px;">
           <button id="mnResetLayoutBtn" class="btn" style="width:100%; font-size:11px;">Reset layout</button>
