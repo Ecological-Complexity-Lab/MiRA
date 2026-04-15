@@ -183,6 +183,12 @@ const mnMinWeightSlider    = document.getElementById('mnMinWeightSlider');
 const mnMinWeightLabel     = document.getElementById('mnMinWeightLabel');
 const mnNestedSortCheckbox = document.getElementById('mnNestedSortCheckbox');
 const mnShowLabelsCheckbox = document.getElementById('mnShowLabelsCheckbox');
+const mnLabelSizeSlider    = document.getElementById('mnLabelSizeSlider');
+const mnLabelSizeLabel     = document.getElementById('mnLabelSizeLabel');
+const mnLabelSizeRow       = document.getElementById('mnLabelSizeRow');
+const mnBpColorRow         = document.getElementById('mnBpColorRow');
+const mnColorSetA          = document.getElementById('mnColorSetA');
+const mnColorSetB          = document.getElementById('mnColorSetB');
 const mnResetLayoutBtn     = document.getElementById('mnResetLayoutBtn');
 const mnSearchInput        = document.getElementById('mnSearchInput');
 const mnSearchResults      = document.getElementById('mnSearchResults');
@@ -1122,6 +1128,11 @@ function _hideMetaNetworkSidebar() {
     renderLegends();
 }
 
+function _updateMnBpColorPickerVisibility() {
+    const show = metaNetwork && metaNetwork.hasBipartite && metaNetwork.settings.colorBy === 'uniform';
+    mnBpColorRow.style.display = show ? '' : 'none';
+}
+
 function _syncMetaNetworkControls() {
     if (!metaNetwork) return;
     const s = metaNetwork.settings;
@@ -1133,6 +1144,12 @@ function _syncMetaNetworkControls() {
     mnBaseSizeLabel.textContent    = s.baseSize.toFixed(1) + '×';
     mnNestedSortCheckbox.checked   = s.nestedSort;
     mnShowLabelsCheckbox.checked   = s.showLabels;
+    mnLabelSizeSlider.value        = s.labelFontSize;
+    mnLabelSizeLabel.textContent   = s.labelFontSize + 'px';
+    mnLabelSizeRow.style.display   = s.showLabels ? '' : 'none';
+    mnColorSetA.value              = s.uniformColorA;
+    mnColorSetB.value              = s.uniformColorB;
+    _updateMnBpColorPickerVisibility();
     // Set slider range from maxEdgeWeight
     const maxW = metaNetwork.maxEdgeWeight;
     mnMinWeightSlider.max   = maxW;
@@ -1433,12 +1450,14 @@ mnAggregationSelect.addEventListener('change', () => {
 mnLayoutSelect.addEventListener('change', () => {
     if (!metaNetwork) return;
     metaNetwork.updateSetting('layout', mnLayoutSelect.value);
+    _updateMnBpColorPickerVisibility();
     _ensureMetaNetworkLoop();
 });
 
 mnColorBySelect.addEventListener('change', () => {
     if (!metaNetwork) return;
     metaNetwork.updateSetting('colorBy', mnColorBySelect.value);
+    _updateMnBpColorPickerVisibility();
     renderMetaNetworkLegend();
     _ensureMetaNetworkLoop();
 });
@@ -1467,6 +1486,27 @@ mnNestedSortCheckbox.addEventListener('change', () => {
 mnShowLabelsCheckbox.addEventListener('change', () => {
     if (!metaNetwork) return;
     metaNetwork.updateSetting('showLabels', mnShowLabelsCheckbox.checked);
+    mnLabelSizeRow.style.display = mnShowLabelsCheckbox.checked ? '' : 'none';
+    _ensureMetaNetworkLoop();
+});
+
+mnLabelSizeSlider.addEventListener('input', () => {
+    if (!metaNetwork) return;
+    const val = parseInt(mnLabelSizeSlider.value);
+    mnLabelSizeLabel.textContent = val + 'px';
+    metaNetwork.updateSetting('labelFontSize', val);
+    _ensureMetaNetworkLoop();
+});
+
+mnColorSetA.addEventListener('input', () => {
+    if (!metaNetwork) return;
+    metaNetwork.updateSetting('uniformColorA', mnColorSetA.value);
+    _ensureMetaNetworkLoop();
+});
+
+mnColorSetB.addEventListener('input', () => {
+    if (!metaNetwork) return;
+    metaNetwork.updateSetting('uniformColorB', mnColorSetB.value);
     _ensureMetaNetworkLoop();
 });
 
