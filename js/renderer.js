@@ -6,6 +6,7 @@
  */
 
 import { defaultColorMapper, BIPARTITE_SET_A_COLOR, BIPARTITE_SET_B_COLOR } from './colorMapper.js';
+import { dataMode } from './dataMode.js';
 
 export class Renderer {
     constructor(canvas, options = {}) {
@@ -403,6 +404,9 @@ export class Renderer {
             // In Map Mode, only render popped-out active map layers
             if (this.activeMapLayers && !this.activeMapLayers.has(layer.layer_name)) continue;
 
+            // Skip layers excluded by Data Mode subset
+            if (dataMode.filteredLayerNames && !dataMode.filteredLayerNames.has(layer.layer_name)) continue;
+
             // Draw layer polygon
             this._drawLayerPolygon(ctx, i, layer);
 
@@ -539,6 +543,13 @@ export class Renderer {
         const useBipartiteGradient = bpInfo && bpInfo.isBipartite;
 
         for (const link of links) {
+            if (dataMode.filteredNodeNames &&
+                (!dataMode.filteredNodeNames.has(link.node_from) || !dataMode.filteredNodeNames.has(link.node_to))) continue;
+            if (dataMode.filteredLinkKeys) {
+                const lk = `${link.layer_from}::${link.node_from}::${link.layer_to}::${link.node_to}`;
+                if (!dataMode.filteredLinkKeys.has(lk)) continue;
+            }
+
             const fromPos = layerPos.get(link.node_from);
             const toPos = layerPos.get(link.node_to);
             if (!fromPos || !toPos) continue;
@@ -578,6 +589,12 @@ export class Renderer {
         const visibleLinks = this.model.interlayerLinks.filter(l => {
             if (this.activeMapLayers && (!this.activeMapLayers.has(l.layer_from) || !this.activeMapLayers.has(l.layer_to))) return false;
             if (this.interlayerMinWeight > 0 && (l.weight || 0) < this.interlayerMinWeight) return false;
+            if (dataMode.filteredLayerNames && (!dataMode.filteredLayerNames.has(l.layer_from) || !dataMode.filteredLayerNames.has(l.layer_to))) return false;
+            if (dataMode.filteredNodeNames && (!dataMode.filteredNodeNames.has(l.node_from) || !dataMode.filteredNodeNames.has(l.node_to))) return false;
+            if (dataMode.filteredLinkKeys) {
+                const lk = `${l.layer_from}::${l.node_from}::${l.layer_to}::${l.node_to}`;
+                if (!dataMode.filteredLinkKeys.has(lk)) return false;
+            }
             return true;
         });
         const weights = visibleLinks.map(l => l.weight || 0).filter(w => w > 0);
@@ -661,6 +678,8 @@ export class Renderer {
         }
 
         for (const [nodeName, pos] of layerPos) {
+            if (dataMode.filteredNodeNames && !dataMode.filteredNodeNames.has(nodeName)) continue;
+
             const sp = this.project(pos.x, pos.y, layerIndex);
 
             // Apply Size By function if present
@@ -924,6 +943,7 @@ export class Renderer {
         // Layer polygons (lowest priority — added first)
         for (let i = 0; i < this.model.layers.length; i++) {
             if (this.activeMapLayers && !this.activeMapLayers.has(this.model.layers[i].layer_name)) continue;
+            if (dataMode.filteredLayerNames && !dataMode.filteredLayerNames.has(this.model.layers[i].layer_name)) continue;
             const corners = this.getLayerCorners(i);
             const poly = new Konva.Line({
                 points: corners.flatMap(c => [c.x, c.y]),
@@ -940,10 +960,13 @@ export class Renderer {
         for (let i = 0; i < this.model.layers.length; i++) {
             const layer = this.model.layers[i];
             if (this.activeMapLayers && !this.activeMapLayers.has(layer.layer_name)) continue;
+            if (dataMode.filteredLayerNames && !dataMode.filteredLayerNames.has(layer.layer_name)) continue;
             const layerPos = this.positions.get(layer.layer_name);
             if (!layerPos) continue;
             const links = this.model.intralayerLinks.filter(l => l.layer_from === layer.layer_name);
             for (const link of links) {
+                if (dataMode.filteredNodeNames &&
+                    (!dataMode.filteredNodeNames.has(link.node_from) || !dataMode.filteredNodeNames.has(link.node_to))) continue;
                 const fromPos = layerPos.get(link.node_from);
                 const toPos = layerPos.get(link.node_to);
                 if (!fromPos || !toPos) continue;
@@ -987,9 +1010,11 @@ export class Renderer {
         for (let i = 0; i < this.model.layers.length; i++) {
             const layer = this.model.layers[i];
             if (this.activeMapLayers && !this.activeMapLayers.has(layer.layer_name)) continue;
+            if (dataMode.filteredLayerNames && !dataMode.filteredLayerNames.has(layer.layer_name)) continue;
             const layerPos = this.positions.get(layer.layer_name);
             if (!layerPos) continue;
             for (const [nodeName, pos] of layerPos) {
+                if (dataMode.filteredNodeNames && !dataMode.filteredNodeNames.has(nodeName)) continue;
                 const sp = this.project(pos.x, pos.y, i);
                 this._konvaHitLayer.add(new Konva.Circle({
                     x: sp.x,

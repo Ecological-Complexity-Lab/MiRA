@@ -11,6 +11,7 @@ import { LayerView } from './layerView.js';
 import { csvToJson } from './csvImporter.js';
 import { Dashboard, svgBar } from './dashboard.js';
 import { MetaNetwork } from './metaNetwork.js';
+import { DataMode, dataMode, layerColors, initLayerColors } from './dataMode.js';
 
 // ---- State ----
 let model = null;
@@ -229,12 +230,18 @@ const collapseInfoBtn = document.getElementById('collapseInfoBtn');
 const tooltip = document.getElementById('tooltip');
 
 // ---- Application State ----
-let appMode = 'network'; // 'network', 'map', 'layer', 'dashboard', or 'metanetwork'
+let appMode = 'network'; // 'network', 'map', 'layer', 'dashboard', 'metanetwork', or 'data'
 let layerViewHandlers = null;
 let lvRAF  = null; // requestAnimationFrame id for layer-view animation
 let metaNetwork = null;       // MetaNetwork instance
 let mnRAF       = null;       // requestAnimationFrame id for meta-network animation
 let _mnMouseHandlers = null;  // { onMouseDown, onMouseMove, onMouseUp, onWheel }
+let dataModeInstance = null;   // DataMode instance
+const dataModePanel = document.getElementById('dataModePanel');
+const dataModeBtn   = document.getElementById('dataModeBtn');
+const dataFilterBanner = document.getElementById('dataFilterBanner');
+const dataFilterText   = document.getElementById('dataFilterText');
+const dataFilterClear  = document.getElementById('dataFilterClear');
 let activeMapLayers = new Set();
 const mapMarkersOverlay = document.getElementById('mapMarkersOverlay');
 const layerCloseButtonsContainer = document.getElementById('layerCloseButtons');
@@ -575,6 +582,10 @@ function loadData(json) {
         if (appMode === 'layer')       { _exitLayerView();   appMode = 'network'; }
         if (appMode === 'dashboard')   { _exitDashboard();   appMode = 'network'; }
         if (appMode === 'metanetwork') { _exitMetaNetwork(); appMode = 'network'; }
+        if (appMode === 'data')        { _exitDataMode();    appMode = 'network'; }
+        dataMode.clear();
+        _updateFilterBanner();
+        initLayerColors(model.layers);
 
         // Pass bipartite info to layout engine
         layout.bipartiteInfo = model.bipartiteInfo;
@@ -836,6 +847,7 @@ function toggleMapMode() {
     if (appMode === 'dashboard')   { _exitDashboard();   appMode = 'network'; }
     if (appMode === 'layer')       { _exitLayerView();   appMode = 'network'; renderer.render(); }
     if (appMode === 'metanetwork') { _exitMetaNetwork(); appMode = 'network'; }
+    if (appMode === 'data')        { _exitDataMode();    appMode = 'network'; }
     appMode = appMode === 'network' ? 'map' : 'network';
 
     if (appMode === 'map') {
@@ -862,6 +874,7 @@ function toggleMapMode() {
     }
 
     updateMapModeViews();
+    _updateFilterBanner();
 }
 
 mapModeBtn.addEventListener('click', toggleMapMode);
@@ -886,13 +899,16 @@ function toggleLayerView() {
     if (appMode === 'layer') {
         _exitLayerView();
         appMode = 'network';
+        _updateFilterBanner();
         renderer.render();
         return;
     }
     if (appMode === 'map')         toggleMapMode();
     if (appMode === 'dashboard')   { _exitDashboard();   appMode = 'network'; }
     if (appMode === 'metanetwork') { _exitMetaNetwork(); appMode = 'network'; }
+    if (appMode === 'data')        { _exitDataMode();    appMode = 'network'; }
     appMode = 'layer';
+    _updateFilterBanner();
     renderer.layerView = new LayerView(model, positions);
     window._layerView = renderer.layerView;
     renderer.layerViewMode = true;
@@ -1085,6 +1101,7 @@ function toggleDashboard() {
     if (appMode === 'dashboard') {
         _exitDashboard();
         appMode = 'network';
+        _updateFilterBanner();
         renderer.render();
         return;
     }
@@ -1092,8 +1109,10 @@ function toggleDashboard() {
     if (appMode === 'layer')       { _exitLayerView();   appMode = 'network'; }
     if (appMode === 'map')         { toggleMapMode(); }
     if (appMode === 'metanetwork') { _exitMetaNetwork(); appMode = 'network'; }
+    if (appMode === 'data')        { _exitDataMode();    appMode = 'network'; }
 
     appMode = 'dashboard';
+    _updateFilterBanner();
     dashboardBtn.classList.add('active');
     canvas.style.display = 'none';
     dashboardContainer.style.display = 'block';
@@ -1104,6 +1123,89 @@ function toggleDashboard() {
 }
 
 dashboardBtn.addEventListener('click', toggleDashboard);
+
+// ─── Data Mode ───────────────────────────────────────────────────────────────
+
+function _exitDataMode() {
+    dataModeInstance?.destroy();
+    dataModeInstance = null;
+    dataModePanel.style.display = 'none';
+    canvas.style.display = '';
+    dataModeBtn.classList.remove('active');
+    dataMode.active = false;
+    document.getElementById('controlPanels').style.display = '';
+    legendPanel.style.display = '';
+    renderer.searchedNodeName = null;
+}
+
+function _updateFilterBanner() {
+    const show = dataMode.isSubsetActive() && (appMode === 'network' || appMode === 'map');
+    if (!show) {
+        dataFilterBanner.style.display = 'none';
+        return;
+    }
+    const parts = [];
+    if (dataMode.filteredNodeNames) parts.push(`${dataMode.filteredNodeNames.size} nodes`);
+    if (dataMode.filteredLayerNames) parts.push(`${dataMode.filteredLayerNames.size} layers`);
+    if (dataMode.filteredLinkKeys) parts.push(`${dataMode.filteredLinkKeys.size} links`);
+    dataFilterText.textContent = `\u26A1 Data filter active \u2014 ${parts.join(', ')} visible`;
+    dataFilterBanner.style.display = 'flex';
+}
+
+function toggleDataMode() {
+    if (!model) return;
+    if (appMode === 'data') {
+        _exitDataMode();
+        appMode = 'network';
+        _updateFilterBanner();
+        renderer.render();
+        return;
+    }
+    if (appMode === 'map')         toggleMapMode();
+    if (appMode === 'layer')       { _exitLayerView();   appMode = 'network'; }
+    if (appMode === 'dashboard')   { _exitDashboard();   appMode = 'network'; }
+    if (appMode === 'metanetwork') { _exitMetaNetwork(); appMode = 'network'; }
+
+    appMode = 'data';
+    _updateFilterBanner();
+    dataMode.active = true;
+    dataModeBtn.classList.add('active');
+    canvas.style.display = 'none';
+    dataModePanel.style.display = 'flex';
+    legendPanel.style.display = 'none';
+
+    // Hide sidebar
+    document.getElementById('controlPanels').style.display = 'none';
+
+    dataModeInstance = new DataMode(dataModePanel, model, () => {
+        _updateFilterBanner();
+        if (appMode !== 'data') renderer.render();
+    });
+    dataModeInstance._onSelect = (type, name) => {
+        if (type === 'node') {
+            renderer.searchedNodeName = name;
+        } else if (type === 'layer') {
+            renderer.searchedNodeName = null;
+        } else {
+            renderer.searchedNodeName = null;
+        }
+    };
+    dataModeInstance._onColorChange = () => {
+        if (layerColorSelect.value === '__individual__') {
+            updateLayerColors();
+        }
+    };
+}
+
+dataModeBtn.addEventListener('click', toggleDataMode);
+
+dataFilterClear.addEventListener('click', () => {
+    if (dataModeInstance) dataModeInstance.clearFilters();
+    dataMode.clear();
+    renderer.searchedNodeName = null;
+    _updateFilterBanner();
+    if (appMode !== 'data') renderer.render();
+});
 
 // ── Meta-network layer palette (same as LayerView PALETTE) ────────────────
 const MN_LAYER_PALETTE = [
@@ -1217,14 +1319,17 @@ function toggleMetaNetwork() {
     if (appMode === 'metanetwork') {
         _exitMetaNetwork();
         appMode = 'network';
+        _updateFilterBanner();
         renderer.render();
         return;
     }
     if (appMode === 'map')       toggleMapMode();
     if (appMode === 'layer')     { _exitLayerView(); appMode = 'network'; }
     if (appMode === 'dashboard') { _exitDashboard(); appMode = 'network'; }
+    if (appMode === 'data')      { _exitDataMode();  appMode = 'network'; }
 
     appMode = 'metanetwork';
+    _updateFilterBanner();
     metaNetworkBtn.classList.add('active');
     renderer.metaNetworkMode = true;
     canvas.style.display = '';
@@ -1638,6 +1743,8 @@ function goToNetworkMode() {
     if (appMode === 'layer')       { _exitLayerView();     appMode = 'network'; renderer.render(); }
     if (appMode === 'dashboard')   { _exitDashboard();     appMode = 'network'; renderer.render(); }
     if (appMode === 'metanetwork') { _exitMetaNetwork();   appMode = 'network'; renderer.render(); }
+    if (appMode === 'data')        { _exitDataMode();      appMode = 'network'; renderer.render(); }
+    _updateFilterBanner();
 }
 networkModeBtn.addEventListener('click', goToNetworkMode);
 dbBipartiteToggle.addEventListener('change', () => dashboard?.setShowBipartite(dbBipartiteToggle.checked));
@@ -3015,14 +3122,14 @@ function populateDropdowns() {
     }
 
     // Layer color options
-    layerColorSelect.innerHTML = '<option value="">Default</option>';
+    layerColorSelect.innerHTML = '<option value="">Default</option><option value="__individual__">Individual</option>';
     for (const attr of model.layerAttributeNames) {
         const opt = document.createElement('option');
         opt.value = attr;
         opt.textContent = attr;
         layerColorSelect.appendChild(opt);
     }
-    layerColorSelect.disabled = model.layerAttributeNames.length === 0;
+    layerColorSelect.disabled = false;
 
 }
 
@@ -3293,11 +3400,17 @@ function _hexToRgba(color, alpha) {
 
 function updateLayerColors() {
     const attrName = layerColorSelect.value;
-    layerColorSwatches.style.display = attrName ? 'none' : 'flex';
+    layerColorSwatches.style.display = (!attrName) ? 'flex' : 'none';
 
     if (!model) { renderer.layerColorFn = null; activeLayerColorScale = null; renderer.render(); return; }
 
-    if (attrName) {
+    if (attrName === '__individual__') {
+        activeLayerColorScale = null;
+        renderer.layerColorFn = (layerIndex, layer) => {
+            const hex = layerColors.get(layer.layer_name) || '#8b5cf6';
+            return { fill: _hexToRgba(hex, 0.35), border: _hexToRgba(hex, 0.7), text: hex };
+        };
+    } else if (attrName) {
         const override = colorScaleOverrides.get(attrName);
         const sc = colorMapper.buildColorScale(model.layers, attrName, override);
         activeLayerColorScale = sc;
@@ -3960,6 +4073,18 @@ const HELP_CONTENT = {
   <li>Use <b>Filter Layers</b> panel to show only links from selected layers</li>
 </ul>
 <p>Use the left panel to change aggregation, layout, color, and size.</p>`,
+    },
+    data: {
+        title: '📋 Data Mode',
+        body: `<p>Inspect raw data tables and create subsets that propagate to all visualization modes.</p>
+<ul style="padding-left:16px;margin:8px 0;">
+  <li><b>Tabs</b> — Nodes, State Nodes, Links, Layers</li>
+  <li><b>Click a column header</b> — sort ascending/descending/reset</li>
+  <li><b>Filter inputs</b> — text columns: substring match; numeric: <code>&gt;5</code>, <code>&lt;10</code>, <code>=3</code></li>
+  <li><b>Click a row</b> to select it (highlights the node/layer in other modes)</li>
+  <li><b>Export CSV</b> — downloads the currently filtered rows</li>
+</ul>
+<p>Active filters create a <b>subset</b> visible across all modes (yellow banner).</p>`,
     },
     dashboard: {
         title: '📊 Dashboard Mode',
