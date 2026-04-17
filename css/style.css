@@ -69,7 +69,7 @@ body {
    ============================================ */
 #controlPanels {
   position: fixed;
-  top: 12px;
+  top: 50px;
   left: 12px;
   z-index: 100;
   display: flex;
@@ -228,24 +228,51 @@ body {
 }
 
 /* ============================================
-   Bottom-left: Zoom & Hints
+   Map Controls Float (above bottom bar)
    ============================================ */
-#bottomPanel {
-  bottom: 12px;
+#mapControlsFloat {
+  top: 50px;
   left: 12px;
-  padding: 10px 14px;
+  padding: 0;
+  z-index: 91;
+  border: none;
+  background: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+#mapControlsFloat > div[style*="flex"] {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 10px;
+  padding: 8px 14px;
 }
 
-.zoom-controls {
+/* ============================================
+   Unified Bottom Bar
+   ============================================ */
+#bottomBar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 38px;
+  z-index: 90;
   display: flex;
-  gap: 4px;
   align-items: center;
+  gap: 4px;
+  padding: 0 12px;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .toolbar-sep {
   width: 1px;
   height: 18px;
-  background: rgba(0,0,0,0.15);
+  background: rgba(0,0,0,0.12);
   margin: 0 4px;
   flex-shrink: 0;
 }
@@ -257,55 +284,105 @@ body {
   font-size: 15px;
   font-weight: 600;
   border-radius: 6px;
+  color: #6b7280;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+.zoom-btn:hover {
+  color: #1f2937;
 }
 
-.interaction-hints {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 6px;
-  font-size: 10px;
-  color: rgba(0, 0, 0, 0.4);
-  letter-spacing: 0.02em;
+/* Text-style bar button (e.g. "Reset") */
+.bar-btn-text {
+  width: auto;
+  padding: 0 8px;
+  font-size: 11px;
 }
 
-/* ============================================
-   Bottom-right: Branding
-   ============================================ */
-#brandingPanel {
-  position: fixed;
-  bottom: 12px;
-  right: 12px;
-  z-index: 90;
+/* ── Active mode button colors ─────────────────── */
+.mode-btn.active[data-mode="network"]   { color: #6d28d9; background: rgba(109, 40, 217, 0.08); }  /* violet */
+.mode-btn.active[data-mode="map"]       { color: #0284c7; background: rgba(2, 132, 199, 0.08); }   /* sky blue */
+.mode-btn.active[data-mode="layer"]     { color: #059669; background: rgba(5, 150, 105, 0.08); }   /* emerald */
+.mode-btn.active[data-mode="meta"]      { color: #d97706; background: rgba(217, 119, 6, 0.08); }   /* amber */
+.mode-btn.active[data-mode="dashboard"] { color: #dc2626; background: rgba(220, 38, 38, 0.08); }   /* red */
+.mode-btn.active[data-mode="data"]      { color: #fee090; background: rgba(254, 224, 144, 0.15); }  /* warm yellow */
+
+/* ── Alerts zone (elastic middle) ──────────────── */
+#toolbarAlerts {
+  flex: 1;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px 14px;
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 10px;
+  justify-content: center;
+  min-width: 0;
+}
+
+#dataFilterBanner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 10px;
+  background: rgba(254, 243, 199, 0.85);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #92400e;
+  white-space: nowrap;
+}
+
+#dataFilterClear {
+  padding: 1px 8px;
+  font-size: 10px;
+  font-weight: 600;
+  background: rgba(255,255,255,0.8);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  border-radius: 4px;
+  color: #92400e;
+  cursor: pointer;
+}
+#dataFilterClear:hover {
+  background: #fff;
+}
+
+/* ── Branding (right side of bar) ──────────────── */
+#brandingGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.branding-favicon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
 }
 
 .branding-title {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   color: #1a1a2e;
   letter-spacing: -0.01em;
 }
 
+.branding-beta {
+  font-size: 10px;
+  font-weight: 600;
+  color: #b45309;
+  margin-left: -4px;
+}
+
 .branding-version {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 500;
-  color: #6b7280;
+  color: #9ca3af;
   margin-left: -4px;
 }
 
 .branding-link {
   display: flex;
   align-items: center;
-  color: rgba(0, 0, 0, 0.45);
+  color: rgba(0, 0, 0, 0.35);
   transition: color 0.15s ease;
 }
 
@@ -313,16 +390,10 @@ body {
   color: #1a1a2e;
 }
 
-.branding-favicon {
+.branding-icon {
   width: 18px;
   height: 18px;
-  object-fit: contain;
-}
-
-.branding-icon {
-  width: 22px;
-  height: 22px;
-  border-radius: 4px;
+  border-radius: 3px;
   object-fit: contain;
 }
 
@@ -330,7 +401,7 @@ body {
    Info Panel (right side)
    ============================================ */
 #infoPanel {
-  top: 16px;
+  top: 50px;
   right: 16px;
   padding: 18px 20px;
   width: 280px;
@@ -794,7 +865,7 @@ body {
 /* ---- Dashboard Mode ---- */
 #dashboardContainer {
   position: absolute;
-  inset: 0;
+  top: 38px; left: 0; right: 0; bottom: 0;
   background: #f3f4f8;
   overflow-y: auto;
   display: none;
@@ -965,7 +1036,7 @@ body {
 
 #dataModePanel {
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 38px; left: 0; right: 0; bottom: 0;
   z-index: 5;
   background: #fff;
   display: flex;
@@ -1289,35 +1360,4 @@ body {
 .dm-pill-intra { background: #dbeafe; color: #1e40af; }
 .dm-pill-inter { background: #ffedd5; color: #c2410c; }
 
-/* Filter banner — sits just above branding panel, bottom-right */
-#dataFilterBanner {
-  position: fixed;
-  bottom: 52px;
-  right: 12px;
-  z-index: 90;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 5px 12px;
-  background: rgba(254, 243, 199, 0.92);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(245, 158, 11, 0.3);
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: 500;
-  color: #92400e;
-}
-
-#dataFilterClear {
-  padding: 2px 10px;
-  font-size: 11px;
-  font-weight: 600;
-  background: rgba(255,255,255,0.8);
-  border: 1px solid rgba(245, 158, 11, 0.4);
-  border-radius: 5px;
-  color: #92400e;
-  cursor: pointer;
-}
-
-#dataFilterClear:hover { background: #fffbeb; }
+/* (dataFilterBanner styles moved to bottom bar section) */

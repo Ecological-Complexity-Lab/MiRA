@@ -585,6 +585,7 @@ function loadData(json) {
         if (appMode === 'data')        { _exitDataMode();    appMode = 'network'; }
         dataMode.clear();
         _updateFilterBanner();
+        _updateModeButtons();
         initLayerColors(model.layers);
 
         // Pass bipartite info to layout engine
@@ -842,6 +843,17 @@ Object.keys(DATASET_INFO).forEach(file => {
     document.getElementById('demoDatasetList').appendChild(buildDatasetRow(file));
 });
 
+// ---- Mode Button Highlighting ----
+const MODE_BTNS = document.querySelectorAll('.mode-btn');
+function _updateModeButtons() {
+    const modeMap = { network: 'network', map: 'map', layer: 'layer',
+                      metanetwork: 'meta', dashboard: 'dashboard', data: 'data' };
+    const activeMode = modeMap[appMode] || 'network';
+    MODE_BTNS.forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.mode === activeMode);
+    });
+}
+
 // ---- Map Mode Logic ----
 function toggleMapMode() {
     if (appMode === 'dashboard')   { _exitDashboard();   appMode = 'network'; }
@@ -850,8 +862,8 @@ function toggleMapMode() {
     if (appMode === 'data')        { _exitDataMode();    appMode = 'network'; }
     appMode = appMode === 'network' ? 'map' : 'network';
 
+    _updateModeButtons();
     if (appMode === 'map') {
-        mapModeBtn.classList.add('active');
         mapEl.style.display = 'block';
         bgMap.invalidateSize();
 
@@ -864,7 +876,6 @@ function toggleMapMode() {
         mapOpacityControl.style.display = 'flex';
         mapLayerPanel.style.display = '';
     } else {
-        mapModeBtn.classList.remove('active');
         mapEl.style.display = 'none';
         activeMapLayers.clear();
         renderer.showMapBackground = false;
@@ -900,6 +911,7 @@ function toggleLayerView() {
         _exitLayerView();
         appMode = 'network';
         _updateFilterBanner();
+        _updateModeButtons();
         renderer.render();
         return;
     }
@@ -909,10 +921,10 @@ function toggleLayerView() {
     if (appMode === 'data')        { _exitDataMode();    appMode = 'network'; }
     appMode = 'layer';
     _updateFilterBanner();
+    _updateModeButtons();
     renderer.layerView = new LayerView(model, positions);
     window._layerView = renderer.layerView;
     renderer.layerViewMode = true;
-    layerViewBtn.classList.add('active');
     canvas.style.cursor = 'grab';
     _showLayerViewSidebar();
 
@@ -1092,7 +1104,6 @@ function _exitDashboard() {
     dashboard = null;
     dashboardContainer.style.display = 'none';
     canvas.style.display = '';
-    dashboardBtn.classList.remove('active');
     _hideDashboardSidebar();
 }
 
@@ -1102,6 +1113,7 @@ function toggleDashboard() {
         _exitDashboard();
         appMode = 'network';
         _updateFilterBanner();
+        _updateModeButtons();
         renderer.render();
         return;
     }
@@ -1113,7 +1125,7 @@ function toggleDashboard() {
 
     appMode = 'dashboard';
     _updateFilterBanner();
-    dashboardBtn.classList.add('active');
+    _updateModeButtons();
     canvas.style.display = 'none';
     dashboardContainer.style.display = 'block';
     _showDashboardSidebar();
@@ -1131,7 +1143,6 @@ function _exitDataMode() {
     dataModeInstance = null;
     dataModePanel.style.display = 'none';
     canvas.style.display = '';
-    dataModeBtn.classList.remove('active');
     dataMode.active = false;
     document.getElementById('controlPanels').style.display = '';
     legendPanel.style.display = '';
@@ -1158,6 +1169,7 @@ function toggleDataMode() {
         _exitDataMode();
         appMode = 'network';
         _updateFilterBanner();
+        _updateModeButtons();
         renderer.render();
         return;
     }
@@ -1168,8 +1180,8 @@ function toggleDataMode() {
 
     appMode = 'data';
     _updateFilterBanner();
+    _updateModeButtons();
     dataMode.active = true;
-    dataModeBtn.classList.add('active');
     canvas.style.display = 'none';
     dataModePanel.style.display = 'flex';
     legendPanel.style.display = 'none';
@@ -1320,6 +1332,7 @@ function toggleMetaNetwork() {
         _exitMetaNetwork();
         appMode = 'network';
         _updateFilterBanner();
+        _updateModeButtons();
         renderer.render();
         return;
     }
@@ -1330,7 +1343,7 @@ function toggleMetaNetwork() {
 
     appMode = 'metanetwork';
     _updateFilterBanner();
-    metaNetworkBtn.classList.add('active');
+    _updateModeButtons();
     renderer.metaNetworkMode = true;
     canvas.style.display = '';
     canvas.style.cursor  = 'grab';
@@ -1509,7 +1522,6 @@ function _exitMetaNetwork() {
     }
     metaNetwork?._sim?.stop();
     metaNetwork = null;
-    metaNetworkBtn.classList.remove('active');
     canvas.style.cursor = '';
     tooltip.classList.remove('visible');
     infoPanel.classList.remove('visible');
@@ -1745,6 +1757,7 @@ function goToNetworkMode() {
     if (appMode === 'metanetwork') { _exitMetaNetwork();   appMode = 'network'; renderer.render(); }
     if (appMode === 'data')        { _exitDataMode();      appMode = 'network'; renderer.render(); }
     _updateFilterBanner();
+    _updateModeButtons();
 }
 networkModeBtn.addEventListener('click', goToNetworkMode);
 dbBipartiteToggle.addEventListener('change', () => dashboard?.setShowBipartite(dbBipartiteToggle.checked));
@@ -1786,7 +1799,6 @@ function _exitLayerView() {
     renderer.layerViewMode = false;
     renderer.layerView = null;
     window._layerView = null;
-    layerViewBtn.classList.remove('active');
     canvas.style.cursor = '';
     tooltip.classList.remove('visible');
     _hideLayerViewSidebar();

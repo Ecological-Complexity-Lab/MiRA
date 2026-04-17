@@ -54,7 +54,12 @@
       "Bash(curl -s http://localhost:8765/)",
       "Bash(node --input-type=module -e \"import './js/dataMode.js'\")",
       "Bash(node --check --input-type=module)",
-      "Bash(curl -s http://localhost:8765/js/app.js)"
+      "Bash(curl -s http://localhost:8765/js/app.js)",
+      "Bash(curl -s http://localhost:8001/)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8001/)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8000/)",
+      "Bash(npx -y esbuild js/app.js --bundle --format=esm --outfile=/dev/null)",
+      "Bash(npx playwright:*)"
     ],
     "additionalDirectories": [
       "/Users/shai/GitHub/ecomplab/emln"

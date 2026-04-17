@@ -448,13 +448,10 @@ export class Renderer {
     }
 
     _drawPlaceholder(ctx, w, h) {
-        ctx.fillStyle = 'rgba(0,0,0,0.25)';
+        ctx.fillStyle = '#1f2937';
         ctx.font = '18px Inter, system-ui, sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText('Load a multilayer network to visualize', w / 2, h / 2 - 10);
-        ctx.font = '14px Inter, system-ui, sans-serif';
-        ctx.fillStyle = 'rgba(0,0,0,0.15)';
-        ctx.fillText('Upload a JSON file or click "Load Demo"', w / 2, h / 2 + 20);
+        ctx.fillText('Load a multilayer network via the Data panel to visualize', w / 2, h / 2);
         ctx.textAlign = 'left';
     }
 
