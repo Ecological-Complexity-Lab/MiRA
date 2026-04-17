@@ -347,6 +347,7 @@ export class DataMode {
             const tr = document.createElement('tr');
             const rowKey = this._rowKey(row);
             if (this._selectedKeys.has(rowKey)) tr.classList.add('dm-row-selected');
+            tr.addEventListener('mousedown', (e) => { if (e.shiftKey) e.preventDefault(); });
             tr.addEventListener('click', (e) => this._handleRowClick(e, row, rowKey, idx, tr));
 
             for (const col of cols) {

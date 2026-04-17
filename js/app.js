@@ -3785,11 +3785,10 @@ function createLegendDOM(titleText, scale, id) {
 
     if (scale.canToggle && scale.type !== 'size') {
         const toggleBtn = document.createElement('button');
-        toggleBtn.textContent = '⇌';
-        toggleBtn.title = 'Switch between Categorical and Continuous palettes';
-        toggleBtn.style.cssText = 'background: none; border: 1px solid rgba(0,0,0,0.12); cursor: pointer; color: #4b5563; border-radius: 4px; font-size: 10px; line-height: 1; padding: 2px 4px; font-weight: bold; display: flex; align-items: center; justify-content: center; height: 18px;';
-        toggleBtn.onmouseover = () => toggleBtn.style.background = '#f3f4f6';
-        toggleBtn.onmouseout = () => toggleBtn.style.background = 'none';
+        toggleBtn.className = 'ltp-pill';
+        const isCont = scale.type === 'continuous';
+        toggleBtn.innerHTML = `<span class="ltp-opt${isCont ? ' ltp-active' : ''}">Continuous</span><span class="ltp-opt${!isCont ? ' ltp-active' : ''}">Discrete</span>`;
+        toggleBtn.title = 'Switch between Continuous and Discrete palettes';
         toggleBtn.onclick = () => {
             const newType = scale.type === 'continuous' ? 'categorical' : 'continuous';
             colorScaleOverrides.set(scale.attrName, newType);
@@ -3945,9 +3944,11 @@ function _createLVLegendBox(scale) {
 
     if (scale.canToggle) {
         const toggleBtn = document.createElement('button');
-        toggleBtn.textContent = '⇌';
-        toggleBtn.title = 'Switch between Continuous and Categorical display';
-        toggleBtn.style.cssText = 'background:none;border:1px solid rgba(0,0,0,0.12);cursor:pointer;color:#4b5563;border-radius:4px;font-size:10px;padding:2px 4px;font-weight:bold;height:18px;';
+        toggleBtn.className = 'ltp-pill';
+        const lv0 = renderer.layerView;
+        const isCont = lv0 && lv0.settings.colorLegendType === 'continuous';
+        toggleBtn.innerHTML = `<span class="ltp-opt${isCont ? ' ltp-active' : ''}">Continuous</span><span class="ltp-opt${!isCont ? ' ltp-active' : ''}">Discrete</span>`;
+        toggleBtn.title = 'Switch between Continuous and Discrete display';
         toggleBtn.onclick = () => {
             const lv = renderer.layerView;
             if (!lv) return;
