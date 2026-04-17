@@ -59,7 +59,9 @@
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8001/)",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8000/)",
       "Bash(npx -y esbuild js/app.js --bundle --format=esm --outfile=/dev/null)",
-      "Bash(npx playwright:*)"
+      "Bash(npx playwright:*)",
+      "Bash(xargs ls:*)",
+      "Bash(du -sh /Users/shai/GitHub/ecomplab/multilayer_viz/data/*.json)"
     ],
     "additionalDirectories": [
       "/Users/shai/GitHub/ecomplab/emln"

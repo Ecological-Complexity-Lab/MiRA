@@ -31,6 +31,9 @@ let activeLinkColorScale = null;
 let activeLayerColorScale = null;
 const colorScaleOverrides = new Map(); // attrName -> 'categorical' | 'continuous'
 
+// ---- EMLN mode detection ----
+const IS_EMLN = new URLSearchParams(window.location.search).get('autoload') === 'true';
+
 // ---- DOM Elements ----
 const canvas = document.getElementById('networkCanvas');
 const openDemoDialogBtn = document.getElementById('openDemoDialogBtn');
@@ -3718,6 +3721,26 @@ function hideTooltip() {
             });
     }
 })();
+
+// ---- EMLN mode UI setup ----
+if (IS_EMLN) {
+    const ONLINE_URL = 'https://ecological-complexity-lab.github.io/multilayer_viz/';
+
+    // Replace data import buttons with message
+    const btnRow = document.querySelector('#sectionData .btn-row');
+    if (btnRow) {
+        btnRow.innerHTML = `<div class="emln-data-msg">
+            Network loaded from EMLN.<br>
+            For example datasets and manual import, use the
+            <a href="${ONLINE_URL}" target="_blank" rel="noopener">online version &#x2197;</a>
+        </div>`;
+    }
+
+    // Swap "(Beta)" → "(EMLN)" in branding
+    const betaEl = document.querySelector('.branding-beta');
+    if (betaEl) betaEl.textContent = '(EMLN)';
+
+}
 
 function renderScaleLegend(scale, id, titleText) {
     if (!scale) return;
