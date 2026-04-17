@@ -304,7 +304,7 @@ body {
 .mode-btn.active[data-mode="layer"]     { color: #059669; background: rgba(5, 150, 105, 0.08); }   /* emerald */
 .mode-btn.active[data-mode="meta"]      { color: #d97706; background: rgba(217, 119, 6, 0.08); }   /* amber */
 .mode-btn.active[data-mode="dashboard"] { color: #dc2626; background: rgba(220, 38, 38, 0.08); }   /* red */
-.mode-btn.active[data-mode="data"]      { color: #fee090; background: rgba(254, 224, 144, 0.15); }  /* warm yellow */
+.mode-btn.active[data-mode="data"]      { color: #c51b7d; background: rgba(197, 27, 125, 0.08); }  /* magenta */
 
 /* ── Alerts zone (elastic middle) ──────────────── */
 #toolbarAlerts {
