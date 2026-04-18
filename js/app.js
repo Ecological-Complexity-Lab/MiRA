@@ -487,6 +487,10 @@ function resetVisualizationOptions() {
     // Checkboxes
     showLabelsCheckbox.checked = false;
     renderer.showLabels = false;
+    labelSizeRow.style.display = 'none';
+    labelSizeSlider.value = 12;
+    labelSizeLabel.textContent = '12px';
+    renderer.labelFont = '12px Inter, system-ui, sans-serif';
 
     transformNodesCheckbox.checked = true;
     renderer.transformNodes = true;
@@ -2797,8 +2801,20 @@ function updateCloseButtons() {
 }
 
 // ---- Toggle Labels ----
+const labelSizeRow    = document.getElementById('labelSizeRow');
+const labelSizeSlider = document.getElementById('labelSizeSlider');
+const labelSizeLabel  = document.getElementById('labelSizeLabel');
+
 showLabelsCheckbox.addEventListener('change', () => {
     renderer.showLabels = showLabelsCheckbox.checked;
+    labelSizeRow.style.display = showLabelsCheckbox.checked ? '' : 'none';
+    renderer.render();
+});
+
+labelSizeSlider.addEventListener('input', () => {
+    const px = parseInt(labelSizeSlider.value);
+    labelSizeLabel.textContent = px + 'px';
+    renderer.labelFont = `${px}px Inter, system-ui, sans-serif`;
     renderer.render();
 });
 
