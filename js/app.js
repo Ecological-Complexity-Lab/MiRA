@@ -3590,11 +3590,11 @@ zoomResetBtn.addEventListener('click', () => {
         return;
     }
 
-    // Network and Map modes: clear selection + reset view
-    renderer.selectedNode = null;
-    renderer.selectedLink = null;
-    renderer.selectedLayer = null;
-    hideNodeInfo();
+    // Network and Map modes: full reset — visualization options + view
+    resetVisualizationOptions();
+    updateLayerColors();
+    updateNodeColors();
+    updateLinkColors();
     renderer.skewX = 0.7;
     renderer.skewY = 0.55;
     renderer.resetLayerOffsets();
