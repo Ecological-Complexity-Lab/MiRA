@@ -27,6 +27,8 @@ let activeNodeColorScale = null;
 let activeNodeColorScaleA = null;
 let activeNodeColorScaleB = null;
 let activeNodeSizeScale = null;
+let activeNodeSizeScaleA = null;
+let activeNodeSizeScaleB = null;
 let activeLinkColorScale = null;
 let activeLayerColorScale = null;
 const colorScaleOverrides = new Map(); // attrName -> 'categorical' | 'continuous'
@@ -36,6 +38,26 @@ function applyCategoryOverride(attrName, value, fallback) {
     const m = categoryColorOverrides.get(attrName);
     if (m && m.has(value)) return m.get(value);
     return fallback;
+}
+
+function isClassicBipartiteUI() {
+    if (!model || layout?.layoutType !== 'bipartite') return false;
+    const types = new Set();
+    for (const n of model.nodes) {
+        const t = n.node_type ?? n.type;
+        if (t !== undefined && t !== null) types.add(t);
+    }
+    return types.size === 2;
+}
+
+function applyBipartiteUIVisibility() {
+    const classic = isClassicBipartiteUI();
+    const isBip   = layout?.layoutType === 'bipartite';
+    document.getElementById('setNamesContainer').style.display = isBip ? '' : 'none';
+    colorByContainer.style.display          = classic ? 'none' : '';
+    bipartiteColorByContainer.style.display = classic ? '' : 'none';
+    sizeByContainer.style.display           = classic ? 'none' : '';
+    bipartiteSizeByContainer.style.display  = classic ? '' : 'none';
 }
 
 // ---- EMLN mode detection ----
@@ -522,10 +544,14 @@ function resetVisualizationOptions() {
     activeNodeColorScale = null;
     activeNodeColorScaleA = null;
     activeNodeColorScaleB = null;
+    activeNodeSizeScale = null;
+    activeNodeSizeScaleA = null;
+    activeNodeSizeScaleB = null;
     activeLinkColorScale = null;
     activeLayerColorScale = null;
     colorScaleOverrides.clear();
     categoryColorOverrides.clear();
+    expandedLegends.clear();
 
     // Layer view
     if (appMode === 'layer') _exitLayerView();
@@ -646,13 +672,7 @@ function loadData(json) {
         renderer.bipartiteInfo = model.bipartiteInfo;
         renderer.layoutType = layout.layoutType;
 
-        // Show/hide UI elements based on layout
-        const isBipartiteLayout = layout.layoutType === 'bipartite';
-        document.getElementById('setNamesContainer').style.display = isBipartiteLayout ? '' : 'none';
-        colorByContainer.style.display = isBipartiteLayout ? 'none' : '';
-        bipartiteColorByContainer.style.display = isBipartiteLayout ? '' : 'none';
-        sizeByContainer.style.display = isBipartiteLayout ? 'none' : '';
-        bipartiteSizeByContainer.style.display = isBipartiteLayout ? '' : 'none';
+        applyBipartiteUIVisibility();
 
         populateDropdowns();
         resetVisualizationOptions();
@@ -661,6 +681,9 @@ function loadData(json) {
         updateLinkColors();
 
         renderer.setData(model, positions);
+        renderer.skewX = 0.7;
+        renderer.skewY = 0.55;
+        renderer.resetLayerOffsets();
         renderer.centerView();
         renderer.render();
 
@@ -2854,13 +2877,7 @@ layoutSelect.addEventListener('change', () => {
     renderer.setData(model, positions);
     renderer.layoutType = layout.layoutType;
 
-    // Show/hide UI elements based on layout
-    const isBipartiteLayout = layout.layoutType === 'bipartite';
-    document.getElementById('setNamesContainer').style.display = isBipartiteLayout ? '' : 'none';
-    colorByContainer.style.display = isBipartiteLayout ? 'none' : '';
-    bipartiteColorByContainer.style.display = isBipartiteLayout ? '' : 'none';
-    sizeByContainer.style.display = isBipartiteLayout ? 'none' : '';
-    bipartiteSizeByContainer.style.display = isBipartiteLayout ? '' : 'none';
+    applyBipartiteUIVisibility();
 
     updateNodeColors();
     renderer.render();
@@ -2889,6 +2906,8 @@ fileInput.addEventListener('change', (e) => {
             _showDataLoadedNotice();
         } catch (err) {
             alert('Invalid JSON file: ' + err.message);
+        } finally {
+            e.target.value = '';
         }
     };
     reader.readAsText(file);
@@ -3220,14 +3239,20 @@ linkColorSelect.addEventListener('change', () => {
 
 
 
+function _toNumber(v) {
+    if (typeof v === 'number') return v;
+    if (typeof v === 'string') { const n = Number(v); return isNaN(n) ? null : n; }
+    return null;
+}
+
 function _buildSizeScaleFn(val, entities, stateEntities) {
     if (!val) return null;
     const [source, attrName] = val.split(':');
     const items = source === 'node' ? entities : stateEntities;
     let minVal = Infinity, maxVal = -Infinity;
     for (const e of items) {
-        const v = e[attrName];
-        if (typeof v === 'number') {
+        const v = _toNumber(e[attrName]);
+        if (v !== null) {
             if (v < minVal) minVal = v;
             if (v > maxVal) maxVal = v;
         }
@@ -3235,9 +3260,10 @@ function _buildSizeScaleFn(val, entities, stateEntities) {
     const range = maxVal - minVal;
     const scale = { type: 'size', min: minVal, max: maxVal, attrName };
     const compute = (v) => {
-        if (typeof v !== 'number') return 1.0;
+        const n = _toNumber(v);
+        if (n === null) return 1.0;
         if (range === 0) return 1.0;
-        return 0.3 + ((v - minVal) / range) * 1.7;
+        return 0.3 + ((n - minVal) / range) * 1.7;
     };
     const fn = source === 'node'
         ? (layerName, nodeName) => { const n = model.nodesByName.get(nodeName); return n ? compute(n[attrName]) : 1.0; }
@@ -3246,15 +3272,20 @@ function _buildSizeScaleFn(val, entities, stateEntities) {
 }
 
 function updateNodeSizes() {
-    if (!model) { renderer.nodeSizeFn = null; return; }
+    activeNodeSizeScale = null;
+    activeNodeSizeScaleA = null;
+    activeNodeSizeScaleB = null;
+
+    if (!model) { renderer.nodeSizeFn = null; renderLegends(); return; }
 
     const isBipartiteLayout = layout.layoutType === 'bipartite';
 
-    if (isBipartiteLayout) {
+    if (isClassicBipartiteUI()) {
         const resA = _buildSizeScaleFn(nodeSizeSelectSetA.value, model.nodes, model.stateNodes);
         const resB = _buildSizeScaleFn(nodeSizeSelectSetB.value, model.nodes, model.stateNodes);
 
-        activeNodeSizeScale = resA?.scale || resB?.scale || null;
+        activeNodeSizeScaleA = resA?.scale || null;
+        activeNodeSizeScaleB = resB?.scale || null;
 
         if (!resA && !resB) {
             renderer.nodeSizeFn = null;
@@ -3279,6 +3310,9 @@ function updateNodeSizes() {
         renderer.nodeSizeFn = res?.fn || null;
     }
 
+    if (activeNodeSizeScale)  expandedLegends.add('nodeSize');
+    if (activeNodeSizeScaleA) expandedLegends.add('nodeSizeA');
+    if (activeNodeSizeScaleB) expandedLegends.add('nodeSizeB');
     renderLegends();
 }
 
@@ -3294,7 +3328,7 @@ function updateNodeColors() {
         return;
     }
 
-    if (layout.layoutType === 'bipartite') {
+    if (isClassicBipartiteUI()) {
         const valA = nodeColorSelectSetA.value;
         const valB = nodeColorSelectSetB.value;
 
@@ -3349,6 +3383,8 @@ function updateNodeColors() {
             }
             return '#6b7280'; // fallback
         };
+        if (activeNodeColorScaleA) expandedLegends.add('nodeColorA');
+        if (activeNodeColorScaleB) expandedLegends.add('nodeColorB');
         renderLegends();
         return;
     }
@@ -3385,6 +3421,7 @@ function updateNodeColors() {
         };
     }
 
+    if (activeNodeColorScale) expandedLegends.add('nodeColor');
     renderLegends();
 }
 
@@ -3405,6 +3442,7 @@ function updateLinkColors() {
     const sc = colorMapper.buildColorScale(model.extended, attrName, override);
     activeLinkColorScale = sc;
     renderer.linkColorFn = (link) => applyCategoryOverride(attrName, link[attrName], sc.scaleFn(link[attrName]));
+    if (activeLinkColorScale) expandedLegends.add('linkColor');
     renderLegends();
 }
 
@@ -3448,6 +3486,7 @@ function updateLayerColors() {
             { fill: _hexToRgba(hex, 0.18), border: _hexToRgba(hex, 0.55), text: hex }
         );
     }
+    if (activeLayerColorScale) expandedLegends.add('layerColor');
     renderLegends();
     renderer.render();
 }
@@ -3813,19 +3852,24 @@ function renderLegends() {
 
     legendPanel.innerHTML = '';
 
-    const isBipartite = layout.layoutType === 'bipartite';
+    const stripPrefix = (text, prefix) => text.replace(new RegExp('^' + prefix + '\\s*', 'i'), '').trim();
 
-    if (!isBipartite) {
+    if (!isClassicBipartiteUI()) {
         renderScaleLegend(activeNodeColorScale, 'nodeColor', 'Node Color');
+        renderScaleLegend(activeNodeSizeScale, 'nodeSize', 'Node Size');
     } else {
-        const titleA = bipartiteColorLabelA.textContent.replace('Color by ', '').replace('Color By ', '');
-        renderScaleLegend(activeNodeColorScaleA, 'nodeColorA', 'Node Color (' + titleA + ')');
+        const colorTitleA = stripPrefix(bipartiteColorLabelA.textContent, 'Color By');
+        renderScaleLegend(activeNodeColorScaleA, 'nodeColorA', 'Node Color (' + colorTitleA + ')');
 
-        const titleB = bipartiteColorLabelB.textContent.replace('Color by ', '').replace('Color By ', '');
-        renderScaleLegend(activeNodeColorScaleB, 'nodeColorB', 'Node Color (' + titleB + ')');
+        const colorTitleB = stripPrefix(bipartiteColorLabelB.textContent, 'Color By');
+        renderScaleLegend(activeNodeColorScaleB, 'nodeColorB', 'Node Color (' + colorTitleB + ')');
+
+        const sizeTitleA = stripPrefix(bipartiteSizeLabelA.textContent, 'Size By');
+        renderScaleLegend(activeNodeSizeScaleA, 'nodeSizeA', 'Node Size (' + sizeTitleA + ')');
+
+        const sizeTitleB = stripPrefix(bipartiteSizeLabelB.textContent, 'Size By');
+        renderScaleLegend(activeNodeSizeScaleB, 'nodeSizeB', 'Node Size (' + sizeTitleB + ')');
     }
-
-    renderScaleLegend(activeNodeSizeScale, 'nodeSize', 'Node Size');
     renderScaleLegend(activeLinkColorScale, 'linkColor', 'Link Color');
     renderScaleLegend(activeLayerColorScale, 'layerColor', 'Layer Color');
 }
