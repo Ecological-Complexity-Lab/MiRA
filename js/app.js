@@ -30,6 +30,13 @@ let activeNodeSizeScale = null;
 let activeLinkColorScale = null;
 let activeLayerColorScale = null;
 const colorScaleOverrides = new Map(); // attrName -> 'categorical' | 'continuous'
+const categoryColorOverrides = new Map(); // attrName -> Map<value, hex color>
+
+function applyCategoryOverride(attrName, value, fallback) {
+    const m = categoryColorOverrides.get(attrName);
+    if (m && m.has(value)) return m.get(value);
+    return fallback;
+}
 
 // ---- EMLN mode detection ----
 const IS_EMLN = new URLSearchParams(window.location.search).get('autoload') === 'true';
@@ -518,6 +525,7 @@ function resetVisualizationOptions() {
     activeLinkColorScale = null;
     activeLayerColorScale = null;
     colorScaleOverrides.clear();
+    categoryColorOverrides.clear();
 
     // Layer view
     if (appMode === 'layer') _exitLayerView();
@@ -3326,7 +3334,7 @@ function updateNodeColors() {
                 if (scA) {
                     const [source, attrName] = valA.split(':');
                     const obj = source === 'node' ? model.nodesByName.get(nodeName) : model.stateNodeMap.get(`${layerName}::${nodeName}`);
-                    return obj ? scA.scaleFn(obj[attrName]) : '#6b7280';
+                    return obj ? applyCategoryOverride(attrName, obj[attrName], scA.scaleFn(obj[attrName])) : '#6b7280';
                 } else {
                     return colorMapper.getBipartiteNodeColor(true);
                 }
@@ -3334,7 +3342,7 @@ function updateNodeColors() {
                 if (scB) {
                     const [source, attrName] = valB.split(':');
                     const obj = source === 'node' ? model.nodesByName.get(nodeName) : model.stateNodeMap.get(`${layerName}::${nodeName}`);
-                    return obj ? scB.scaleFn(obj[attrName]) : '#6b7280';
+                    return obj ? applyCategoryOverride(attrName, obj[attrName], scB.scaleFn(obj[attrName])) : '#6b7280';
                 } else {
                     return colorMapper.getBipartiteNodeColor(false);
                 }
@@ -3363,7 +3371,7 @@ function updateNodeColors() {
         activeNodeColorScale = sc;
         renderer.nodeColorFn = (layerName, nodeName) => {
             const node = model.nodesByName.get(nodeName);
-            return node ? sc.scaleFn(node[attrName]) : '#6b7280';
+            return node ? applyCategoryOverride(attrName, node[attrName], sc.scaleFn(node[attrName])) : '#6b7280';
         };
     } else if (source === 'state') {
         // Color by state node attribute
@@ -3373,7 +3381,7 @@ function updateNodeColors() {
         renderer.nodeColorFn = (layerName, nodeName) => {
             const key = `${layerName}::${nodeName}`;
             const sn = model.stateNodeMap.get(key);
-            return sn ? sc.scaleFn(sn[attrName]) : '#6b7280';
+            return sn ? applyCategoryOverride(attrName, sn[attrName], sc.scaleFn(sn[attrName])) : '#6b7280';
         };
     }
 
@@ -3396,7 +3404,7 @@ function updateLinkColors() {
     const override = colorScaleOverrides.get(attrName);
     const sc = colorMapper.buildColorScale(model.extended, attrName, override);
     activeLinkColorScale = sc;
-    renderer.linkColorFn = (link) => sc.scaleFn(link[attrName]);
+    renderer.linkColorFn = (link) => applyCategoryOverride(attrName, link[attrName], sc.scaleFn(link[attrName]));
     renderLegends();
 }
 
@@ -3430,7 +3438,7 @@ function updateLayerColors() {
         const sc = colorMapper.buildColorScale(model.layers, attrName, override);
         activeLayerColorScale = sc;
         renderer.layerColorFn = (layerIndex, layer) => {
-            const hex = sc.scaleFn(layer[attrName]);
+            const hex = applyCategoryOverride(attrName, layer[attrName], sc.scaleFn(layer[attrName]));
             return { fill: _hexToRgba(hex, 0.35), border: _hexToRgba(hex, 0.7), text: hex };
         };
     } else {
@@ -3879,8 +3887,28 @@ function createLegendDOM(titleText, scale, id) {
         for (const [val, col] of scale.map.entries()) {
             const row = document.createElement('div');
             row.style.cssText = 'display: flex; align-items: center; gap: 6px; font-size: 12px; color: #4b5563;';
-            const swatch = document.createElement('div');
-            swatch.style.cssText = `width: 12px; height: 12px; border-radius: 50%; background: ${col}; flex-shrink: 0;`;
+            const swatch = document.createElement('input');
+            swatch.type = 'color';
+            swatch.className = 'legend-color-pick legend-no-drag';
+            const overrideMap = categoryColorOverrides.get(scale.attrName);
+            swatch.value = (overrideMap && overrideMap.has(val)) ? overrideMap.get(val) : col;
+            swatch.title = `Change color for "${val}"`;
+            swatch.addEventListener('input', () => {
+                if (!categoryColorOverrides.has(scale.attrName)) {
+                    categoryColorOverrides.set(scale.attrName, new Map());
+                }
+                categoryColorOverrides.get(scale.attrName).set(val, swatch.value);
+                // The existing colorFn closures already call applyCategoryOverride,
+                // so just re-render the canvas — no legend rebuild needed mid-interaction.
+                renderer.render();
+            });
+            swatch.addEventListener('change', () => {
+                // Picker closed/committed — rebuild legend so the swatch reflects the new color.
+                updateNodeColors();
+                updateLinkColors();
+                updateLayerColors();
+                renderer.render();
+            });
             const text = document.createElement('span');
             text.textContent = val;
             text.style.cssText = 'white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px;';
