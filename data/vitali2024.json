@@ -7,35 +7,45 @@
       "layer_name": "Fuerteventura",
       "latitude": 28.5643,
       "longitude": -13.8914,
-      "bipartite": true
+      "bipartite": true,
+      "area_km2": 1659.74,
+      "age_ma": 20.0
     },
     {
       "layer_id": 2,
       "layer_name": "Gran Canaria",
       "latitude": 27.9041,
       "longitude": -15.4331,
-      "bipartite": true
+      "bipartite": true,
+      "area_km2": 1560.0,
+      "age_ma": 14.6
     },
     {
       "layer_id": 3,
       "layer_name": "Tenerife",
       "latitude": 28.28765,
       "longitude": -16.6648,
-      "bipartite": true
+      "bipartite": true,
+      "area_km2": 2034.38,
+      "age_ma": 12.0
     },
     {
       "layer_id": 4,
       "layer_name": "Gomera",
       "latitude": 28.0398,
       "longitude": -17.2267,
-      "bipartite": true
+      "bipartite": true,
+      "area_km2": 370.03,
+      "age_ma": 10.5
     },
     {
       "layer_id": 5,
       "layer_name": "Hierro",
       "latitude": 27.8047,
       "longitude": -17.8954,
-      "bipartite": true
+      "bipartite": true,
+      "area_km2": 268.51,
+      "age_ma": 1.2
     }
   ],
   "nodes": [
