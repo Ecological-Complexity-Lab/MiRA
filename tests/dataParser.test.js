@@ -434,9 +434,10 @@ describe('Group 7 — Bipartite detection: explicit', () => {
     const info = model.bipartiteInfo.get('BL')
     expect(info.isBipartite).toBe(true)
     expect(info.explicit).toBe(true)
-    // setALabel / setBLabel come from the actual node_type values ('plant', 'insect')
-    expect(info.setA).toEqual(new Set(['Plant1', 'Plant2']))
-    expect(info.setB).toEqual(new Set(['Insect1', 'Insect2']))
+    // Set A/B are assigned in alphabetical sort order of node_type values
+    // ('insect' < 'plant'), so insects land in Set A and plants in Set B.
+    expect(info.setA).toEqual(new Set(['Insect1', 'Insect2']))
+    expect(info.setB).toEqual(new Set(['Plant1', 'Plant2']))
   })
 
   it('7.2 explicit detection works when nodes use "type" instead of "node_type"', () => {
