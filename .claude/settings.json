@@ -61,10 +61,30 @@
       "Bash(npx -y esbuild js/app.js --bundle --format=esm --outfile=/dev/null)",
       "Bash(npx playwright:*)",
       "Bash(xargs ls:*)",
-      "Bash(du -sh /Users/shai/GitHub/ecomplab/multilayer_viz/data/*.json)"
+      "Bash(du -sh /Users/shai/GitHub/ecomplab/multilayer_viz/data/*.json)",
+      "Bash(curl -s http://localhost:8000/ -o /dev/null -w \"%{http_code}\\\\n\")",
+      "Bash(curl -s http://localhost:8000/data/process/diagonal_coupling_mock.json)",
+      "Bash(curl -s http://localhost:8000/js/app.js)",
+      "Bash(curl -s http://localhost:8000/data/vitali2024.json)",
+      "Bash(npx --yes playwright@latest --version)",
+      "Bash(npm init *)",
+      "Bash(node test_size_legend.mjs)",
+      "Bash(node test_size_two_legends.mjs)",
+      "WebFetch(domain:hugeicons.com)",
+      "Bash(curl -s \"https://raw.githubusercontent.com/hugeicons/hugeicons-react/refs/heads/main/icons/stroke/upload-circle-02.svg\")",
+      "Bash(curl -s \"https://api.github.com/repos/hugeicons/hugeicons-react/contents/icons/stroke\")",
+      "Bash(curl -s \"https://api.github.com/repos/hugeicons/hugeicons-react/git/trees/main?recursive=1\")",
+      "Bash(npm pack *)",
+      "Bash(tar -tzf hugeicons-react-0.4.0.tgz)",
+      "Bash(tar -xzf hugeicons-react-0.4.0.tgz -C /tmp package/dist/esm/icons/UploadCircle02Icon.js package/dist/esm/icons/GridViewIcon.js package/dist/esm/icons/SidebarTopIcon.js package/dist/esm/icons/PackageSentIcon.js cat /tmp/package/dist/esm/icons/UploadCircle02Icon.js)",
+      "Bash(node -e ' *)",
+      "Bash(node -e \"const m = require\\('/tmp/hicons/node_modules/@hugeicons/core-free-icons/dist/cjs/index.js'\\); console.log\\(Object.keys\\(m\\).filter\\(k=>k.includes\\('Upload'\\)||k.includes\\('Grid'\\)||k.includes\\('Sidebar'\\)||k.includes\\('Package'\\)\\).slice\\(0,10\\)\\)\")",
+      "Bash(node -e \"const m = require\\('/tmp/hicons/node_modules/@hugeicons/core-free-icons/dist/cjs/index.js'\\); const keys = Object.keys\\(m\\); console.log\\(keys.slice\\(0,5\\)\\); console.log\\('total:', keys.length\\);\")",
+      "WebFetch(domain:en.wikipedia.org)"
     ],
     "additionalDirectories": [
-      "/Users/shai/GitHub/ecomplab/emln"
+      "/Users/shai/GitHub/ecomplab/emln",
+      "/tmp"
     ]
   }
 }
