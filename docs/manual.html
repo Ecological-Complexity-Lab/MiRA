@@ -279,10 +279,10 @@
   <ul>
     <li><em>Extended Edge List</em> <strong>(required)</strong> — one row per link, columns: <code>layer_from</code>, <code>node_from</code>, <code>layer_to</code>, <code>node_to</code>, <code>weight</code> (optional). Both intralayer and interlayer links go in this single file.</li>
     <li><em>Layer Attributes</em> (optional) — columns: <code>layer_id</code>, <code>layer_name</code>, <code>latitude</code>, <code>longitude</code>, <code>bipartite</code> (TRUE/FALSE), and any additional columns for layer attributes (e.g. <code>area</code>, <code>elevation</code>) which become available for color mapping. If omitted, layers are derived from the edge list and all treated as unipartite.</li>
-    <li><em>Node Attributes</em> (optional) — columns: <code>node_name</code> (required), <code>node_type</code> (required when any layer is marked bipartite — must have exactly two distinct values), and any additional columns for <strong>physical</strong> node attributes that are the same across all layers (e.g. <code>body_mass</code>, <code>guild</code>). If omitted, nodes are derived from the edge list with no attributes.</li>
+    <li><em>Node Attributes</em> (optional) — columns: <code>node_name</code> (required), <code>node_type</code> (required when any layer is marked bipartite — each bipartite layer must have exactly two distinct <code>node_type</code> values among its own nodes, but different layers may use different pairs, supporting diagonal-coupling networks), and any additional columns for <strong>physical</strong> node attributes that are the same across all layers (e.g. <code>body_mass</code>, <code>guild</code>). If omitted, nodes are derived from the edge list with no attributes.</li>
     <li><em>State Node Attributes</em> (optional) — columns: <code>layer_name</code> (required), <code>node_name</code> (required), plus any additional columns for <strong>per-layer</strong> node attributes that can differ across layers (e.g. <code>abundance</code>, <code>module</code>). Use this when the same species or node has a different value in each temporal or spatial layer. Rows that do not match a (layer, node) pair already present in the edge list are silently ignored.</li>
   </ul>
-  <div class="info-box"><strong>Bipartite declaration:</strong> bipartite is never auto-detected. Mark a layer as bipartite via the <code>bipartite=TRUE</code> column in the layers file, and provide a <code>node_type</code> column in the nodes file.</div>
+  <div class="info-box"><strong>Bipartite declaration:</strong> bipartite is never auto-detected. Mark a layer as bipartite via the <code>bipartite=TRUE</code> column in the layers file, and provide a <code>node_type</code> column in the nodes file. Each bipartite layer must have exactly two distinct <code>node_type</code> values among its own nodes. <strong>Diagonal-coupling networks</strong> (e.g. plant–pollinator + plant–herbivore) are supported: different layers may share one node set but pair it with a different partner set, resulting in more than two <code>node_type</code> values globally — this is fine as long as each individual layer has exactly two.</div>
   <p>The <strong>Directed</strong> checkbox marks all edges as directed before loading. Comma, tab, and semicolon delimiters are auto-detected.</p>
   <div class="info-box"><strong>Note:</strong> The (layer, node) pairs are derived automatically from the edge list — you do not need to supply them. The optional <em>State Node Attributes</em> file lets you attach per-layer attributes to those pairs without modifying any other file.</div>
 
@@ -343,7 +343,7 @@ Ixodes_ricinus,0.003</code></pre>
     <li><code>layer_id</code> — unique identifier.</li>
     <li><code>layer_name</code> — display name.</li>
     <li><code>latitude</code> / <code>longitude</code> <em>(optional)</em> — unlocks Map Mode.</li>
-    <li><code>bipartite</code> <em>(optional, Boolean)</em> — set <code>true</code> to mark this layer bipartite. Requires nodes to carry <code>node_type</code> with exactly two distinct values. Never auto-detected.</li>
+    <li><code>bipartite</code> <em>(optional, Boolean)</em> — set <code>true</code> to mark this layer bipartite. Nodes must carry a <code>node_type</code> attribute with exactly two distinct values <em>within this layer</em>. Different layers may use different pairs (diagonal-coupling). Never auto-detected.</li>
     <li>Any extra columns become selectable attributes for color/size mapping.</li>
   </ul>
 
@@ -351,7 +351,7 @@ Ixodes_ricinus,0.003</code></pre>
   <ul>
     <li><code>node_id</code> — unique identifier.</li>
     <li><code>node_name</code> — display label.</li>
-    <li><code>node_type</code> <em>(required for bipartite layers)</em> — exactly two distinct values; determines Set A vs. Set B.</li>
+    <li><code>node_type</code> <em>(required for bipartite layers)</em> — each bipartite layer must have exactly two distinct values among its own nodes; determines Set A vs. Set B. Globally more than two values are allowed (diagonal-coupling networks).</li>
     <li>Any extra columns become selectable attributes for color/size mapping.</li>
   </ul>
 
@@ -786,13 +786,13 @@ Ixodes_ricinus,0.003</code></pre>
 
   <!-- ── LEGEND ──────────────────────────────────────────────────── -->
   <h2 class="sec mode-misc" id="legend">🏷️ Dynamic Legend</h2>
-  <p>A legend panel appears in the bottom-right corner whenever color or size mappings are active. Toggle visibility with the legend button in the toolbar.</p>
+  <p>A legend panel appears in the bottom-right corner whenever color or size mappings are active. Legends expand automatically when you select an attribute. Toggle panel visibility with the legend button in the toolbar.</p>
   <ul>
-    <li><span class="key">Draggable</span> — drag the title bar to reposition anywhere on screen.</li>
-    <li><span class="key">Collapsible</span> — click <strong>−</strong> to collapse to a tab; <strong>+</strong> to expand again.</li>
-    <li><span class="key">Closeable</span> — click <strong>✕</strong> to dismiss. Reappears on new data load or setting change.</li>
-    <li><span class="key">Interactive toggle</span> (Layer Mode) — when coloring by Node count or Edge density, a button switches between a continuous gradient bar and a categorical list.</li>
-    <li><span class="key">Categorical color pickers</span> — for any categorical attribute (e.g. <code>node_type</code>, <code>module</code>), each legend entry shows a circular color swatch. Click a swatch to open the OS color picker and assign a custom color to that value. Changes apply instantly to the canvas. Overrides persist for the session and are cleared by <em>Reset Visualization Options</em>.</li>
+    <li><span class="key">Draggable</span> — drag the legend box to reposition it anywhere on screen.</li>
+    <li><span class="key">Collapsible</span> — click <strong>✕</strong> on a legend box to collapse it to a small expand button; click the button to restore it.</li>
+    <li><span class="key">Per-set legends</span> — bipartite networks show separate color and size legends for Set A and Set B (e.g. "Node Color (bird)" / "Node Color (plant)").</li>
+    <li><span class="key">Categorical color pickers</span> — for any categorical attribute (e.g. <code>node_type</code>, <code>module</code>), each legend entry shows a circular color swatch. Click a swatch to open the OS color picker and assign a custom color to that value. Changes apply instantly. Overrides persist for the session and are cleared by <em>Reset Visualization Options</em>.</li>
+    <li><span class="key">Continuous/Discrete toggle</span> — for numeric attributes, a pill button in the legend header switches between a continuous gradient and a discrete categorical palette.</li>
   </ul>
 
   <hr>
