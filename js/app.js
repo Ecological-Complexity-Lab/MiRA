@@ -12,7 +12,7 @@ import { csvToJson } from './csvImporter.js';
 import { Dashboard, svgBar } from './dashboard.js';
 import { MetaNetwork } from './metaNetwork.js';
 import { DataMode, dataMode, layerColors, initLayerColors } from './dataMode.js';
-import { saveSession, loadSession } from './sessionManager.js';
+import { saveSession, loadSession, loadSessionFromUrl } from './sessionManager.js';
 
 // ---- State ----
 let model = null;
@@ -4982,3 +4982,30 @@ sessionFileInput.addEventListener('change', async (e) => {
     }
     e.target.value = '';
 });
+
+const loadSessionUrlBtn = document.getElementById('loadSessionUrlBtn');
+loadSessionUrlBtn.addEventListener('click', async () => {
+    const url = prompt('Paste session URL:');
+    if (!url) return;
+    try {
+        const state = await loadSessionFromUrl(url.trim());
+        if (!state.version || !state.rawData) throw new Error('Invalid session file.');
+        restoreSessionState(state);
+    } catch (err) {
+        alert('Failed to load session from URL: ' + err.message);
+    }
+});
+
+// ---- Auto-load session from ?session=<url> URL parameter ----
+(async () => {
+    const sessionUrl = new URLSearchParams(window.location.search).get('session');
+    if (!sessionUrl) return;
+    try {
+        const state = await loadSessionFromUrl(sessionUrl);
+        if (!state.version || !state.rawData) throw new Error('Invalid session file.');
+        restoreSessionState(state);
+    } catch (err) {
+        console.error('Failed to load session from URL:', err);
+        alert('Failed to load session from URL: ' + err.message);
+    }
+})();
