@@ -12,6 +12,7 @@ import { csvToJson } from './csvImporter.js';
 import { Dashboard, svgBar } from './dashboard.js';
 import { MetaNetwork } from './metaNetwork.js';
 import { DataMode, dataMode, layerColors, initLayerColors } from './dataMode.js';
+import { saveSession, loadSession } from './sessionManager.js';
 
 // ---- State ----
 let model = null;
@@ -4679,3 +4680,292 @@ nodeSearchInput.addEventListener('blur', () => {
 
 nodeSearchClearBtn.addEventListener('click', clearNodeSearch);
 
+// ---- Session Save / Load ----
+
+function getSessionState() {
+    const rawData = model ? {
+        directed: model.directed,
+        directedInterlayer: model.directedInterlayer,
+        layers: model.layers,
+        nodes: model.nodes,
+        extended: model.extended,
+        state_nodes: model.stateNodes,
+    } : null;
+
+    const positionsArray = positions
+        ? [...positions.entries()].map(([layerName, nodeMap]) => [layerName, [...nodeMap.entries()]])
+        : null;
+
+    return {
+        version: 1,
+        appMode,
+        rawData,
+        positions: positionsArray,
+        renderer: {
+            skewX: renderer.skewX,
+            skewY: renderer.skewY,
+            scale: renderer.scale,
+            offsetX: renderer.offsetX,
+            offsetY: renderer.offsetY,
+            layerSpacing: renderer.layerSpacing,
+            stackMode: renderer.stackMode,
+            nodeRadius: renderer.nodeRadius,
+            showLabels: renderer.showLabels,
+            transformNodes: renderer.transformNodes,
+            labelSizePx: parseInt(labelSizeSlider.value),
+            showLayerNames: renderer.showLayerNames,
+            showSetNames: renderer.showSetNames,
+            showInterlayerLinks: renderer.showInterlayerLinks,
+            arrowheadSize: renderer.arrowheadSize,
+            interlayerCurvature: renderer.interlayerCurvature,
+            interlayerMinWeight: renderer.interlayerMinWeight,
+            defaultIntraColor: renderer.defaultIntraColor,
+            defaultInterColor: renderer.defaultInterColor,
+            layerOffsets: [...renderer.layerOffsets.entries()],
+        },
+        ui: {
+            nodeColorSelect: nodeColorSelect.value,
+            nodeColorSelectSetA: nodeColorSelectSetA.value,
+            nodeColorSelectSetB: nodeColorSelectSetB.value,
+            nodeSizeSelect: nodeSizeSelect.value,
+            nodeSizeSelectSetA: nodeSizeSelectSetA.value,
+            nodeSizeSelectSetB: nodeSizeSelectSetB.value,
+            linkColorSelect: linkColorSelect.value,
+            layerColorSelect: layerColorSelect.value,
+            layerColorPicker: layerColorPicker.value,
+            nodeColorPicker: nodeColorPicker.value,
+            intraLinkColorPicker: intraLinkColorPicker.value,
+            interLinkColorPicker: interLinkColorPicker.value,
+            nodeSizeSlider: parseInt(nodeSizeSlider.value),
+            layoutSelect: layoutSelect.value,
+            bipartiteNestedCheckbox: bipartiteNestedCheckbox.checked,
+            colorScaleOverrides: [...colorScaleOverrides.entries()],
+            categoryColorOverrides: [...categoryColorOverrides.entries()].map(
+                ([k, m]) => [k, [...m.entries()]]
+            ),
+        },
+        layerView: renderer.layerView ? {
+            settings: { ...renderer.layerView.settings },
+            viewScale: renderer.layerView.viewScale,
+            viewOffsetX: renderer.layerView.viewOffsetX,
+            viewOffsetY: renderer.layerView.viewOffsetY,
+            geoMode: renderer.layerView.geoMode,
+        } : null,
+        meta: {
+            aggregation: mnAggregationSelect.value,
+            layout: mnLayoutSelect.value,
+            colorBy: mnColorBySelect.value,
+            sizeBy: mnSizeBySelect.value,
+            baseSize: parseFloat(mnBaseSizeSlider.value),
+            minWeight: parseFloat(mnMinWeightSlider.value),
+            nestedSort: mnNestedSortCheckbox.checked,
+            showLabels: mnShowLabelsCheckbox.checked,
+            labelSize: parseInt(mnLabelSizeSlider.value),
+            colorSetA: mnColorSetA.value,
+            colorSetB: mnColorSetB.value,
+        },
+        map: {
+            activeMapLayers: [...activeMapLayers],
+            mapOpacity: parseFloat(mapOpacitySlider.value),
+            showMapImage: showMapImageCheckbox.checked,
+            showLocations: showLocationsCheckbox.checked,
+            streetMap: streetMapCheckbox.checked,
+            lvMapOpacity: parseFloat(lvMapOpacitySlider.value),
+            lvShowMapImage: lvShowMapImageCheckbox.checked,
+            lvStreetMap: lvStreetMapCheckbox.checked,
+        },
+        legend: {
+            expandedLegends: [...expandedLegends],
+            lvExpandedLegends: [...lvExpandedLegends],
+        },
+    };
+}
+
+function _restoreLayerViewDOM(s) {
+    lvSizeBy.value = s.sizeBy;
+    lvColorBy.value = s.colorBy;
+    lvUniformColor.value = s.uniformColor;
+    lvUniformColorContainer.style.display = s.colorBy === 'uniform' ? '' : 'none';
+    lvShowEdges.checked = s.showEdges;
+    lvEdgeOptionsContainer.style.display = s.showEdges ? '' : 'none';
+    lvEdgeMetric.value = s.edgeMetric;
+    lvMinEdgeWeight.value = s.minEdgeWeight;
+    lvMinEdgeWeightLabel.textContent = s.minEdgeWeight;
+    lvEdgeLabels.checked = s.showEdgeLabels;
+    lvShowLabels.checked = s.showLabels;
+    lvFontSize.value = s.labelFontSize;
+    lvSizeMult.value = s.sizeMultiplier;
+    lvSizeMultLabel.textContent = s.sizeMultiplier.toFixed(1) + '×';
+    lvSpacing.value = s.bubbleSpacing;
+    lvSpacingLabel.textContent = s.bubbleSpacing.toFixed(1) + '×';
+}
+
+function restoreSessionState(state) {
+    if (!state.rawData) return;
+
+    // 1. Load data — resets mode, visual options, computes fresh positions
+    loadData(state.rawData);
+
+    // 2. Override positions with saved ones to restore exact layout
+    if (state.positions) {
+        positions = new Map(
+            state.positions.map(([layerName, entries]) => [layerName, new Map(entries)])
+        );
+        renderer.setData(model, positions);
+    }
+
+    // 3. Renderer properties
+    const rv = state.renderer;
+    renderer.skewX = rv.skewX;
+    renderer.skewY = rv.skewY;
+    renderer.scale = rv.scale;
+    renderer.offsetX = rv.offsetX;
+    renderer.offsetY = rv.offsetY;
+    renderer.layerSpacing = rv.layerSpacing;
+    setStackMode(rv.stackMode);
+    renderer.nodeRadius = rv.nodeRadius;
+    renderer.showLabels = rv.showLabels;
+    renderer.transformNodes = rv.transformNodes;
+    renderer.labelFont = `${rv.labelSizePx}px Inter, system-ui, sans-serif`;
+    renderer.showLayerNames = rv.showLayerNames;
+    renderer.showSetNames = rv.showSetNames;
+    renderer.showInterlayerLinks = rv.showInterlayerLinks;
+    renderer.arrowheadSize = rv.arrowheadSize;
+    renderer.interlayerCurvature = rv.interlayerCurvature;
+    renderer.interlayerMinWeight = rv.interlayerMinWeight;
+    renderer.defaultIntraColor = rv.defaultIntraColor;
+    renderer.defaultInterColor = rv.defaultInterColor;
+    renderer.layerOffsets = new Map(rv.layerOffsets);
+
+    // 4. DOM — checkboxes and sliders
+    showLabelsCheckbox.checked = rv.showLabels;
+    labelSizeRow.style.display = rv.showLabels ? '' : 'none';
+    labelSizeSlider.value = rv.labelSizePx;
+    labelSizeLabel.textContent = rv.labelSizePx + 'px';
+    transformNodesCheckbox.checked = rv.transformNodes;
+    showLayerNamesCheckbox.checked = rv.showLayerNames;
+    showSetNamesCheckbox.checked = rv.showSetNames;
+    showInterlayerCheckbox.checked = rv.showInterlayerLinks;
+    layerSpacingSlider.value = rv.layerSpacing;
+    nodeSizeSlider.value = rv.nodeRadius;
+    arrowheadSizeSlider.value = rv.arrowheadSize;
+    interlayerCurvatureSlider.value = rv.interlayerCurvature;
+    interlayerWeightSlider.value = rv.interlayerMinWeight;
+    interlayerWeightLabel.textContent = rv.interlayerMinWeight.toFixed(2);
+
+    // 5. DOM — color pickers
+    const ui = state.ui;
+    layerColorPicker.value = ui.layerColorPicker;
+    nodeColorPicker.value = ui.nodeColorPicker;
+    intraLinkColorPicker.value = ui.intraLinkColorPicker;
+    interLinkColorPicker.value = ui.interLinkColorPicker;
+
+    // 6. Layout
+    layoutSelect.value = ui.layoutSelect;
+    layout.layoutType = ui.layoutSelect;
+    bipartiteNestedCheckbox.checked = ui.bipartiteNestedCheckbox;
+    layout.bipartiteNested = ui.bipartiteNestedCheckbox;
+
+    // 7. Color scale overrides
+    colorScaleOverrides.clear();
+    for (const [k, v] of ui.colorScaleOverrides) colorScaleOverrides.set(k, v);
+    categoryColorOverrides.clear();
+    for (const [k, entries] of ui.categoryColorOverrides) categoryColorOverrides.set(k, new Map(entries));
+
+    // 8. Color/size dropdowns → rebuild render functions
+    nodeColorSelect.value = ui.nodeColorSelect;
+    nodeColorSelectSetA.value = ui.nodeColorSelectSetA;
+    nodeColorSelectSetB.value = ui.nodeColorSelectSetB;
+    nodeSizeSelect.value = ui.nodeSizeSelect;
+    nodeSizeSelectSetA.value = ui.nodeSizeSelectSetA;
+    nodeSizeSelectSetB.value = ui.nodeSizeSelectSetB;
+    linkColorSelect.value = ui.linkColorSelect;
+    layerColorSelect.value = ui.layerColorSelect;
+    updateNodeColors();
+    updateNodeSizes();
+    updateLinkColors();
+    updateLayerColors();
+
+    // 9. Legend
+    expandedLegends.clear();
+    for (const k of state.legend.expandedLegends) expandedLegends.add(k);
+    lvExpandedLegends.clear();
+    for (const k of state.legend.lvExpandedLegends) lvExpandedLegends.add(k);
+    renderLegends();
+
+    // 10. Meta-network DOM (takes effect next time it's opened)
+    const mn = state.meta;
+    mnAggregationSelect.value = mn.aggregation;
+    mnLayoutSelect.value = mn.layout;
+    mnColorBySelect.value = mn.colorBy;
+    mnSizeBySelect.value = mn.sizeBy;
+    mnBaseSizeSlider.value = mn.baseSize;
+    mnBaseSizeLabel.textContent = mn.baseSize.toFixed(1) + '×';
+    mnMinWeightSlider.value = mn.minWeight;
+    mnMinWeightLabel.textContent = mn.minWeight.toFixed(2);
+    mnNestedSortCheckbox.checked = mn.nestedSort;
+    mnShowLabelsCheckbox.checked = mn.showLabels;
+    mnLabelSizeSlider.value = mn.labelSize;
+    mnLabelSizeLabel.textContent = mn.labelSize + 'px';
+    mnColorSetA.value = mn.colorSetA;
+    mnColorSetB.value = mn.colorSetB;
+
+    // 11. Map DOM
+    const mp = state.map;
+    mapOpacitySlider.value = mp.mapOpacity;
+    showMapImageCheckbox.checked = mp.showMapImage;
+    showLocationsCheckbox.checked = mp.showLocations;
+    streetMapCheckbox.checked = mp.streetMap;
+    lvMapOpacitySlider.value = mp.lvMapOpacity;
+    lvShowMapImageCheckbox.checked = mp.lvShowMapImage;
+    lvStreetMapCheckbox.checked = mp.lvStreetMap;
+
+    // 12. Restore visualization mode
+    if (state.appMode === 'map' && mapModeBtn.style.display !== 'none') {
+        toggleMapMode();
+        activeMapLayers.clear();
+        for (const l of mp.activeMapLayers) activeMapLayers.add(l);
+        updateMapModeViews();
+    } else if (state.appMode === 'layer') {
+        toggleLayerView();
+        if (renderer.layerView && state.layerView) {
+            const lv = renderer.layerView;
+            Object.assign(lv.settings, state.layerView.settings);
+            lv.viewScale = state.layerView.viewScale;
+            lv.viewOffsetX = state.layerView.viewOffsetX;
+            lv.viewOffsetY = state.layerView.viewOffsetY;
+            _restoreLayerViewDOM(state.layerView.settings);
+        }
+    } else if (state.appMode === 'dashboard') {
+        dashboardBtn.click();
+    } else if (state.appMode === 'metanetwork') {
+        metaNetworkBtn.click();
+    }
+
+    renderer.render();
+}
+
+// ---- Session button wiring ----
+const saveSessionBtn = document.getElementById('saveSessionBtn');
+const loadSessionBtn = document.getElementById('loadSessionBtn');
+const sessionFileInput = document.getElementById('sessionFileInput');
+
+saveSessionBtn.addEventListener('click', () => {
+    if (!model) { alert('No data loaded to save.'); return; }
+    saveSession(getSessionState());
+});
+
+loadSessionBtn.addEventListener('click', () => sessionFileInput.click());
+
+sessionFileInput.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    try {
+        const state = await loadSession(file);
+        if (!state.version || !state.rawData) throw new Error('Invalid session file.');
+        restoreSessionState(state);
+    } catch (err) {
+        alert('Failed to load session: ' + err.message);
+    }
+    e.target.value = '';
+});
