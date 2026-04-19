@@ -4778,6 +4778,11 @@ function getSessionState() {
             expandedLegends: [...expandedLegends],
             lvExpandedLegends: [...lvExpandedLegends],
         },
+        filter: {
+            nodeNames: dataMode.filteredNodeNames ? [...dataMode.filteredNodeNames] : null,
+            layerNames: dataMode.filteredLayerNames ? [...dataMode.filteredLayerNames] : null,
+            linkKeys: dataMode.filteredLinkKeys ? [...dataMode.filteredLinkKeys] : null,
+        },
     };
 }
 
@@ -4940,6 +4945,14 @@ function restoreSessionState(state) {
         dashboardBtn.click();
     } else if (state.appMode === 'metanetwork') {
         metaNetworkBtn.click();
+    }
+
+    // 13. Restore data filter
+    if (state.filter) {
+        dataMode.filteredNodeNames  = state.filter.nodeNames  ? new Set(state.filter.nodeNames)  : null;
+        dataMode.filteredLayerNames = state.filter.layerNames ? new Set(state.filter.layerNames) : null;
+        dataMode.filteredLinkKeys   = state.filter.linkKeys   ? new Set(state.filter.linkKeys)   : null;
+        _updateFilterBanner();
     }
 
     renderer.render();
