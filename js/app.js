@@ -13,6 +13,7 @@ import { Dashboard, svgBar } from './dashboard.js';
 import { MetaNetwork } from './metaNetwork.js';
 import { DataMode, dataMode, layerColors, initLayerColors } from './dataMode.js';
 import { saveSession, loadSession, loadSessionFromUrl } from './sessionManager.js';
+import { startTour } from './tourManager.js';
 
 // ---- State ----
 let model = null;
@@ -4166,6 +4167,9 @@ function _createLVLegendBtn(scale) {
     btn.onclick = () => { lvExpandedLegends.add(scale.id); renderLayerViewLegend(); };
     return btn;
 }
+
+// ---- Tour ----
+document.getElementById('tourBtn').addEventListener('click', startTour);
 
 // ---- Help Popup ----
 const helpBtn            = document.getElementById('helpBtn');

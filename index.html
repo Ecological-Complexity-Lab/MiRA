@@ -483,47 +483,50 @@
   <!-- Unified Bottom Bar -->
   <div id="bottomBar">
     <button id="helpBtn" class="btn zoom-btn" title="Help" style="font-size:13px;font-weight:700;">?</button>
+    <button id="tourBtn" class="btn zoom-btn" title="Quick tour of key features">Tour</button>
 
     <span class="toolbar-sep"></span>
 
-    <button id="networkModeBtn" class="btn zoom-btn mode-btn" data-mode="network" title="Network Mode">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round">
-        <polygon points="12,2 22,8.5 12,15 2,8.5"/>
-        <polyline points="2,12 12,18.5 22,12"/>
-        <polyline points="2,16 12,22.5 22,16"/>
-      </svg>
-    </button>
-    <button id="mapModeBtn" class="btn zoom-btn mode-btn" data-mode="map" title="Map Mode" style="display:none;">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z" />
-      </svg>
-    </button>
-    <button id="layerViewBtn" class="btn zoom-btn mode-btn" data-mode="layer" title="Layer Mode">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-        <circle cx="12" cy="5" r="2.5"/>
-        <circle cx="5" cy="19" r="2.5"/>
-        <circle cx="19" cy="19" r="2.5"/>
-        <line x1="12" y1="7.5" x2="5.9" y2="16.6"/>
-        <line x1="12" y1="7.5" x2="18.1" y2="16.6"/>
-        <line x1="7.5" y1="19" x2="16.5" y2="19"/>
-      </svg>
-    </button>
-    <button id="metaNetworkBtn" class="btn zoom-btn mode-btn" data-mode="meta" title="Meta-Network Mode" style="font-size:15px; font-weight:600; letter-spacing:-1px;">Σ</button>
-    <button id="dashboardBtn" class="btn zoom-btn mode-btn" data-mode="dashboard" title="Dashboard">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-        <rect x="3" y="12" width="5" height="9" rx="1"/>
-        <rect x="9.5" y="7" width="5" height="14" rx="1"/>
-        <rect x="16" y="3" width="5" height="18" rx="1"/>
-      </svg>
-    </button>
-    <button id="dataModeBtn" class="btn zoom-btn mode-btn" data-mode="data" title="Data Mode">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="3" y="3" width="18" height="18" rx="2"/>
-        <line x1="3" y1="9" x2="21" y2="9"/>
-        <line x1="3" y1="15" x2="21" y2="15"/>
-        <line x1="9" y1="3" x2="9" y2="21"/>
-      </svg>
-    </button>
+    <div id="modeBtnsGroup" style="display:flex;align-items:center;gap:4px;">
+      <button id="networkModeBtn" class="btn zoom-btn mode-btn" data-mode="network" title="Network Mode">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round">
+          <polygon points="12,2 22,8.5 12,15 2,8.5"/>
+          <polyline points="2,12 12,18.5 22,12"/>
+          <polyline points="2,16 12,22.5 22,16"/>
+        </svg>
+      </button>
+      <button id="mapModeBtn" class="btn zoom-btn mode-btn" data-mode="map" title="Map Mode" style="display:none;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z" />
+        </svg>
+      </button>
+      <button id="layerViewBtn" class="btn zoom-btn mode-btn" data-mode="layer" title="Layer Mode">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <circle cx="12" cy="5" r="2.5"/>
+          <circle cx="5" cy="19" r="2.5"/>
+          <circle cx="19" cy="19" r="2.5"/>
+          <line x1="12" y1="7.5" x2="5.9" y2="16.6"/>
+          <line x1="12" y1="7.5" x2="18.1" y2="16.6"/>
+          <line x1="7.5" y1="19" x2="16.5" y2="19"/>
+        </svg>
+      </button>
+      <button id="metaNetworkBtn" class="btn zoom-btn mode-btn" data-mode="meta" title="Meta-Network Mode" style="font-size:15px; font-weight:600; letter-spacing:-1px;">Σ</button>
+      <button id="dashboardBtn" class="btn zoom-btn mode-btn" data-mode="dashboard" title="Dashboard">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+          <rect x="3" y="12" width="5" height="9" rx="1"/>
+          <rect x="9.5" y="7" width="5" height="14" rx="1"/>
+          <rect x="16" y="3" width="5" height="18" rx="1"/>
+        </svg>
+      </button>
+      <button id="dataModeBtn" class="btn zoom-btn mode-btn" data-mode="data" title="Data Mode">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2"/>
+          <line x1="3" y1="9" x2="21" y2="9"/>
+          <line x1="3" y1="15" x2="21" y2="15"/>
+          <line x1="9" y1="3" x2="9" y2="21"/>
+        </svg>
+      </button>
+    </div>
 
     <span class="toolbar-sep"></span>
 
@@ -548,27 +551,29 @@
       </svg>
     </button>
     <span class="toolbar-sep"></span>
-    <button id="saveSessionBtn" class="btn zoom-btn" title="Save Session">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-        <polyline points="7 10 12 15 17 10"/>
-        <line x1="12" y1="15" x2="12" y2="3"/>
-      </svg>
-    </button>
-    <button id="loadSessionBtn" class="btn zoom-btn" title="Load Session">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-        <polyline points="17 8 12 3 7 8"/>
-        <line x1="12" y1="3" x2="12" y2="15"/>
-      </svg>
-    </button>
-    <button id="loadSessionUrlBtn" class="btn zoom-btn" title="Load Session from URL">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="10"/>
-        <line x1="2" y1="12" x2="22" y2="12"/>
-        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-      </svg>
-    </button>
+    <div id="sessionBtnsGroup" style="display:flex;align-items:center;gap:4px;">
+      <button id="saveSessionBtn" class="btn zoom-btn" title="Save Session">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+      </button>
+      <button id="loadSessionBtn" class="btn zoom-btn" title="Load Session">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+      </button>
+      <button id="loadSessionUrlBtn" class="btn zoom-btn" title="Load Session from URL">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="2" y1="12" x2="22" y2="12"/>
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+        </svg>
+      </button>
+    </div>
     <input type="file" id="sessionFileInput" accept=".json" style="display:none">
 
     <!-- Alerts zone (elastic middle) -->
@@ -815,6 +820,23 @@
     <div id="helpPopupBody" style="padding:12px 14px; line-height:1.6; color:#374151; max-height:60vh; overflow-y:auto;"></div>
     <div style="padding:10px 14px; border-top:1px solid #f3f4f6; text-align:right;">
       <button id="helpPopupFullManual" class="btn" style="font-size:12px;">Full Manual →</button>
+    </div>
+  </div>
+
+  <!-- Tour overlay -->
+  <div id="tourHighlight"></div>
+  <div id="tourPopover">
+    <div class="tour-header">
+      <span id="tourTitle"></span>
+      <button id="tourClose" class="close-btn" style="width:22px;height:22px;font-size:15px;">✕</button>
+    </div>
+    <p id="tourBody"></p>
+    <div class="tour-footer">
+      <span id="tourCounter"></span>
+      <div class="tour-nav">
+        <button id="tourPrev" class="btn">← Back</button>
+        <button id="tourNext" class="btn btn-primary">Next →</button>
+      </div>
     </div>
   </div>
 
