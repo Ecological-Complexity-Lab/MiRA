@@ -4408,65 +4408,79 @@ async function _compositeOverlays(ctx, scale) {
 async function exportScreenshot(format) {
     if (format === 'pdf') { await _exportPDF(); return; }
 
-    // Raster export (PNG / JPG)
-    const srcCanvas = document.getElementById('networkCanvas');
-    const scale = 2;
-
+    const srcCanvas   = document.getElementById('networkCanvas');
+    const multiplier  = parseInt(document.getElementById('exportResolutionSelect').value) || 1;
     const includeGrid   = document.getElementById('exportGridCheckbox').checked;
     const includePanels = document.getElementById('exportPanelsCheckbox').checked;
-    const prevShowGrid  = renderer.showGrid;
+
+    // Save renderer + canvas state so we can restore after high-res render
+    const origW  = srcCanvas.width,   origH  = srcCanvas.height;
+    const origOX = renderer.offsetX,  origOY = renderer.offsetY;
+    const origS  = renderer.scale;
+    const prevShowGrid = renderer.showGrid;
+
+    // Upscale canvas + renderer transforms, then re-render at full resolution
+    srcCanvas.width  = origW  * multiplier;
+    srcCanvas.height = origH * multiplier;
+    renderer.offsetX = origOX * multiplier;
+    renderer.offsetY = origOY * multiplier;
+    renderer.scale   = origS  * multiplier;
     renderer.showGrid = includeGrid;
     renderer.render();
 
-    const w = srcCanvas.width, h = srcCanvas.height;
+    const W = srcCanvas.width, H = srcCanvas.height;
     const offscreen = document.createElement('canvas');
-    offscreen.width  = w * scale;
-    offscreen.height = h * scale;
+    offscreen.width = W; offscreen.height = H;
     const ctx = offscreen.getContext('2d');
 
     // White background
     ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, offscreen.width, offscreen.height);
+    ctx.fillRect(0, 0, W, H);
 
-    // In map mode or layer view geo mode: composite the Leaflet map underneath the canvas
+    // In map mode or layer view geo mode: composite the Leaflet map underneath
     const isLvGeo = appMode === 'layer' && renderer.layerView?.geoMode;
     if ((appMode === 'map' || isLvGeo) && includeGrid) {
         try {
             await _loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
             const mapEl = document.getElementById(appMode === 'map' ? 'backgroundMap' : 'lvBackgroundMap');
             const mapCanvas = await html2canvas(mapEl, {
-                scale, useCORS: true, allowTaint: true,
+                scale: multiplier, useCORS: true, allowTaint: true,
                 backgroundColor: '#ffffff', logging: false,
-                width: w, height: h, x: 0, y: 0,
+                width: origW, height: origH, x: 0, y: 0,
             });
-            ctx.drawImage(mapCanvas, 0, 0, offscreen.width, offscreen.height);
+            ctx.drawImage(mapCanvas, 0, 0, W, H);
         } catch (e) { console.warn('Map capture failed:', e); }
     }
 
-    // Network canvas (nodes, edges, layer planes)
-    ctx.drawImage(srcCanvas, 0, 0, offscreen.width, offscreen.height);
+    // Network canvas — already rendered at W×H
+    ctx.drawImage(srcCanvas, 0, 0, W, H);
 
-    // In map mode: composite the map markers overlay on top of the network
+    // In map mode: composite the map markers overlay on top
     if (appMode === 'map') {
         try {
             const markersCanvas = await html2canvas(mapMarkersOverlay, {
-                scale, useCORS: true, allowTaint: true,
+                scale: multiplier, useCORS: true, allowTaint: true,
                 backgroundColor: null, logging: false,
-                width: w, height: h, x: 0, y: 0,
+                width: origW, height: origH, x: 0, y: 0,
             });
-            ctx.drawImage(markersCanvas, 0, 0, offscreen.width, offscreen.height);
+            ctx.drawImage(markersCanvas, 0, 0, W, H);
         } catch (e) { console.warn('Map markers capture failed:', e); }
     }
 
-    // Restore grid
+    // Restore canvas + renderer to original state
+    srcCanvas.width  = origW;
+    srcCanvas.height = origH;
+    renderer.offsetX = origOX;
+    renderer.offsetY = origOY;
+    renderer.scale   = origS;
     renderer.showGrid = prevShowGrid;
     renderer.render();
 
-    // Panels & legend
-    if (includePanels) await _compositeOverlays(ctx, scale);
+    // Panels & legend — use multiplier so html2canvas renders them crisply too
+    if (includePanels) await _compositeOverlays(ctx, multiplier);
 
     // Branding
-    _drawBranding(ctx, offscreen.width, offscreen.height, scale);
+    _drawBranding(ctx, W, H, multiplier);
 
     const mimeType = format === 'jpg' ? 'image/jpeg' : 'image/png';
     const quality  = format === 'jpg' ? 0.92 : undefined;

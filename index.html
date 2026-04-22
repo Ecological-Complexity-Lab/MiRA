@@ -685,6 +685,14 @@
           <input type="checkbox" id="exportPanelsCheckbox" checked>
           <span>Include panels &amp; legend</span>
         </label>
+        <div style="margin-top:8px;display:flex;align-items:center;gap:8px;font-size:13px;">
+          <label for="exportResolutionSelect" style="color:#374151;">Resolution</label>
+          <select id="exportResolutionSelect" class="styled-select" style="width:auto;">
+            <option value="1">1× — screen</option>
+            <option value="2" selected>2× — high quality</option>
+            <option value="4">4× — print quality</option>
+          </select>
+        </div>
       </div>
       <div class="dialog-buttons">
         <button class="btn btn-primary" data-format="png">PNG</button>
