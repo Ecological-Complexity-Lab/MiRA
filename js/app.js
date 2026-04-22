@@ -4413,33 +4413,67 @@ async function exportScreenshot(format) {
     const includeGrid   = document.getElementById('exportGridCheckbox').checked;
     const includePanels = document.getElementById('exportPanelsCheckbox').checked;
 
-    // Save renderer + canvas state so we can restore after high-res render
-    const origW  = srcCanvas.width,   origH  = srcCanvas.height;
-    const origOX = renderer.offsetX,  origOY = renderer.offsetY;
-    const origS  = renderer.scale;
+    // In map/geo modes, layer positions come from Leaflet's latLngToContainerPoint()
+    // which is always in screen-space pixels. Scaling the renderer transforms would
+    // shift the network off its geographic anchors, so we capture at screen resolution
+    // and stretch — position stays correct, resolution benefit applies to non-map modes.
+    const isLvGeo = appMode === 'layer' && renderer.layerView?.geoMode;
+    const isGeoMode = appMode === 'map' || isLvGeo;
+
+    const origW = srcCanvas.width, origH = srcCanvas.height;
     const prevShowGrid = renderer.showGrid;
 
-    // Upscale canvas + renderer transforms, then re-render at full resolution
-    srcCanvas.width  = origW  * multiplier;
-    srcCanvas.height = origH * multiplier;
-    renderer.offsetX = origOX * multiplier;
-    renderer.offsetY = origOY * multiplier;
-    renderer.scale   = origS  * multiplier;
+    if (!isGeoMode) {
+        // Non-map modes: genuinely re-render at multiplier× resolution
+        const origOX = renderer.offsetX, origOY = renderer.offsetY;
+        const origS  = renderer.scale;
+
+        srcCanvas.width  = origW  * multiplier;
+        srcCanvas.height = origH * multiplier;
+        renderer.offsetX = origOX * multiplier;
+        renderer.offsetY = origOY * multiplier;
+        renderer.scale   = origS  * multiplier;
+        renderer.showGrid = includeGrid;
+        renderer.render();
+
+        const W = srcCanvas.width, H = srcCanvas.height;
+        const offscreen = document.createElement('canvas');
+        offscreen.width = W; offscreen.height = H;
+        const ctx = offscreen.getContext('2d');
+
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, W, H);
+        ctx.drawImage(srcCanvas, 0, 0, W, H);
+
+        srcCanvas.width  = origW;
+        srcCanvas.height = origH;
+        renderer.offsetX = origOX;
+        renderer.offsetY = origOY;
+        renderer.scale   = origS;
+        renderer.showGrid = prevShowGrid;
+        renderer.render();
+
+        if (includePanels) await _compositeOverlays(ctx, multiplier);
+        _drawBranding(ctx, W, H, multiplier);
+        const mimeType = format === 'jpg' ? 'image/jpeg' : 'image/png';
+        const quality  = format === 'jpg' ? 0.92 : undefined;
+        await _saveCanvas(offscreen, `multilayer_network.${format}`, mimeType, quality);
+        return;
+    }
+
+    // Map / geo-layer modes: capture at screen res, stretch into multiplier× offscreen
     renderer.showGrid = includeGrid;
     renderer.render();
 
-    const W = srcCanvas.width, H = srcCanvas.height;
+    const W = origW * multiplier, H = origH * multiplier;
     const offscreen = document.createElement('canvas');
     offscreen.width = W; offscreen.height = H;
     const ctx = offscreen.getContext('2d');
 
-    // White background
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, W, H);
 
-    // In map mode or layer view geo mode: composite the Leaflet map underneath
-    const isLvGeo = appMode === 'layer' && renderer.layerView?.geoMode;
-    if ((appMode === 'map' || isLvGeo) && includeGrid) {
+    if (includeGrid) {
         try {
             await _loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
             const mapEl = document.getElementById(appMode === 'map' ? 'backgroundMap' : 'lvBackgroundMap');
@@ -4452,10 +4486,8 @@ async function exportScreenshot(format) {
         } catch (e) { console.warn('Map capture failed:', e); }
     }
 
-    // Network canvas — already rendered at W×H
     ctx.drawImage(srcCanvas, 0, 0, W, H);
 
-    // In map mode: composite the map markers overlay on top
     if (appMode === 'map') {
         try {
             const markersCanvas = await html2canvas(mapMarkersOverlay, {
@@ -4467,12 +4499,6 @@ async function exportScreenshot(format) {
         } catch (e) { console.warn('Map markers capture failed:', e); }
     }
 
-    // Restore canvas + renderer to original state
-    srcCanvas.width  = origW;
-    srcCanvas.height = origH;
-    renderer.offsetX = origOX;
-    renderer.offsetY = origOY;
-    renderer.scale   = origS;
     renderer.showGrid = prevShowGrid;
     renderer.render();
 

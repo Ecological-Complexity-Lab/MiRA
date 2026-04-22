@@ -80,7 +80,9 @@
       "Bash(node -e ' *)",
       "Bash(node -e \"const m = require\\('/tmp/hicons/node_modules/@hugeicons/core-free-icons/dist/cjs/index.js'\\); console.log\\(Object.keys\\(m\\).filter\\(k=>k.includes\\('Upload'\\)||k.includes\\('Grid'\\)||k.includes\\('Sidebar'\\)||k.includes\\('Package'\\)\\).slice\\(0,10\\)\\)\")",
       "Bash(node -e \"const m = require\\('/tmp/hicons/node_modules/@hugeicons/core-free-icons/dist/cjs/index.js'\\); const keys = Object.keys\\(m\\); console.log\\(keys.slice\\(0,5\\)\\); console.log\\('total:', keys.length\\);\")",
-      "WebFetch(domain:en.wikipedia.org)"
+      "WebFetch(domain:en.wikipedia.org)",
+      "Bash(echo \"Server PID: $!\")",
+      "Bash(open http://localhost:8766)"
     ],
     "additionalDirectories": [
       "/Users/shai/GitHub/ecomplab/emln",
