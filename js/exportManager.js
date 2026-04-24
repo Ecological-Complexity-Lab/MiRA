@@ -19,6 +19,9 @@
  * All DOM refs are queried inside the module via document.getElementById().
  */
 
+// Quality label → multiplier mapping
+const QUALITY_LABELS = { '1': 'screen', '2': 'high', '4': 'print' };
+
 export function initExportManager({ getRenderer, getAppMode }) {
     const captureBtn      = document.getElementById('captureBtn');
     const exportDialog    = document.getElementById('exportDialog');
@@ -29,12 +32,11 @@ export function initExportManager({ getRenderer, getAppMode }) {
         const appMode  = getAppMode();
         const hasMap = appMode === 'map' || (appMode === 'layer' && renderer.layerView?.geoMode);
         const gridLabel = exportDialog.querySelector('#exportGridCheckbox + span');
-        if (gridLabel) gridLabel.textContent = hasMap ? 'Background map' : 'Background grid';
+        if (gridLabel) gridLabel.textContent = hasMap ? 'Background map / grid' : 'Background grid';
         exportDialog.style.display = 'flex';
 
         // Warm up the heavy libraries while the dialog is visible, so the gap
         // between clicking a format and triggering the save is minimised.
-        // (Fire-and-forget — errors surface later if the library is actually needed.)
         _loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js').catch(() => {});
         _loadScript('https://unpkg.com/jspdf@2.5.2/dist/jspdf.umd.min.js').catch(() => {});
     });
@@ -48,15 +50,34 @@ export function initExportManager({ getRenderer, getAppMode }) {
         if (e.target === exportDialog) exportDialog.style.display = 'none';
     });
 
-    // Format buttons
+    // Format buttons (including "all")
     exportDialog.querySelectorAll('[data-format]').forEach(btn => {
         btn.addEventListener('click', async () => {
             if (btn.disabled) return;
             const format = btn.dataset.format;
             exportDialog.style.display = 'none';
-            await exportScreenshot(format);
+            if (format === 'all') {
+                for (const fmt of ['png', 'jpg', 'pdf']) {
+                    await exportScreenshot(fmt);
+                }
+            } else {
+                await exportScreenshot(format);
+            }
         });
     });
+
+    // ── Filename builder ──────────────────────────────────────────────────
+    // Returns e.g. "mymultilayer_map_high.png"
+    function _buildFilename(format) {
+        const rawName = (document.getElementById('exportNameInput').value.trim() || 'network')
+            .replace(/[^a-zA-Z0-9_-]/g, '_')   // safe characters only
+            .slice(0, 10);
+        const appMode = getAppMode();
+        const modeStr = appMode === 'network' ? '' : `_${appMode}`;
+        const resolution = document.getElementById('exportResolutionSelect').value;
+        const qualityStr = `_${QUALITY_LABELS[resolution] || resolution + 'x'}`;
+        return `${rawName}${modeStr}${qualityStr}.${format}`;
+    }
 
     // ── Dynamic script loader ─────────────────────────────────────────────
     async function _loadScript(src) {
@@ -118,6 +139,7 @@ export function initExportManager({ getRenderer, getAppMode }) {
 
     async function exportScreenshot(format) {
         if (format === 'pdf') { await _exportPDF(); return; }
+        const filename = _buildFilename(format);
 
         const renderer = getRenderer();
         const appMode  = getAppMode();
@@ -171,7 +193,7 @@ export function initExportManager({ getRenderer, getAppMode }) {
             _drawBranding(ctx, W, H, multiplier);
             const mimeType = format === 'jpg' ? 'image/jpeg' : 'image/png';
             const quality  = format === 'jpg' ? 0.92 : undefined;
-            await _saveCanvas(offscreen, `multilayer_network.${format}`, mimeType, quality);
+            await _saveCanvas(offscreen, filename, mimeType, quality);
             return;
         }
 
@@ -225,7 +247,7 @@ export function initExportManager({ getRenderer, getAppMode }) {
 
         const mimeType = format === 'jpg' ? 'image/jpeg' : 'image/png';
         const quality  = format === 'jpg' ? 0.92 : undefined;
-        await _saveCanvas(offscreen, `multilayer_network.${format}`, mimeType, quality);
+        await _saveCanvas(offscreen, filename, mimeType, quality);
     }
 
     async function _saveCanvas(offscreen, filename, mimeType, quality) {
@@ -383,7 +405,7 @@ export function initExportManager({ getRenderer, getAppMode }) {
             // a 20-megapixel canvas.
             pdf.addImage(offscreen, 'PNG', 0, 0, w, h, undefined, 'FAST');
 
-            await _saveBlob(pdf.output('blob'), 'multilayer_network.pdf', 'application/pdf');
+            await _saveBlob(pdf.output('blob'), _buildFilename('pdf'), 'application/pdf');
         } catch (err) {
             alert('PDF export failed: ' + err.message);
             console.error(err);
