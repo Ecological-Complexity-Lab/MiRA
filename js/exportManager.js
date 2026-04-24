@@ -56,27 +56,47 @@ export function initExportManager({ getRenderer, getAppMode }) {
             if (btn.disabled) return;
             const format = btn.dataset.format;
             exportDialog.style.display = 'none';
-            if (format === 'all') {
-                for (const fmt of ['png', 'jpg', 'pdf']) {
-                    await exportScreenshot(fmt);
-                }
-            } else {
-                await exportScreenshot(format);
+
+            // Pick a destination folder once while the user gesture is fresh.
+            // All files for this export go there. On browsers without
+            // showDirectoryPicker (Firefox, Safari) this returns null and each
+            // file falls back to a standard browser download.
+            const dirHandle = await _pickDirectory();
+
+            const formats = format === 'all' ? ['png', 'jpg', 'pdf'] : [format];
+            for (const fmt of formats) {
+                await exportScreenshot(fmt, dirHandle);
             }
         });
     });
 
     // ── Filename builder ──────────────────────────────────────────────────
-    // Returns e.g. "mymultilayer_map_high.png"
+    // Returns e.g. "mycanary_net_high.png", "vitali_map_print.pdf"
     function _buildFilename(format) {
         const rawName = (document.getElementById('exportNameInput').value.trim() || 'network')
-            .replace(/[^a-zA-Z0-9_-]/g, '_')   // safe characters only
+            .replace(/[^a-zA-Z0-9_-]/g, '_')
             .slice(0, 10);
-        const appMode = getAppMode();
-        const modeStr = appMode === 'network' ? '' : `_${appMode}`;
-        const resolution = document.getElementById('exportResolutionSelect').value;
-        const qualityStr = `_${QUALITY_LABELS[resolution] || resolution + 'x'}`;
+        const appMode  = getAppMode();
+        const modeMap  = { network: 'net', map: 'map', layer: 'layer',
+                           metanetwork: 'meta', dashboard: 'dash', data: 'data' };
+        const modeStr  = `_${modeMap[appMode] || appMode}`;
+        const resolution  = document.getElementById('exportResolutionSelect').value;
+        const qualityStr  = `_${QUALITY_LABELS[resolution] || resolution + 'x'}`;
         return `${rawName}${modeStr}${qualityStr}.${format}`;
+    }
+
+    // ── Directory picker ──────────────────────────────────────────────────
+    // Called ONCE before any rendering so the user gesture is still fresh.
+    // Returns a FileSystemDirectoryHandle, or null if unsupported/cancelled.
+    async function _pickDirectory() {
+        if (!window.showDirectoryPicker) return null;
+        try {
+            return await window.showDirectoryPicker({ mode: 'readwrite' });
+        } catch (err) {
+            if (err.name !== 'AbortError')
+                console.warn('Directory picker failed:', err.name, err.message);
+            return null;
+        }
     }
 
     // ── Dynamic script loader ─────────────────────────────────────────────
@@ -137,8 +157,8 @@ export function initExportManager({ getRenderer, getAppMode }) {
         }
     }
 
-    async function exportScreenshot(format) {
-        if (format === 'pdf') { await _exportPDF(); return; }
+    async function exportScreenshot(format, dirHandle) {
+        if (format === 'pdf') { await _exportPDF(dirHandle); return; }
         const filename = _buildFilename(format);
 
         const renderer = getRenderer();
@@ -193,7 +213,7 @@ export function initExportManager({ getRenderer, getAppMode }) {
             _drawBranding(ctx, W, H, multiplier);
             const mimeType = format === 'jpg' ? 'image/jpeg' : 'image/png';
             const quality  = format === 'jpg' ? 0.92 : undefined;
-            await _saveCanvas(offscreen, filename, mimeType, quality);
+            await _saveCanvas(offscreen, filename, mimeType, quality, dirHandle);
             return;
         }
 
@@ -247,40 +267,28 @@ export function initExportManager({ getRenderer, getAppMode }) {
 
         const mimeType = format === 'jpg' ? 'image/jpeg' : 'image/png';
         const quality  = format === 'jpg' ? 0.92 : undefined;
-        await _saveCanvas(offscreen, filename, mimeType, quality);
+        await _saveCanvas(offscreen, filename, mimeType, quality, dirHandle);
     }
 
-    async function _saveCanvas(offscreen, filename, mimeType, quality) {
+    async function _saveCanvas(offscreen, filename, mimeType, quality, dirHandle) {
         const blob = await new Promise(resolve => offscreen.toBlob(resolve, mimeType, quality));
-        await _saveBlob(blob, filename, mimeType);
+        await _saveBlob(blob, filename, dirHandle);
     }
 
     /**
-     * Save a Blob to disk. Prefers the File System Access API (lets the user
-     * pick a location), falls back to a download-link click on ANY non-abort
-     * failure — notably NotAllowedError / SecurityError when the user gesture
-     * has expired during long export pipelines (PDF is especially prone to
-     * this because jsPDF + html2canvas + toBlob on a large canvas all run
-     * between click and save).
+     * Write a Blob to the chosen directory, or trigger a browser download if
+     * the File System Access API (showDirectoryPicker) is unavailable.
      */
-    async function _saveBlob(blob, filename, mimeType) {
-        if (window.showSaveFilePicker) {
-            try {
-                const ext = filename.split('.').pop();
-                const handle = await window.showSaveFilePicker({
-                    suggestedName: filename,
-                    types: [{ description: `${ext.toUpperCase()} file`, accept: { [mimeType]: [`.${ext}`] } }],
-                });
-                const writable = await handle.createWritable();
-                await writable.write(blob);
-                await writable.close();
-                return;
-            } catch (err) {
-                if (err.name === 'AbortError') return;           // user cancelled — done
-                console.warn('Save-as picker failed, falling back to download link:', err.name, err.message);
-                // fall through to anchor-download path
-            }
+    async function _saveBlob(blob, filename, dirHandle) {
+        if (dirHandle) {
+            const fh = await dirHandle.getFileHandle(filename, { create: true });
+            const writable = await fh.createWritable();
+            await writable.write(blob);
+            await writable.close();
+            return;
         }
+        // Fallback for browsers without showDirectoryPicker (Firefox, Safari):
+        // trigger a standard download to the browser's default download folder.
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.download = filename;
@@ -323,7 +331,7 @@ export function initExportManager({ getRenderer, getAppMode }) {
         ctx.fillText(text, x + 12 * scale, y + boxH / 2);
     }
 
-    async function _exportPDF() {
+    async function _exportPDF(dirHandle) {
         try {
             await _loadScript('https://unpkg.com/jspdf@2.5.2/dist/jspdf.umd.min.js');
         } catch (err) {
@@ -405,7 +413,7 @@ export function initExportManager({ getRenderer, getAppMode }) {
             // a 20-megapixel canvas.
             pdf.addImage(offscreen, 'PNG', 0, 0, w, h, undefined, 'FAST');
 
-            await _saveBlob(pdf.output('blob'), _buildFilename('pdf'), 'application/pdf');
+            await _saveBlob(pdf.output('blob'), _buildFilename('pdf'), dirHandle);
         } catch (err) {
             alert('PDF export failed: ' + err.message);
             console.error(err);
