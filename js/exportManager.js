@@ -31,6 +31,12 @@ export function initExportManager({ getRenderer, getAppMode }) {
         const gridLabel = exportDialog.querySelector('#exportGridCheckbox + span');
         if (gridLabel) gridLabel.textContent = hasMap ? 'Background map' : 'Background grid';
         exportDialog.style.display = 'flex';
+
+        // Warm up the heavy libraries while the dialog is visible, so the gap
+        // between clicking a format and triggering the save is minimised.
+        // (Fire-and-forget — errors surface later if the library is actually needed.)
+        _loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js').catch(() => {});
+        _loadScript('https://unpkg.com/jspdf@2.5.2/dist/jspdf.umd.min.js').catch(() => {});
     });
 
     exportCancelBtn.addEventListener('click', () => {
@@ -223,6 +229,19 @@ export function initExportManager({ getRenderer, getAppMode }) {
     }
 
     async function _saveCanvas(offscreen, filename, mimeType, quality) {
+        const blob = await new Promise(resolve => offscreen.toBlob(resolve, mimeType, quality));
+        await _saveBlob(blob, filename, mimeType);
+    }
+
+    /**
+     * Save a Blob to disk. Prefers the File System Access API (lets the user
+     * pick a location), falls back to a download-link click on ANY non-abort
+     * failure — notably NotAllowedError / SecurityError when the user gesture
+     * has expired during long export pipelines (PDF is especially prone to
+     * this because jsPDF + html2canvas + toBlob on a large canvas all run
+     * between click and save).
+     */
+    async function _saveBlob(blob, filename, mimeType) {
         if (window.showSaveFilePicker) {
             try {
                 const ext = filename.split('.').pop();
@@ -231,14 +250,21 @@ export function initExportManager({ getRenderer, getAppMode }) {
                     types: [{ description: `${ext.toUpperCase()} file`, accept: { [mimeType]: [`.${ext}`] } }],
                 });
                 const writable = await handle.createWritable();
-                const blob = await new Promise(resolve => offscreen.toBlob(resolve, mimeType, quality));
-                await writable.write(blob); await writable.close();
-            } catch (err) { if (err.name !== 'AbortError') console.error('Save failed:', err); }
-        } else {
-            const dataUrl = offscreen.toDataURL(mimeType, quality);
-            const link = document.createElement('a');
-            link.download = filename; link.href = dataUrl; link.click();
+                await writable.write(blob);
+                await writable.close();
+                return;
+            } catch (err) {
+                if (err.name === 'AbortError') return;           // user cancelled — done
+                console.warn('Save-as picker failed, falling back to download link:', err.name, err.message);
+                // fall through to anchor-download path
+            }
         }
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.download = filename;
+        link.href = url;
+        link.click();
+        setTimeout(() => URL.revokeObjectURL(url), 5000);
     }
 
     function _drawBranding(ctx, canvasW, canvasH, scale) {
@@ -351,30 +377,13 @@ export function initExportManager({ getRenderer, getAppMode }) {
                 hotfixes: ['px_scaling']
             });
 
-            // Embed the high-res image — fills the page, but is 4x resolution
-            const imgData = offscreen.toDataURL('image/png');
-            pdf.addImage(imgData, 'PNG', 0, 0, w, h, undefined, 'FAST');
+            // Embed the high-res canvas directly (jsPDF 2.x accepts an
+            // HTMLCanvasElement) — avoids the huge synchronous toDataURL
+            // call that would block the main thread for several seconds on
+            // a 20-megapixel canvas.
+            pdf.addImage(offscreen, 'PNG', 0, 0, w, h, undefined, 'FAST');
 
-            // Save
-            if (window.showSaveFilePicker) {
-                try {
-                    const handle = await window.showSaveFilePicker({
-                        suggestedName: 'multilayer_network.pdf',
-                        types: [{
-                            description: 'PDF Document',
-                            accept: { 'application/pdf': ['.pdf'] },
-                        }],
-                    });
-                    const writable = await handle.createWritable();
-                    const blob = pdf.output('blob');
-                    await writable.write(blob);
-                    await writable.close();
-                } catch (err) {
-                    if (err.name !== 'AbortError') console.error('Save failed:', err);
-                }
-            } else {
-                pdf.save('multilayer_network.pdf');
-            }
+            await _saveBlob(pdf.output('blob'), 'multilayer_network.pdf', 'application/pdf');
         } catch (err) {
             alert('PDF export failed: ' + err.message);
             console.error(err);
