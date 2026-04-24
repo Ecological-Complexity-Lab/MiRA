@@ -674,30 +674,35 @@
   <!-- Export format dialog -->
   <div id="exportDialog" class="dialog-overlay" style="display:none;">
     <div class="dialog-box">
-      <h4>Export Format</h4>
-      <p>Choose a format for the screenshot:</p>
+      <h4>Export</h4>
       <div class="dialog-options">
-        <label class="checkbox-label">
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px;">
+          <label for="exportNameInput" style="color:#374151;white-space:nowrap;">File name</label>
+          <input type="text" id="exportNameInput" maxlength="10" placeholder="network"
+            style="flex:1;min-width:0;padding:4px 8px;border:1px solid #d1d5db;border-radius:6px;font-size:13px;font-family:inherit;">
+        </div>
+        <div style="margin-top:8px;display:flex;align-items:center;gap:8px;font-size:13px;">
+          <label for="exportResolutionSelect" style="color:#374151;white-space:nowrap;">Quality</label>
+          <select id="exportResolutionSelect" class="styled-select" style="flex:1;min-width:0;">
+            <option value="1">Screen (1×)</option>
+            <option value="2" selected>High (2×)</option>
+            <option value="4">Print (4×)</option>
+          </select>
+        </div>
+        <label class="checkbox-label" style="margin-top:8px;">
           <input type="checkbox" id="exportGridCheckbox" checked>
-          <span>Background grid</span>
+          <span>Background grid / map</span>
         </label>
         <label class="checkbox-label">
           <input type="checkbox" id="exportPanelsCheckbox" checked>
           <span>Include panels &amp; legend</span>
         </label>
-        <div style="margin-top:8px;display:flex;align-items:center;gap:8px;font-size:13px;">
-          <label for="exportResolutionSelect" style="color:#374151;">Resolution</label>
-          <select id="exportResolutionSelect" class="styled-select" style="width:auto;">
-            <option value="1">1× — screen</option>
-            <option value="2" selected>2× — high quality</option>
-            <option value="4">4× — print quality</option>
-          </select>
-        </div>
       </div>
       <div class="dialog-buttons">
         <button class="btn btn-primary" data-format="png">PNG</button>
         <button class="btn btn-primary" data-format="jpg">JPG</button>
         <button class="btn btn-primary" data-format="pdf">PDF</button>
+        <button class="btn btn-primary" data-format="all" id="exportAllBtn">All</button>
         <button class="btn" id="exportCancelBtn">Cancel</button>
       </div>
     </div>
