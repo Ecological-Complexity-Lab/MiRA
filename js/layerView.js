@@ -7,6 +7,8 @@
  * Both views use d3-force (loaded globally via CDN) for simulation.
  */
 
+import { layerColors } from './dataMode.js';
+
 // Curated palette (same order as colorMapper.js CATEGORICAL_PALETTE)
 const PALETTE = [
     '#6ee7b7', '#fbbf24', '#f87171', '#60a5fa', '#a78bfa',
@@ -141,7 +143,10 @@ export class LayerView {
         const L      = layers.length;
 
         this._layerColorMap = new Map();
-        layers.forEach((l, i) => this._layerColorMap.set(l.layer_name, PALETTE[i % PALETTE.length]));
+        layers.forEach((l, i) => {
+            const custom = layerColors.get(l.layer_name);
+            this._layerColorMap.set(l.layer_name, custom || PALETTE[i % PALETTE.length]);
+        });
 
         const intraCounts = new Map();
         for (const layer of layers) {
