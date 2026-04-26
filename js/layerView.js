@@ -472,6 +472,16 @@ export class LayerView {
         }
     }
 
+    /** Cancel a drag that turned out to be a click — unpin and leave simulation at rest. */
+    cancelDragBubble() {
+        if (this._draggedBubble) {
+            const { bubble } = this._draggedBubble;
+            bubble.fx = null;
+            bubble.fy = null;
+            this._draggedBubble = null;
+        }
+    }
+
     /** Toggle selection on a bubble by layer name; null clears selection. */
     selectBubble(layerName) {
         this._compareLayer  = null;

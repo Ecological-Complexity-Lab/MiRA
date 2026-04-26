@@ -887,8 +887,12 @@ function toggleLayerView() {
     const onMouseUp = (e) => {
         const didDrag = Math.hypot(e.clientX - mouseDownX, e.clientY - mouseDownY) > 5;
         if (isBubbleDrag) {
-            renderer.layerView.endDragBubble();
-            _ensureLayerViewLoop();
+            if (didDrag) {
+                renderer.layerView.endDragBubble();
+                _ensureLayerViewLoop();
+            } else {
+                renderer.layerView.cancelDragBubble();
+            }
         }
         isDragging   = false;
         isBubbleDrag = false;
