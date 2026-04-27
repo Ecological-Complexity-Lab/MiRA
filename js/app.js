@@ -275,6 +275,12 @@ const dataModeBtn   = document.getElementById('dataModeBtn');
 const dataFilterBanner = document.getElementById('dataFilterBanner');
 const dataFilterText   = document.getElementById('dataFilterText');
 const dataFilterClear  = document.getElementById('dataFilterClear');
+const selectedNodeBanner = document.getElementById('selectedNodeBanner');
+const selectedNodeText   = document.getElementById('selectedNodeText');
+const selectedNodeClear  = document.getElementById('selectedNodeClear');
+// Cross-mode persistent node selection — survives transitions between
+// network/map/metanetwork. Holds just the node name (not the layer).
+let crossModeSelectedNode = null;
 let activeMapLayers = new Set();
 const mapMarkersOverlay = document.getElementById('mapMarkersOverlay');
 const layerCloseButtonsContainer = document.getElementById('layerCloseButtons');
@@ -458,11 +464,13 @@ bgMap.on('move', () => {
 // ---- Interaction ----
 const interaction = new InteractionHandler(canvas, renderer, {
     onNodeSelect: (hit) => {
+        crossModeSelectedNode = hit ? hit.nodeName : null;
         if (hit) {
             showNodeInfo(hit);
         } else {
             hideNodeInfo();
         }
+        _updateFilterBanner();
     },
     onNodeHover: (hit) => {
         if (hit) {
@@ -568,6 +576,7 @@ function resetVisualizationOptions() {
     renderer.hoveredNode = null;
     renderer.hoveredLink = null;
     renderer.searchedNodeName = null;
+    crossModeSelectedNode = null;
     committedSearchName = null;
     _nodeSelectedBySearch = false;
     if (nodeSearchInput) nodeSearchInput.value = '';
@@ -1024,14 +1033,57 @@ function _updateFilterBanner() {
     const show = dataMode.isSubsetActive() && (appMode === 'network' || appMode === 'map');
     if (!show) {
         dataFilterBanner.style.display = 'none';
+    } else {
+        const parts = [];
+        if (dataMode.filteredNodeNames) parts.push(`${dataMode.filteredNodeNames.size} nodes`);
+        if (dataMode.filteredLayerNames) parts.push(`${dataMode.filteredLayerNames.size} layers`);
+        if (dataMode.filteredLinkKeys) parts.push(`${dataMode.filteredLinkKeys.size} links`);
+        dataFilterText.textContent = `\u26A1 Data filter active \u2014 ${parts.join(', ')} visible`;
+        dataFilterBanner.style.display = 'flex';
+    }
+    _updateSelectedNodeBanner();
+}
+
+function _updateSelectedNodeBanner() {
+    const show = crossModeSelectedNode
+        && (appMode === 'network' || appMode === 'map' || appMode === 'metanetwork');
+    if (!show) {
+        selectedNodeBanner.style.display = 'none';
         return;
     }
-    const parts = [];
-    if (dataMode.filteredNodeNames) parts.push(`${dataMode.filteredNodeNames.size} nodes`);
-    if (dataMode.filteredLayerNames) parts.push(`${dataMode.filteredLayerNames.size} layers`);
-    if (dataMode.filteredLinkKeys) parts.push(`${dataMode.filteredLinkKeys.size} links`);
-    dataFilterText.textContent = `\u26A1 Data filter active \u2014 ${parts.join(', ')} visible`;
-    dataFilterBanner.style.display = 'flex';
+    selectedNodeText.textContent = `\u29BF Selected node: ${crossModeSelectedNode}`;
+    selectedNodeBanner.style.display = 'flex';
+}
+
+function _clearCrossModeSelection() {
+    crossModeSelectedNode = null;
+    if (renderer) {
+        renderer.selectedNode = null;
+        renderer.searchedNodeName = null;
+    }
+    if (metaNetwork) {
+        metaNetwork.state.selectedNode = null;
+        metaNetwork._focusSet = null;
+    }
+    hideNodeInfo();
+}
+
+// Push crossModeSelectedNode into renderer.selectedNode/searchedNodeName so
+// the network/map view highlights every state-node instance of that name.
+function _applyCrossModeSelectionToRenderer() {
+    if (!renderer || !model) return;
+    if (!crossModeSelectedNode) return;
+    let firstLayer = null;
+    for (const [layerName, nodeSet] of model.nodesPerLayer) {
+        if (nodeSet.has(crossModeSelectedNode)) { firstLayer = layerName; break; }
+    }
+    if (firstLayer) {
+        renderer.selectedNode = { layerName: firstLayer, nodeName: crossModeSelectedNode };
+        renderer.searchedNodeName = crossModeSelectedNode;
+    } else {
+        // Node not found in current model — drop stale selection
+        crossModeSelectedNode = null;
+    }
 }
 
 function toggleDataMode() {
@@ -1088,6 +1140,16 @@ dataFilterClear.addEventListener('click', () => {
     renderer.searchedNodeName = null;
     _updateFilterBanner();
     if (appMode !== 'data') renderer.render();
+});
+
+selectedNodeClear.addEventListener('click', () => {
+    _clearCrossModeSelection();
+    _updateFilterBanner();
+    if (appMode === 'metanetwork' && metaNetwork) {
+        _mnRenderSync();
+    } else if (renderer) {
+        renderer.render();
+    }
 });
 
 // ── Meta-network layer palette (same as LayerView PALETTE) ────────────────
@@ -1202,6 +1264,7 @@ function toggleMetaNetwork() {
     if (appMode === 'metanetwork') {
         _exitMetaNetwork();
         appMode = 'network';
+        _applyCrossModeSelectionToRenderer();
         _updateFilterBanner();
         _updateModeButtons();
         renderer.render();
@@ -1223,6 +1286,17 @@ function toggleMetaNetwork() {
     _showMetaNetworkSidebar();
     _syncMetaNetworkControls();
     _buildMnLayerPanel();
+
+    // Restore cross-mode selection if a node was selected in another mode
+    if (crossModeSelectedNode && metaNetwork._nodeMap.has(crossModeSelectedNode)) {
+        metaNetwork.state.selectedNode = crossModeSelectedNode;
+        metaNetwork._computeFocusSet(crossModeSelectedNode);
+        _showMnNodeInfo(crossModeSelectedNode);
+    } else if (crossModeSelectedNode) {
+        // Selected node not present in metanetwork — drop the cross-mode selection.
+        crossModeSelectedNode = null;
+    }
+    _updateFilterBanner();
 
     // Mouse handlers — nodes are NOT draggable in meta-network mode; only
     // the background can be panned. Clicks on nodes select them.
@@ -1311,13 +1385,16 @@ function toggleMetaNetwork() {
                 metaNetwork.state.selectedNode = null;
                 metaNetwork.state.selectedEdge = null;
                 metaNetwork._focusSet = null;
+                crossModeSelectedNode = null;
                 infoPanel.classList.remove('visible');
             } else {
                 metaNetwork.state.selectedNode = hitName;
                 metaNetwork.state.selectedEdge = null;
                 metaNetwork._computeFocusSet(hitName);
+                crossModeSelectedNode = hitName;
                 _showMnNodeInfo(hitName);
             }
+            _updateFilterBanner();
             _mnRenderSync();
             return;
         }
@@ -1335,6 +1412,8 @@ function toggleMetaNetwork() {
                 metaNetwork._focusSet = null;
                 _showMnEdgeInfo(hitEdge);
             }
+            crossModeSelectedNode = null;
+            _updateFilterBanner();
             _mnRenderSync();
             return;
         }
@@ -1343,7 +1422,9 @@ function toggleMetaNetwork() {
             metaNetwork.state.selectedNode = null;
             metaNetwork.state.selectedEdge = null;
             metaNetwork._focusSet = null;
+            crossModeSelectedNode = null;
             infoPanel.classList.remove('visible');
+            _updateFilterBanner();
             _mnRenderSync();
         }
     };
@@ -1524,7 +1605,9 @@ function _mnSelectNode(name) {
     metaNetwork.state.selectedNode = name;
     metaNetwork.state.selectedEdge = null;
     metaNetwork._computeFocusSet(name);
+    crossModeSelectedNode = name;
     _showMnNodeInfo(name);
+    _updateFilterBanner();
     _mnRenderSync();
 }
 
@@ -1592,7 +1675,9 @@ mnSearchClearBtn.addEventListener('click', () => {
     metaNetwork.state.selectedNode = null;
     metaNetwork.state.selectedEdge = null;
     metaNetwork._focusSet = null;
+    crossModeSelectedNode = null;
     infoPanel.classList.remove('visible');
+    _updateFilterBanner();
     _mnRenderSync();
 });
 
@@ -1615,7 +1700,7 @@ function goToNetworkMode() {
     if (appMode === 'map')         toggleMapMode();
     if (appMode === 'layer')       { _exitLayerView();     appMode = 'network'; renderer.render(); }
     if (appMode === 'dashboard')   { _exitDashboard();     appMode = 'network'; renderer.render(); }
-    if (appMode === 'metanetwork') { _exitMetaNetwork();   appMode = 'network'; renderer.render(); }
+    if (appMode === 'metanetwork') { _exitMetaNetwork();   appMode = 'network'; _applyCrossModeSelectionToRenderer(); renderer.render(); }
     if (appMode === 'data')        { _exitDataMode();      appMode = 'network'; renderer.render(); }
     _updateFilterBanner();
     _updateModeButtons();
@@ -3415,6 +3500,8 @@ zoomResetBtn.addEventListener('click', () => {
         metaNetwork.state.selectedNode = null;
         metaNetwork.state.selectedEdge = null;
         metaNetwork._focusSet = null;
+        crossModeSelectedNode = null;
+        _updateFilterBanner();
         hideNodeInfo();
         // Fit viewport to current node positions
         const nodes = metaNetwork._mnNodes;
@@ -3598,8 +3685,16 @@ function showLayerInfo(layerIndex) {
 closeInfoBtn.addEventListener('click', () => {
     renderer.selectedNode = null;
     renderer.selectedLayer = null;
+    renderer.searchedNodeName = null;
+    crossModeSelectedNode = null;
+    if (metaNetwork) {
+        metaNetwork.state.selectedNode = null;
+        metaNetwork._focusSet = null;
+    }
     hideNodeInfo();
-    renderer.render();
+    _updateFilterBanner();
+    if (appMode === 'metanetwork' && metaNetwork) _mnRenderSync();
+    else renderer.render();
 });
 
 collapseInfoBtn.addEventListener('click', () => {
@@ -4142,8 +4237,10 @@ function clearNodeSearch() {
         renderer.searchedNodeName = null;
         if (_nodeSelectedBySearch) {
             renderer.selectedNode = null;
+            crossModeSelectedNode = null;
             hideNodeInfo();
         }
+        _updateFilterBanner();
         renderer.render();
     }
     _nodeSelectedBySearch = false;
@@ -4161,8 +4258,10 @@ function selectSearchNode(name) {
     }
     renderer.searchedNodeName = null;
     renderer.selectedNode = firstLayer ? { layerName: firstLayer, nodeName: name } : null;
+    crossModeSelectedNode = firstLayer ? name : null;
     _nodeSelectedBySearch = true;
     if (firstLayer) showNodeInfo({ layerName: firstLayer, nodeName: name });
+    _updateFilterBanner();
     renderer.render();
 }
 

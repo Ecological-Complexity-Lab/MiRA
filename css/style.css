@@ -343,6 +343,35 @@ body {
   background: #fff;
 }
 
+#selectedNodeBanner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 10px;
+  background: rgba(219, 234, 254, 0.9);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #1e3a8a;
+  white-space: nowrap;
+  margin-left: 6px;
+}
+
+#selectedNodeClear {
+  padding: 1px 8px;
+  font-size: 10px;
+  font-weight: 600;
+  background: rgba(255,255,255,0.8);
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  border-radius: 4px;
+  color: #1e3a8a;
+  cursor: pointer;
+}
+#selectedNodeClear:hover {
+  background: #fff;
+}
+
 /* ── Branding (right side of bar) ──────────────── */
 #brandingGroup {
   display: flex;
