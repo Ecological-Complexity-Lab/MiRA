@@ -24,6 +24,12 @@ const MN_UNIFORM_COLOR = '#6ee7b7';
 const MN_ARROW_SIZE    = 8;     // px in sim coords
 const MN_HIT_THRESHOLD = 6;     // px in sim coords for edge hit
 
+// Drag threshold — must match the click/drag threshold used in app.js
+// onMouseUp (line ~1313) so cursor jitter during a click is treated as a
+// click, not a drag. Without this, a 1-px wobble pins the node and heats
+// the simulation, making other nodes visibly drift away from the click.
+const DRAG_THRESHOLD_PX = 3;
+
 // cmocean 'ice' palette — reversed so low = light cyan, high = dark navy
 const MN_ICE_COLORS = [
     '#cde9f0', '#9dd1e5', '#6cb8d8', '#3f9ec8', '#1e84b5',
@@ -611,15 +617,24 @@ export class MetaNetwork {
         const node = this._nodeMap.get(name);
         this._draggedNode   = node;
         this._didActualDrag = false;  // set to true only when mouse actually moves
-        // Snapshot position so we can unpin on a plain click
+        // Snapshot positions so we can detect real movement and unpin on a plain click
         this._dragStartX = node.x;
         this._dragStartY = node.y;
+        this._dragMouseStartX = mx;
+        this._dragMouseStartY = my;
         return name;
     }
 
     moveDragNode(mx, my, w, h) {
         if (!this._draggedNode) return;
+        // Ignore micro-jitter — only treat as a drag once the cursor has moved
+        // more than a few pixels. Without this threshold, a 1-px wobble during
+        // a click would pin the node AND heat the force simulation, making
+        // every other node visibly "float" away from a click target.
         if (!this._didActualDrag) {
+            const dx = mx - this._dragMouseStartX;
+            const dy = my - this._dragMouseStartY;
+            if ((dx * dx + dy * dy) < (DRAG_THRESHOLD_PX * DRAG_THRESHOLD_PX)) return;
             // First real movement — pin the node and heat the sim
             this._draggedNode.fx = this._dragStartX;
             if (!this._useBipartiteLayout || this._draggedNode.nodeType === null) {
