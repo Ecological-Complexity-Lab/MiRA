@@ -1224,9 +1224,9 @@ function toggleMetaNetwork() {
     _syncMetaNetworkControls();
     _buildMnLayerPanel();
 
-    // Mouse handlers
-    let _isDragging    = false;
-    let _isNodeDrag    = false;
+    // Mouse handlers — nodes are NOT draggable in meta-network mode; only
+    // the background can be panned. Clicks on nodes select them.
+    let _isDragging    = false;       // true while panning the background
     let _mouseDownX    = 0, _mouseDownY = 0;
     let _dragStartX    = 0, _dragStartY = 0;
     let _offsetStartX  = 0, _offsetStartY = 0;
@@ -1245,15 +1245,15 @@ function toggleMetaNetwork() {
         _mouseDownOnCanvas = true;
         _mouseDownX = e.clientX; _mouseDownY = e.clientY;
         const { mx, my } = canvasCoords(e);
-        const hitName = metaNetwork.startDragNode(mx, my, canvas.width, canvas.height);
+        const hitName = metaNetwork.hitTestNode(mx, my, canvas.width, canvas.height);
         if (hitName) {
-            _isNodeDrag = true;
-            _isDragging = true;
-            _ensureMetaNetworkLoop();
+            // Mousedown on a node: don't enter pan mode and don't drag the node.
+            // mouseup will treat this as a click (selection) if movement stayed
+            // within the click threshold.
+            _isDragging = false;
         } else {
-            _isNodeDrag  = false;
-            _isDragging  = true;
-            _dragStartX  = e.clientX; _dragStartY  = e.clientY;
+            _isDragging   = true;
+            _dragStartX   = e.clientX; _dragStartY  = e.clientY;
             _offsetStartX = metaNetwork.viewOffsetX;
             _offsetStartY = metaNetwork.viewOffsetY;
             canvas.style.cursor = 'grabbing';
@@ -1262,15 +1262,10 @@ function toggleMetaNetwork() {
 
     const onMouseMove = (e) => {
         if (_isDragging) {
-            if (_isNodeDrag) {
-                const { mx, my } = canvasCoords(e);
-                metaNetwork.moveDragNode(mx, my, canvas.width, canvas.height);
-                _ensureMetaNetworkLoop();
-            } else {
-                metaNetwork.viewOffsetX = _offsetStartX + (e.clientX - _dragStartX);
-                metaNetwork.viewOffsetY = _offsetStartY + (e.clientY - _dragStartY);
-                _ensureMetaNetworkLoop();
-            }
+            // Pan only — node dragging has been removed.
+            metaNetwork.viewOffsetX = _offsetStartX + (e.clientX - _dragStartX);
+            metaNetwork.viewOffsetY = _offsetStartY + (e.clientY - _dragStartY);
+            _ensureMetaNetworkLoop();
             tooltip.classList.remove('visible');
             return;
         }
@@ -1302,13 +1297,8 @@ function toggleMetaNetwork() {
         if (!_mouseDownOnCanvas) return; // mousedown was on another element (e.g. search dropdown)
         _mouseDownOnCanvas = false;
         const wasDragging = _isDragging;
-        const wasNodeDrag = _isNodeDrag;
         _isDragging = false;
-        if (wasNodeDrag) {
-            metaNetwork.endDragNode();
-        } else {
-            canvas.style.cursor = 'grab';
-        }
+        canvas.style.cursor = 'grab';
         // Click if minimal movement
         const moved = Math.abs(e.clientX - _mouseDownX) > 3 || Math.abs(e.clientY - _mouseDownY) > 3;
         if (wasDragging && moved) return;

@@ -4,8 +4,8 @@
  * Aggregates all intralayer links into a single 2D network of unique
  * physical nodes. Supports three aggregation modes (union, sumWeights,
  * sumOccurrence), bipartite two-row layout or force layout, directed
- * arrowheads, node dragging, pan/zoom, and per-node/edge fading based
- * on selection and layer filter.
+ * arrowheads, pan/zoom, and per-node/edge fading based on selection and
+ * layer filter. Nodes are not draggable — clicks select them.
  */
 
 import { BIPARTITE_SET_A_COLOR, BIPARTITE_SET_B_COLOR } from './colorMapper.js';
@@ -23,12 +23,6 @@ const MN_BG_COLOR      = '#f8f8fc';
 const MN_UNIFORM_COLOR = '#6ee7b7';
 const MN_ARROW_SIZE    = 8;     // px in sim coords
 const MN_HIT_THRESHOLD = 6;     // px in sim coords for edge hit
-
-// Drag threshold — must match the click/drag threshold used in app.js
-// onMouseUp (line ~1313) so cursor jitter during a click is treated as a
-// click, not a drag. Without this, a 1-px wobble pins the node and heats
-// the simulation, making other nodes visibly drift away from the click.
-const DRAG_THRESHOLD_PX = 3;
 
 // cmocean 'ice' palette — reversed so low = light cyan, high = dark navy
 const MN_ICE_COLORS = [
@@ -60,7 +54,6 @@ export class MetaNetwork {
         this._nodeMap     = new Map(); // nodeName → node object
         this._maxWeight   = 1;
         this._focusSet    = null;      // Set<nodeName> | null — ego network of selected node
-        this._draggedNode = null;
 
         this.viewScale   = 1;
         this.viewOffsetX = 0;
@@ -607,59 +600,6 @@ export class MetaNetwork {
             if (_ptSegDist(sx, sy, src.x, src.y, tgt.x, tgt.y) <= threshold) return edge;
         }
         return null;
-    }
-
-    // ── Dragging ─────────────────────────────────────────────────────────────
-
-    startDragNode(mx, my, w, h) {
-        const name = this.hitTestNode(mx, my, w, h);
-        if (!name) return null;
-        const node = this._nodeMap.get(name);
-        this._draggedNode   = node;
-        this._didActualDrag = false;  // set to true only when mouse actually moves
-        // Snapshot positions so we can detect real movement and unpin on a plain click
-        this._dragStartX = node.x;
-        this._dragStartY = node.y;
-        this._dragMouseStartX = mx;
-        this._dragMouseStartY = my;
-        return name;
-    }
-
-    moveDragNode(mx, my, w, h) {
-        if (!this._draggedNode) return;
-        // Ignore micro-jitter — only treat as a drag once the cursor has moved
-        // more than a few pixels. Without this threshold, a 1-px wobble during
-        // a click would pin the node AND heat the force simulation, making
-        // every other node visibly "float" away from a click target.
-        if (!this._didActualDrag) {
-            const dx = mx - this._dragMouseStartX;
-            const dy = my - this._dragMouseStartY;
-            if ((dx * dx + dy * dy) < (DRAG_THRESHOLD_PX * DRAG_THRESHOLD_PX)) return;
-            // First real movement — pin the node and heat the sim
-            this._draggedNode.fx = this._dragStartX;
-            if (!this._useBipartiteLayout || this._draggedNode.nodeType === null) {
-                this._draggedNode.fy = this._dragStartY;
-            }
-            this._didActualDrag = true;
-            this._sim?.alphaTarget(0.3).restart();
-        }
-        const { sx, sy } = this._screenToSim(mx, my, w, h);
-        this._draggedNode.fx = sx;
-        if (!this._useBipartiteLayout || this._draggedNode.nodeType === null) {
-            this._draggedNode.fy = sy;
-        }
-    }
-
-    endDragNode() {
-        if (!this._draggedNode) return;
-        if (!this._didActualDrag) {
-            // Plain click — do not pin the node at all
-            this._draggedNode.fx = undefined;
-            this._draggedNode.fy = undefined;
-        }
-        this._sim?.alphaTarget(0);
-        this._draggedNode   = null;
-        this._didActualDrag = false;
     }
 
     // ── Settings ─────────────────────────────────────────────────────────────

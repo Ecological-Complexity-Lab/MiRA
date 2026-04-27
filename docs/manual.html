@@ -593,8 +593,8 @@ Ixodes_ricinus,0.003</code></pre>
     <li><span class="key">Click a node</span> — selects it. The selected node and all its direct neighbours stay fully opaque; everything else fades. An <strong>Info panel</strong> appears showing Participation, Layers, Meta-degree, and Meta-strength.</li>
     <li><span class="key">Click the same node again</span> — deselects and restores all opacities.</li>
     <li><span class="key">Click empty space</span> — deselects.</li>
-    <li><span class="key">Drag a node</span> — pins it at the new position (force and two-row layouts). Click-and-release without moving never pins.</li>
   </ul>
+  <p style="font-size:12px;color:#6b7280;">Nodes are not draggable in Meta-Network mode — positions are fully governed by the chosen layout (Circular / Force / Two-row). Use <strong>Reset Layout</strong> to re-run the algorithm.</p>
   <h4>Edge selection</h4>
   <ul>
     <li><span class="key">Click an edge</span> — selects it. The edge is redrawn in blue; its two endpoint nodes get blue selection rings and stay fully opaque; all other nodes and edges fade. The <strong>Info panel</strong> shows how many layers the edge appears in and a per-layer bar chart of its weight.</li>
@@ -617,12 +617,12 @@ Ixodes_ricinus,0.003</code></pre>
 
   <h4>Layout</h4>
   <ul>
-    <li><span class="key">Circular</span> (default for unipartite) — nodes arranged on a circle, sorted by meta-degree. Layout is static; dragging nodes keeps them pinned at the new position until <strong>Reset Layout</strong> is clicked.</li>
-    <li><span class="key">Force layout</span> — d3-force simulation. Nodes repel each other; edges act as springs. The layout settles automatically; individual nodes can be dragged to pin them.</li>
+    <li><span class="key">Circular</span> (default for unipartite) — nodes arranged on a circle, sorted by meta-degree.</li>
+    <li><span class="key">Force layout</span> — d3-force simulation. Nodes repel each other; edges act as springs. The layout settles automatically.</li>
     <li><span class="key">Two-row</span> (default for bipartite) — Set A fixed on the top row, Set B on the bottom row. Nodes are sorted by meta-degree within each row; when rows are dense, circles overlap to fit within the canvas. The <em>Nested sort</em> checkbox (enabled by default) controls this sorting.</li>
   </ul>
   <ul>
-    <li><span class="key">Reset Layout</span> — re-runs the layout algorithm from scratch, clearing any manual node positions.</li>
+    <li><span class="key">Reset Layout</span> — re-runs the layout algorithm from scratch.</li>
   </ul>
 
   <h4>Appearance</h4>
