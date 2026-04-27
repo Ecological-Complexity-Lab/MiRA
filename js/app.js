@@ -2793,6 +2793,11 @@ function _closeCsvModal() {
 
 csvUploadBtn.addEventListener('click', () => {
     _csvEdgeText = _csvLayersText = _csvNodesText = _csvStateNodesText = null;
+    // Reset native file inputs so re-selecting the same file fires `change` again
+    csvEdgeFile.value = '';
+    csvLayersFile.value = '';
+    csvNodesFile.value = '';
+    csvStateNodesFile.value = '';
     csvEdgeLabel.textContent = 'Choose file…';
     csvLayersLabel.textContent = 'Choose file…';
     csvNodesLabel.textContent = 'Choose file…';
