@@ -2,7 +2,7 @@
 
 [![Project Status: Active](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![Lifecycle: beta](https://img.shields.io/badge/lifecycle-beta-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
-[![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
+[![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 [![R package: emln](https://img.shields.io/badge/R%20package-emln-blue.svg)](https://github.com/Ecological-Complexity-Lab/emln)
 [![Paper coming soon](https://img.shields.io/badge/paper-coming%20soon-yellow.svg)](#)
 
@@ -59,3 +59,11 @@ Or export to JSON/CSV for manual loading:
 multilayer_to_json(net, file = "my_network.json", bipartite = TRUE)
 multilayer_to_csv(net, path = "my_network/")
 ```
+
+## 📄 License
+
+MultilayerViz is licensed under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-nc-sa/4.0/).
+
+[![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
+You are free to share and adapt this work for **non-commercial purposes**, provided you give appropriate credit and distribute any derivative works under the same license.
