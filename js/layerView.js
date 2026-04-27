@@ -472,12 +472,11 @@ export class LayerView {
         }
     }
 
-    /** Cancel a drag that turned out to be a click — unpin and leave simulation at rest. */
+    /** Cancel a drag that turned out to be a click — pin in place but skip the alpha bump. */
     cancelDragBubble() {
         if (this._draggedBubble) {
-            const { bubble } = this._draggedBubble;
-            bubble.fx = null;
-            bubble.fy = null;
+            // Keep fx/fy so the bubble stays put while the sim is still hot.
+            // Do NOT bump alpha — avoids kicking other bubbles on a plain click.
             this._draggedBubble = null;
         }
     }
