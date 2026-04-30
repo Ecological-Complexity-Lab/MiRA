@@ -92,6 +92,18 @@ export const DATASET_INFO = {
         nodeAttrs: ['(none — neurons identified by name only)'],
         linkAttrs: ['weight (binary)'],
     },
+    shapiro2023_plasmids: {
+        name: 'Plasmid genetic-similarity network in dairy cows',
+        citation: 'Shapiro et al. 2023',
+        doi: 'https://doi.org/10.1038/s41396-023-01373-5',
+        dataDoi: 'https://github.com/Ecological-Complexity-Lab/Plasmid_multilayer_networks',
+        layers: '21 layers — individual dairy cows (Israeli Holstein population, single farm)',
+        nodes: '1,344 unique plasmids · 1,514 state nodes (rumen plasmidome)',
+        links: '102 intralayer + 2,636 interlayer (genetic similarity ≥ 0.16)',
+        network: 'Undirected · multiplex · genetic-similarity network · benchmark for super-spreader / AMR analysis',
+        nodeAttrs: ['length_bp', 'amr_class (beta-lactam / tetracycline / penicillin-binding / none)', 'has_mob (mobility / relaxase)', 'n_cows'],
+        linkAttrs: ['weight (genetic similarity)', 'align_length (bp of alignment overlap)', 'pident (%)', 'mechanism (pHGT / distant_dispersal / recent_dispersal)'],
+    },
     diseasome_multiplex: {
         name: 'Human disease multiplex network',
         citation: 'Halu et al. 2019',
