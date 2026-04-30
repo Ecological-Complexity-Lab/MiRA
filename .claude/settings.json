@@ -130,7 +130,19 @@
       "Bash(curl -s -o /dev/null -w \"shapiro HTTP %{http_code}\\\\n\" http://localhost:8000/data/shapiro2023_plasmids.json)",
       "Bash(curl -s -o /dev/null -w \"demoDatasets.js HTTP %{http_code}\\\\n\" http://localhost:8000/js/demoDatasets.js)",
       "Bash(node smoke_shapiro.mjs)",
-      "Bash(node smoke_shapiro_render.mjs)"
+      "Bash(node smoke_shapiro_render.mjs)",
+      "Bash(sed -n '1,35p' /Users/shai/GitHub/ecomplab/multilayer_viz/js/demoDatasets.js)",
+      "Bash(sed -n '128,165p' /Users/shai/GitHub/ecomplab/multilayer_viz/js/demoDatasets.js)",
+      "Bash(grep -E \"^\\\\s{4}[a-z].*\\\\{$|domain:|hidden:\" /Users/shai/GitHub/ecomplab/multilayer_viz/js/demoDatasets.js)",
+      "WebFetch(domain:networks.skewed.de)",
+      "Bash(curl -s \"https://networks.skewed.de/api/net/celegans_2019\")",
+      "Bash(curl -s \"https://networks.skewed.de/net/celegans_2019\")",
+      "Bash(curl -sL \"https://networks.skewed.de/net/celegans_2019/files/hermaphrodite_chemical.graphml.zst\" -o celegans_herm_chem.graphml.zst)",
+      "Read(//Users/shai/**)",
+      "Read(//Users/shai/Downloads/**)",
+      "Bash(zstd -d /Users/shai/GitHub/ecomplab/multilayer_viz/Data/process/larremore/HVR_1.xml.zst -o /tmp/HVR_1.xml --force)",
+      "Bash(brew install *)",
+      "Bash(grep -E \"^\\\\s{4}[a-z].*\\\\{$|domain:\" /Users/shai/GitHub/ecomplab/multilayer_viz/js/demoDatasets.js)"
     ],
     "additionalDirectories": [
       "/Users/shai/GitHub/ecomplab/emln",

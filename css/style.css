@@ -855,7 +855,13 @@ body {
   text-align: left;
 }
 
+#demoDialog .dialog-box {
+  width: 540px;
+}
+
 #demoDatasetList .btn {
+  flex-direction: column;
+  align-items: stretch;
   min-width: 0;
   white-space: normal;
   justify-content: flex-start;
@@ -863,6 +869,58 @@ body {
 
 #demoDatasetList .demo-info-btn {
   justify-content: center;
+}
+
+/* Domain-tinted load buttons */
+.btn-domain-ecology {
+  background: linear-gradient(135deg, rgba(34,197,94,0.12), rgba(16,185,129,0.12));
+  border-color: rgba(34,197,94,0.28);
+  color: #166534;
+}
+.btn-domain-ecology:hover {
+  background: linear-gradient(135deg, rgba(34,197,94,0.22), rgba(16,185,129,0.22));
+  border-color: rgba(34,197,94,0.4);
+  box-shadow: 0 4px 15px rgba(34,197,94,0.15);
+}
+.btn-domain-microbiology {
+  background: linear-gradient(135deg, rgba(6,182,212,0.12), rgba(14,165,233,0.12));
+  border-color: rgba(6,182,212,0.28);
+  color: #0e7490;
+}
+.btn-domain-microbiology:hover {
+  background: linear-gradient(135deg, rgba(6,182,212,0.22), rgba(14,165,233,0.22));
+  border-color: rgba(6,182,212,0.4);
+  box-shadow: 0 4px 15px rgba(6,182,212,0.15);
+}
+.btn-domain-biomedicine {
+  background: linear-gradient(135deg, rgba(244,63,94,0.10), rgba(251,113,133,0.10));
+  border-color: rgba(244,63,94,0.25);
+  color: #be123c;
+}
+.btn-domain-biomedicine:hover {
+  background: linear-gradient(135deg, rgba(244,63,94,0.20), rgba(251,113,133,0.20));
+  border-color: rgba(244,63,94,0.38);
+  box-shadow: 0 4px 15px rgba(244,63,94,0.15);
+}
+.btn-domain-neuroscience {
+  background: linear-gradient(135deg, rgba(139,92,246,0.12), rgba(167,139,250,0.12));
+  border-color: rgba(139,92,246,0.28);
+  color: #6d28d9;
+}
+.btn-domain-neuroscience:hover {
+  background: linear-gradient(135deg, rgba(139,92,246,0.22), rgba(167,139,250,0.22));
+  border-color: rgba(139,92,246,0.4);
+  box-shadow: 0 4px 15px rgba(139,92,246,0.15);
+}
+.btn-domain-population-genetics {
+  background: linear-gradient(135deg, rgba(245,158,11,0.11), rgba(251,191,36,0.11));
+  border-color: rgba(245,158,11,0.27);
+  color: #b45309;
+}
+.btn-domain-population-genetics:hover {
+  background: linear-gradient(135deg, rgba(245,158,11,0.21), rgba(251,191,36,0.21));
+  border-color: rgba(245,158,11,0.4);
+  box-shadow: 0 4px 15px rgba(245,158,11,0.15);
 }
 
 .dialog-box h4 {
