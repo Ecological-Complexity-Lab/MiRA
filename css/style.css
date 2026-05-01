@@ -382,8 +382,8 @@ body {
 }
 
 .branding-favicon {
-  width: 20px;
-  height: 20px;
+  height: 32px;
+  width: auto;
   object-fit: contain;
 }
 
@@ -395,16 +395,16 @@ body {
 }
 
 .branding-beta {
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 600;
   color: #b45309;
   margin-left: -4px;
 }
 
 .branding-version {
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 500;
-  color: #9ca3af;
+  color: #1a1a2e;
   margin-left: -4px;
 }
 
@@ -420,8 +420,8 @@ body {
 }
 
 .branding-icon {
-  width: 18px;
-  height: 18px;
+  height: 32px;
+  width: auto;
   border-radius: 3px;
   object-fit: contain;
 }

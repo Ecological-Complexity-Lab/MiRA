@@ -87,6 +87,11 @@ export class Renderer {
         this._konvaStage = null;
         this._konvaHitLayer = null;
         this._initKonvaOverlay();
+
+        // Splash screen logo
+        this._logoImage = new Image();
+        this._logoImage.onload = () => { if (!this.model) this.render(); };
+        this._logoImage.src = 'assets/MiRA_logo.png';
     }
 
     setData(model, positions) {
@@ -452,10 +457,43 @@ export class Renderer {
     }
 
     _drawPlaceholder(ctx, w, h) {
+        const logoH = 96;
+        const logoGap = 16;
+        const line1 = 'Welcome to MiRA, the Multilayer Interactive Rendering App';
+        const line2 = 'Load a multilayer network via the Data panel to visualize';
+
+        const img = this._logoImage;
+        const logoW = (img?.complete && img.naturalWidth > 0)
+            ? Math.round(logoH * img.naturalWidth / img.naturalHeight)
+            : logoH;
+
+        ctx.font = 'bold 18px Inter, system-ui, sans-serif';
+        const line1W = ctx.measureText(line1).width;
+        ctx.font = '15px Inter, system-ui, sans-serif';
+        const line2W = ctx.measureText(line2).width;
+
+        const textBlockW = Math.max(line1W, line2W);
+        const totalW = logoW + logoGap + textBlockW;
+        const startX = (w - totalW) / 2;
+        const cy = h / 2;
+
+        if (img?.complete && img.naturalWidth > 0) {
+            ctx.drawImage(img, startX, cy - logoH / 2, logoW, logoH);
+        }
+
+        const textX = startX + logoW + logoGap;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
         ctx.fillStyle = '#1f2937';
-        ctx.font = '18px Inter, system-ui, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('Load a multilayer network via the Data panel to visualize', w / 2, h / 2);
+        ctx.font = 'bold 18px Inter, system-ui, sans-serif';
+        ctx.fillText(line1, textX, cy - 12);
+        ctx.fillStyle = '#6b7280';
+        ctx.font = '15px Inter, system-ui, sans-serif';
+        ctx.fillText(line2, textX, cy + 14);
+        ctx.font = '13px Inter, system-ui, sans-serif';
+        ctx.fillStyle = '#9ca3af';
+        ctx.fillText('Developed by the Ecological Complexity Lab', textX, cy + 52);
+        ctx.textBaseline = 'alphabetic';
         ctx.textAlign = 'left';
     }
 
