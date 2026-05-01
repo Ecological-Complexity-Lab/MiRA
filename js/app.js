@@ -4590,6 +4590,7 @@ function getSessionState() {
     return {
         version: 1,
         appMode,
+        selectedNode: crossModeSelectedNode,
         rawData,
         positions: positionsArray,
         renderer: {
@@ -4610,6 +4611,7 @@ function getSessionState() {
             arrowheadSize: renderer.arrowheadSize,
             interlayerCurvature: renderer.interlayerCurvature,
             interlayerMinWeight: renderer.interlayerMinWeight,
+            intraMinWeight: renderer.intraMinWeight,
             defaultIntraColor: renderer.defaultIntraColor,
             defaultInterColor: renderer.defaultInterColor,
             layerOffsets: [...renderer.layerOffsets.entries()],
@@ -4653,8 +4655,12 @@ function getSessionState() {
             nestedSort: mnNestedSortCheckbox.checked,
             showLabels: mnShowLabelsCheckbox.checked,
             labelSize: parseInt(mnLabelSizeSlider.value),
+            uniformColor: mnUniformColorPicker.value,
             colorSetA: mnColorSetA.value,
             colorSetB: mnColorSetB.value,
+            viewScale: metaNetwork ? metaNetwork.viewScale : 1,
+            viewOffsetX: metaNetwork ? metaNetwork.viewOffsetX : 0,
+            viewOffsetY: metaNetwork ? metaNetwork.viewOffsetY : 0,
         },
         map: {
             activeMapLayers: [...activeMapLayers],
@@ -4662,9 +4668,13 @@ function getSessionState() {
             showMapImage: showMapImageCheckbox.checked,
             showLocations: showLocationsCheckbox.checked,
             streetMap: streetMapCheckbox.checked,
+            mapCenter: bgMap.getCenter(),
+            mapZoom: bgMap.getZoom(),
             lvMapOpacity: parseFloat(lvMapOpacitySlider.value),
             lvShowMapImage: lvShowMapImageCheckbox.checked,
             lvStreetMap: lvStreetMapCheckbox.checked,
+            lvMapCenter: lvMap.getCenter(),
+            lvMapZoom: lvMap.getZoom(),
         },
         legend: {
             expandedLegends: [...expandedLegends],
@@ -4674,6 +4684,7 @@ function getSessionState() {
             nodeNames: dataMode.filteredNodeNames ? [...dataMode.filteredNodeNames] : null,
             layerNames: dataMode.filteredLayerNames ? [...dataMode.filteredLayerNames] : null,
             linkKeys: dataMode.filteredLinkKeys ? [...dataMode.filteredLinkKeys] : null,
+            interPairFilter: [..._interPairFilter],
         },
     };
 }
@@ -4715,11 +4726,11 @@ function restoreSessionState(state) {
     const rv = state.renderer;
     renderer.skewX = rv.skewX;
     renderer.skewY = rv.skewY;
+    renderer.layerSpacing = rv.layerSpacing;
+    setStackMode(rv.stackMode); // calls centerView() internally — restore scale/offset after
     renderer.scale = rv.scale;
     renderer.offsetX = rv.offsetX;
     renderer.offsetY = rv.offsetY;
-    renderer.layerSpacing = rv.layerSpacing;
-    setStackMode(rv.stackMode);
     renderer.nodeRadius = rv.nodeRadius;
     renderer.showLabels = rv.showLabels;
     renderer.transformNodes = rv.transformNodes;
@@ -4730,6 +4741,7 @@ function restoreSessionState(state) {
     renderer.arrowheadSize = rv.arrowheadSize;
     renderer.interlayerCurvature = rv.interlayerCurvature;
     renderer.interlayerMinWeight = rv.interlayerMinWeight;
+    renderer.intraMinWeight = rv.intraMinWeight ?? 0;
     renderer.defaultIntraColor = rv.defaultIntraColor;
     renderer.defaultInterColor = rv.defaultInterColor;
     renderer.layerOffsets = new Map(rv.layerOffsets);
@@ -4750,6 +4762,8 @@ function restoreSessionState(state) {
     interlayerCurvatureSlider.value = rv.interlayerCurvature;
     interlayerWeightSlider.value = rv.interlayerMinWeight;
     interlayerWeightLabel.textContent = rv.interlayerMinWeight.toFixed(2);
+    intraLinkWeightSlider.value = rv.intraMinWeight ?? 0;
+    intraLinkWeightLabel.textContent = (rv.intraMinWeight ?? 0).toFixed(2);
 
     // 5. DOM — color pickers
     const ui = state.ui;
@@ -4785,14 +4799,17 @@ function restoreSessionState(state) {
     updateIntraLinkColors(); updateInterLinkColors();
     updateLayerColors();
 
-    // 9. Legend
+    // 9. Restore cross-mode selected node
+    crossModeSelectedNode = state.selectedNode ?? null;
+
+    // 10. Legend
     expandedLegends.clear();
     for (const k of state.legend.expandedLegends) expandedLegends.add(k);
     lvExpandedLegends.clear();
     for (const k of state.legend.lvExpandedLegends) lvExpandedLegends.add(k);
     renderLegends();
 
-    // 10. Meta-network DOM (takes effect next time it's opened)
+    // 11. Meta-network DOM (takes effect next time it's opened)
     const mn = state.meta;
     mnAggregationSelect.value = mn.aggregation;
     mnLayoutSelect.value = mn.layout;
@@ -4806,10 +4823,11 @@ function restoreSessionState(state) {
     mnShowLabelsCheckbox.checked = mn.showLabels;
     mnLabelSizeSlider.value = mn.labelSize;
     mnLabelSizeLabel.textContent = mn.labelSize + 'px';
+    if (mn.uniformColor) mnUniformColorPicker.value = mn.uniformColor;
     mnColorSetA.value = mn.colorSetA;
     mnColorSetB.value = mn.colorSetB;
 
-    // 11. Map DOM
+    // 12. Map DOM
     const mp = state.map;
     mapOpacitySlider.value = mp.mapOpacity;
     showMapImageCheckbox.checked = mp.showMapImage;
@@ -4819,12 +4837,13 @@ function restoreSessionState(state) {
     lvShowMapImageCheckbox.checked = mp.lvShowMapImage;
     lvStreetMapCheckbox.checked = mp.lvStreetMap;
 
-    // 12. Restore visualization mode
+    // 13. Restore visualization mode
     if (state.appMode === 'map' && mapModeBtn.style.display !== 'none') {
         toggleMapMode();
         activeMapLayers.clear();
         for (const l of mp.activeMapLayers) activeMapLayers.add(l);
         updateMapModeViews();
+        if (mp.mapZoom != null) bgMap.setView([mp.mapCenter.lat, mp.mapCenter.lng], mp.mapZoom, { animate: false });
     } else if (state.appMode === 'layer') {
         toggleLayerView();
         if (renderer.layerView && state.layerView) {
@@ -4834,21 +4853,58 @@ function restoreSessionState(state) {
             lv.viewOffsetX = state.layerView.viewOffsetX;
             lv.viewOffsetY = state.layerView.viewOffsetY;
             _restoreLayerViewDOM(state.layerView.settings);
+            if (state.layerView.geoMode) {
+                _activateLvGeoMode();
+                if (mp.lvMapZoom != null) lvMap.setView([mp.lvMapCenter.lat, mp.lvMapCenter.lng], mp.lvMapZoom, { animate: false });
+            }
         }
     } else if (state.appMode === 'dashboard') {
         dashboardBtn.click();
     } else if (state.appMode === 'metanetwork') {
         metaNetworkBtn.click();
+        if (metaNetwork) {
+            // _syncMetaNetworkControls() inside toggleMetaNetwork() overwrites the DOM
+            // with MetaNetwork defaults — apply saved settings directly to the object.
+            metaNetwork.updateSetting('aggregation', mn.aggregation);
+            metaNetwork.updateSetting('layout', mn.layout);
+            metaNetwork.updateSetting('colorBy', mn.colorBy);
+            metaNetwork.updateSetting('sizeBy', mn.sizeBy);
+            metaNetwork.updateSetting('baseSize', mn.baseSize);
+            metaNetwork.updateSetting('uniformColor', mn.uniformColor ?? metaNetwork.settings.uniformColor);
+            metaNetwork.updateSetting('uniformColorA', mn.colorSetA);
+            metaNetwork.updateSetting('uniformColorB', mn.colorSetB);
+            metaNetwork.updateSetting('nestedSort', mn.nestedSort);
+            metaNetwork.settings.minWeight = mn.minWeight;
+            metaNetwork.settings.showLabels = mn.showLabels;
+            metaNetwork.settings.labelFontSize = mn.labelSize;
+            // Re-sync the DOM to reflect the restored settings
+            _syncMetaNetworkControls();
+            // _syncMetaNetworkControls resets minWeight slider to 0 — restore it
+            mnMinWeightSlider.value = mn.minWeight;
+            mnMinWeightLabel.textContent = mn.minWeight.toFixed(2);
+            // Restore view transform (must be last — layout calls may call _fitView)
+            if (mn.viewScale != null) {
+                metaNetwork.viewScale = mn.viewScale;
+                metaNetwork.viewOffsetX = mn.viewOffsetX;
+                metaNetwork.viewOffsetY = mn.viewOffsetY;
+            }
+        }
     }
 
-    // 13. Restore data filter
+    // 14. Restore data filter
     if (state.filter) {
         dataMode.filteredNodeNames  = state.filter.nodeNames  ? new Set(state.filter.nodeNames)  : null;
         dataMode.filteredLayerNames = state.filter.layerNames ? new Set(state.filter.layerNames) : null;
         dataMode.filteredLinkKeys   = state.filter.linkKeys   ? new Set(state.filter.linkKeys)   : null;
         _updateFilterBanner();
+        if (state.filter.interPairFilter?.length) {
+            _interPairFilter = new Set(state.filter.interPairFilter);
+            _applyInterPairFilter();
+        }
     }
 
+    _applyCrossModeSelectionToRenderer();
+    _updateSelectedNodeBanner();
     renderer.render();
 }
 
