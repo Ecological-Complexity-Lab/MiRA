@@ -56,14 +56,18 @@ export class Renderer {
         // Color-by functions
         this.nodeColorFn = null;
         this.nodeSizeFn = null;
-        this.linkColorFn = null;          // attribute-based; overrides defaults below
+        this.linkColorFn = null;          // global fallback; overrides defaults below
+        this.intraLinkColorFn = null;     // per-type override for intralayer links
+        this.interLinkColorFn = null;     // per-type override for interlayer links
         this.defaultIntraColor = 'rgba(0,0,0,0.85)';
         this.defaultInterColor = 'rgba(30,100,220,0.8)';
         this.layerColorFn = null; // (layerIndex, layer) -> { fill, border, text }
 
-        this.arrowheadSize = 1;       // multiplier, 1 = default
-        this.interlayerCurvature = 0.35; // fraction of link distance
-        this.interlayerMinWeight = 0;    // links below this weight are hidden
+        this.arrowheadSize = 1;            // multiplier, 1 = default
+        this.interlayerCurvature = 0.35;   // fraction of link distance
+        this.intraMinWeight = 0;           // intralayer links below this weight are hidden
+        this.interlayerMinWeight = 0;      // interlayer links below this weight are hidden
+        this.interlayerLayerPairs = null;  // null = show all; Set<"from::to"> = selected pairs
 
         this.showMapBackground = false;
         this.isMapMode = false;
@@ -540,6 +544,7 @@ export class Renderer {
         const useBipartiteGradient = bpInfo && bpInfo.isBipartite;
 
         for (const link of links) {
+            if (this.intraMinWeight > 0 && (link.weight || 0) < this.intraMinWeight) continue;
             if (dataMode.filteredNodeNames &&
                 (!dataMode.filteredNodeNames.has(link.node_from) || !dataMode.filteredNodeNames.has(link.node_to))) continue;
             if (dataMode.filteredLinkKeys) {
@@ -554,10 +559,12 @@ export class Renderer {
             const from = this.project(fromPos.x, fromPos.y, layerIndex);
             const to = this.project(toPos.x, toPos.y, layerIndex);
 
-            // Determine color
-            const color = this.linkColorFn
-                ? this.linkColorFn(link)
-                : this.defaultIntraColor;
+            // Determine color: per-type fn → global fn → default
+            const color = this.intraLinkColorFn
+                ? this.intraLinkColorFn(link)
+                : this.linkColorFn
+                    ? this.linkColorFn(link)
+                    : this.defaultIntraColor;
 
             const isHighlighted = this._isLinkHighlighted(link);
             const _fn = this.selectedNode ? this.selectedNode.nodeName : this.searchedNodeName;
@@ -586,6 +593,7 @@ export class Renderer {
         const visibleLinks = this.model.interlayerLinks.filter(l => {
             if (this.activeMapLayers && (!this.activeMapLayers.has(l.layer_from) || !this.activeMapLayers.has(l.layer_to))) return false;
             if (this.interlayerMinWeight > 0 && (l.weight || 0) < this.interlayerMinWeight) return false;
+            if (this.interlayerLayerPairs !== null && !this.interlayerLayerPairs.has(`${l.layer_from}::${l.layer_to}`)) return false;
             if (dataMode.filteredLayerNames && (!dataMode.filteredLayerNames.has(l.layer_from) || !dataMode.filteredLayerNames.has(l.layer_to))) return false;
             if (dataMode.filteredNodeNames && (!dataMode.filteredNodeNames.has(l.node_from) || !dataMode.filteredNodeNames.has(l.node_to))) return false;
             if (dataMode.filteredLinkKeys) {
@@ -604,9 +612,11 @@ export class Renderer {
             const toScreen = this.getNodeScreenPos(link.layer_to, link.node_to);
             if (!fromScreen || !toScreen) continue;
 
-            const color = this.linkColorFn
-                ? this.linkColorFn(link)
-                : this.defaultInterColor;
+            const color = this.interLinkColorFn
+                ? this.interLinkColorFn(link)
+                : this.linkColorFn
+                    ? this.linkColorFn(link)
+                    : this.defaultInterColor;
 
             const isHighlighted = this._isLinkHighlighted(link);
             const _fn = this.selectedNode ? this.selectedNode.nodeName : this.searchedNodeName;

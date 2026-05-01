@@ -33,8 +33,10 @@ let activeNodeColorScaleB = null;
 let activeNodeSizeScale = null;
 let activeNodeSizeScaleA = null;
 let activeNodeSizeScaleB = null;
-let activeLinkColorScale = null;
+let activeIntraLinkColorScale = null;
+let activeInterLinkColorScale = null;
 let activeLayerColorScale = null;
+let _interPairFilter = new Set(); // empty = show all; Set<"from::to"> = selected pairs
 const colorScaleOverrides = new Map(); // attrName -> 'categorical' | 'continuous'
 const categoryColorOverrides = new Map(); // attrName -> Map<value, hex color>
 
@@ -105,13 +107,13 @@ const bipartiteSizeLabelA = document.getElementById('bipartiteSizeLabelA');
 const bipartiteSizeLabelB = document.getElementById('bipartiteSizeLabelB');
 const nodeSizeSelectSetA = document.getElementById('nodeSizeSelectSetA');
 const nodeSizeSelectSetB = document.getElementById('nodeSizeSelectSetB');
-const linkColorSelect = document.getElementById('linkColorSelect');
 const layerColorSelect = document.getElementById('layerColorSelect');
 const layerColorSwatches = document.getElementById('layerColorSwatches');
 const nodeColorSwatches  = document.getElementById('nodeColorSwatches');
-const linkColorSwatches      = document.getElementById('linkColorSwatches');
-const arrowheadSizeControl   = document.getElementById('arrowheadSizeControl');
-const arrowheadSizeSlider    = document.getElementById('arrowheadSizeSlider');
+const arrowheadSizeControl      = document.getElementById('arrowheadSizeControl');
+const arrowheadSizeSlider       = document.getElementById('arrowheadSizeSlider');
+const interArrowheadSizeControl = document.getElementById('interArrowheadSizeControl');
+const interArrowheadSizeSlider  = document.getElementById('interArrowheadSizeSlider');
 
 const LAYER_DEFAULT_HEX = '#8b5cf6';
 const NODE_DEFAULT_HEX  = '#a78bfa';
@@ -248,6 +250,7 @@ const lvShowMapImageCheckbox = document.getElementById('lvShowMapImageCheckbox')
 const lvStreetMapCheckbox = document.getElementById('lvStreetMapCheckbox');
 const showSetNamesCheckbox = document.getElementById('showSetNamesCheckbox');
 const bipartiteNestedCheckbox = document.getElementById('bipartiteNestedCheckbox');
+const sectionInterLinks      = document.getElementById('sectionInterLinks');
 const showInterlayerCheckbox = document.getElementById('showInterlayerCheckbox');
 const layoutSelect = document.getElementById('layoutSelect');
 const nodeSizeSlider = document.getElementById('nodeSizeSlider');
@@ -296,6 +299,21 @@ const mnLayerPanelHeader  = document.getElementById('mnLayerPanelHeader');
 const mnLayerPanelBody    = document.getElementById('mnLayerPanelBody');
 const mnLayerPanelToggle  = document.getElementById('mnLayerPanelToggle');
 const mnLayerList         = document.getElementById('mnLayerList');
+
+// ── Sidebar accordion: opening one section collapses other visible ones ──────
+{
+    const sections = document.querySelectorAll('.control-section');
+    sections.forEach(details => {
+        details.addEventListener('toggle', () => {
+            if (!details.open) return;
+            sections.forEach(other => {
+                if (other !== details && other.open && other.style.display !== 'none') {
+                    other.open = false;
+                }
+            });
+        });
+    });
+}
 
 // ── Select Layers panel drag + collapse ──────────────────────────────────
 let _mlpDragging = false, _mlpHasDragged = false;
@@ -515,8 +533,9 @@ function resetVisualizationOptions() {
     bipartiteNestedCheckbox.checked = false;
     layout.bipartiteNested = false;
 
-    showInterlayerCheckbox.checked = true;
-    renderer.showInterlayerLinks = true;
+    showInterlayerCheckbox.checked = false;
+    renderer.showInterlayerLinks = false;
+    interPairPanel.style.display = 'none';
 
     // Stacking mode
     setStackMode('horizontal');
@@ -535,25 +554,33 @@ function resetVisualizationOptions() {
     nodeSizeSelect.value = '';
     nodeSizeSelectSetA.value = '';
     nodeSizeSelectSetB.value = '';
-    linkColorSelect.value = '';
+    intraLinkColorSelect.value = '';
+    interLinkColorSelect.value = '';
     layerColorSelect.value = '';
     layerColorPicker.value = LAYER_DEFAULT_HEX;
     nodeColorSelect.value = '';
     nodeColorPicker.value = NODE_DEFAULT_HEX;
-    linkColorSelect.value = '';
     intraLinkColorPicker.value = '#000000';
     interLinkColorPicker.value = '#1e64dc';
     arrowheadSizeSlider.value = 1;
+    interArrowheadSizeSlider.value = 1;
     renderer.arrowheadSize = 1;
     interlayerCurvatureSlider.value = 0.35;
     renderer.interlayerCurvature = 0.35;
+    intraLinkWeightSlider.value = 0;
+    intraLinkWeightLabel.textContent = '0';
+    renderer.intraMinWeight = 0;
     interlayerWeightSlider.value = 0;
     interlayerWeightLabel.textContent = '0';
     renderer.interlayerMinWeight = 0;
+    _interPairFilter = new Set();
+    renderer.interlayerLayerPairs = null;
 
     // Color functions
     renderer.nodeColorFn = null;
     renderer.nodeSizeFn = null;
+    renderer.intraLinkColorFn = null;
+    renderer.interLinkColorFn = null;
     renderer.linkColorFn = null;
     renderer.layerColorFn = null;
     activeNodeColorScale = null;
@@ -562,7 +589,8 @@ function resetVisualizationOptions() {
     activeNodeSizeScale = null;
     activeNodeSizeScaleA = null;
     activeNodeSizeScaleB = null;
-    activeLinkColorScale = null;
+    activeIntraLinkColorScale = null;
+    activeInterLinkColorScale = null;
     activeLayerColorScale = null;
     colorScaleOverrides.clear();
     categoryColorOverrides.clear();
@@ -617,18 +645,24 @@ function loadData(json) {
             mapModeBtn.style.display = 'none';
         }
 
-        arrowheadSizeControl.style.display = (model.directed || model.directedInterlayer) ? 'block' : 'none';
+        arrowheadSizeControl.style.display      = model.directed         ? 'block' : 'none';
+        interArrowheadSizeControl.style.display = model.directedInterlayer ? 'block' : 'none';
         const hasInterlayer = model.interlayerLinks.length > 0;
-        interLinkColorControl.style.display = hasInterlayer ? 'flex' : 'none';
-        interlayerControls.style.display    = hasInterlayer ? 'block' : 'none';
+        sectionInterLinks.style.display = hasInterlayer ? '' : 'none';
         if (hasInterlayer) {
-            const weights = model.interlayerLinks.map(l => l.weight || 0).filter(w => w > 0);
-            const maxW = weights.length ? Math.max(...weights) : 1;
-            interlayerWeightSlider.max = maxW.toFixed(4);
-            interlayerWeightSlider.step = (maxW / 100).toFixed(4);
+            const iWeights = model.interlayerLinks.map(l => l.weight || 0).filter(w => w > 0);
+            const maxIW = iWeights.length ? Math.max(...iWeights) : 1;
+            interlayerWeightSlider.max  = maxIW.toFixed(4);
+            interlayerWeightSlider.step = (maxIW / 100).toFixed(4);
             interlayerWeightSlider.value = 0;
             interlayerWeightLabel.textContent = '0';
         }
+        const intraWeights = model.intralayerLinks.map(l => l.weight || 0).filter(w => w > 0);
+        const maxIntraW = intraWeights.length ? Math.max(...intraWeights) : 1;
+        intraLinkWeightSlider.max  = maxIntraW.toFixed(4);
+        intraLinkWeightSlider.step = (maxIntraW / 100).toFixed(4);
+        intraLinkWeightSlider.value = 0;
+        intraLinkWeightLabel.textContent = '0';
 
         // Reset out of any non-network mode when loading new data
         if (appMode === 'map')         { toggleMapMode(); }
@@ -694,7 +728,8 @@ function loadData(json) {
         resetVisualizationOptions();
         updateLayerColors();
         updateNodeColors();
-        updateLinkColors();
+        updateIntraLinkColors();
+        updateInterLinkColors();
 
         renderer.setData(model, positions);
         renderer.skewX = 0.7;
@@ -710,7 +745,8 @@ function loadData(json) {
         nodeSizeSelect.disabled = false;
         nodeSizeSelectSetA.disabled = nodeSizeSelectSetA.options.length <= 1;
         nodeSizeSelectSetB.disabled = nodeSizeSelectSetB.options.length <= 1;
-        linkColorSelect.disabled = false;
+        intraLinkColorSelect.disabled = false;
+        if (hasInterlayer) interLinkColorSelect.disabled = false;
     } catch (err) {
         console.error('Failed to load data:', err);
         alert('Error loading data: ' + err.message);
@@ -2779,7 +2815,7 @@ bipartiteNestedCheckbox.addEventListener('change', () => {
     }
 });
 
-// ---- Toggle Interlayer Links ----
+// ---- Show / Hide Interlayer Links ----
 showInterlayerCheckbox.addEventListener('change', () => {
     renderer.showInterlayerLinks = showInterlayerCheckbox.checked;
     renderer.render();
@@ -3095,14 +3131,11 @@ function populateDropdowns() {
     }
 
 
-    // Link color options
-    linkColorSelect.innerHTML = '<option value="">Default</option>';
-    for (const attr of model.linkAttributeNames) {
-        const opt = document.createElement('option');
-        opt.value = attr;
-        opt.textContent = attr;
-        linkColorSelect.appendChild(opt);
-    }
+    // Link color options (both panels share the same attribute list)
+    const linkOptHTML = '<option value="">Default</option>' +
+        model.linkAttributeNames.map(a => `<option value="${a}">${a}</option>`).join('');
+    intraLinkColorSelect.innerHTML = linkOptHTML;
+    interLinkColorSelect.innerHTML = linkOptHTML;
 
     // Layer color options
     layerColorSelect.innerHTML = '<option value="">Default</option><option value="__individual__">Individual</option>';
@@ -3126,16 +3159,32 @@ nodeColorPicker.addEventListener('input', () => {
     if (!nodeColorSelect.value) updateNodeColors();
 });
 
+const intraLinkColorSelect  = document.getElementById('intraLinkColorSelect');
+const intraLinkColorSwatches= document.getElementById('intraLinkColorSwatches');
 const intraLinkColorPicker  = document.getElementById('intraLinkColorPicker');
+const intraLinkWeightSlider = document.getElementById('intraLinkWeightSlider');
+const intraLinkWeightLabel  = document.getElementById('intraLinkWeightLabel');
+const interLinkColorSelect  = document.getElementById('interLinkColorSelect');
+const interLinkColorSwatches= document.getElementById('interLinkColorSwatches');
 const interLinkColorPicker  = document.getElementById('interLinkColorPicker');
-const interLinkColorControl      = document.getElementById('interLinkColorControl');
-const interlayerControls         = document.getElementById('interlayerControls');
-const interlayerCurvatureSlider  = document.getElementById('interlayerCurvatureSlider');
-const interlayerWeightSlider     = document.getElementById('interlayerWeightSlider');
-const interlayerWeightLabel      = document.getElementById('interlayerWeightLabel');
+const interlayerCurvatureSlider = document.getElementById('interlayerCurvatureSlider');
+const interlayerWeightSlider    = document.getElementById('interlayerWeightSlider');
+const interlayerWeightLabel     = document.getElementById('interlayerWeightLabel');
+const filterInterPairsBtn   = document.getElementById('filterInterPairsBtn');
+const interPairPanel        = document.getElementById('interPairPanel');
+const interPairPanelHeader  = document.getElementById('interPairPanelHeader');
+const interPairPanelBody    = document.getElementById('interPairPanelBody');
+const interPairPanelClose   = document.getElementById('interPairPanelClose');
 
-intraLinkColorPicker.addEventListener('input', () => { if (!linkColorSelect.value) updateLinkColors(); });
-interLinkColorPicker.addEventListener('input', () => { if (!linkColorSelect.value) updateLinkColors(); });
+intraLinkColorPicker.addEventListener('input', () => { if (!intraLinkColorSelect.value) updateIntraLinkColors(); });
+interLinkColorPicker.addEventListener('input', () => { if (!interLinkColorSelect.value) updateInterLinkColors(); });
+
+intraLinkWeightSlider.addEventListener('input', () => {
+    const val = parseFloat(intraLinkWeightSlider.value);
+    renderer.intraMinWeight = val;
+    intraLinkWeightLabel.textContent = val.toFixed(2);
+    renderer.render();
+});
 
 interlayerCurvatureSlider.addEventListener('input', () => {
     renderer.interlayerCurvature = parseFloat(interlayerCurvatureSlider.value);
@@ -3151,6 +3200,13 @@ interlayerWeightSlider.addEventListener('input', () => {
 
 arrowheadSizeSlider.addEventListener('input', () => {
     renderer.arrowheadSize = parseFloat(arrowheadSizeSlider.value);
+    interArrowheadSizeSlider.value = arrowheadSizeSlider.value;
+    renderer.render();
+});
+
+interArrowheadSizeSlider.addEventListener('input', () => {
+    renderer.arrowheadSize = parseFloat(interArrowheadSizeSlider.value);
+    arrowheadSizeSlider.value = interArrowheadSizeSlider.value;
     renderer.render();
 });
 
@@ -3173,10 +3229,177 @@ nodeSizeSelect.addEventListener('change', () => { updateNodeSizes(); renderer.re
 nodeSizeSelectSetA.addEventListener('change', () => { updateNodeSizes(); renderer.render(); });
 nodeSizeSelectSetB.addEventListener('change', () => { updateNodeSizes(); renderer.render(); });
 
-linkColorSelect.addEventListener('change', () => {
-    updateLinkColors();
+intraLinkColorSelect.addEventListener('change', () => { updateIntraLinkColors(); renderer.render(); });
+interLinkColorSelect.addEventListener('change', () => { updateInterLinkColors(); renderer.render(); });
+
+// ── Interlayer layer-pair filter panel ───────────────────────────────────────
+
+function _lerpHexToAmber(t) {
+    // white (#fff) → amber (#f59e0b)
+    const tr = Math.round(255 + (245 - 255) * t);
+    const tg = Math.round(255 + (158 - 255) * t);
+    const tb = Math.round(255 + (11  - 255) * t);
+    return `rgb(${tr},${tg},${tb})`;
+}
+
+function _applyInterPairFilter() {
+    if (_interPairFilter.size === 0) {
+        renderer.interlayerLayerPairs = null;
+    } else {
+        const pairs = new Set();
+        for (const key of _interPairFilter) {
+            const [f, t] = key.split('::');
+            pairs.add(`${f}::${t}`);
+            pairs.add(`${t}::${f}`);
+        }
+        renderer.interlayerLayerPairs = pairs;
+    }
     renderer.render();
+}
+
+function _renderInterPairHeatmap() {
+    if (!model || !interPairPanelBody) return;
+    const layerNames = model.layers.map(l => l.layer_name);
+    const n = layerNames.length;
+    const idx = Object.fromEntries(layerNames.map((ln, i) => [ln, i]));
+    const dirInter = model.directedInterlayer ?? model.directed ?? false;
+
+    const countMat = Array.from({ length: n }, () => new Array(n).fill(0));
+    for (const lk of model.interlayerLinks) {
+        const i = idx[lk.layer_from], j = idx[lk.layer_to];
+        if (i !== undefined && j !== undefined) {
+            countMat[i][j]++;
+            if (!dirInter) countMat[j][i]++;
+        }
+    }
+    const maxCount = Math.max(...countMat.flat(), 1);
+
+    const cellSize = n <= 8 ? 28 : n <= 14 ? 20 : n <= 22 ? 14 : 10;
+    const maxLen   = Math.max(...layerNames.map(l => l.length));
+    const LABEL_W  = Math.min(maxLen * 6.2 + 10, 130);
+    const HDR_H    = Math.min(maxLen * 6.2 + 10, 120);
+    const TEXT     = '#374151';
+    const GRID     = '#e5e7eb';
+
+    let colLabels = '', rowLabels = '', cells = '';
+    layerNames.forEach((ln, j) => {
+        const x   = LABEL_W + j * cellSize + cellSize / 2;
+        const lbl = ln.length > 18 ? ln.slice(0, 17) + '…' : ln;
+        colLabels += `<text transform="translate(${x},${HDR_H - 4}) rotate(-45)" text-anchor="start" font-size="10" fill="${TEXT}">${lbl}</text>`;
+    });
+    layerNames.forEach((rowLn, i) => {
+        const y   = HDR_H + i * cellSize;
+        const lbl = rowLn.length > 18 ? rowLn.slice(0, 17) + '…' : rowLn;
+        rowLabels += `<text x="${LABEL_W - 5}" y="${y + cellSize / 2 + 3}" text-anchor="end" font-size="10" fill="${TEXT}">${lbl}</text>`;
+        layerNames.forEach((colLn, j) => {
+            const cnt  = countMat[i][j];
+            const t    = cnt / maxCount;
+            const fill = _lerpHexToAmber(t);
+            const x    = LABEL_W + j * cellSize;
+            const isSel = _interPairFilter.has(`${rowLn}::${colLn}`) || _interPairFilter.has(`${colLn}::${rowLn}`);
+            const stroke = isSel ? '#1f2937' : GRID;
+            const sw     = isSel ? 2 : 0.5;
+            const fs     = Math.min(10, cellSize * 0.27);
+            const textFill = (1 - 0.7 * t) < 0.52 ? '#fff' : TEXT;
+            cells += `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" style="cursor:${cnt > 0 ? 'pointer' : 'default'}" data-from="${rowLn}" data-to="${colLn}"/>`;
+            if (cellSize >= 14 && cnt > 0) {
+                cells += `<text x="${x + cellSize / 2}" y="${y + cellSize / 2 + fs * 0.4}" text-anchor="middle" font-size="${fs}" fill="${textFill}" pointer-events="none">${cnt}</text>`;
+            }
+        });
+    });
+
+    const hmW = LABEL_W + n * cellSize;
+    const hmH = HDR_H + n * cellSize;
+    const hint = `<div style="font-size:10px;color:#9ca3af;margin-bottom:6px;">Click to select · Cmd/Ctrl+click to multi-select</div>`;
+    const clearBtn = _interPairFilter.size > 0
+        ? `<button id="interPairClearBtn" style="font-size:11px;padding:3px 8px;border:1px solid #d1d5db;border-radius:6px;background:#fff;cursor:pointer;margin-bottom:6px;">✕ Show all pairs</button>`
+        : '';
+    const svg = `<svg width="${hmW}" height="${hmH}" style="overflow:visible;display:block;">${colLabels}${rowLabels}${cells}</svg>`;
+
+    interPairPanelBody.innerHTML = clearBtn + hint + `<div style="overflow:auto;">${svg}</div>`;
+
+    // Wire cell clicks
+    interPairPanelBody.querySelectorAll('rect[data-from]').forEach(rect => {
+        rect.addEventListener('click', (e) => {
+            const from = rect.dataset.from, to = rect.dataset.to;
+            const hasLinks = model.interlayerLinks.some(lk => {
+                const fwd = lk.layer_from === from && lk.layer_to === to;
+                const rev = !dirInter && lk.layer_from === to && lk.layer_to === from;
+                return fwd || rev;
+            });
+            if (!hasLinks) return;
+
+            const key  = `${from}::${to}`;
+            const isSel = _interPairFilter.has(key) || _interPairFilter.has(`${to}::${from}`);
+
+            if (e.metaKey || e.ctrlKey) {
+                // Toggle this pair in/out of the multi-selection
+                if (isSel) {
+                    _interPairFilter.delete(key);
+                    _interPairFilter.delete(`${to}::${from}`);
+                } else {
+                    _interPairFilter.add(key);
+                }
+            } else {
+                // Regular click: replace selection, or deselect if sole pair
+                _interPairFilter = (isSel && _interPairFilter.size === 1)
+                    ? new Set()
+                    : new Set([key]);
+            }
+
+            _applyInterPairFilter();
+            _renderInterPairHeatmap();
+        });
+    });
+
+    const clearBtnEl = interPairPanelBody.querySelector('#interPairClearBtn');
+    if (clearBtnEl) {
+        clearBtnEl.addEventListener('click', () => {
+            _interPairFilter = new Set();
+            _applyInterPairFilter();
+            _renderInterPairHeatmap();
+        });
+    }
+}
+
+// Open / close floating panel
+filterInterPairsBtn.addEventListener('click', () => {
+    const open = interPairPanel.style.display !== 'none';
+    if (open) {
+        interPairPanel.style.display = 'none';
+    } else {
+        interPairPanel.style.display = '';
+        _renderInterPairHeatmap();
+    }
 });
+interPairPanelClose.addEventListener('click', () => { interPairPanel.style.display = 'none'; });
+
+// Drag for interPairPanel — same pattern as mapLayerPanel
+{
+    let _ipDragging = false, _ipHasDragged = false;
+    let _ipStartX, _ipStartY, _ipStartLeft, _ipStartTop;
+
+    interPairPanelHeader.addEventListener('mousedown', (e) => {
+        if (e.target.closest('button')) return;
+        _ipDragging = true; _ipHasDragged = false;
+        _ipStartX = e.clientX; _ipStartY = e.clientY;
+        const r = interPairPanel.getBoundingClientRect();
+        _ipStartLeft = r.left; _ipStartTop = r.top;
+        interPairPanel.style.cursor = 'grabbing';
+        e.preventDefault();
+    });
+    document.addEventListener('mousemove', (e) => {
+        if (!_ipDragging) return;
+        const dx = e.clientX - _ipStartX, dy = e.clientY - _ipStartY;
+        if (Math.abs(dx) > 3 || Math.abs(dy) > 3) _ipHasDragged = true;
+        interPairPanel.style.left   = (_ipStartLeft + dx) + 'px';
+        interPairPanel.style.top    = (_ipStartTop  + dy) + 'px';
+        interPairPanel.style.right  = 'auto';
+    });
+    document.addEventListener('mouseup', () => {
+        if (_ipDragging) { _ipDragging = false; interPairPanel.style.cursor = ''; }
+    });
+}
 
 
 
@@ -3366,24 +3589,41 @@ function updateNodeColors() {
     renderLegends();
 }
 
-function updateLinkColors() {
-    activeLinkColorScale = null;
-    const attrName = linkColorSelect.value;
-    linkColorSwatches.style.display = attrName ? 'none' : 'flex';
+function updateIntraLinkColors() {
+    activeIntraLinkColorScale = null;
+    const attrName = intraLinkColorSelect.value;
+    intraLinkColorSwatches.style.display = attrName ? 'none' : 'flex';
     if (!attrName || !model) {
-        renderer.linkColorFn = null;
+        renderer.intraLinkColorFn = null;
         renderer.defaultIntraColor = intraLinkColorPicker.value;
-        renderer.defaultInterColor = interLinkColorPicker.value;
-        renderer.render();
         renderLegends();
         return;
     }
-
     const override = colorScaleOverrides.get(attrName);
-    const sc = colorMapper.buildColorScale(model.extended, attrName, override);
-    activeLinkColorScale = sc;
-    renderer.linkColorFn = (link) => applyCategoryOverride(attrName, link[attrName], sc.scaleFn(link[attrName]));
-    if (activeLinkColorScale) expandedLegends.add('linkColor');
+    const sc = colorMapper.buildColorScale(
+        model.intralayerLinks.length ? model.intralayerLinks : model.extended, attrName, override);
+    activeIntraLinkColorScale = sc;
+    renderer.intraLinkColorFn = (link) => applyCategoryOverride(attrName, link[attrName], sc.scaleFn(link[attrName]));
+    if (activeIntraLinkColorScale) expandedLegends.add('intraLinkColor');
+    renderLegends();
+}
+
+function updateInterLinkColors() {
+    activeInterLinkColorScale = null;
+    const attrName = interLinkColorSelect.value;
+    interLinkColorSwatches.style.display = attrName ? 'none' : 'flex';
+    if (!attrName || !model) {
+        renderer.interLinkColorFn = null;
+        renderer.defaultInterColor = interLinkColorPicker.value;
+        renderLegends();
+        return;
+    }
+    const override = colorScaleOverrides.get(attrName);
+    const sc = colorMapper.buildColorScale(
+        model.interlayerLinks.length ? model.interlayerLinks : model.extended, attrName, override);
+    activeInterLinkColorScale = sc;
+    renderer.interLinkColorFn = (link) => applyCategoryOverride(attrName, link[attrName], sc.scaleFn(link[attrName]));
+    if (activeInterLinkColorScale) expandedLegends.add('interLinkColor');
     renderLegends();
 }
 
@@ -3549,7 +3789,7 @@ zoomResetBtn.addEventListener('click', () => {
     resetVisualizationOptions();
     updateLayerColors();
     updateNodeColors();
-    updateLinkColors();
+    updateIntraLinkColors(); updateInterLinkColors();
     renderer.skewX = 0.7;
     renderer.skewY = 0.55;
     renderer.resetLayerOffsets();
@@ -3821,7 +4061,8 @@ function renderLegends() {
         const sizeTitleB = stripPrefix(bipartiteSizeLabelB.textContent, 'Size By');
         renderScaleLegend(activeNodeSizeScaleB, 'nodeSizeB', 'Node Size (' + sizeTitleB + ')');
     }
-    renderScaleLegend(activeLinkColorScale, 'linkColor', 'Link Color');
+    renderScaleLegend(activeIntraLinkColorScale, 'intraLinkColor', 'Intralayer Link Color');
+    renderScaleLegend(activeInterLinkColorScale, 'interLinkColor', 'Interlayer Link Color');
     renderScaleLegend(activeLayerColorScale, 'layerColor', 'Layer Color');
 }
 
@@ -3853,7 +4094,7 @@ function createLegendDOM(titleText, scale, id) {
             const newType = scale.type === 'continuous' ? 'categorical' : 'continuous';
             colorScaleOverrides.set(scale.attrName, newType);
             updateNodeColors();
-            updateLinkColors();
+            updateIntraLinkColors(); updateInterLinkColors();
             updateLayerColors();
             renderer.render();
         };
@@ -3900,7 +4141,7 @@ function createLegendDOM(titleText, scale, id) {
             swatch.addEventListener('change', () => {
                 // Picker closed/committed — rebuild legend so the swatch reflects the new color.
                 updateNodeColors();
-                updateLinkColors();
+                updateIntraLinkColors(); updateInterLinkColors();
                 updateLayerColors();
                 renderer.render();
             });
@@ -4378,7 +4619,8 @@ function getSessionState() {
             nodeSizeSelect: nodeSizeSelect.value,
             nodeSizeSelectSetA: nodeSizeSelectSetA.value,
             nodeSizeSelectSetB: nodeSizeSelectSetB.value,
-            linkColorSelect: linkColorSelect.value,
+            intraLinkColorSelect: intraLinkColorSelect.value,
+            interLinkColorSelect: interLinkColorSelect.value,
             layerColorSelect: layerColorSelect.value,
             layerColorPicker: layerColorPicker.value,
             nodeColorPicker: nodeColorPicker.value,
@@ -4498,7 +4740,8 @@ function restoreSessionState(state) {
     transformNodesCheckbox.checked = rv.transformNodes;
     showLayerNamesCheckbox.checked = rv.showLayerNames;
     showSetNamesCheckbox.checked = rv.showSetNames;
-    showInterlayerCheckbox.checked = rv.showInterlayerLinks;
+    renderer.showInterlayerLinks = rv.showInterlayerLinks ?? false;
+    showInterlayerCheckbox.checked = renderer.showInterlayerLinks;
     layerSpacingSlider.value = rv.layerSpacing;
     nodeSizeSlider.value = rv.nodeRadius;
     arrowheadSizeSlider.value = rv.arrowheadSize;
@@ -4532,11 +4775,12 @@ function restoreSessionState(state) {
     nodeSizeSelect.value = ui.nodeSizeSelect;
     nodeSizeSelectSetA.value = ui.nodeSizeSelectSetA;
     nodeSizeSelectSetB.value = ui.nodeSizeSelectSetB;
-    linkColorSelect.value = ui.linkColorSelect;
+    intraLinkColorSelect.value = ui.intraLinkColorSelect ?? '';
+    interLinkColorSelect.value = ui.interLinkColorSelect ?? '';
     layerColorSelect.value = ui.layerColorSelect;
     updateNodeColors();
     updateNodeSizes();
-    updateLinkColors();
+    updateIntraLinkColors(); updateInterLinkColors();
     updateLayerColors();
 
     // 9. Legend
