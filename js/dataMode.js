@@ -1,5 +1,5 @@
 /**
- * dataMode.js — Data Mode: tabular inspection and subsetting for MultilayerViz
+ * dataMode.js — Data Mode: tabular inspection and subsetting for MiRA
  */
 
 export const LAYER_PALETTE = [

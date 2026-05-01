@@ -301,7 +301,7 @@ export function initExportManager({ getRenderer, getAppMode }) {
         const padding = 12 * scale;
         const boxH = 28 * scale;
         const fontSize = 13 * scale;
-        const text = 'Multilayer Viz';
+        const text = 'MiRA';
 
         ctx.font = `600 ${fontSize}px Inter, system-ui, sans-serif`;
         const textW = ctx.measureText(text).width;

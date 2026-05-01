@@ -3996,7 +3996,7 @@ function hideTooltip() {
 
 // ---- EMLN mode UI setup ----
 if (IS_EMLN) {
-    const ONLINE_URL = 'https://ecological-complexity-lab.github.io/multilayer_viz/';
+    const ONLINE_URL = 'https://mira.ecomplab.com/';
 
     // Replace data import buttons with message
     const btnRow = document.querySelector('#sectionData .btn-row');

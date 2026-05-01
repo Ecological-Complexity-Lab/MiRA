@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Multilayer Network Visualizer — Manual</title>
-  <link rel="icon" href="../assets/multiviz_logo.png" type="image/png">
+  <title>MiRA — Manual</title>
+  <link rel="icon" href="../assets/MiRA_logo_2.png" type="image/png">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -309,9 +309,9 @@
 <main id="content">
 
   <div style="display:flex; align-items:center; gap:18px; margin-bottom:16px;">
-    <img src="../assets/multiviz_logo.png" alt="Multilayer Network Visualizer logo" style="width:80px; height:80px; object-fit:contain;">
+    <img src="../assets/MiRA_logo_2.png" alt="MiRA logo" style="width:80px; height:80px; object-fit:contain;">
     <div>
-      <h1 style="margin-bottom:4px;">Multilayer Network Visualizer</h1>
+      <h1 style="margin-bottom:4px;">MiRA — Multilayer Interactive Rendering Application</h1>
       <p class="subtitle" style="margin-bottom:0;">Interactive manual — all features, modes, and controls</p>
     </div>
   </div>
@@ -1007,7 +1007,7 @@ Ixodes_ricinus,0.003</code></pre>
   </ol>
 
   <h4>Step 3 — Share the link</h4>
-  <p>Send your collaborator the Gist URL. They can load it directly in MultilayerViz:</p>
+  <p>Send your collaborator the Gist URL. They can load it directly in MiRA:</p>
   <ol>
     <li>Click the <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> <strong>Load Session from URL</strong> button in the toolbar.</li>
     <li>Paste the Gist URL (either the page URL or the raw file URL — both are accepted).</li>
@@ -1035,7 +1035,7 @@ Ixodes_ricinus,0.003</code></pre>
 
   <!-- ── EMLN INTEGRATION ──────────────────────────────────────────────── -->
   <h2 class="sec mode-misc" id="emln"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#374151" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M12 22C11.1818 22 10.4002 21.6708 8.83693 21.0123C4.94564 19.3734 3 18.5539 3 17.1754V7.54234M12 22C12.8182 22 13.5998 21.6708 15.1631 21.0123C19.0544 19.3734 21 18.5539 21 17.1754V7.54234M12 22V12.0292M3 7.54234C3 8.15478 3.80157 8.54152 5.40472 9.315L8.32592 10.7244C10.1288 11.5943 11.0303 12.0292 12 12.0292M3 7.54234C3 6.9299 3.80157 6.54317 5.40472 5.76969L7 5M21 7.54234C21 8.15478 20.1984 8.54152 18.5953 9.315L15.6741 10.7244C13.8712 11.5943 12.9697 12.0292 12 12.0292M21 7.54234C21 6.9299 20.1984 6.54316 18.5953 5.76969L17.0446 5.02151M6 13.0263L8 14.0234"/><path d="M11.9963 9L11.9963 2.00005M11.9963 2.00005C11.7332 1.99649 11.4737 2.18028 11.2822 2.40466L10 3.93826M11.9963 2.00005C12.2501 2.00348 12.5071 2.18632 12.7103 2.40466L14 3.93826"/></svg> Integration with the emln R Package</h2>
-  <p>The <a href="https://ecological-complexity-lab.github.io/emln_package/" target="_blank">emln</a> R package provides three functions to load and export multilayer networks directly into MultilayerViz — no manual file preparation required.</p>
+  <p>The <a href="https://ecological-complexity-lab.github.io/emln_package/" target="_blank">emln</a> R package provides three functions to load and export multilayer networks directly into MiRA — no manual file preparation required.</p>
 
   <pre style="background:#f3f4f6;border:1px solid #e5e7eb;border-radius:6px;padding:14px;font-size:12px;line-height:1.7"><code style="background:none;border:none;padding:0;color:#1f2937">library(emln)
 net &lt;- load_emln(60)               # load a built-in dataset
@@ -1049,7 +1049,7 @@ multilayer_to_json(net, file = "network.json", bipartite = TRUE)
 multilayer_to_csv(net, dir = "out/", prefix = "net60", bipartite = TRUE)</code></pre>
 
   <h3 id="emln-plot">plot_multilayer()</h3>
-  <p>Converts the multilayer object to JSON and opens MultilayerViz in the default browser, served over a local HTTP server. The network loads automatically — no file selection needed.</p>
+  <p>Converts the multilayer object to JSON and opens MiRA in the default browser, served over a local HTTP server. The network loads automatically — no file selection needed.</p>
   <table style="width:100%;border-collapse:collapse;font-size:13px;margin-top:8px">
     <thead><tr style="background:#f3f4f6"><th style="padding:6px 10px;text-align:left;border:1px solid #e5e7eb">Argument</th><th style="padding:6px 10px;text-align:left;border:1px solid #e5e7eb">Default</th><th style="padding:6px 10px;text-align:left;border:1px solid #e5e7eb">Description</th></tr></thead>
     <tbody>
@@ -1057,14 +1057,14 @@ multilayer_to_csv(net, dir = "out/", prefix = "net60", bipartite = TRUE)</code><
       <tr><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>bipartite</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>FALSE</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb">Set <code>TRUE</code> explicitly for bipartite networks. Requires a <code>node_type</code> (or legacy <code>node_group</code> / <code>type</code>) column with exactly two distinct values.</td></tr>
       <tr><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>directed</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>NULL</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb">If <code>NULL</code>, auto-detected from edge symmetry. Set explicitly if auto-detection is wrong (e.g. pollinator networks store edges one-way but are ecologically undirected).</td></tr>
       <tr><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>port</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>8080</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb">Starting port for the local HTTP server. Next available port is tried automatically if busy. Actual port printed to console; retrieve with <code>srv$getPort()</code>.</td></tr>
-      <tr><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>viz_path</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>NULL</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb">Path to the MultilayerViz directory. If <code>NULL</code>, uses the copy bundled with the installed emln package. Pass explicitly to use a different version of the app.</td></tr>
+      <tr><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>viz_path</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>NULL</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb">Path to the MiRA directory. If <code>NULL</code>, uses the copy bundled with the installed emln package. Pass explicitly to use a different version of the app.</td></tr>
       <tr><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>browser</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>getOption("browser")</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb">Browser command. On macOS, <code>"chrome"</code> is automatically expanded to <code>open -a 'Google Chrome'</code>.</td></tr>
     </tbody>
   </table>
   <p style="margin-top:8px"><strong>Returns:</strong> the httpuv server handle. Call <code>httpuv::stopServer(srv)</code> or close R to shut it down. To kill all app servers from the terminal: <code>lsof -ti TCP:8000-8200 | xargs kill -9</code></p>
 
   <h3 id="emln-json">multilayer_to_json()</h3>
-  <p>Exports the network to the <a href="#data-format">JSON format</a> expected by MultilayerViz. Returns the JSON string, or writes it to a file.</p>
+  <p>Exports the network to the <a href="#data-format">JSON format</a> expected by MiRA. Returns the JSON string, or writes it to a file.</p>
   <table style="width:100%;border-collapse:collapse;font-size:13px;margin-top:8px">
     <thead><tr style="background:#f3f4f6"><th style="padding:6px 10px;text-align:left;border:1px solid #e5e7eb">Argument</th><th style="padding:6px 10px;text-align:left;border:1px solid #e5e7eb">Default</th><th style="padding:6px 10px;text-align:left;border:1px solid #e5e7eb">Description</th></tr></thead>
     <tbody>
@@ -1077,7 +1077,7 @@ multilayer_to_csv(net, dir = "out/", prefix = "net60", bipartite = TRUE)</code><
   <p style="margin-top:8px"><strong>Legacy column renaming:</strong> the nodes table column <code>node_group</code> or <code>type</code> is automatically renamed to <code>node_type</code> (the canonical name) in the output.</p>
 
   <h3 id="emln-csv">multilayer_to_csv()</h3>
-  <p>Exports the network as CSV files matching the <a href="#import-csv">CSV import</a> schema — ready to drag-and-drop into MultilayerViz. Three files are always written (<code>_edges</code>, <code>_layers</code>, <code>_nodes</code>); a fourth <code>_state_nodes</code> file is added automatically when the multilayer object contains per-layer node attributes (e.g. <code>abundance</code>, <code>module</code>).</p>
+  <p>Exports the network as CSV files matching the <a href="#import-csv">CSV import</a> schema — ready to drag-and-drop into MiRA. Three files are always written (<code>_edges</code>, <code>_layers</code>, <code>_nodes</code>); a fourth <code>_state_nodes</code> file is added automatically when the multilayer object contains per-layer node attributes (e.g. <code>abundance</code>, <code>module</code>).</p>
   <table style="width:100%;border-collapse:collapse;font-size:13px;margin-top:8px">
     <thead><tr style="background:#f3f4f6"><th style="padding:6px 10px;text-align:left;border:1px solid #e5e7eb">Argument</th><th style="padding:6px 10px;text-align:left;border:1px solid #e5e7eb">Default</th><th style="padding:6px 10px;text-align:left;border:1px solid #e5e7eb">Description</th></tr></thead>
     <tbody>

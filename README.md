@@ -1,4 +1,4 @@
-# MultilayerViz
+# MiRA — Multilayer Interactive Rendering Application
 
 [![Project Status: Active](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![Lifecycle: beta](https://img.shields.io/badge/lifecycle-beta-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
@@ -8,7 +8,7 @@
 
 An interactive, browser-based visualization tool for multilayer networks. Fully integrated into the [`emln`](https://github.com/Ecological-Complexity-Lab/emln) R package via `plot_multilayer()`, and available as a standalone web app.
 
-> **Beta notice:** MultilayerViz is currently in beta (development). A dedicated paper is forthcoming. Feedback and bug reports are welcome at [GitHub Issues](https://github.com/Ecological-Complexity-Lab/multilayer_viz/issues).
+> **Beta notice:** MiRA is currently in beta (development). A dedicated paper is forthcoming. Feedback and bug reports are welcome at [GitHub Issues](https://github.com/Ecological-Complexity-Lab/multilayer_viz/issues).
 
 ## ✨ Features
 
@@ -62,7 +62,7 @@ multilayer_to_csv(net, path = "my_network/")
 
 ## 📄 License
 
-MultilayerViz is licensed under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-nc-sa/4.0/).
+MiRA is licensed under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-nc-sa/4.0/).
 
 [![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
