@@ -4,7 +4,7 @@
     "test": "vitest run --config config/vitest.config.js",
     "test:watch": "vitest --config config/vitest.config.js",
     "test:browser": "playwright test --config config/playwright.config.js",
-    "sync:emln": "rsync -av --delete --exclude='.git' --exclude='scripts' --exclude='CLAUDE.md' --exclude='node_modules' --exclude='tests' --exclude='test' --exclude='test-results' --exclude='playwright-report' --exclude='emln' --exclude='data' --exclude='attempt_*.md' --exclude='package.json' --exclude='package-lock.json' --exclude='vitest.config.js' --exclude='playwright.config.js' --exclude='.claude' --exclude='.DS_Store' --exclude='dev' --exclude='main.tex' . ../emln/inst/multilayer_viz/"
+    "sync:emln": "rsync -av --delete --exclude='.git' --exclude='scripts' --exclude='CLAUDE.md' --exclude='node_modules' --exclude='tests' --exclude='test' --exclude='test-results' --exclude='playwright-report' --exclude='emln' --exclude='data' --exclude='attempt_*.md' --exclude='package.json' --exclude='package-lock.json' --exclude='vitest.config.js' --exclude='playwright.config.js' --exclude='.claude' --exclude='.DS_Store' --exclude='dev' --exclude='main.tex' . ../emln/inst/MiRA/"
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2",

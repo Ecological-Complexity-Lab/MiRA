@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## GitHub Repository
 
-- Main repo: `Ecological-Complexity-Lab/multilayer_viz` (origin)
+- Main repo: `Ecological-Complexity-Lab/MiRA` (origin)
 - Pages/test repo: `yuvalbloch/multilayer_viz_test` (pages remote)
 - Issues and PRs are tracked on the main repo.
 
@@ -171,9 +171,4 @@ The visualizer requires this internal JSON shape (also produced by `csvToJson`):
 
 ### Current phase: refactoring only
 
-<<<<<<< HEAD
-The project is in Phase 1 — refactoring without behavior changes. Do not add features. If a refactor starts touching behavior, stop and flag it.
-
-=======
 Phase 1 refactoring is largely complete (PapaParse, chroma.js, d3-format, graphology BFS, Konva hit-testing all done). Current focus is fixing open GitHub issues — see `bugs.md` and `next_step.md` for active work. Do not add features unless explicitly asked.
->>>>>>> a769738 (docs(CLAUDE): update with git workflow, current phase, and accurate dependency list)

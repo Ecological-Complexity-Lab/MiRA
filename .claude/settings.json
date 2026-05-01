@@ -143,7 +143,8 @@
       "Bash(zstd -d /Users/shai/GitHub/ecomplab/multilayer_viz/Data/process/larremore/HVR_1.xml.zst -o /tmp/HVR_1.xml --force)",
       "Bash(brew install *)",
       "Bash(grep -E \"^\\\\s{4}[a-z].*\\\\{$|domain:\" /Users/shai/GitHub/ecomplab/multilayer_viz/js/demoDatasets.js)",
-      "WebFetch(domain:www.biorxiv.org)"
+      "WebFetch(domain:www.biorxiv.org)",
+      "Bash(git -C /Users/shai/GitHub/ecomplab/multilayer_viz remote -v)"
     ],
     "additionalDirectories": [
       "/Users/shai/GitHub/ecomplab/emln",

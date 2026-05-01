@@ -1,7 +1,7 @@
 /**
  * dataParser.integration.test.js — Integration tests for parseMultilayerData()
  *
- * These tests load the real JSON files from multilayer_viz/data/ and run the
+ * These tests load the real JSON files from MiRA/data/ and run the
  * parser against them. The goal is different from the unit tests:
  *
  *   Unit tests (dataParser.test.js):

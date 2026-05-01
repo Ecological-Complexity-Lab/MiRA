@@ -28,7 +28,7 @@
  *   edges_extra_columns.csv — Extra "method" and "confidence" columns beyond the
  *                             required four, to verify they are forwarded to extended[]
  *
- * REAL DATA FILES  (multilayer_viz/data/)
+ * REAL DATA FILES  (MiRA/data/)
  *   net22_extended.csv, net22_layers.csv, net22_nodes.csv
  *     — A 5-layer ecological food web (Nepenthes pitcher-plant networks).
  *     — net22_nodes.csv uses a "type" column (not "group") to test column renaming.
