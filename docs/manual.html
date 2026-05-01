@@ -189,6 +189,17 @@
     .pill-meta     { background: #fef3c7; color: #d97706; }
     .pill-data     { background: #fce7f3; color: #c51b7d; }
 
+    /* Dataset table pills */
+    .pill-attr   { background:#f3f4f6; border:1px solid #e5e7eb; color:#4b5563; }
+    .pill-dir-u  { background:#f0fdf4; color:#166534; }
+    .pill-dir-d  { background:#fff7ed; color:#c2410c; }
+    .pill-dir-m  { background:#faf5ff; color:#7e22ce; }
+    .pill-bio    { background:#ecfeff; color:#0e7490; }
+    .pill-unip   { background:#f8fafc; color:#64748b; }
+    .pill-ml-sp  { background:#e0f2fe; color:#0369a1; }
+    .pill-ml-te  { background:#fff7ed; color:#b45309; }
+    .pill-ml-mp  { background:#f1f5f9; color:#475569; }
+
     /* ── Collapsible TOC ─────────────────────────────────────────────── */
     .toc-group { }
     .toc-children { overflow: hidden; }
@@ -312,7 +323,7 @@
   <p>The <strong>Data</strong> panel is always visible in the left sidebar, regardless of active mode.</p>
 
   <h3 id="import-example">Load Example Data</h3>
-  <p>Opens a dialog with seven built-in datasets. See <a href="#examples">Built-in Datasets</a> below for the full list.</p>
+  <p>Opens a dialog with eight built-in datasets. See <a href="#examples">Built-in Datasets</a> below for the full list.</p>
 
   <h3 id="import-json">Load User Data (JSON)</h3>
   <p>Upload a <code>.json</code> file formatted according to the JSON format below.</p>
@@ -411,51 +422,132 @@ Ixodes_ricinus,0.003</code></pre>
 
   <!-- ── EXAMPLE DATASETS ───────────────────────────────────────── -->
   <h2 class="sec mode-misc" id="examples"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#374151" stroke-width="1.5" stroke-linecap="round" style="flex-shrink:0"><ellipse cx="12" cy="5" rx="8" ry="3" stroke-linecap="round"/><path d="M7 10.842C7.60158 11.0229 8.27434 11.1718 9 11.282"/><path d="M20 12C20 13.6569 16.4183 15 12 15C7.58172 15 4 13.6569 4 12"/><path d="M7 17.842C7.60158 18.0229 8.27434 18.1718 9 18.282"/><path d="M20 5V19C20 20.6569 16.4183 22 12 22C7.58172 22 4 20.6569 4 19V5"/></svg> Built-in Example Datasets</h2>
-  <table style="width:100%;border-collapse:collapse;font-size:13px;">
+  <table style="width:100%;border-collapse:collapse;font-size:12.5px;">
     <thead>
       <tr style="background:#f3f4f6;">
-        <th style="text-align:left;padding:7px 10px;border-bottom:2px solid #e5e7eb;">Dataset</th>
-        <th style="text-align:left;padding:7px 10px;border-bottom:2px solid #e5e7eb;">Reference</th>
-        <th style="text-align:left;padding:7px 10px;border-bottom:2px solid #e5e7eb;">Type</th>
-        <th style="text-align:left;padding:7px 10px;border-bottom:2px solid #e5e7eb;">Layers</th>
-        <th style="text-align:left;padding:7px 10px;border-bottom:2px solid #e5e7eb;">Notes</th>
+        <th style="text-align:left;padding:7px 10px;border-bottom:2px solid #e5e7eb;width:18%">Dataset</th>
+        <th style="text-align:left;padding:7px 10px;border-bottom:2px solid #e5e7eb;width:10%">Domain</th>
+        <th style="text-align:left;padding:7px 10px;border-bottom:2px solid #e5e7eb;width:15%">Reference</th>
+        <th style="text-align:left;padding:7px 10px;border-bottom:2px solid #e5e7eb;width:14%">Type</th>
+        <th style="text-align:left;padding:7px 10px;border-bottom:2px solid #e5e7eb;width:18%">Size</th>
+        <th style="text-align:left;padding:7px 10px;border-bottom:2px solid #e5e7eb;">Attributes</th>
       </tr>
     </thead>
     <tbody>
+      <!-- Canary Islands -->
       <tr>
-        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Canary Islands pollination network</td>
-        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Vitali et al. 2024</td>
-        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Undirected bipartite</td>
-        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">5</td>
-        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Spatial pollination; GPS coordinates → Map Mode and geographic Layer View</td>
+        <td style="padding:7px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top;">Canary Islands pollination network</td>
+        <td style="padding:7px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top;"><span class="pill" style="background:rgba(34,197,94,0.18);border:1px solid rgba(34,197,94,0.35);color:#166534;">Ecology</span></td>
+        <td style="padding:7px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top;"><a href="https://doi.org/10.1111/1365-2656.14174" target="_blank">Vitali et al. 2024</a><br><span style="font-size:11px;color:#888;">Data: <a href="https://doi.org/10.5061/dryad.76173" target="_blank" style="color:#888;">Dryad</a></span></td>
+        <td style="padding:7px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top;">Undirected · bipartite<br>Spatial</td>
+        <td style="padding:7px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top;">5 layers · 235 nodes<br>651 intra + 154 inter links</td>
+        <td style="padding:7px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top;">
+          <div style="display:flex;flex-wrap:wrap;gap:3px;">
+            <span class="pill pill-attr">layers</span>
+            <span class="pill pill-attr">nodes</span>
+            <span class="pill pill-attr">links</span>
+          </div>
+        </td>
       </tr>
+      <!-- Siberian host-parasite -->
       <tr>
-        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Basque Country spatial pollination</td>
-        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Magrach et al. (EuPPollNet)</td>
-        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Undirected bipartite</td>
-        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">5</td>
-        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Spatial pollination; GPS coordinates</td>
+        <td style="padding:7px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top;">Siberian host–parasite network</td>
+        <td style="padding:7px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top;"><span class="pill" style="background:rgba(34,197,94,0.18);border:1px solid rgba(34,197,94,0.35);color:#166534;">Ecology</span></td>
+        <td style="padding:7px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top;"><a href="https://doi.org/10.1038/s41559-017-0101" target="_blank">Pilosof et al. 2017</a><br><span style="font-size:11px;color:#888;">Data: <a href="https://doi.org/10.1038/s41559-017-0101" target="_blank" style="color:#888;">Pilosof et al. 2017</a><br>Originally: <a href="https://doi.org/10.1111/j.1600-0706.2009.17902.x" target="_blank" style="color:#888;">Krasnov et al. 2009</a></span></td>
+        <td style="padding:7px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top;">Mixed · bipartite<br>Temporal</td>
+        <td style="padding:7px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top;">6 layers · 78 nodes<br>1,817 intra + 284 inter links</td>
+        <td style="padding:7px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top;">
+          <div style="display:flex;flex-wrap:wrap;gap:3px;">
+            <span class="pill pill-attr">nodes</span>
+            <span class="pill pill-attr">state nodes</span>
+            <span class="pill pill-attr">links</span>
+          </div>
+        </td>
       </tr>
+      <!-- Basque Country -->
       <tr>
-        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Portuguese temporal seed dispersal</td>
-        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Costa et al. 2020</td>
-        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Undirected bipartite, directed interlayer</td>
-        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">5</td>
-        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Temporal (annual 2012–2016); interlayer weights = abundance ratio t+1/t</td>
+        <td style="padding:7px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top;">Basque Country spatial pollination network</td>
+        <td style="padding:7px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top;"><span class="pill" style="background:rgba(34,197,94,0.18);border:1px solid rgba(34,197,94,0.35);color:#166534;">Ecology</span></td>
+        <td style="padding:7px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top;"><a href="https://doi.org/10.1111/geb.70000" target="_blank">Magrach et al. 2024</a><br><span style="font-size:11px;color:#888;">Data: <a href="https://github.com/JoseBSL/EuPPollNet" target="_blank" style="color:#888;">EuPPollNet</a></span></td>
+        <td style="padding:7px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top;">Undirected · bipartite<br>Spatial</td>
+        <td style="padding:7px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top;">5 layers · 137 nodes<br>376 intra + 142 inter links</td>
+        <td style="padding:7px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top;">
+          <div style="display:flex;flex-wrap:wrap;gap:3px;">
+            <span class="pill pill-attr">layers</span>
+            <span class="pill pill-attr">nodes</span>
+            <span class="pill pill-attr">links</span>
+          </div>
+        </td>
       </tr>
+      <!-- Portuguese seed dispersal -->
       <tr>
-        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Chilean intertidal food web</td>
-        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Kéfi et al. 2016</td>
-        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Directed unipartite</td>
-        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">3</td>
-        <td style="padding:6px 10px;border-bottom:1px solid #f3f4f6;">Multiplex: trophic, positive non-trophic, negative non-trophic interactions</td>
+        <td style="padding:7px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top;">Portuguese temporal seed dispersal network</td>
+        <td style="padding:7px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top;"><span class="pill" style="background:rgba(34,197,94,0.18);border:1px solid rgba(34,197,94,0.35);color:#166534;">Ecology</span></td>
+        <td style="padding:7px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top;"><a href="https://doi.org/10.1111/1365-2745.13391" target="_blank">Costa et al. 2020</a><br><span style="font-size:11px;color:#888;">Data: <a href="https://doi.org/10.6084/m9.figshare.11985912" target="_blank" style="color:#888;">figshare</a></span></td>
+        <td style="padding:7px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top;">Mixed · bipartite<br>Temporal</td>
+        <td style="padding:7px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top;">5 layers · 29 nodes<br>170 intra + 43 inter links</td>
+        <td style="padding:7px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top;">
+          <div style="display:flex;flex-wrap:wrap;gap:3px;">
+            <span class="pill pill-attr">nodes</span>
+            <span class="pill pill-attr">links</span>
+          </div>
+        </td>
       </tr>
+      <!-- P. falciparum -->
       <tr>
-        <td style="padding:6px 10px;">Siberian host–parasite network</td>
-        <td style="padding:6px 10px;">Pilosof et al. 2017</td>
-        <td style="padding:6px 10px;">Undirected bipartite, directed interlayer</td>
-        <td style="padding:6px 10px;">6</td>
-        <td style="padding:6px 10px;">Temporal (annual 1982–1987)</td>
+        <td style="padding:7px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top;"><i>P. falciparum</i> var gene recombination network</td>
+        <td style="padding:7px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top;"><span class="pill" style="background:rgba(245,158,11,0.16);border:1px solid rgba(245,158,11,0.33);color:#b45309;">Population genetics</span></td>
+        <td style="padding:7px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top;"><a href="https://doi.org/10.1371/journal.pcbi.1003268" target="_blank">Larremore et al. 2013</a><br><span style="font-size:11px;color:#888;">Data: <a href="https://github.com/dblarremore/data_malaria_PLOSCompBiology_2013" target="_blank" style="color:#888;">GitHub</a></span></td>
+        <td style="padding:7px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top;">Undirected · unipartite<br>Multiplex</td>
+        <td style="padding:7px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top;">9 layers · 307 nodes<br>2,763 state nodes · 35,306 links</td>
+        <td style="padding:7px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top;">
+          <div style="display:flex;flex-wrap:wrap;gap:3px;">
+            <span class="pill pill-attr">nodes</span>
+          </div>
+        </td>
+      </tr>
+      <!-- Diseasome -->
+      <tr>
+        <td style="padding:7px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top;">Human disease multiplex network</td>
+        <td style="padding:7px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top;"><span class="pill" style="background:rgba(244,63,94,0.15);border:1px solid rgba(244,63,94,0.32);color:#be123c;">Biomedicine</span></td>
+        <td style="padding:7px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top;"><a href="https://doi.org/10.1038/s41540-019-0092-5" target="_blank">Halu et al. 2019</a><br><span style="font-size:11px;color:#888;">Data: <a href="https://github.com/manlius/MultiplexDiseasome" target="_blank" style="color:#888;">MultiplexDiseasome</a> (ODbL)</span></td>
+        <td style="padding:7px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top;">Undirected · unipartite<br>Multiplex</td>
+        <td style="padding:7px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top;">2 layers · 478 nodes<br>2,098 intra + 199 inter links</td>
+        <td style="padding:7px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top;">
+          <div style="display:flex;flex-wrap:wrap;gap:3px;">
+            <span class="pill pill-attr">nodes</span>
+            <span class="pill pill-attr">links</span>
+          </div>
+        </td>
+      </tr>
+      <!-- Brain connectome -->
+      <tr>
+        <td style="padding:7px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top;">Human brain structural connectome</td>
+        <td style="padding:7px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top;"><span class="pill" style="background:rgba(139,92,246,0.18);border:1px solid rgba(139,92,246,0.35);color:#6d28d9;">Neuroscience</span></td>
+        <td style="padding:7px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top;"><a href="https://doi.org/10.1038/s41598-022-06697-4" target="_blank">Keresztes et al. 2022</a><br><span style="font-size:11px;color:#888;">Data: <a href="https://braingraph.org/download-pit-group-connectomes/" target="_blank" style="color:#888;">braingraph.org</a> (OASIS-3, CC-BY)</span></td>
+        <td style="padding:7px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top;">Undirected · unipartite<br>Temporal</td>
+        <td style="padding:7px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top;">3 layers · 124 nodes<br>372 state nodes · 1,827 intra + 220 inter links</td>
+        <td style="padding:7px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top;">
+          <div style="display:flex;flex-wrap:wrap;gap:3px;">
+            <span class="pill pill-attr">nodes</span>
+            <span class="pill pill-attr">links</span>
+          </div>
+        </td>
+      </tr>
+      <!-- Shapiro plasmids -->
+      <tr>
+        <td style="padding:7px 10px;vertical-align:top;">Plasmid genetic-similarity network in dairy cows</td>
+        <td style="padding:7px 10px;vertical-align:top;"><span class="pill" style="background:rgba(6,182,212,0.18);border:1px solid rgba(6,182,212,0.35);color:#0e7490;">Microbiology</span></td>
+        <td style="padding:7px 10px;vertical-align:top;"><a href="https://doi.org/10.1038/s41396-023-01373-5" target="_blank">Shapiro et al. 2023</a><br><span style="font-size:11px;color:#888;">Data: <a href="https://github.com/Ecological-Complexity-Lab/Plasmid_multilayer_networks" target="_blank" style="color:#888;">GitHub</a></span></td>
+        <td style="padding:7px 10px;vertical-align:top;">Undirected · unipartite<br>Multiplex</td>
+        <td style="padding:7px 10px;vertical-align:top;">15 layers · 1,344 nodes<br>1,471 state nodes · 101 intra + 2,384 inter links</td>
+        <td style="padding:7px 10px;vertical-align:top;">
+          <div style="display:flex;flex-wrap:wrap;gap:3px;">
+            <span class="pill pill-attr">nodes</span>
+            <span class="pill pill-attr">state nodes</span>
+            <span class="pill pill-attr">links</span>
+          </div>
+        </td>
       </tr>
     </tbody>
   </table>
