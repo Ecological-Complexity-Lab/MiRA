@@ -4382,10 +4382,11 @@ const HELP_CONTENT = {
         title: '🗺️ Map Mode',
         body: `<p>Layers are placed on a geographic map using their <code>latitude</code>/<code>longitude</code>.</p>
 <ul style="padding-left:16px;margin:8px 0;">
-  <li><b>Click a marker</b> to pop that layer into 3D space</li>
-  <li><b>Click ✕</b> on a popped layer to return it to the map</li>
-  <li><b>Pan the map</b> — <kbd>Shift</kbd> + drag (carries 3D layers with it)</li>
-  <li>Use the <b>Map</b> sidebar section to control opacity</li>
+  <li><b>Click a marker</b> to pop that layer into 3D space.</li>
+  <li><b>Click ✕</b> on a popped layer to return it to the map.</li>
+    <li><b>Scroll or click + / -</b> to zoom the map.</li>
+  <li><b>Click+drag</b> to pan the map (carries 3D layers with it)</li>
+  <li>Use the <b>Map</b> control strip below to adjust map settings.</li>
 </ul>`,
     },
     layer: {
@@ -4395,7 +4396,8 @@ const HELP_CONTENT = {
   <li><b>Click</b> a bubble — layer statistics panel</li>
   <li><b>Cmd/Ctrl + click</b> a second bubble — side-by-side comparison</li>
   <li><b>Drag</b> a bubble to pin it; <b>Reset</b> to unpin all</li>
-  <li><b>Scroll</b> to zoom; drag background to pan</li>
+  <li><b>Scroll or click + / -</b> to zoom the map.</li>
+  <li><b>Click+drag</b> to pan the map.</li>
 </ul>
 <p><b>Blue lines</b> = interlayer links &nbsp;·&nbsp; <b>Gray lines</b> = shared nodes</p>`,
     },
@@ -4405,8 +4407,8 @@ const HELP_CONTENT = {
 <ul style="padding-left:16px;margin:8px 0;">
   <li><b>Click</b> a node — ego-network highlight + info panel</li>
   <li><b>Click</b> an edge — per-layer weight bar chart</li>
-  <li><b>Drag</b> a node to pin it; <b>Reset layout</b> to unpin all</li>
-  <li><b>Scroll</b> to zoom; drag background to pan</li>
+  <li><b>Scroll or click +/-</b> to zoom; drag background to pan</li>
+  <li><b>Click+drag</b>to pan</li>
   <li>Use <b>Filter Layers</b> panel to show only links from selected layers</li>
 </ul>
 <p>Use the left panel to change aggregation, layout, color, and size.</p>`,
@@ -4434,7 +4436,7 @@ const HELP_CONTENT = {
   <li><b>Degree Distributions</b> — histograms for full network and per layer</li>
   <li><b>Node Participation</b> — how many layers each node appears in</li>
 </ul>
-<p>Use the left panel to change sort order and highlight metric.</p>`,
+<p></p>`,
     },
 };
 
