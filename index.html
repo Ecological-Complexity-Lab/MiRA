@@ -371,8 +371,14 @@
           <select id="mnColorBySelect" class="styled-select">
             <option value="participation">Participation</option>
             <option value="metaDegree">Meta-degree</option>
-            <option value="uniform">Uniform</option>
+            <option value="uniform" selected>Uniform</option>
           </select>
+        </div>
+        <div id="mnUniformColorRow" style="display:none; margin-bottom:8px; margin-top:-2px;">
+          <div style="display:flex; align-items:center; gap:6px;">
+            <label style="font-size:11px;color:#666;flex:1;">Node color</label>
+            <input type="color" id="mnUniformColorPicker" value="#374151" style="width:32px;height:22px;padding:1px 2px;border:1px solid rgba(0,0,0,0.15);border-radius:4px;cursor:pointer;">
+          </div>
         </div>
         <div id="mnBpColorRow" style="display:none; margin-bottom:8px; margin-top:-2px;">
           <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;">
@@ -408,7 +414,7 @@
         </div>
         <div class="checkbox-row">
           <label class="checkbox-label">
-            <input type="checkbox" id="mnShowLabelsCheckbox" checked>
+            <input type="checkbox" id="mnShowLabelsCheckbox">
             <span>Show labels</span>
           </label>
         </div>

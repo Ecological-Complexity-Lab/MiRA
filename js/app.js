@@ -220,6 +220,8 @@ const mnShowLabelsCheckbox = document.getElementById('mnShowLabelsCheckbox');
 const mnLabelSizeSlider    = document.getElementById('mnLabelSizeSlider');
 const mnLabelSizeLabel     = document.getElementById('mnLabelSizeLabel');
 const mnLabelSizeRow       = document.getElementById('mnLabelSizeRow');
+const mnUniformColorRow    = document.getElementById('mnUniformColorRow');
+const mnUniformColorPicker = document.getElementById('mnUniformColorPicker');
 const mnBpColorRow         = document.getElementById('mnBpColorRow');
 const mnColorSetA          = document.getElementById('mnColorSetA');
 const mnColorSetALabel     = document.getElementById('mnColorSetALabel');
@@ -1178,9 +1180,12 @@ function _hideMetaNetworkSidebar() {
 }
 
 function _updateMnBpColorPickerVisibility() {
-    const show = metaNetwork && metaNetwork.hasBipartite && metaNetwork.settings.colorBy === 'uniform';
-    mnBpColorRow.style.display = show ? '' : 'none';
-    if (show) {
+    if (!metaNetwork) { mnUniformColorRow.style.display = 'none'; mnBpColorRow.style.display = 'none'; return; }
+    const isUniform   = metaNetwork.settings.colorBy === 'uniform';
+    const isBipartite = metaNetwork.hasBipartite;
+    mnUniformColorRow.style.display = isUniform && !isBipartite ? '' : 'none';
+    mnBpColorRow.style.display      = isUniform &&  isBipartite ? '' : 'none';
+    if (isUniform && isBipartite) {
         const { labelA, labelB } = metaNetwork.bipartiteSetLabels;
         mnColorSetALabel.textContent = labelA + ' color';
         mnColorSetBLabel.textContent = labelB + ' color';
@@ -1201,6 +1206,7 @@ function _syncMetaNetworkControls() {
     mnLabelSizeSlider.value        = s.labelFontSize;
     mnLabelSizeLabel.textContent   = s.labelFontSize + 'px';
     mnLabelSizeRow.style.display   = s.showLabels ? '' : 'none';
+    mnUniformColorPicker.value     = s.uniformColor;
     mnColorSetA.value              = s.uniformColorA;
     mnColorSetB.value              = s.uniformColorB;
     _updateMnBpColorPickerVisibility();
@@ -1561,6 +1567,12 @@ mnLabelSizeSlider.addEventListener('input', () => {
     const val = parseInt(mnLabelSizeSlider.value);
     mnLabelSizeLabel.textContent = val + 'px';
     metaNetwork.updateSetting('labelFontSize', val);
+    _ensureMetaNetworkLoop();
+});
+
+mnUniformColorPicker.addEventListener('input', () => {
+    if (!metaNetwork) return;
+    metaNetwork.updateSetting('uniformColor', mnUniformColorPicker.value);
     _ensureMetaNetworkLoop();
 });
 
