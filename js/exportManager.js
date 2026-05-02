@@ -64,8 +64,17 @@ export function initExportManager({ getRenderer, getAppMode }) {
             const dirHandle = await _pickDirectory();
 
             const formats = format === 'all' ? ['png', 'jpg', 'pdf'] : [format];
-            for (const fmt of formats) {
-                await exportScreenshot(fmt, dirHandle);
+            for (let i = 0; i < formats.length; i++) {
+                try {
+                    await exportScreenshot(formats[i], dirHandle);
+                } catch (err) {
+                    console.error(`Export as ${formats[i]} failed:`, err);
+                }
+                // Without a directory handle, each file triggers a link.click() download.
+                // Browsers block rapid-fire programmatic downloads; pause between each.
+                if (!dirHandle && i < formats.length - 1) {
+                    await new Promise(r => setTimeout(r, 400));
+                }
             }
         });
     });
@@ -210,7 +219,7 @@ export function initExportManager({ getRenderer, getAppMode }) {
             renderer.render();
 
             if (includePanels) await _compositeOverlays(ctx, multiplier);
-            _drawBranding(ctx, W, H, multiplier);
+            await _drawBranding(ctx, W, H, multiplier);
             const mimeType = format === 'jpg' ? 'image/jpeg' : 'image/png';
             const quality  = format === 'jpg' ? 0.92 : undefined;
             await _saveCanvas(offscreen, filename, mimeType, quality, dirHandle);
@@ -263,7 +272,7 @@ export function initExportManager({ getRenderer, getAppMode }) {
         if (includePanels) await _compositeOverlays(ctx, multiplier);
 
         // Branding
-        _drawBranding(ctx, W, H, multiplier);
+        await _drawBranding(ctx, W, H, multiplier);
 
         const mimeType = format === 'jpg' ? 'image/jpeg' : 'image/png';
         const quality  = format === 'jpg' ? 0.92 : undefined;
@@ -297,38 +306,41 @@ export function initExportManager({ getRenderer, getAppMode }) {
         setTimeout(() => URL.revokeObjectURL(url), 5000);
     }
 
-    function _drawBranding(ctx, canvasW, canvasH, scale) {
-        const padding = 12 * scale;
-        const boxH = 28 * scale;
-        const fontSize = 13 * scale;
-        const text = 'MiRA';
+    async function _drawBranding(ctx, canvasW, canvasH, scale) {
+        const padding  = 12 * scale;
+        const boxH     = 28 * scale;
+        const padL     = 12 * scale;
+        const padR     = 12 * scale;
+        const fontSize = 12 * scale;
 
-        ctx.font = `600 ${fontSize}px Inter, system-ui, sans-serif`;
+        const versionEl = document.querySelector('.branding-version');
+        const version   = versionEl ? versionEl.textContent.trim() : '';
+        const text      = `Visualized with MiRA ${version}`;
+
+        ctx.font = `500 ${fontSize}px Inter, system-ui, sans-serif`;
         const textW = ctx.measureText(text).width;
-        const boxW = textW + 24 * scale;
+        const boxW  = padL + textW + padR;
 
         const x = canvasW - boxW - padding;
         const y = canvasH - boxH - padding;
 
-        // Background
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-        ctx.strokeStyle = 'rgba(0, 0, 0, 0.1)';
-        ctx.lineWidth = 1 * scale;
-
+        // Background pill
+        ctx.fillStyle   = 'rgba(255, 255, 255, 0.88)';
+        ctx.strokeStyle = 'rgba(0, 0, 0, 0.10)';
+        ctx.lineWidth   = 1 * scale;
         ctx.beginPath();
         if (ctx.roundRect) {
             ctx.roundRect(x, y, boxW, boxH, 8 * scale);
         } else {
-            // Plain rectangle fallback (for jsPDF context2d which lacks roundRect and arcTo)
             ctx.rect(x, y, boxW, boxH);
         }
         ctx.fill();
         ctx.stroke();
 
         // Text
-        ctx.fillStyle = '#1a1a2e';
+        ctx.fillStyle    = '#1a1a2e';
         ctx.textBaseline = 'middle';
-        ctx.fillText(text, x + 12 * scale, y + boxH / 2);
+        ctx.fillText(text, x + padL, y + boxH / 2);
     }
 
     async function _exportPDF(dirHandle) {
@@ -396,7 +408,7 @@ export function initExportManager({ getRenderer, getAppMode }) {
 
             if (includePanels) await _compositeOverlays(ctx, scale);
 
-            _drawBranding(ctx, offscreen.width, offscreen.height, scale);
+            await _drawBranding(ctx, offscreen.width, offscreen.height, scale);
 
             // Create PDF at the original CSS-pixel page size
             const isLandscape = w > h;

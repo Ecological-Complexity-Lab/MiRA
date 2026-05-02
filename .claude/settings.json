@@ -161,7 +161,10 @@
       "Bash(git -C /Users/shai/GitHub/ecomplab/MiRA status --short)",
       "Bash(git -C /Users/shai/GitHub/ecomplab/MiRA restore --staged .Rhistory)",
       "Bash(git -C /Users/shai/GitHub/ecomplab/MiRA add .claude/settings.json)",
-      "Bash(git -C /Users/shai/GitHub/ecomplab/MiRA commit --amend --no-edit)"
+      "Bash(git -C /Users/shai/GitHub/ecomplab/MiRA commit --amend --no-edit)",
+      "Bash(git -C /Users/shai/GitHub/ecomplab/MiRA push)",
+      "Bash(git -C /Users/shai/GitHub/ecomplab/MiRA log --oneline origin/main -3)",
+      "Bash(git -C /Users/shai/GitHub/ecomplab/MiRA add js/dataMode.js)"
     ],
     "additionalDirectories": [
       "/Users/shai/GitHub/ecomplab/emln",
