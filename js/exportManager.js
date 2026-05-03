@@ -186,6 +186,8 @@ export function initExportManager({ getRenderer, getAppMode }) {
         const isGeoMode = appMode === 'map' || isLvGeo;
 
         const origW = srcCanvas.width, origH = srcCanvas.height;
+        const dpr  = renderer.dpr || 1;
+        const cssW = Math.round(origW / dpr), cssH = Math.round(origH / dpr);
         const prevShowGrid = renderer.showGrid;
 
         if (!isGeoMode) {
@@ -201,7 +203,7 @@ export function initExportManager({ getRenderer, getAppMode }) {
             renderer.showGrid = includeGrid;
             renderer.render();
 
-            const W = srcCanvas.width, H = srcCanvas.height;
+            const W = cssW * multiplier, H = cssH * multiplier;
             const offscreen = document.createElement('canvas');
             offscreen.width = W; offscreen.height = H;
             const ctx = offscreen.getContext('2d');
@@ -230,7 +232,11 @@ export function initExportManager({ getRenderer, getAppMode }) {
         renderer.showGrid = includeGrid;
         renderer.render();
 
-        const W = origW * multiplier, H = origH * multiplier;
+        const W = cssW * multiplier, H = cssH * multiplier;
+        console.log('[export] srcCanvas physical:', srcCanvas.width, 'x', srcCanvas.height,
+            '| dpr:', dpr, '| cssW:', cssW, 'x cssH:', cssH,
+            '| multiplier:', multiplier, '| output W:', W, 'x H:', H);
+
         const offscreen = document.createElement('canvas');
         offscreen.width = W; offscreen.height = H;
         const ctx = offscreen.getContext('2d');
@@ -245,8 +251,8 @@ export function initExportManager({ getRenderer, getAppMode }) {
                 const mapCanvas = await html2canvas(mapEl, {
                     scale: multiplier, useCORS: true, allowTaint: true,
                     backgroundColor: '#ffffff', logging: false,
-                    width: origW, height: origH, x: 0, y: 0,
                 });
+                console.log('[export] mapCanvas:', mapCanvas.width, 'x', mapCanvas.height);
                 ctx.drawImage(mapCanvas, 0, 0, W, H);
             } catch (e) { console.warn('Map capture failed:', e); }
         }
@@ -259,7 +265,6 @@ export function initExportManager({ getRenderer, getAppMode }) {
                 const markersCanvas = await html2canvas(mapMarkersOverlay, {
                     scale: multiplier, useCORS: true, allowTaint: true,
                     backgroundColor: null, logging: false,
-                    width: origW, height: origH, x: 0, y: 0,
                 });
                 ctx.drawImage(markersCanvas, 0, 0, W, H);
             } catch (e) { console.warn('Map markers capture failed:', e); }
@@ -366,8 +371,10 @@ export function initExportManager({ getRenderer, getAppMode }) {
             renderer.render();
 
             const w = srcCanvas.width, h = srcCanvas.height;
+            const pdfDpr  = renderer.dpr || 1;
+            const cssWpdf = Math.round(w / pdfDpr), cssHpdf = Math.round(h / pdfDpr);
             const offscreen = document.createElement('canvas');
-            offscreen.width = w * scale; offscreen.height = h * scale;
+            offscreen.width = cssWpdf * scale; offscreen.height = cssHpdf * scale;
             const ctx = offscreen.getContext('2d');
 
             ctx.fillStyle = '#ffffff';
@@ -382,7 +389,7 @@ export function initExportManager({ getRenderer, getAppMode }) {
                     const mapCanvas = await html2canvas(mapEl, {
                         scale, useCORS: true, allowTaint: true,
                         backgroundColor: '#ffffff', logging: false,
-                        width: w, height: h, x: 0, y: 0,
+                        width: cssWpdf, height: cssHpdf, x: 0, y: 0,
                     });
                     ctx.drawImage(mapCanvas, 0, 0, offscreen.width, offscreen.height);
                 } catch (e) { console.warn('Map capture failed (PDF):', e); }
@@ -397,7 +404,7 @@ export function initExportManager({ getRenderer, getAppMode }) {
                     const markersCanvas = await html2canvas(mapMarkersOverlay, {
                         scale, useCORS: true, allowTaint: true,
                         backgroundColor: null, logging: false,
-                        width: w, height: h, x: 0, y: 0,
+                        width: cssWpdf, height: cssHpdf, x: 0, y: 0,
                     });
                     ctx.drawImage(markersCanvas, 0, 0, offscreen.width, offscreen.height);
                 } catch (e) { console.warn('Map markers capture failed (PDF):', e); }
@@ -411,11 +418,11 @@ export function initExportManager({ getRenderer, getAppMode }) {
             await _drawBranding(ctx, offscreen.width, offscreen.height, scale);
 
             // Create PDF at the original CSS-pixel page size
-            const isLandscape = w > h;
+            const isLandscape = cssWpdf > cssHpdf;
             const pdf = new jsPDF({
                 orientation: isLandscape ? 'landscape' : 'portrait',
                 unit: 'px',
-                format: [w, h],
+                format: [cssWpdf, cssHpdf],
                 hotfixes: ['px_scaling']
             });
 

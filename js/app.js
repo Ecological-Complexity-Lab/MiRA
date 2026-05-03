@@ -69,6 +69,11 @@ function applyBipartiteUIVisibility() {
 // ---- EMLN mode detection ----
 const IS_EMLN = new URLSearchParams(window.location.search).get('autoload') === 'true';
 
+// CSS-pixel canvas dimensions — updated in resizeCanvas(). Use these everywhere
+// instead of canvas.width/canvas.height (which are physical pixels after DPR scaling).
+let cssW = window.innerWidth;
+let cssH = window.innerHeight;
+
 // ---- DOM Elements ----
 const canvas = document.getElementById('networkCanvas');
 const fileInput       = document.getElementById('fileInput');
@@ -449,10 +454,16 @@ const lvStreetLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y
 
 // ---- Canvas Resize ----
 function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    const dpr = window.devicePixelRatio || 1;
+    cssW = window.innerWidth;
+    cssH = window.innerHeight;
+    canvas.width  = Math.round(cssW * dpr);
+    canvas.height = Math.round(cssH * dpr);
+    canvas.style.width  = cssW + 'px';
+    canvas.style.height = cssH + 'px';
     if (renderer) {
-        renderer.resizeKonvaOverlay(canvas.width, canvas.height);
+        renderer.dpr = dpr;
+        renderer.resizeKonvaOverlay(cssW, cssH);
         renderer.render();
     }
 }
@@ -479,6 +490,30 @@ bgMap.on('move', () => {
         updateCloseButtons();
         renderer.render();
     }
+});
+
+// Splash screen link — open ecomplab.com when clicking "Ecological Complexity Lab"
+canvas.addEventListener('click', (e) => {
+    if (model) return;
+    const b = renderer._ecoLabBounds;
+    if (!b) return;
+    const rect = canvas.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+    if (mx >= b.x && mx <= b.x + b.w && my >= b.y && my <= b.y + b.h) {
+        window.open('https://ecomplab.com/', '_blank', 'noopener');
+    }
+});
+
+canvas.addEventListener('mousemove', (e) => {
+    if (model) return;
+    const b = renderer._ecoLabBounds;
+    if (!b) return;
+    const rect = canvas.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+    canvas.style.cursor = (mx >= b.x && mx <= b.x + b.w && my >= b.y && my <= b.y + b.h)
+        ? 'pointer' : 'default';
 });
 
 // ---- Interaction ----
@@ -854,7 +889,7 @@ function toggleLayerView() {
         _deactivateLvGeoMode();
         // Auto-fit initial viewScale so all bubbles are visible
         const layoutR = lv.layoutRadius();
-        const fitScale = Math.min(canvas.width, canvas.height) * 0.42 / Math.max(layoutR, 1);
+        const fitScale = Math.min(cssW, cssH) * 0.42 / Math.max(layoutR, 1);
         lv.viewScale = Math.min(Math.max(fitScale, 0.05), 0.85);
     }
 
@@ -867,8 +902,8 @@ function toggleLayerView() {
     const canvasCoords = (e) => {
         const rect = canvas.getBoundingClientRect();
         return {
-            mx: (e.clientX - rect.left) * (canvas.width  / rect.width),
-            my: (e.clientY - rect.top)  * (canvas.height / rect.height),
+            mx: e.clientX - rect.left,
+            my: e.clientY - rect.top,
         };
     };
 
@@ -878,7 +913,7 @@ function toggleLayerView() {
         const { mx, my } = canvasCoords(e);
         const lv = renderer.layerView;
         // In geo mode bubbles are pinned to map coordinates — dragging is disabled
-        const hitName = lv.geoMode ? null : lv.startDragBubble(mx, my, canvas.width, canvas.height);
+        const hitName = lv.geoMode ? null : lv.startDragBubble(mx, my, cssW, cssH);
         if (hitName) {
             isBubbleDrag = true;
             isDragging   = true;
@@ -897,7 +932,7 @@ function toggleLayerView() {
         if (isDragging) {
             if (isBubbleDrag) {
                 const { mx, my } = canvasCoords(e);
-                renderer.layerView.moveDragBubble(mx, my, canvas.width, canvas.height);
+                renderer.layerView.moveDragBubble(mx, my, cssW, cssH);
                 _ensureLayerViewLoop();
             } else {
                 renderer.layerView.viewOffsetX = offsetStartX + (e.clientX - dragStartX);
@@ -909,7 +944,7 @@ function toggleLayerView() {
         }
         const { mx, my } = canvasCoords(e);
         const lv = renderer.layerView;
-        const hitBubble = lv.hitTestBubble(mx, my, canvas.width, canvas.height);
+        const hitBubble = lv.hitTestBubble(mx, my, cssW, cssH);
         if (hitBubble) {
             const info = lv.getBubbleInfo(hitBubble);
             tooltip.textContent = `${hitBubble} — ${info.nodeCount} nodes, ${info.edgeCount} edges, density ${info.density.toFixed(3)}, avg deg ${info.avgDegree.toFixed(1)}`;
@@ -919,7 +954,7 @@ function toggleLayerView() {
             canvas.style.cursor = 'pointer';
             return;
         }
-        const hitEdge = lv.hitTestEdge(mx, my, canvas.width, canvas.height);
+        const hitEdge = lv.hitTestEdge(mx, my, cssW, cssH);
         if (hitEdge) {
             const parts = [];
             if (hitEdge.interlayerCount > 0) parts.push(`${hitEdge.interlayerCount} interlayer links`);
@@ -950,7 +985,7 @@ function toggleLayerView() {
         canvas.style.cursor = 'grab';
         if (!didDrag) {
             const { mx, my } = canvasCoords(e);
-            const hit = renderer.layerView.hitTestBubble(mx, my, canvas.width, canvas.height);
+            const hit = renderer.layerView.hitTestBubble(mx, my, cssW, cssH);
             const prevSel = renderer.layerView._selectedLayer;
             if ((e.metaKey || e.ctrlKey) && hit && prevSel && hit !== prevSel) {
                 // Cmd+click on a different bubble → comparison mode
@@ -974,10 +1009,10 @@ function toggleLayerView() {
         const factor   = e.deltaY > 0 ? 0.9 : 1.1;
         const newScale = Math.min(Math.max(lv.viewScale * factor, 0.15), 20);
         const { mx, my } = canvasCoords(e);
-        const fracX = (mx - canvas.width  / 2 - lv.viewOffsetX) / lv.viewScale;
-        const fracY = (my - canvas.height / 2 - lv.viewOffsetY) / lv.viewScale;
-        lv.viewOffsetX = mx - canvas.width  / 2 - fracX * newScale;
-        lv.viewOffsetY = my - canvas.height / 2 - fracY * newScale;
+        const fracX = (mx - cssW  / 2 - lv.viewOffsetX) / lv.viewScale;
+        const fracY = (my - cssH / 2 - lv.viewOffsetY) / lv.viewScale;
+        lv.viewOffsetX = mx - cssW  / 2 - fracX * newScale;
+        lv.viewOffsetY = my - cssH / 2 - fracY * newScale;
         lv.viewScale   = newScale;
         renderer.render();
     };
@@ -1289,7 +1324,8 @@ function _startMetaNetworkLoop() {
     function loop() {
         if (appMode !== 'metanetwork' || !metaNetwork) { mnRAF = null; return; }
         const stillHot = metaNetwork.tick();
-        metaNetwork.render(renderer.ctx, canvas.width, canvas.height);
+        renderer.ctx.setTransform(renderer.dpr || 1, 0, 0, renderer.dpr || 1, 0, 0);
+        metaNetwork.render(renderer.ctx, cssW, cssH);
         mnRAF = stillHot ? requestAnimationFrame(loop) : null;
     }
     mnRAF = requestAnimationFrame(loop);
@@ -1304,7 +1340,8 @@ function _ensureMetaNetworkLoop() {
 function _mnRenderSync() {
     if (!metaNetwork || appMode !== 'metanetwork') return;
     if (mnRAF) { cancelAnimationFrame(mnRAF); mnRAF = null; }
-    metaNetwork.render(renderer.ctx, canvas.width, canvas.height);
+    renderer.ctx.setTransform(renderer.dpr || 1, 0, 0, renderer.dpr || 1, 0, 0);
+    metaNetwork.render(renderer.ctx, cssW, cssH);
     if (metaNetwork.tick()) _startMetaNetworkLoop();
 }
 
@@ -1331,7 +1368,7 @@ function toggleMetaNetwork() {
     canvas.style.display = '';
     canvas.style.cursor  = 'grab';
 
-    metaNetwork = new MetaNetwork(model, canvas.width, canvas.height);
+    metaNetwork = new MetaNetwork(model, cssW, cssH);
     _showMetaNetworkSidebar();
     _syncMetaNetworkControls();
     _buildMnLayerPanel();
@@ -1358,8 +1395,8 @@ function toggleMetaNetwork() {
     const canvasCoords = (e) => {
         const rect = canvas.getBoundingClientRect();
         return {
-            mx: (e.clientX - rect.left) * (canvas.width  / rect.width),
-            my: (e.clientY - rect.top)  * (canvas.height / rect.height),
+            mx: e.clientX - rect.left,
+            my: e.clientY - rect.top,
         };
     };
 
@@ -1368,7 +1405,7 @@ function toggleMetaNetwork() {
         _mouseDownOnCanvas = true;
         _mouseDownX = e.clientX; _mouseDownY = e.clientY;
         const { mx, my } = canvasCoords(e);
-        const hitName = metaNetwork.hitTestNode(mx, my, canvas.width, canvas.height);
+        const hitName = metaNetwork.hitTestNode(mx, my, cssW, cssH);
         if (hitName) {
             // Mousedown on a node: don't enter pan mode and don't drag the node.
             // mouseup will treat this as a click (selection) if movement stayed
@@ -1393,7 +1430,7 @@ function toggleMetaNetwork() {
             return;
         }
         const { mx, my } = canvasCoords(e);
-        const hitName = metaNetwork.hitTestNode(mx, my, canvas.width, canvas.height);
+        const hitName = metaNetwork.hitTestNode(mx, my, cssW, cssH);
         if (hitName) {
             const n = metaNetwork._nodeMap.get(hitName);
             tooltip.textContent = `${hitName} — participation ${n.participation}, meta-degree ${n.metaDegree}`;
@@ -1403,7 +1440,7 @@ function toggleMetaNetwork() {
             canvas.style.cursor = 'pointer';
             return;
         }
-        const hitEdge = metaNetwork.hitTestEdge(mx, my, canvas.width, canvas.height);
+        const hitEdge = metaNetwork.hitTestEdge(mx, my, cssW, cssH);
         if (hitEdge) {
             tooltip.textContent = `${hitEdge.source} — ${hitEdge.target}  (weight ${hitEdge.weight.toFixed(2)})`;
             tooltip.classList.add('visible');
@@ -1427,7 +1464,7 @@ function toggleMetaNetwork() {
         if (wasDragging && moved) return;
 
         const { mx, my } = canvasCoords(e);
-        const hitName = metaNetwork.hitTestNode(mx, my, canvas.width, canvas.height);
+        const hitName = metaNetwork.hitTestNode(mx, my, cssW, cssH);
         if (hitName) {
             // Toggle node selection (deselect if already selected)
             if (metaNetwork.state.selectedNode === hitName) {
@@ -1447,7 +1484,7 @@ function toggleMetaNetwork() {
             _mnRenderSync();
             return;
         }
-        const hitEdge = metaNetwork.hitTestEdge(mx, my, canvas.width, canvas.height);
+        const hitEdge = metaNetwork.hitTestEdge(mx, my, cssW, cssH);
         if (hitEdge) {
             // Toggle edge selection
             if (metaNetwork.state.selectedEdge === hitEdge) {
@@ -1482,13 +1519,13 @@ function toggleMetaNetwork() {
         e.preventDefault();
         const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
         const rect = canvas.getBoundingClientRect();
-        const mx = (e.clientX - rect.left) * (canvas.width  / rect.width);
-        const my = (e.clientY - rect.top)  * (canvas.height / rect.height);
+        const mx = e.clientX - rect.left;
+        const my = e.clientY - rect.top;
         const prevScale = metaNetwork.viewScale;
         metaNetwork.viewScale = Math.min(Math.max(prevScale * zoomFactor, 0.05), 10);
         const scaleDelta = metaNetwork.viewScale / prevScale;
-        metaNetwork.viewOffsetX = mx - scaleDelta * (mx - metaNetwork.viewOffsetX - canvas.width  / 2) - canvas.width  / 2;
-        metaNetwork.viewOffsetY = my - scaleDelta * (my - metaNetwork.viewOffsetY - canvas.height / 2) - canvas.height / 2;
+        metaNetwork.viewOffsetX = mx - scaleDelta * (mx - metaNetwork.viewOffsetX - cssW  / 2) - cssW  / 2;
+        metaNetwork.viewOffsetY = my - scaleDelta * (my - metaNetwork.viewOffsetY - cssH / 2) - cssH / 2;
         _ensureMetaNetworkLoop();
     };
 
@@ -1840,7 +1877,7 @@ function _activateLvGeoMode() {
     // Re-project bubbles on every map move/zoom (fitBounds triggers move events during animation)
     _lvMapMoveHandler = () => {
         if (renderer.layerView?.geoMode) {
-            renderer.layerView.setGeoPositions(lvMap, canvas.width, canvas.height);
+            renderer.layerView.setGeoPositions(lvMap, cssW, cssH);
             renderer.render();
         }
     };
@@ -1849,7 +1886,7 @@ function _activateLvGeoMode() {
     // Initial projection — defer one frame so the map container has laid out
     requestAnimationFrame(() => {
         if (renderer.layerView?.geoMode) {
-            renderer.layerView.setGeoPositions(lvMap, canvas.width, canvas.height);
+            renderer.layerView.setGeoPositions(lvMap, cssW, cssH);
             renderer.render();
         }
     });
@@ -1860,9 +1897,9 @@ function _activateLvGeoMode() {
         const lv = renderer.layerView;
         if (!lv?.geoMode) return;
         const rect = canvas.getBoundingClientRect();
-        const mx = (e.clientX - rect.left) * (canvas.width  / rect.width);
-        const my = (e.clientY - rect.top)  * (canvas.height / rect.height);
-        const hitBubble = lv.hitTestBubble(mx, my, canvas.width, canvas.height);
+        const mx = e.clientX - rect.left;
+        const my = e.clientY - rect.top;
+        const hitBubble = lv.hitTestBubble(mx, my, cssW, cssH);
         if (hitBubble) {
             const info = lv.getBubbleInfo(hitBubble);
             tooltip.textContent = `${hitBubble} — ${info.nodeCount} nodes, ${info.edgeCount} edges, density ${info.density.toFixed(3)}, avg deg ${info.avgDegree.toFixed(1)}`;
@@ -1880,9 +1917,9 @@ function _activateLvGeoMode() {
         const lv = renderer.layerView;
         if (!lv?.geoMode) return;
         const rect = canvas.getBoundingClientRect();
-        const mx = (e.clientX - rect.left) * (canvas.width  / rect.width);
-        const my = (e.clientY - rect.top)  * (canvas.height / rect.height);
-        const hit = lv.hitTestBubble(mx, my, canvas.width, canvas.height);
+        const mx = e.clientX - rect.left;
+        const my = e.clientY - rect.top;
+        const hit = lv.hitTestBubble(mx, my, cssW, cssH);
         const prevSel = lv._selectedLayer;
         if ((e.metaKey || e.ctrlKey) && hit && prevSel && hit !== prevSel) {
             lv.selectForComparison(prevSel, hit);
@@ -1936,7 +1973,7 @@ document.getElementById('lvGeoToggleBtn').addEventListener('click', () => {
         document.getElementById('lvGeoToggleBtn').textContent = 'Geographic Layout';
         // Re-fit force layout
         const layoutR = lv.layoutRadius();
-        const fitScale = Math.min(canvas.width, canvas.height) * 0.42 / Math.max(layoutR, 1);
+        const fitScale = Math.min(cssW, cssH) * 0.42 / Math.max(layoutR, 1);
         lv.viewScale = Math.min(Math.max(fitScale, 0.05), 0.85);
         lv.viewOffsetX = 0; lv.viewOffsetY = 0;
         lv._initLayout();
@@ -2173,7 +2210,7 @@ function openLayerComparison(nameA, nameB) {
 
 function _drawComparisonHistogram(canvas, degsA, degsB, colorA, colorB) {
     const ctx = canvas.getContext('2d');
-    const W = canvas.width, H = canvas.height;
+    const W = cssW, H = cssH;
     const PAD = { top: 6, right: 8, bottom: 22, left: 28 };
     ctx.clearRect(0, 0, W, H);
     if (!degsA.length && !degsB.length) return;
@@ -2379,7 +2416,7 @@ function openLayerDrillDown(layerName) {
 
 function _drawDegreeHistogram(canvas, degByType, allDegrees) {
     const ctx  = canvas.getContext('2d');
-    const W    = canvas.width, H = canvas.height;
+    const W    = cssW, H = cssH;
     const PAD  = { top: 8, right: 8, bottom: 28, left: 32 };
     ctx.clearRect(0, 0, W, H);
 
@@ -3684,8 +3721,8 @@ zoomInBtn.addEventListener('click', () => {
         _ensureMetaNetworkLoop();
         return;
     }
-    const cx = canvas.width / 2;
-    const cy = canvas.height / 2;
+    const cx = cssW / 2;
+    const cy = cssH / 2;
     const factor = 1.2;
     renderer.offsetX = cx - (cx - renderer.offsetX) * factor;
     renderer.offsetY = cy - (cy - renderer.offsetY) * factor;
@@ -3706,8 +3743,8 @@ zoomOutBtn.addEventListener('click', () => {
         _ensureMetaNetworkLoop();
         return;
     }
-    const cx = canvas.width / 2;
-    const cy = canvas.height / 2;
+    const cx = cssW / 2;
+    const cy = cssH / 2;
     const factor = 1 / 1.2;
     renderer.offsetX = cx - (cx - renderer.offsetX) * factor;
     renderer.offsetY = cy - (cy - renderer.offsetY) * factor;
@@ -3735,7 +3772,7 @@ zoomResetBtn.addEventListener('click', () => {
         renderer.layerView.resetLayout();
         const lr = renderer.layerView.layoutRadius();
         const margin = 60;
-        const fitScale = Math.min(canvas.width, canvas.height) / (2 * (lr + margin));
+        const fitScale = Math.min(cssW, cssH) / (2 * (lr + margin));
         renderer.layerView.viewScale   = fitScale;
         renderer.layerView.viewOffsetX = 0;
         renderer.layerView.viewOffsetY = 0;
@@ -3765,8 +3802,8 @@ zoomResetBtn.addEventListener('click', () => {
             const rawW = (maxX - minX) || 1;
             const rawH = (maxY - minY) || 1;
             const scale = Math.min(
-                (canvas.width  - 2 * pad) / rawW,
-                (canvas.height - 2 * pad) / rawH,
+                (cssW  - 2 * pad) / rawW,
+                (cssH - 2 * pad) / rawH,
                 10
             );
             metaNetwork.viewScale   = scale;

@@ -83,6 +83,8 @@ export class Renderer {
         this.bipartiteInfo = null; // Map<layerName, { isBipartite, setA, setB, setALabel, setBLabel }>
         this.layoutType = 'fruchterman'; // Current layout type (needed to know when to render bipartite)
 
+        this.dpr = window.devicePixelRatio || 1;
+
         // Konva hit-test overlay (populated after each render)
         this._konvaStage = null;
         this._konvaHitLayer = null;
@@ -91,7 +93,7 @@ export class Renderer {
         // Splash screen logo
         this._logoImage = new Image();
         this._logoImage.onload = () => { if (!this.model) this.render(); };
-        this._logoImage.src = 'assets/MiRA_logo.png';
+        this._logoImage.src = 'assets/MiRA_logo.svg';
     }
 
     setData(model, positions) {
@@ -362,8 +364,10 @@ export class Renderer {
         if (this.metaNetworkMode) return; // MetaNetwork owns the canvas in this mode
 
         const ctx = this.ctx;
-        const w = this.canvas.width;
-        const h = this.canvas.height;
+        const dpr = this.dpr || 1;
+        const w = Math.round(this.canvas.width / dpr);
+        const h = Math.round(this.canvas.height / dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         ctx.clearRect(0, 0, w, h);
 
         if (this.layerViewMode && this.layerView) {
@@ -459,8 +463,10 @@ export class Renderer {
     _drawPlaceholder(ctx, w, h) {
         const logoH = 96;
         const logoGap = 16;
-        const line1 = 'Welcome to MiRA, the Multilayer Interactive Rendering App';
-        const line2 = 'Load a multilayer network via the Data panel to visualize';
+        const line1   = 'Welcome to MiRA, the Multilayer Interactive Rendering App';
+        const devBy   = 'Developed by the ';
+        const labName = 'Ecological Complexity Lab';
+        const line3   = 'Load a multilayer network via the Data panel to visualize';
 
         const img = this._logoImage;
         const logoW = (img?.complete && img.naturalWidth > 0)
@@ -469,10 +475,12 @@ export class Renderer {
 
         ctx.font = 'bold 18px Inter, system-ui, sans-serif';
         const line1W = ctx.measureText(line1).width;
+        ctx.font = '16px Inter, system-ui, sans-serif';
+        const line2W = ctx.measureText(devBy + labName).width;
         ctx.font = '15px Inter, system-ui, sans-serif';
-        const line2W = ctx.measureText(line2).width;
+        const line3W = ctx.measureText(line3).width;
 
-        const textBlockW = Math.max(line1W, line2W);
+        const textBlockW = Math.max(line1W, line2W, line3W);
         const totalW = logoW + logoGap + textBlockW;
         const startX = (w - totalW) / 2;
         const cy = h / 2;
@@ -484,15 +492,23 @@ export class Renderer {
         const textX = startX + logoW + logoGap;
         ctx.textAlign = 'left';
         ctx.textBaseline = 'middle';
+
         ctx.fillStyle = '#1f2937';
         ctx.font = 'bold 18px Inter, system-ui, sans-serif';
-        ctx.fillText(line1, textX, cy - 12);
+        ctx.fillText(line1, textX, cy - 24);
+
+        ctx.font = '16px Inter, system-ui, sans-serif';
+        const devByW = ctx.measureText(devBy).width;
+        ctx.fillText(devBy, textX, cy + 4);
+        ctx.fillStyle = '#6366f1';
+        ctx.fillText(labName, textX + devByW, cy + 4);
+        const labW = ctx.measureText(labName).width;
+        this._ecoLabBounds = { x: textX + devByW, y: cy + 4 - 12, w: labW, h: 24 };
+
         ctx.fillStyle = '#6b7280';
         ctx.font = '15px Inter, system-ui, sans-serif';
-        ctx.fillText(line2, textX, cy + 14);
-        ctx.font = '13px Inter, system-ui, sans-serif';
-        ctx.fillStyle = '#9ca3af';
-        ctx.fillText('Developed by the Ecological Complexity Lab', textX, cy + 52);
+        ctx.fillText(line3, textX, cy + 44);
+
         ctx.textBaseline = 'alphabetic';
         ctx.textAlign = 'left';
     }
@@ -969,15 +985,18 @@ export class Renderer {
         // Compute scale to fit with padding
         const padX = 120;
         const padY = 80;
-        const availW = this.canvas.width - padX;
-        const availH = this.canvas.height - padY;
+        const dpr = this.dpr || 1;
+        const cssW = Math.round(this.canvas.width / dpr);
+        const cssH = Math.round(this.canvas.height / dpr);
+        const availW = cssW - padX;
+        const availH = cssH - padY;
         this.scale = Math.min(availW / rawWidth, availH / rawHeight, 1.8);
 
         // Compute center offset so projected bounding box is centered
         const scaledW = rawWidth * this.scale;
         const scaledH = rawHeight * this.scale;
-        this.offsetX = (this.canvas.width - scaledW) / 2 - minX * this.scale;
-        this.offsetY = (this.canvas.height - scaledH) / 2 - minY * this.scale;
+        this.offsetX = (cssW - scaledW) / 2 - minX * this.scale;
+        this.offsetY = (cssH - scaledH) / 2 - minY * this.scale;
     }
 
     // ---- Konva hit-test overlay ----
@@ -989,10 +1008,11 @@ export class Renderer {
         container.style.cssText = 'position:absolute;top:0;left:0;pointer-events:none;';
         this.canvas.parentElement.style.position = 'relative';
         this.canvas.parentElement.appendChild(container);
+        const dpr = this.dpr || 1;
         this._konvaStage = new Konva.Stage({
             container,
-            width: this.canvas.width,
-            height: this.canvas.height,
+            width:  Math.round(this.canvas.width  / dpr),
+            height: Math.round(this.canvas.height / dpr),
         });
         this._konvaHitLayer = new Konva.Layer();
         this._konvaStage.add(this._konvaHitLayer);
