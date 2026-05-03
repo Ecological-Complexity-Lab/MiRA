@@ -1047,6 +1047,7 @@ export class Renderer {
             if (!layerPos) continue;
             const links = this.model.intralayerLinks.filter(l => l.layer_from === layer.layer_name);
             for (const link of links) {
+                if (this.intraMinWeight > 0 && (link.weight || 0) < this.intraMinWeight) continue;
                 if (dataMode.filteredNodeNames &&
                     (!dataMode.filteredNodeNames.has(link.node_from) || !dataMode.filteredNodeNames.has(link.node_to))) continue;
                 const fromPos = layerPos.get(link.node_from);
