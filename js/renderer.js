@@ -263,7 +263,7 @@ export class Renderer {
 
         // 1. Check Interlayer links (curved) - tested first as they are drawn on top
         if (this.showInterlayerLinks) {
-            for (const link of this.model.interlayerLinks) {
+            for (const link of this._visibleInterlayerLinks()) {
                 const fromScreen = this.getNodeScreenPos(link.layer_from, link.node_from);
                 const toScreen = this.getNodeScreenPos(link.layer_to, link.node_to);
                 if (!fromScreen || !toScreen) continue;
@@ -626,9 +626,8 @@ export class Renderer {
         }
     }
 
-    _drawInterlayerLinks(ctx) {
-        // Pre-compute weight range for normalized line width
-        const visibleLinks = this.model.interlayerLinks.filter(l => {
+    _visibleInterlayerLinks() {
+        return this.model.interlayerLinks.filter(l => {
             if (this.activeMapLayers && (!this.activeMapLayers.has(l.layer_from) || !this.activeMapLayers.has(l.layer_to))) return false;
             if (this.interlayerMinWeight > 0 && (l.weight || 0) < this.interlayerMinWeight) return false;
             if (this.interlayerLayerPairs !== null && !this.interlayerLayerPairs.has(`${l.layer_from}::${l.layer_to}`)) return false;
@@ -640,6 +639,11 @@ export class Renderer {
             }
             return true;
         });
+    }
+
+    _drawInterlayerLinks(ctx) {
+        // Pre-compute weight range for normalized line width
+        const visibleLinks = this._visibleInterlayerLinks();
         const weights = visibleLinks.map(l => l.weight || 0).filter(w => w > 0);
         const maxW = weights.length ? Math.max(...weights) : 1;
         const minW = weights.length ? Math.min(...weights) : 0;
@@ -1042,7 +1046,7 @@ export class Renderer {
 
         // Interlayer links (curved)
         if (this.showInterlayerLinks) {
-            for (const link of this.model.interlayerLinks) {
+            for (const link of this._visibleInterlayerLinks()) {
                 const fromScreen = this.getNodeScreenPos(link.layer_from, link.node_from);
                 const toScreen = this.getNodeScreenPos(link.layer_to, link.node_to);
                 if (!fromScreen || !toScreen) continue;

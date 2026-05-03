@@ -987,7 +987,7 @@ function toggleLayerView() {
     _startLayerViewLoop();
 }
 
-const NETWORK_SECTIONS = ['sectionLayers','sectionNodes','sectionLinks','sectionSearch'];
+const NETWORK_SECTIONS = ['sectionLayers','sectionNodes','sectionLinks','sectionSearch','sectionIntraLinks','sectionInterLinks'];
 
 function _showLayerViewSidebar() {
     NETWORK_SECTIONS.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
@@ -998,6 +998,7 @@ function _showLayerViewSidebar() {
 function _hideLayerViewSidebar() {
     NETWORK_SECTIONS.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = ''; });
     LV_SECTIONS.forEach(id => { document.getElementById(id).style.display = 'none'; });
+    sectionInterLinks.style.display = model && model.interlayerLinks.length > 0 ? '' : 'none';
     renderLegends(); // restore network legends
 }
 
@@ -1014,6 +1015,7 @@ function _hideDashboardSidebar() {
     DB_SECTIONS.forEach(id => { document.getElementById(id).style.display = 'none'; });
     dbBipartiteRow.style.display = 'none';
     NETWORK_SECTIONS.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = ''; });
+    sectionInterLinks.style.display = model && model.interlayerLinks.length > 0 ? '' : 'none';
     renderLegends();
 }
 
@@ -1212,6 +1214,7 @@ function _hideMetaNetworkSidebar() {
     META_SECTIONS.forEach(id => document.getElementById(id).style.display = 'none');
     mnLayerPanel.style.display = 'none';
     NETWORK_SECTIONS.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = ''; });
+    sectionInterLinks.style.display = model && model.interlayerLinks.length > 0 ? '' : 'none';
     renderLegends();
 }
 
@@ -2053,11 +2056,6 @@ function openLayerComparison(nameA, nameB) {
     const ilAtoB = model.interlayerLinks.filter(l => l.layer_from === nameA && l.layer_to === nameB).length;
     const ilBtoA = model.interlayerLinks.filter(l => l.layer_from === nameB && l.layer_to === nameA).length;
 
-    const commonHubs = sharedNodes
-        .map(n => ({ name: n, dA: sA.degMap.get(n) ?? 0, dB: sB.degMap.get(n) ?? 0 }))
-        .sort((a, b) => (b.dA + b.dB) - (a.dA + a.dB))
-        .slice(0, 5);
-
     // ── HTML helpers ──
     const fmt  = (v, d = 0) => typeof v === 'number' ? v.toLocaleString(undefined, { maximumFractionDigits: d }) : v;
     const pct  = (v, tot)   => tot > 0 ? `${((v / tot) * 100).toFixed(1)}%` : '—';
@@ -2089,11 +2087,6 @@ function openLayerComparison(nameA, nameB) {
             <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:#9ca3af;margin-bottom:6px;">${title}</div>
             ${content}
         </div>`;
-
-    // Common hubs list
-    const hubsVal = commonHubs.length
-        ? commonHubs.map(h => `${trunc(h.name)} <span style="color:#9ca3af;">(${h.dA}/${h.dB})</span>`).join(', ')
-        : '—';
 
     // Bipartite: shared types between both layers
     const biTypes = sA.isBipartite && sB.isBipartite
@@ -2131,8 +2124,7 @@ function openLayerComparison(nameA, nameB) {
             sRow('Node Jaccard', nodeJacc.toFixed(3)) +
             sRow('Edge Jaccard', edgeJacc.toFixed(3)) +
             sRow('Interlayer A→B', fmt(ilAtoB)) +
-            sRow('Interlayer B→A', fmt(ilBtoA)) +
-            sRow('Common hubs', hubsVal)
+            sRow('Interlayer B→A', fmt(ilBtoA))
         ) +
         section('Divergence',
             colHdr +
