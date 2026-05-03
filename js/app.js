@@ -650,6 +650,10 @@ function loadData(json) {
         const hasInterlayer = model.interlayerLinks.length > 0;
         sectionInterLinks.style.display = hasInterlayer ? '' : 'none';
         if (hasInterlayer) {
+            setTimeout(() => {
+                sectionInterLinks.classList.add('tour-pulse-blue');
+                sectionInterLinks.addEventListener('animationend', () => sectionInterLinks.classList.remove('tour-pulse-blue'), { once: true });
+            }, 800);
             const iWeights = model.interlayerLinks.map(l => l.weight || 0).filter(w => w > 0);
             const maxIW = iWeights.length ? Math.max(...iWeights) : 1;
             interlayerWeightSlider.max  = maxIW.toFixed(4);
@@ -4347,7 +4351,12 @@ function _createLVLegendBtn(scale) {
 }
 
 // ---- Tour ----
-document.getElementById('tourBtn').addEventListener('click', startTour);
+const tourBtn = document.getElementById('tourBtn');
+tourBtn.addEventListener('click', startTour);
+setTimeout(() => {
+    tourBtn.classList.add('tour-pulse');
+    tourBtn.addEventListener('animationend', () => tourBtn.classList.remove('tour-pulse'), { once: true });
+}, 1200);
 
 // ---- Help Popup ----
 const helpBtn            = document.getElementById('helpBtn');

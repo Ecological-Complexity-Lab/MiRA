@@ -1533,6 +1533,27 @@ body {
   background: rgba(99, 102, 241, 0.06);
 }
 
+@keyframes tourPulse {
+  0%   { outline: 3px solid rgba(99, 102, 241, 0);    outline-offset: 2px; }
+  30%  { outline: 3px solid rgba(99, 102, 241, 0.85); outline-offset: 3px; }
+  60%  { outline: 3px solid rgba(99, 102, 241, 0);    outline-offset: 2px; }
+  80%  { outline: 3px solid rgba(99, 102, 241, 0.85); outline-offset: 3px; }
+  100% { outline: 3px solid rgba(99, 102, 241, 0);    outline-offset: 2px; }
+}
+#tourBtn.tour-pulse {
+  animation: tourPulse 1.6s ease-in-out forwards;
+}
+@keyframes tourPulseBlue {
+  0%   { outline: 3px solid rgba(30, 100, 220, 0);    outline-offset: 2px; }
+  30%  { outline: 3px solid rgba(30, 100, 220, 0.85); outline-offset: 3px; }
+  60%  { outline: 3px solid rgba(30, 100, 220, 0);    outline-offset: 2px; }
+  80%  { outline: 3px solid rgba(30, 100, 220, 0.85); outline-offset: 3px; }
+  100% { outline: 3px solid rgba(30, 100, 220, 0);    outline-offset: 2px; }
+}
+.tour-pulse-blue {
+  animation: tourPulseBlue 1.6s ease-in-out forwards;
+}
+
 #tourHighlight {
   display: none;
   position: fixed;
