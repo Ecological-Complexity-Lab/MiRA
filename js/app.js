@@ -685,10 +685,7 @@ function loadData(json) {
         const hasInterlayer = model.interlayerLinks.length > 0;
         sectionInterLinks.style.display = hasInterlayer ? '' : 'none';
         if (hasInterlayer) {
-            setTimeout(() => {
-                sectionInterLinks.classList.add('tour-pulse-blue');
-                sectionInterLinks.addEventListener('animationend', () => sectionInterLinks.classList.remove('tour-pulse-blue'), { once: true });
-            }, 800);
+            setTimeout(() => showBounceArrow(sectionInterLinks.querySelector('summary'), 'left'), 800);
             const iWeights = model.interlayerLinks.map(l => l.weight || 0).filter(w => w > 0);
             const maxIW = iWeights.length ? Math.max(...iWeights) : 1;
             interlayerWeightSlider.max  = maxIW.toFixed(4);
@@ -4390,10 +4387,26 @@ function _createLVLegendBtn(scale) {
 // ---- Tour ----
 const tourBtn = document.getElementById('tourBtn');
 tourBtn.addEventListener('click', startTour);
-setTimeout(() => {
-    tourBtn.classList.add('tour-pulse');
-    tourBtn.addEventListener('animationend', () => tourBtn.classList.remove('tour-pulse'), { once: true });
-}, 1200);
+setTimeout(() => showBounceArrow(tourBtn, 'up'), 1200);
+
+function showBounceArrow(el, dir) {
+    if (dir === 'up') {
+        const rect = el.getBoundingClientRect();
+        const span = document.createElement('span');
+        span.className = 'bounce-arrow-fixed';
+        span.textContent = '⬆';
+        span.style.left = `${rect.left + rect.width / 2 - 10}px`;
+        span.style.top  = `${rect.bottom + 4}px`;
+        document.body.appendChild(span);
+        span.addEventListener('animationend', () => span.remove(), { once: true });
+    } else {
+        const span = document.createElement('span');
+        span.className = 'bounce-arrow-inline';
+        span.textContent = '⬅';
+        el.appendChild(span);
+        span.addEventListener('animationend', () => span.remove(), { once: true });
+    }
+}
 
 // ---- Help Popup ----
 const helpBtn            = document.getElementById('helpBtn');

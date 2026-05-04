@@ -1543,25 +1543,52 @@ body {
   background: rgba(99, 102, 241, 0.06);
 }
 
-@keyframes tourPulse {
-  0%   { outline: 3px solid rgba(99, 102, 241, 0);    outline-offset: 2px; }
-  30%  { outline: 3px solid rgba(99, 102, 241, 0.85); outline-offset: 3px; }
-  60%  { outline: 3px solid rgba(99, 102, 241, 0);    outline-offset: 2px; }
-  80%  { outline: 3px solid rgba(99, 102, 241, 0.85); outline-offset: 3px; }
-  100% { outline: 3px solid rgba(99, 102, 241, 0);    outline-offset: 2px; }
+@keyframes arrowBounceUp {
+  0%   { opacity: 0; transform: translateY(0); }
+  5%   { opacity: 1; transform: translateY(0); }
+  14%  { opacity: 1; transform: translateY(-9px); }
+  23%  { opacity: 1; transform: translateY(0); }
+  32%  { opacity: 1; transform: translateY(-9px); }
+  41%  { opacity: 1; transform: translateY(0); }
+  50%  { opacity: 1; transform: translateY(-9px); }
+  59%  { opacity: 1; transform: translateY(0); }
+  68%  { opacity: 1; transform: translateY(-9px); }
+  77%  { opacity: 1; transform: translateY(0); }
+  86%  { opacity: 1; transform: translateY(-9px); }
+  95%  { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(0); }
 }
-#tourBtn.tour-pulse {
-  animation: tourPulse 1.6s ease-in-out forwards;
+@keyframes arrowBounceLeft {
+  0%   { opacity: 0; transform: translateX(0); }
+  5%   { opacity: 1; transform: translateX(0); }
+  14%  { opacity: 1; transform: translateX(-9px); }
+  23%  { opacity: 1; transform: translateX(0); }
+  32%  { opacity: 1; transform: translateX(-9px); }
+  41%  { opacity: 1; transform: translateX(0); }
+  50%  { opacity: 1; transform: translateX(-9px); }
+  59%  { opacity: 1; transform: translateX(0); }
+  68%  { opacity: 1; transform: translateX(-9px); }
+  77%  { opacity: 1; transform: translateX(0); }
+  86%  { opacity: 1; transform: translateX(-9px); }
+  95%  { opacity: 1; transform: translateX(0); }
+  100% { opacity: 0; transform: translateX(0); }
 }
-@keyframes tourPulseBlue {
-  0%   { outline: 3px solid rgba(30, 100, 220, 0);    outline-offset: 2px; }
-  30%  { outline: 3px solid rgba(30, 100, 220, 0.85); outline-offset: 3px; }
-  60%  { outline: 3px solid rgba(30, 100, 220, 0);    outline-offset: 2px; }
-  80%  { outline: 3px solid rgba(30, 100, 220, 0.85); outline-offset: 3px; }
-  100% { outline: 3px solid rgba(30, 100, 220, 0);    outline-offset: 2px; }
+.bounce-arrow-fixed {
+  position: fixed;
+  pointer-events: none;
+  font-size: 28px;
+  line-height: 1;
+  z-index: 9999;
+  color: #6366f1;
+  animation: arrowBounceUp 3.5s ease-out forwards;
 }
-.tour-pulse-blue {
-  animation: tourPulseBlue 1.6s ease-in-out forwards;
+.bounce-arrow-inline {
+  display: inline-block;
+  margin-left: auto;
+  padding-left: 8px;
+  font-size: 22px;
+  color: #1e64dc;
+  animation: arrowBounceLeft 3.5s ease-out forwards;
 }
 
 #tourHighlight {
