@@ -922,6 +922,16 @@ body {
   border-color: rgba(245,158,11,0.4);
   box-shadow: 0 4px 15px rgba(245,158,11,0.15);
 }
+.btn-domain-molecular-biology {
+  background: linear-gradient(135deg, rgba(235,52,210,0.11), rgba(235,52,210,0.15));
+  border-color: rgba(235,52,210,0.27);
+  color: #9b1599;
+}
+.btn-domain-molecular-biology:hover {
+  background: linear-gradient(135deg, rgba(235,52,210,0.21), rgba(235,52,210,0.25));
+  border-color: rgba(235,52,210,0.4);
+  box-shadow: 0 4px 15px rgba(235,52,210,0.15);
+}
 
 .dialog-box h4 {
   font-size: 14px;

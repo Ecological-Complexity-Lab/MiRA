@@ -21,7 +21,8 @@ const DOMAIN_PILL_STYLES = {
     'Microbiology':         'background:rgba(6,182,212,0.18); border:1px solid rgba(6,182,212,0.35); color:#0e7490;',
     'Biomedicine':          'background:rgba(244,63,94,0.15); border:1px solid rgba(244,63,94,0.32); color:#be123c;',
     'Neuroscience':         'background:rgba(139,92,246,0.18); border:1px solid rgba(139,92,246,0.35); color:#6d28d9;',
-    'Population genetics': 'background:rgba(245,158,11,0.16); border:1px solid rgba(245,158,11,0.33); color:#b45309;',
+    'Population genetics':  'background:rgba(245,158,11,0.16); border:1px solid rgba(245,158,11,0.33); color:#b45309;',
+    'Molecular Biology':    'background:rgba(235,52,210,0.15); border:1px solid rgba(235,52,210,0.32); color:#9b1599;',
 };
 
 // Multilayer-type pill — uniform gray regardless of type.
@@ -131,6 +132,22 @@ export const DATASET_INFO = {
         nodeAttrs: ['hemisphere (left / right)', 'region (cortical / subcortical)'],
         linkAttrs: ['number_of_fibers', 'fiber_length_mean (mm)', 'fiber_density', 'normalized_fiber_density'],
     },
+    shemesh2021_chaperones: {
+        domain: 'Molecular Biology',
+        mlType: 'multiplex',
+        name: 'Human chaperone co-expression network',
+        citation: 'Shemesh et al. 2021',
+        doi: 'https://doi.org/10.1038/s41467-021-22369-9',
+        dataDoi: 'https://doi.org/10.1038/s41467-021-22369-9',
+        dataLabel: 'Supplementary data (Nature Communications):',
+        layers: '8 layers — Whole Blood, Brain, Heart, Liver, Skeletal Muscle, Lung, Testis, Skin',
+        nodes: '50 hub chaperone proteins (top-degree across all tissues)',
+        links: '6,640 intralayer co-expression edges (|r| > 0.4, p < 0.01) + 1,400 interlayer (Jaccard similarity of co-expression partners)',
+        network: 'Undirected · multiplex · GTEx co-expression · chaperone proteome subset',
+        nodeAttrs: ['family (HSP40 / HSP70 / HSP90 / HSP60 / coHSP90 / NEF / Prefoldin / other)', 'core_variable (Core / Variable)', 'stress (stress-inducible Yes / No)'],
+        linkAttrs: ['weight (absolute Pearson r for intralayer; Jaccard similarity of co-expression partners for interlayer)'],
+    },
+
     // ---- Benchmark / stress-test datasets ----
     shapiro2023_plasmids: {
         domain: 'Microbiology',
