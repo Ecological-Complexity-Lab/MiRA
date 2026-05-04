@@ -509,6 +509,13 @@ export class Renderer {
         ctx.font = '15px Inter, system-ui, sans-serif';
         ctx.fillText(line3, textX, cy + 44);
 
+        const line4 = 'See our visualization guidelines for best practices →';
+        ctx.font = '14px Inter, system-ui, sans-serif';
+        const line4W = ctx.measureText(line4).width;
+        ctx.fillStyle = '#6366f1';
+        ctx.fillText(line4, textX, cy + 70);
+        this._guidelinesBounds = { x: textX, y: cy + 70 - 11, w: line4W, h: 22 };
+
         ctx.textBaseline = 'alphabetic';
         ctx.textAlign = 'left';
     }

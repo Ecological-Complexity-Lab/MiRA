@@ -492,27 +492,24 @@ bgMap.on('move', () => {
     }
 });
 
-// Splash screen link — open ecomplab.com when clicking "Ecological Complexity Lab"
+// Splash screen links — "Ecological Complexity Lab" and "visualization guidelines"
 canvas.addEventListener('click', (e) => {
     if (model) return;
-    const b = renderer._ecoLabBounds;
-    if (!b) return;
     const rect = canvas.getBoundingClientRect();
     const mx = e.clientX - rect.left;
     const my = e.clientY - rect.top;
-    if (mx >= b.x && mx <= b.x + b.w && my >= b.y && my <= b.y + b.h) {
-        window.open('https://ecomplab.com/', '_blank', 'noopener');
-    }
+    const inBounds = b => b && mx >= b.x && mx <= b.x + b.w && my >= b.y && my <= b.y + b.h;
+    if (inBounds(renderer._ecoLabBounds))    window.open('https://ecomplab.com/', '_blank', 'noopener');
+    if (inBounds(renderer._guidelinesBounds)) window.open('docs/manual.html#guidelines', '_blank', 'noopener');
 });
 
 canvas.addEventListener('mousemove', (e) => {
     if (model) return;
-    const b = renderer._ecoLabBounds;
-    if (!b) return;
     const rect = canvas.getBoundingClientRect();
     const mx = e.clientX - rect.left;
     const my = e.clientY - rect.top;
-    canvas.style.cursor = (mx >= b.x && mx <= b.x + b.w && my >= b.y && my <= b.y + b.h)
+    const inBounds = b => b && mx >= b.x && mx <= b.x + b.w && my >= b.y && my <= b.y + b.h;
+    canvas.style.cursor = (inBounds(renderer._ecoLabBounds) || inBounds(renderer._guidelinesBounds))
         ? 'pointer' : 'default';
 });
 
