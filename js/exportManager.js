@@ -87,7 +87,7 @@ export function initExportManager({ getRenderer, getAppMode }) {
             .slice(0, 10);
         const appMode  = getAppMode();
         const modeMap  = { network: 'net', map: 'map', layer: 'layer',
-                           metanetwork: 'meta', dashboard: 'dash', data: 'data' };
+                           metanetwork: 'meta', dashboard: 'dash', data: 'data', grid: 'grid' };
         const modeStr  = `_${modeMap[appMode] || appMode}`;
         const resolution  = document.getElementById('exportResolutionSelect').value;
         const qualityStr  = `_${QUALITY_LABELS[resolution] || resolution + 'x'}`;
@@ -201,6 +201,10 @@ export function initExportManager({ getRenderer, getAppMode }) {
             renderer.offsetY = origOY * multiplier;
             renderer.scale   = origS  * multiplier;
             renderer.showGrid = includeGrid;
+            // In grid mode, drop the sidebar/toolbar margins so the grid fills
+            // the export canvas instead of leaving an empty strip at top-left.
+            const isGrid = appMode === 'grid';
+            if (isGrid) renderer._gridMarginOverride = { left: 0, top: 0 };
             renderer.render();
 
             const W = cssW * multiplier, H = cssH * multiplier;
@@ -218,6 +222,7 @@ export function initExportManager({ getRenderer, getAppMode }) {
             renderer.offsetY = origOY;
             renderer.scale   = origS;
             renderer.showGrid = prevShowGrid;
+            if (isGrid) renderer._gridMarginOverride = null;
             renderer.render();
 
             if (includePanels) await _compositeOverlays(ctx, multiplier);
@@ -368,6 +373,8 @@ export function initExportManager({ getRenderer, getAppMode }) {
             const includePanels = document.getElementById('exportPanelsCheckbox').checked;
             const prevShowGrid  = renderer.showGrid;
             renderer.showGrid = includeGrid;
+            const isGridPdf = appMode === 'grid';
+            if (isGridPdf) renderer._gridMarginOverride = { left: 0, top: 0 };
             renderer.render();
 
             const w = srcCanvas.width, h = srcCanvas.height;
@@ -411,6 +418,7 @@ export function initExportManager({ getRenderer, getAppMode }) {
             }
 
             renderer.showGrid = prevShowGrid;
+            if (isGridPdf) renderer._gridMarginOverride = null;
             renderer.render();
 
             if (includePanels) await _compositeOverlays(ctx, scale);
@@ -430,7 +438,9 @@ export function initExportManager({ getRenderer, getAppMode }) {
             // HTMLCanvasElement) — avoids the huge synchronous toDataURL
             // call that would block the main thread for several seconds on
             // a 20-megapixel canvas.
-            pdf.addImage(offscreen, 'PNG', 0, 0, w, h, undefined, 'FAST');
+            // Page is in CSS-pixel units; w/h are physical (DPR-scaled) — using
+            // them on Retina displays makes the image overflow the page.
+            pdf.addImage(offscreen, 'PNG', 0, 0, cssWpdf, cssHpdf, undefined, 'FAST');
 
             await _saveBlob(pdf.output('blob'), _buildFilename('pdf'), dirHandle);
         } catch (err) {

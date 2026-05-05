@@ -52,7 +52,7 @@ Node labels are visually cluttering. Enable them on hover (not permanently) for 
 
 ## 3. Match the visualization mode to the visualization goal
 
-MiRA offers six modes. Using the right one for your question can give you differnet perspectives of your network.
+MiRA offers seven modes. Using the right one for your question can give you different perspectives of your network.
 
 | Question | Recommended mode |
 |---|---|
@@ -62,6 +62,7 @@ MiRA offers six modes. Using the right one for your question can give you differ
 | Full interaction graph, ignoring layer identity | **Meta-Network Mode** |
 | Summary statistics, degree distributions, similarity matrices | **Dashboard Mode** |
 | Inspect, filter, or subset the raw data | **Data Mode** |
+| Compare all layers side by side (small multiples) | **Grid View** |
 
 The Network Mode 3D canvas is best for getting an overall view of the multilayer structure. It is not always the best tool for exploring a specific aspect of the network, and for large networks it is the most demanding mode computationally.
 

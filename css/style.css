@@ -305,6 +305,7 @@ body {
 .mode-btn.active[data-mode="meta"]      { color: #d97706; background: rgba(217, 119, 6, 0.08); }   /* amber */
 .mode-btn.active[data-mode="dashboard"] { color: #dc2626; background: rgba(220, 38, 38, 0.08); }   /* red */
 .mode-btn.active[data-mode="data"]      { color: #c51b7d; background: rgba(197, 27, 125, 0.08); }  /* magenta */
+.mode-btn.active[data-mode="grid"]      { color: #f73ce1; background: rgba(247, 60, 225, 0.08); }   /* pink */
 
 /* ── Alerts zone (elastic middle) ──────────────── */
 #toolbarAlerts {

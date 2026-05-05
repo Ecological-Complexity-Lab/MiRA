@@ -33,7 +33,7 @@ const TOUR_STEPS = [
     {
         target: '#modeBtnsGroup',
         title: 'Step 4 of 6 — Switch Visualization Modes',
-        body: 'Choose from 6 modes: <b>Network</b>, <b>Map</b>, <b>Layer View</b>, <b>Meta-Network</b>, <b>Dashboard</b>, and <b>Data Table</b> — each gives a different perspective on your data.',
+        body: 'Choose from 7 modes: <b>Network</b>, <b>Map</b>, <b>Grid</b>, <b>Layer View</b>, <b>Meta-Network</b>, <b>Dashboard</b>, and <b>Data Table</b> — each gives a different perspective on your data.',
         placement: 'bottom',
     },
     {

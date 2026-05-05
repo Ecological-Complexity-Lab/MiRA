@@ -170,7 +170,15 @@
       "Bash(git -C /Users/shai/GitHub/ecomplab/MiRA log --oneline -5)",
       "Bash(git -C /Users/shai/GitHub/ecomplab/MiRA add js/renderer.js)",
       "Bash(git -C /Users/shai/GitHub/ecomplab/MiRA add docs/manual.html docs/visualization_guidelines.md)",
-      "Bash(git -C /Users/shai/GitHub/ecomplab/MiRA push --force-with-lease origin main)"
+      "Bash(git -C /Users/shai/GitHub/ecomplab/MiRA push --force-with-lease origin main)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8001/index.html)",
+      "Bash(open \"http://localhost:8001\")",
+      "Bash(node --check /Users/shai/GitHub/ecomplab/MiRA/js/exportManager.js)",
+      "Bash(node --check /Users/shai/GitHub/ecomplab/MiRA/js/renderer.js)",
+      "Bash(node --check /Users/shai/GitHub/ecomplab/MiRA/js/app.js)",
+      "Bash(node --check /Users/shai/GitHub/ecomplab/MiRA/js/tourManager.js)",
+      "Bash(curl -sL \"https://gist.githubusercontent.com/shainova/6dafb353f31faf4df7bd338566a2dc2b/raw/\")",
+      "Bash(xargs -n1 basename)"
     ],
     "additionalDirectories": [
       "/Users/shai/GitHub/ecomplab/emln",

@@ -16,6 +16,7 @@ import { saveSession, loadSession, loadSessionFromUrl } from './sessionManager.j
 import { startTour } from './tourManager.js';
 import { initDemoDatasets } from './demoDatasets.js';
 import { initExportManager } from './exportManager.js';
+import { GridView } from './gridView.js';
 
 // ---- State ----
 let model = null;
@@ -182,9 +183,16 @@ window.addEventListener('mouseup', () => {
 const showLabelsCheckbox = document.getElementById('showLabelsCheckbox');
 const transformNodesCheckbox = document.getElementById('transformNodesCheckbox');
 const showLayerNamesCheckbox = document.getElementById('showLayerNamesCheckbox');
+const layerNameSizeSlider    = document.getElementById('layerNameSizeSlider');
+const layerNameSizeLabel     = document.getElementById('layerNameSizeLabel');
 const networkModeBtn  = document.getElementById('networkModeBtn');
 const mapModeBtn      = document.getElementById('mapModeBtn');
 const layerViewBtn    = document.getElementById('layerViewBtn');
+const gridViewBtn     = document.getElementById('gridViewBtn');
+const gridColumnsRow  = document.getElementById('gridColumnsRow');
+const gridColumnsSlider = document.getElementById('gridColumnsSlider');
+const gridColumnsLabel  = document.getElementById('gridColumnsLabel');
+const transformNodesRow = document.getElementById('transformNodesRow');
 const layerDrillPanel   = document.getElementById('layerDrillPanel');
 const layerDrillClose   = document.getElementById('layerDrillClose');
 const layerDrillTitle   = document.getElementById('layerDrillTitle');
@@ -273,7 +281,8 @@ const collapseInfoBtn = document.getElementById('collapseInfoBtn');
 const tooltip = document.getElementById('tooltip');
 
 // ---- Application State ----
-let appMode = 'network'; // 'network', 'map', 'layer', 'dashboard', 'metanetwork', or 'data'
+let appMode = 'network'; // 'network', 'map', 'layer', 'dashboard', 'metanetwork', 'data', or 'grid'
+let gridView = null;
 let layerViewHandlers = null;
 let lvRAF  = null; // requestAnimationFrame id for layer-view animation
 let metaNetwork = null;       // MetaNetwork instance
@@ -543,6 +552,27 @@ const interaction = new InteractionHandler(canvas, renderer, {
     }
 });
 
+// Grid View click — node selection
+canvas.addEventListener('click', (e) => {
+    if (appMode !== 'grid' || !gridView || !model) return;
+    const rect = canvas.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+    const hit = gridView.hitTest(mx, my);
+    crossModeSelectedNode = hit ? hit.nodeName : null;
+    renderer.searchedNodeName = hit ? hit.nodeName : null;
+    // Drop any stale (layerName, nodeName) selection from a prior mode so it
+    // doesn't leak through when the user returns to Network mode.
+    renderer.selectedNode = hit ? { layerName: hit.layerName, nodeName: hit.nodeName } : null;
+    if (hit) {
+        showNodeInfo(hit);
+    } else {
+        hideNodeInfo();
+    }
+    _updateFilterBanner();
+    renderer.render();
+});
+
 // ---- Reset all visualization options to defaults ----
 function resetVisualizationOptions() {
     // Checkboxes
@@ -558,6 +588,9 @@ function resetVisualizationOptions() {
 
     showLayerNamesCheckbox.checked = false;
     renderer.showLayerNames = false;
+    layerNameSizeSlider.value = 14;
+    layerNameSizeLabel.textContent = '14px';
+    renderer.layerNameFontSize = 14;
 
     showSetNamesCheckbox.checked = false;
     renderer.showSetNames = false;
@@ -703,6 +736,7 @@ function loadData(json) {
         if (appMode === 'dashboard')   { _exitDashboard();   appMode = 'network'; }
         if (appMode === 'metanetwork') { _exitMetaNetwork(); appMode = 'network'; }
         if (appMode === 'data')        { _exitDataMode();    appMode = 'network'; }
+        if (appMode === 'grid')        { _exitGridView();    appMode = 'network'; }
         dataMode.clear();
         _updateFilterBanner();
         _updateModeButtons();
@@ -794,7 +828,7 @@ initDemoDatasets(loadData);
 const MODE_BTNS = document.querySelectorAll('.mode-btn');
 function _updateModeButtons() {
     const modeMap = { network: 'network', map: 'map', layer: 'layer',
-                      metanetwork: 'meta', dashboard: 'dashboard', data: 'data' };
+                      metanetwork: 'meta', dashboard: 'dashboard', data: 'data', grid: 'grid' };
     const activeMode = modeMap[appMode] || 'network';
     MODE_BTNS.forEach(btn => {
         btn.classList.toggle('active', btn.dataset.mode === activeMode);
@@ -807,6 +841,7 @@ function toggleMapMode() {
     if (appMode === 'layer')       { _exitLayerView();   appMode = 'network'; renderer.render(); }
     if (appMode === 'metanetwork') { _exitMetaNetwork(); appMode = 'network'; }
     if (appMode === 'data')        { _exitDataMode();    appMode = 'network'; }
+    if (appMode === 'grid')        { _exitGridView();    appMode = 'network'; }
     appMode = appMode === 'network' ? 'map' : 'network';
 
     _updateModeButtons();
@@ -866,6 +901,7 @@ function toggleLayerView() {
     if (appMode === 'dashboard')   { _exitDashboard();   appMode = 'network'; }
     if (appMode === 'metanetwork') { _exitMetaNetwork(); appMode = 'network'; }
     if (appMode === 'data')        { _exitDataMode();    appMode = 'network'; }
+    if (appMode === 'grid')        { _exitGridView();    appMode = 'network'; }
     appMode = 'layer';
     _updateFilterBanner();
     _updateModeButtons();
@@ -1035,6 +1071,84 @@ function _hideLayerViewSidebar() {
     renderLegends(); // restore network legends
 }
 
+// ---- Grid View Mode ----
+const GRID_HIDDEN_IDS = [
+    'layerNamesRow', 'stackingRow', 'layerSpacingRow',
+    'layerColorRow', 'layerColorSwatches',
+    'intraLinkColorSwatches',
+];
+
+function _showGridViewSidebar() {
+    NETWORK_SECTIONS.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = ''; });
+    LV_SECTIONS.forEach(id => { document.getElementById(id).style.display = 'none'; });
+    META_SECTIONS.forEach(id => { document.getElementById(id).style.display = 'none'; });
+    sectionInterLinks.style.display = 'none';
+    if (transformNodesRow) transformNodesRow.style.display = 'none';
+    GRID_HIDDEN_IDS.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.dataset.gridSavedDisplay = el.style.display;
+        el.style.display = 'none';
+    });
+    gridColumnsRow.style.display = '';
+    const L = model ? model.layers.length : 4;
+    const defCols = Math.min(Math.ceil(Math.sqrt(L)), 8);
+    gridColumnsSlider.value = defCols;
+    gridColumnsLabel.textContent = defCols;
+    renderer._gridColumns = defCols;
+}
+
+function _exitGridView() {
+    renderer.gridViewMode = false;
+    canvas.style.cursor = 'grab';
+    if (transformNodesRow) transformNodesRow.style.display = '';
+    gridColumnsRow.style.display = 'none';
+    GRID_HIDDEN_IDS.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.style.display = el.dataset.gridSavedDisplay ?? '';
+        delete el.dataset.gridSavedDisplay;
+    });
+    NETWORK_SECTIONS.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = ''; });
+    LV_SECTIONS.forEach(id => { document.getElementById(id).style.display = 'none'; });
+    sectionInterLinks.style.display = model && model.interlayerLinks.length > 0 ? '' : 'none';
+    renderLegends();
+}
+
+function toggleGridView() {
+    if (appMode === 'grid') {
+        _exitGridView();
+        appMode = 'network';
+        renderer.render();
+        _updateFilterBanner();
+        _updateModeButtons();
+        return;
+    }
+    if (appMode === 'map')         toggleMapMode();
+    if (appMode === 'layer')       { _exitLayerView();   appMode = 'network'; }
+    if (appMode === 'dashboard')   { _exitDashboard();   appMode = 'network'; }
+    if (appMode === 'metanetwork') { _exitMetaNetwork(); appMode = 'network'; }
+    if (appMode === 'data')        { _exitDataMode();    appMode = 'network'; }
+
+    appMode = 'grid';
+    if (!gridView) gridView = new GridView();
+    renderer.gridViewMode = true;
+    renderer._gridView = gridView;
+    canvas.style.cursor = 'default';
+    _showGridViewSidebar();
+    _updateFilterBanner();
+    _updateModeButtons();
+    renderer.render();
+}
+
+gridViewBtn.addEventListener('click', toggleGridView);
+
+gridColumnsSlider.addEventListener('input', () => {
+    gridColumnsLabel.textContent = gridColumnsSlider.value;
+    renderer._gridColumns = parseInt(gridColumnsSlider.value);
+    if (appMode === 'grid') renderer.render();
+});
+
 // ---- Dashboard Mode ----
 function _showDashboardSidebar() {
     NETWORK_SECTIONS.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
@@ -1075,6 +1189,7 @@ function toggleDashboard() {
     if (appMode === 'map')         { toggleMapMode(); }
     if (appMode === 'metanetwork') { _exitMetaNetwork(); appMode = 'network'; }
     if (appMode === 'data')        { _exitDataMode();    appMode = 'network'; }
+    if (appMode === 'grid')        { _exitGridView();    appMode = 'network'; }
 
     appMode = 'dashboard';
     _updateFilterBanner();
@@ -1119,7 +1234,7 @@ function _updateFilterBanner() {
 
 function _updateSelectedNodeBanner() {
     const show = crossModeSelectedNode
-        && (appMode === 'network' || appMode === 'map' || appMode === 'metanetwork');
+        && (appMode === 'network' || appMode === 'map' || appMode === 'metanetwork' || appMode === 'grid');
     if (!show) {
         selectedNodeBanner.style.display = 'none';
         return;
@@ -1173,6 +1288,7 @@ function toggleDataMode() {
     if (appMode === 'layer')       { _exitLayerView();   appMode = 'network'; }
     if (appMode === 'dashboard')   { _exitDashboard();   appMode = 'network'; }
     if (appMode === 'metanetwork') { _exitMetaNetwork(); appMode = 'network'; }
+    if (appMode === 'grid')        { _exitGridView();    appMode = 'network'; }
 
     appMode = 'data';
     _updateFilterBanner();
@@ -1354,6 +1470,7 @@ function toggleMetaNetwork() {
     if (appMode === 'layer')     { _exitLayerView(); appMode = 'network'; }
     if (appMode === 'dashboard') { _exitDashboard(); appMode = 'network'; }
     if (appMode === 'data')      { _exitDataMode();  appMode = 'network'; }
+    if (appMode === 'grid')      { _exitGridView();  appMode = 'network'; }
 
     appMode = 'metanetwork';
     _updateFilterBanner();
@@ -1788,6 +1905,7 @@ function goToNetworkMode() {
     if (appMode === 'dashboard')   { _exitDashboard();     appMode = 'network'; renderer.render(); }
     if (appMode === 'metanetwork') { _exitMetaNetwork();   appMode = 'network'; _applyCrossModeSelectionToRenderer(); renderer.render(); }
     if (appMode === 'data')        { _exitDataMode();      appMode = 'network'; renderer.render(); }
+    if (appMode === 'grid')        { _exitGridView();      appMode = 'network'; _applyCrossModeSelectionToRenderer(); renderer.render(); }
     _updateFilterBanner();
     _updateModeButtons();
 }
@@ -2823,6 +2941,14 @@ transformNodesCheckbox.addEventListener('change', () => {
 showLayerNamesCheckbox.addEventListener('change', () => {
     renderer.showLayerNames = showLayerNamesCheckbox.checked;
     if (appMode === 'map') renderMapMarkers();
+    renderer.render();
+});
+
+// ---- Layer Name Size ----
+layerNameSizeSlider.addEventListener('input', () => {
+    const px = parseInt(layerNameSizeSlider.value);
+    layerNameSizeLabel.textContent = px + 'px';
+    renderer.layerNameFontSize = px;
     renderer.render();
 });
 
@@ -4659,6 +4785,7 @@ function getSessionState() {
             transformNodes: renderer.transformNodes,
             labelSizePx: parseInt(labelSizeSlider.value),
             showLayerNames: renderer.showLayerNames,
+            layerNameFontSize: renderer.layerNameFontSize,
             showSetNames: renderer.showSetNames,
             showInterlayerLinks: renderer.showInterlayerLinks,
             arrowheadSize: renderer.arrowheadSize,
@@ -4668,6 +4795,7 @@ function getSessionState() {
             defaultIntraColor: renderer.defaultIntraColor,
             defaultInterColor: renderer.defaultInterColor,
             layerOffsets: [...renderer.layerOffsets.entries()],
+            gridColumns: parseInt(gridColumnsSlider.value),
         },
         ui: {
             nodeColorSelect: nodeColorSelect.value,
@@ -4789,6 +4917,7 @@ function restoreSessionState(state) {
     renderer.transformNodes = rv.transformNodes;
     renderer.labelFont = `${rv.labelSizePx}px Inter, system-ui, sans-serif`;
     renderer.showLayerNames = rv.showLayerNames;
+    renderer.layerNameFontSize = rv.layerNameFontSize ?? 14;
     renderer.showSetNames = rv.showSetNames;
     renderer.showInterlayerLinks = rv.showInterlayerLinks;
     renderer.arrowheadSize = rv.arrowheadSize;
@@ -4806,6 +4935,8 @@ function restoreSessionState(state) {
     labelSizeLabel.textContent = rv.labelSizePx + 'px';
     transformNodesCheckbox.checked = rv.transformNodes;
     showLayerNamesCheckbox.checked = rv.showLayerNames;
+    layerNameSizeSlider.value = rv.layerNameFontSize ?? 14;
+    layerNameSizeLabel.textContent = (rv.layerNameFontSize ?? 14) + 'px';
     showSetNamesCheckbox.checked = rv.showSetNames;
     renderer.showInterlayerLinks = rv.showInterlayerLinks ?? false;
     showInterlayerCheckbox.checked = renderer.showInterlayerLinks;
@@ -4941,6 +5072,15 @@ function restoreSessionState(state) {
                 metaNetwork.viewOffsetX = mn.viewOffsetX;
                 metaNetwork.viewOffsetY = mn.viewOffsetY;
             }
+        }
+    } else if (state.appMode === 'grid') {
+        gridViewBtn.click();
+        const cols = rv.gridColumns;
+        if (cols && cols >= 1 && cols <= 8) {
+            gridColumnsSlider.value = cols;
+            gridColumnsLabel.textContent = cols;
+            renderer._gridColumns = cols;
+            renderer.render();
         }
     }
 

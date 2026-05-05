@@ -33,6 +33,7 @@ export class Renderer {
         this.showSetNames = options.showSetNames || false;
         this.labelFont = '12px Inter, system-ui, sans-serif';
         this.layerLabelFont = 'bold 14px Inter, system-ui, sans-serif';
+        this.layerNameFontSize = 14; // px — drives Network-mode layer names and Grid-view cell headers
 
         // State
         this.model = null;
@@ -370,7 +371,40 @@ export class Renderer {
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         ctx.clearRect(0, 0, w, h);
 
-        if (this.layerViewMode && this.layerView) {
+        if (this.gridViewMode && this._gridView) {
+            // _gridMarginOverride lets exports request margin=0 so the grid fills
+            // the entire image instead of leaving a strip where the on-screen
+            // sidebar/toolbar were.
+            let marginLeft, marginTop;
+            if (this._gridMarginOverride) {
+                marginLeft = this._gridMarginOverride.left;
+                marginTop  = this._gridMarginOverride.top;
+            } else {
+                const panelsEl  = document.getElementById('controlPanels');
+                const barEl     = document.getElementById('bottomBar');
+                marginLeft = panelsEl ? Math.ceil(panelsEl.getBoundingClientRect().right) + 8 : 8;
+                marginTop  = barEl    ? Math.ceil(barEl.getBoundingClientRect().bottom)  + 8 : 8;
+            }
+            this._gridView.render(ctx, w, h, this.model, this.positions, {
+                nodeRadius:       this.nodeRadius,
+                nodeColorFn:      this.nodeColorFn,
+                nodeSizeFn:       this.nodeSizeFn,
+                intraLinkColorFn: this.intraLinkColorFn ?? this.linkColorFn,
+                intraMinWeight:   this.intraMinWeight,
+                layerColorFn:     this.layerColorFn,
+                layerWidth:       this.layerWidth,
+                layerHeight:      this.layerHeight,
+                columns:          this._gridColumns ?? 3,
+                marginLeft,
+                marginTop,
+                selectedNodeName: this.searchedNodeName ?? this.selectedNode?.nodeName ?? null,
+                bipartiteInfo:    this.bipartiteInfo,
+                showSetNames:     this.showSetNames && this.layoutType === 'bipartite',
+                showLabels:       this.showLabels,
+                labelFont:        this.labelFont,
+                headerFontSize:   this.layerNameFontSize,
+            });
+        } else if (this.layerViewMode && this.layerView) {
             this.layerView.render(ctx, w, h);
         } else {
             this.renderToContext(ctx, w, h);
@@ -558,7 +592,7 @@ export class Renderer {
             ctx.save();
             ctx.translate(anchor.x, anchor.y);
             ctx.rotate(xAngle);
-            ctx.font = 'bold 15px Inter, system-ui, sans-serif';
+            ctx.font = `bold ${this.layerNameFontSize}px Inter, system-ui, sans-serif`;
             ctx.fillStyle = layerColors.text;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'top';

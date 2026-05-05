@@ -76,21 +76,25 @@
     <details class="control-section" id="sectionLayers">
       <summary>Layers</summary>
       <div class="section-body">
-        <div class="checkbox-row">
+        <div id="layerNamesRow" class="checkbox-row">
           <label class="checkbox-label">
             <input type="checkbox" id="showLayerNamesCheckbox">
             <span>Layer Names</span>
           </label>
         </div>
+        <div id="layerNameSizeRow" style="margin-top:6px;">
+          <label style="font-size:11px;color:#666;">Layer Name Size <span id="layerNameSizeLabel">14px</span></label>
+          <input type="range" id="layerNameSizeSlider" min="8" max="32" value="14" step="1" class="slider">
+        </div>
 
-        <div class="btn-row" style="margin-top:6px;">
+        <div id="stackingRow" class="btn-row" style="margin-top:6px;">
           <label style="font-size:11px;color:#666;margin-right:6px;">Stacking:</label>
           <div class="toggle-group">
             <button id="stackHorizontalBtn" class="btn toggle-btn active" data-mode="horizontal">Horizontal</button>
             <button id="stackVerticalBtn" class="btn toggle-btn" data-mode="vertical">Vertical</button>
           </div>
         </div>
-        <div style="margin-top:8px;">
+        <div id="layerSpacingRow" style="margin-top:8px;">
           <label style="font-size:11px;color:#666;">Layer Spacing</label>
           <input type="range" id="layerSpacingSlider" min="100" max="600" value="300" class="slider">
         </div>
@@ -104,7 +108,7 @@
             <span>Nested Sorting</span>
           </label>
         </div>
-        <div style="margin-top:6px;">
+        <div id="layerColorRow" style="margin-top:6px;">
           <label style="font-size:11px;color:#666;">Color By</label>
           <select id="layerColorSelect" class="styled-select" disabled>
             <option value="">Default</option>
@@ -126,6 +130,10 @@
             <option value="random">Random</option>
           </select>
         </div>
+        <div id="gridColumnsRow" style="display:none; margin-top:8px;">
+          <label style="font-size:11px;color:#666;">Columns <span id="gridColumnsLabel">3</span></label>
+          <input type="range" id="gridColumnsSlider" min="1" max="8" step="1" value="3" class="slider">
+        </div>
       </div>
     </details>
 
@@ -134,15 +142,17 @@
       <summary>Nodes</summary>
       <div class="section-body">
         <div class="checkbox-row">
-          <label class="checkbox-label">
-            <input type="checkbox" id="showLabelsCheckbox">
-            <span>Node Labels</span>
-          </label>
-          <div id="labelSizeRow" style="display:none; margin-top:6px;">
-            <label style="font-size:11px;color:#666;">Label Size <span id="labelSizeLabel">12px</span></label>
-            <input type="range" id="labelSizeSlider" min="8" max="24" value="12" step="1" class="slider">
+          <div id="nodeLabelsRow">
+            <label class="checkbox-label">
+              <input type="checkbox" id="showLabelsCheckbox">
+              <span>Node Labels</span>
+            </label>
+            <div id="labelSizeRow" style="display:none; margin-top:6px;">
+              <label style="font-size:11px;color:#666;">Label Size <span id="labelSizeLabel">12px</span></label>
+              <input type="range" id="labelSizeSlider" min="8" max="24" value="12" step="1" class="slider">
+            </div>
           </div>
-          <div class="checkbox-row" style="margin-top: 6px;">
+          <div id="transformNodesRow" class="checkbox-row" style="margin-top: 6px;">
             <label class="checkbox-label">
               <input type="checkbox" id="transformNodesCheckbox" checked
                 title="Shapes nodes to match 3D layer perspective (may impact performance on large networks)">
@@ -523,6 +533,14 @@
       <button id="mapModeBtn" class="btn zoom-btn mode-btn" data-mode="map" title="Map Mode" style="display:none;">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
           <path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z" />
+        </svg>
+      </button>
+      <button id="gridViewBtn" class="btn zoom-btn mode-btn" data-mode="grid" title="Grid View">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7" rx="1"/>
+          <rect x="14" y="3" width="7" height="7" rx="1"/>
+          <rect x="3" y="14" width="7" height="7" rx="1"/>
+          <rect x="14" y="14" width="7" height="7" rx="1"/>
         </svg>
       </button>
       <button id="layerViewBtn" class="btn zoom-btn mode-btn" data-mode="layer" title="Layer Mode">
