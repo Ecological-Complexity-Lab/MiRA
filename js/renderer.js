@@ -461,12 +461,18 @@ export class Renderer {
     }
 
     _drawPlaceholder(ctx, w, h) {
-        const logoH = 96;
         const logoGap = 16;
         const line1   = 'Welcome to MiRA, the Multilayer Interactive Rendering App';
         const devBy   = 'Developed by the ';
         const labName = 'Ecological Complexity Lab';
         const line3   = 'Load a multilayer network via the Data panel to visualize';
+
+        // Line y-offsets relative to cy (textBaseline = 'middle')
+        const L1_OFF = -24, L4_OFF = 70;
+        const FONT1 = 18, FONT4 = 14;
+        const textBlockTop    = L1_OFF - FONT1 / 2;  // top of first line
+        const textBlockBottom = L4_OFF + FONT4 / 2;  // bottom of last line
+        const logoH = textBlockBottom - textBlockTop; // matches text block height exactly
 
         const img = this._logoImage;
         const logoW = (img?.complete && img.naturalWidth > 0)
@@ -486,7 +492,7 @@ export class Renderer {
         const cy = h / 2;
 
         if (img?.complete && img.naturalWidth > 0) {
-            ctx.drawImage(img, startX, cy - logoH / 2, logoW, logoH);
+            ctx.drawImage(img, startX, cy + textBlockTop, logoW, logoH);
         }
 
         const textX = startX + logoW + logoGap;

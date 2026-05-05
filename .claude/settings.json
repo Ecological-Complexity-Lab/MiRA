@@ -168,7 +168,9 @@
       "Bash(open -a \"Google Chrome\" http://localhost:8001)",
       "Bash(git -C /Users/shai/GitHub/ecomplab/MiRA diff)",
       "Bash(git -C /Users/shai/GitHub/ecomplab/MiRA log --oneline -5)",
-      "Bash(git -C /Users/shai/GitHub/ecomplab/MiRA add js/renderer.js)"
+      "Bash(git -C /Users/shai/GitHub/ecomplab/MiRA add js/renderer.js)",
+      "Bash(git -C /Users/shai/GitHub/ecomplab/MiRA add docs/manual.html docs/visualization_guidelines.md)",
+      "Bash(git -C /Users/shai/GitHub/ecomplab/MiRA push --force-with-lease origin main)"
     ],
     "additionalDirectories": [
       "/Users/shai/GitHub/ecomplab/emln",

@@ -3308,7 +3308,10 @@ function _renderInterPairHeatmap() {
     const TEXT     = '#374151';
     const GRID     = '#e5e7eb';
 
-    let colLabels = '', rowLabels = '', cells = '';
+    const SEL_COLOR = 'rgba(30,100,220,0.9)';
+    const SEL_SW    = 3;
+
+    let colLabels = '', rowLabels = '', cells = '', selOverlays = '';
     layerNames.forEach((ln, j) => {
         const x   = LABEL_W + j * cellSize + cellSize / 2;
         const lbl = ln.length > 18 ? ln.slice(0, 17) + '…' : ln;
@@ -3324,13 +3327,15 @@ function _renderInterPairHeatmap() {
             const fill = _lerpHexToAmber(t);
             const x    = LABEL_W + j * cellSize;
             const isSel = _interPairFilter.has(`${rowLn}::${colLn}`) || _interPairFilter.has(`${colLn}::${rowLn}`);
-            const stroke = isSel ? '#1f2937' : GRID;
-            const sw     = isSel ? 2 : 0.5;
             const fs     = Math.min(10, cellSize * 0.27);
             const textFill = (1 - 0.7 * t) < 0.52 ? '#fff' : TEXT;
-            cells += `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" style="cursor:${cnt > 0 ? 'pointer' : 'default'}" data-from="${rowLn}" data-to="${colLn}"/>`;
+            cells += `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" fill="${fill}" stroke="${GRID}" stroke-width="0.5" style="cursor:${cnt > 0 ? 'pointer' : 'default'}" data-from="${rowLn}" data-to="${colLn}"/>`;
             if (cellSize >= 14 && cnt > 0) {
                 cells += `<text x="${x + cellSize / 2}" y="${y + cellSize / 2 + fs * 0.4}" text-anchor="middle" font-size="${fs}" fill="${textFill}" pointer-events="none">${cnt}</text>`;
+            }
+            if (isSel) {
+                const half = SEL_SW / 2;
+                selOverlays += `<rect x="${x + half}" y="${y + half}" width="${cellSize - SEL_SW}" height="${cellSize - SEL_SW}" fill="none" stroke="${SEL_COLOR}" stroke-width="${SEL_SW}" pointer-events="none"/>`;
             }
         });
     });
@@ -3341,7 +3346,7 @@ function _renderInterPairHeatmap() {
     const clearBtn = _interPairFilter.size > 0
         ? `<button id="interPairClearBtn" style="font-size:11px;padding:3px 8px;border:1px solid #d1d5db;border-radius:6px;background:#fff;cursor:pointer;margin-bottom:6px;">✕ Show all pairs</button>`
         : '';
-    const svg = `<svg width="${hmW}" height="${hmH}" style="overflow:visible;display:block;">${colLabels}${rowLabels}${cells}</svg>`;
+    const svg = `<svg width="${hmW}" height="${hmH}" style="overflow:visible;display:block;">${colLabels}${rowLabels}${cells}${selOverlays}</svg>`;
 
     interPairPanelBody.innerHTML = clearBtn + hint + `<div style="overflow:auto;">${svg}</div>`;
 
