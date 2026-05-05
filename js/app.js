@@ -4818,6 +4818,7 @@ function getSessionState() {
             categoryColorOverrides: [...categoryColorOverrides.entries()].map(
                 ([k, m]) => [k, [...m.entries()]]
             ),
+            layerColors: [...layerColors.entries()],
         },
         layerView: renderer.layerView ? {
             settings: { ...renderer.layerView.settings },
@@ -4967,6 +4968,10 @@ function restoreSessionState(state) {
     for (const [k, v] of ui.colorScaleOverrides) colorScaleOverrides.set(k, v);
     categoryColorOverrides.clear();
     for (const [k, entries] of ui.categoryColorOverrides) categoryColorOverrides.set(k, new Map(entries));
+    // Per-layer color overrides set via Data Mode (defaults already populated by initLayerColors on load)
+    if (ui.layerColors) {
+        for (const [name, hex] of ui.layerColors) layerColors.set(name, hex);
+    }
 
     // 8. Color/size dropdowns → rebuild render functions
     nodeColorSelect.value = ui.nodeColorSelect;
