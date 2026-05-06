@@ -9,7 +9,8 @@
       "longitude": -13.8914,
       "bipartite": true,
       "area_km2": 1659.74,
-      "age_ma": 20.0
+      "age_ma": 20.0,
+      "setA_type": "pollinator"
     },
     {
       "layer_id": 2,
@@ -18,7 +19,8 @@
       "longitude": -15.4331,
       "bipartite": true,
       "area_km2": 1560.0,
-      "age_ma": 14.6
+      "age_ma": 14.6,
+      "setA_type": "pollinator"
     },
     {
       "layer_id": 3,
@@ -27,7 +29,8 @@
       "longitude": -16.6648,
       "bipartite": true,
       "area_km2": 2034.38,
-      "age_ma": 12.0
+      "age_ma": 12.0,
+      "setA_type": "pollinator"
     },
     {
       "layer_id": 4,
@@ -36,7 +39,8 @@
       "longitude": -17.2267,
       "bipartite": true,
       "area_km2": 370.03,
-      "age_ma": 10.5
+      "age_ma": 10.5,
+      "setA_type": "pollinator"
     },
     {
       "layer_id": 5,
@@ -45,7 +49,8 @@
       "longitude": -17.8954,
       "bipartite": true,
       "area_km2": 268.51,
-      "age_ma": 1.2
+      "age_ma": 1.2,
+      "setA_type": "pollinator"
     }
   ],
   "nodes": [

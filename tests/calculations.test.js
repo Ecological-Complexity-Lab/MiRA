@@ -9,7 +9,7 @@
  * can visually verify the same values by loading those files in the browser.
  */
 
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { parseMultilayerData } from '../js/dataParser.js'
 import { Dashboard } from '../js/dashboard.js'
 
@@ -471,5 +471,60 @@ describe('Group 17 — 3-layer bipartite Jaccard', () => {
   it('17.9 edge Jaccard L2-L3 = 1/3', () => {
     const s = stats(calcK)
     expect(jaccard(s.edgeKeySets.get('L2'), s.edgeKeySets.get('L3'))).toBeCloseTo(1 / 3, 6)
+  })
+})
+
+// ── Group 18 — Explicit setA_type override ───────────────────────────────────
+
+describe('Group 18 — Explicit setA_type pins the top row', () => {
+  function makeWithSetAType(setA_type) {
+    return {
+      directed: false,
+      layers: [{ layer_id: 1, layer_name: 'BL', bipartite: true, setA_type }],
+      nodes: [
+        { node_id: 'P1', node_name: 'P1', node_type: 'plant' },
+        { node_id: 'P2', node_name: 'P2', node_type: 'plant' },
+        { node_id: 'X1', node_name: 'X1', node_type: 'pollinator' },
+      ],
+      state_nodes: [
+        { layer_name: 'BL', node_name: 'P1' },
+        { layer_name: 'BL', node_name: 'P2' },
+        { layer_name: 'BL', node_name: 'X1' },
+      ],
+      extended: [
+        { layer_from: 'BL', node_from: 'P1', layer_to: 'BL', node_to: 'X1', weight: 1 },
+        { layer_from: 'BL', node_from: 'P2', layer_to: 'BL', node_to: 'X1', weight: 1 },
+      ],
+    }
+  }
+
+  it('18.1 setA_type="pollinator" → setA = pollinator (overrides alphabetical)', () => {
+    // Without setA_type: alphabetical → setA="plant" (2 nodes), setB="pollinator" (1)
+    // With setA_type="pollinator": setA should be pollinator (1 node)
+    const model = parseMultilayerData(makeWithSetAType('pollinator'))
+    const bp = model.bipartiteInfo.get('BL')
+    expect(bp.setALabel).toBe('pollinator')
+    expect(bp.setBLabel).toBe('plant')
+    expect(bp.setA.size).toBe(1)
+    expect(bp.setB.size).toBe(2)
+  })
+
+  it('18.2 setA_type omitted → falls back to alphabetical', () => {
+    const json = makeWithSetAType()  // setA_type = undefined
+    delete json.layers[0].setA_type
+    const model = parseMultilayerData(json)
+    const bp = model.bipartiteInfo.get('BL')
+    // Alphabetical: "plant" < "pollinator"
+    expect(bp.setALabel).toBe('plant')
+    expect(bp.setBLabel).toBe('pollinator')
+  })
+
+  it('18.3 setA_type with unknown value → warns and falls back', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const model = parseMultilayerData(makeWithSetAType('mammal'))
+    const bp = model.bipartiteInfo.get('BL')
+    expect(bp.setALabel).toBe('plant')  // alphabetical fallback
+    expect(warn).toHaveBeenCalled()
+    warn.mockRestore()
   })
 })

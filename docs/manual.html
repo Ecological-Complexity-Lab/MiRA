@@ -365,7 +365,7 @@
   "directed": false,
   "directed_interlayer": false,
   "layers": [
-    { "layer_id": 1, "layer_name": "Forest", "latitude": 42.3, "longitude": 3.1, "bipartite": true }
+    { "layer_id": 1, "layer_name": "Forest", "latitude": 42.3, "longitude": 3.1, "bipartite": true, "setA_type": "pollinator" }
   ],
   "nodes": [
     { "node_id": "sp_1", "node_name": "Bee", "node_type": "pollinator" }
@@ -390,6 +390,7 @@
     <li><code>layer_name</code> — display name.</li>
     <li><code>latitude</code> / <code>longitude</code> <em>(optional)</em> — unlocks Map Mode.</li>
     <li><code>bipartite</code> <em>(optional, Boolean)</em> — set <code>true</code> to mark this layer bipartite. Nodes must carry a <code>node_type</code> attribute with exactly two distinct values <em>within this layer</em>. Different layers may use different pairs (diagonal-coupling). Never auto-detected.</li>
+    <li><code>setA_type</code> <em>(optional, string)</em> — for bipartite layers only. Pins which <code>node_type</code> value is rendered as Set A (the top row). By ecological convention this is the higher trophic level (e.g. <code>"pollinator"</code>, <code>"parasite"</code>, <code>"bird"</code>). If omitted, the two types are sorted alphabetically and the first becomes Set A. The value must match one of the two <code>node_type</code> values in the layer; otherwise it's ignored with a warning.</li>
     <li>Any extra fields become selectable attributes for color/size mapping.</li>
   </ul>
 
@@ -420,11 +421,11 @@
   <p>Load network data from CSV files. A modal dialog accepts up to four files:</p>
   <ul>
     <li><em>Extended Edge List</em> <strong>(required)</strong> — one row per link, columns: <code>layer_from</code>, <code>node_from</code>, <code>layer_to</code>, <code>node_to</code>, <code>weight</code> (optional). Both intralayer and interlayer links go in this single file.</li>
-    <li><em>Layer Attributes</em> (optional) — columns: <code>layer_id</code>, <code>layer_name</code>, <code>latitude</code>, <code>longitude</code>, <code>bipartite</code> (TRUE/FALSE), and any additional columns for layer attributes (e.g. <code>area</code>, <code>elevation</code>) which become available for color mapping. If omitted, layers are derived from the edge list and all treated as unipartite.</li>
+    <li><em>Layer Attributes</em> (optional) — columns: <code>layer_id</code>, <code>layer_name</code>, <code>latitude</code>, <code>longitude</code>, <code>bipartite</code> (TRUE/FALSE), <code>setA_type</code> (optional — pins the top-row <code>node_type</code> for bipartite layers), and any additional columns for layer attributes (e.g. <code>area</code>, <code>elevation</code>) which become available for color mapping. If omitted, layers are derived from the edge list and all treated as unipartite.</li>
     <li><em>Node Attributes</em> (optional) — columns: <code>node_name</code> (required), <code>node_type</code> (required when any layer is marked bipartite — each bipartite layer must have exactly two distinct <code>node_type</code> values among its own nodes, but different layers may use different pairs, supporting diagonal-coupling networks), and any additional columns for <strong>physical</strong> node attributes that are the same across all layers (e.g. <code>body_mass</code>, <code>guild</code>). If omitted, nodes are derived from the edge list with no attributes.</li>
     <li><em>State Node Attributes</em> (optional) — columns: <code>layer_name</code> (required), <code>node_name</code> (required), plus any additional columns for <strong>per-layer</strong> node attributes that can differ across layers (e.g. <code>abundance</code>, <code>module</code>). Use this when the same species or node has a different value in each temporal or spatial layer. Rows that do not match a (layer, node) pair already present in the edge list are silently ignored.</li>
   </ul>
-  <div class="info-box"><strong>Bipartite declaration:</strong> bipartite is never auto-detected. Mark a layer as bipartite via the <code>bipartite=TRUE</code> column in the layers file, and provide a <code>node_type</code> column in the nodes file. Each bipartite layer must have exactly two distinct <code>node_type</code> values among its own nodes. <strong>Diagonal-coupling networks</strong> (e.g. plant–pollinator + plant–herbivore) are supported: different layers may share one node set but pair it with a different partner set, resulting in more than two <code>node_type</code> values globally — this is fine as long as each individual layer has exactly two.</div>
+  <div class="info-box"><strong>Bipartite declaration:</strong> bipartite is never auto-detected. Mark a layer as bipartite via the <code>bipartite=TRUE</code> column in the layers file, and provide a <code>node_type</code> column in the nodes file. Each bipartite layer must have exactly two distinct <code>node_type</code> values among its own nodes. Use the optional <code>setA_type</code> layer column to pin which <code>node_type</code> is rendered on top — by ecological convention the higher trophic level (pollinators, parasites, dispersers). <strong>Diagonal-coupling networks</strong> (e.g. plant–pollinator + plant–herbivore) are supported: different layers may share one node set but pair it with a different partner set, resulting in more than two <code>node_type</code> values globally — this is fine as long as each individual layer has exactly two.</div>
   <p>The <strong>Directed</strong> checkbox marks all edges as directed before loading. Comma, tab, and semicolon delimiters are auto-detected.</p>
   <div class="info-box"><strong>Note:</strong> The (layer, node) pairs are derived automatically from the edge list — you do not need to supply them. The optional <em>State Node Attributes</em> file lets you attach per-layer attributes to those pairs without modifying any other file.</div>
 

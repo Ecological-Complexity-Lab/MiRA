@@ -237,6 +237,13 @@ function edgeDedupKey(link, isIntra, isDir) {
  *     two distinct values across the network.
  * If declared but the node_type data is missing/invalid, a console warning
  * is emitted and the layer is treated as unipartite.
+ *
+ * Set A vs Set B ordering:
+ *   - If layer.setA_type is given and matches one of the two types, that
+ *     type becomes Set A (rendered as the top row, by ecological convention
+ *     the higher trophic level: pollinator, parasite, disperser, etc.).
+ *   - Otherwise the two types are sorted alphabetically and the first
+ *     becomes Set A. This is a fallback — explicit setA_type is preferred.
  */
 function detectBipartiteLayers(layers, nodes, intralayerLinks, nodesPerLayer, nodesByName) {
   const info = new Map();
@@ -273,7 +280,24 @@ function detectBipartiteLayers(layers, nodes, intralayerLinks, nodesPerLayer, no
       continue;
     }
 
-    const [typeA, typeB] = distinctTypes;
+    let typeA, typeB;
+    const declared = layer.setA_type;
+    if (declared !== undefined && declared !== null && declared !== '') {
+      const declaredStr = String(declared);
+      if (distinctTypes.includes(declaredStr)) {
+        typeA = declaredStr;
+        typeB = distinctTypes.find(t => t !== declaredStr);
+      } else {
+        console.warn(
+          `Layer "${layerName}" declared setA_type="${declared}" but it does not match any ` +
+          `node_type in this layer (${distinctTypes.join(', ')}). Falling back to alphabetical.`
+        );
+        [typeA, typeB] = distinctTypes;
+      }
+    } else {
+      [typeA, typeB] = distinctTypes;
+    }
+
     const setA = new Set();
     const setB = new Set();
     for (const nodeName of layerNodes) {

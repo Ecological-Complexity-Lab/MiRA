@@ -103,6 +103,8 @@ Bipartite layers must be **declared explicitly** — auto-detection was removed 
 
 If `bipartite: true` is set but `node_type` is missing/invalid, `dataParser.js` emits a console warning and treats the layer as unipartite. The resulting `bipartiteInfo` map is consumed by renderer (set-color coding), layout (two-row positioning), layerView, and dashboard.
 
+An optional `layer.setA_type` field pins which `node_type` is rendered as Set A (top row) — by ecological convention the higher trophic level (pollinator, parasite, disperser). If absent, types are sorted alphabetically and the first becomes Set A.
+
 ---
 
 ## JSON Data Format
@@ -112,7 +114,7 @@ The visualizer requires this internal JSON shape (also produced by `csvToJson`):
 ```json
 {
   "directed": false,
-  "layers": [{ "layer_id": 1, "layer_name": "Forest", "latitude": 42.3, "longitude": 3.1, "bipartite": false }],
+  "layers": [{ "layer_id": 1, "layer_name": "Forest", "latitude": 42.3, "longitude": 3.1, "bipartite": true, "setA_type": "pollinator" }],
   "nodes":  [{ "node_id": "sp_1", "layer_name": "Forest", "node_name": "Bee", "node_type": "pollinator" }],
   "extended": [{ "layer_from": "Forest", "node_from": "Bee", "layer_to": "Forest", "node_to": "Flower", "weight": 1.5 }],
   "state_nodes": [{ "layer_name": "Forest", "node_name": "Bee" }]

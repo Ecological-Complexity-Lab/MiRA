@@ -9,7 +9,8 @@
       "latitude": 43.0812211,
       "longitude": -2.8192852,
       "locality": "Orozko",
-      "habitat": "Grassland"
+      "habitat": "Grassland",
+      "setA_type": "pollinator"
     },
     {
       "layer_id": 2,
@@ -18,7 +19,8 @@
       "latitude": 43.0780986,
       "longitude": -2.8098968,
       "locality": "Orozko",
-      "habitat": "Grassland"
+      "habitat": "Grassland",
+      "setA_type": "pollinator"
     },
     {
       "layer_id": 3,
@@ -27,7 +29,8 @@
       "latitude": 43.0749743,
       "longitude": -2.8252034,
       "locality": "Orozko",
-      "habitat": "Grassland"
+      "habitat": "Grassland",
+      "setA_type": "pollinator"
     },
     {
       "layer_id": 4,
@@ -36,7 +39,8 @@
       "latitude": 43.066983,
       "longitude": -2.8611408,
       "locality": "Orozko",
-      "habitat": "Grassland"
+      "habitat": "Grassland",
+      "setA_type": "pollinator"
     },
     {
       "layer_id": 5,
@@ -45,7 +49,8 @@
       "latitude": 43.0559689,
       "longitude": -2.8581236,
       "locality": "Orozko",
-      "habitat": "Grassland"
+      "habitat": "Grassland",
+      "setA_type": "pollinator"
     }
   ],
   "nodes": [

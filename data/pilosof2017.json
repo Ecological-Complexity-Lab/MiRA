@@ -4,32 +4,38 @@
     {
       "layer_id": 1,
       "layer_name": "1982",
-      "bipartite": true
+      "bipartite": true,
+      "setA_type": "parasite"
     },
     {
       "layer_id": 2,
       "layer_name": "1983",
-      "bipartite": true
+      "bipartite": true,
+      "setA_type": "parasite"
     },
     {
       "layer_id": 3,
       "layer_name": "1984",
-      "bipartite": true
+      "bipartite": true,
+      "setA_type": "parasite"
     },
     {
       "layer_id": 4,
       "layer_name": "1985",
-      "bipartite": true
+      "bipartite": true,
+      "setA_type": "parasite"
     },
     {
       "layer_id": 5,
       "layer_name": "1986",
-      "bipartite": true
+      "bipartite": true,
+      "setA_type": "parasite"
     },
     {
       "layer_id": 6,
       "layer_name": "1987",
-      "bipartite": true
+      "bipartite": true,
+      "setA_type": "parasite"
     }
   ],
   "nodes": [
