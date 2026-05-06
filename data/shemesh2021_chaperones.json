@@ -49755,13 +49755,6 @@
     {
       "layer_from": "Whole Blood",
       "node_from": "AHSA1",
-      "layer_to": "Testis",
-      "node_to": "AHSA1",
-      "weight": 0.0
-    },
-    {
-      "layer_from": "Whole Blood",
-      "node_from": "AHSA1",
       "layer_to": "Skin",
       "node_to": "AHSA1",
       "weight": 0.2
@@ -50056,13 +50049,6 @@
     {
       "layer_from": "Liver",
       "node_from": "BAG2",
-      "layer_to": "Testis",
-      "node_to": "BAG2",
-      "weight": 0.0
-    },
-    {
-      "layer_from": "Liver",
-      "node_from": "BAG2",
       "layer_to": "Skin",
       "node_to": "BAG2",
       "weight": 0.1111
@@ -50087,13 +50073,6 @@
       "layer_to": "Skin",
       "node_to": "BAG2",
       "weight": 0.087
-    },
-    {
-      "layer_from": "Lung",
-      "node_from": "BAG2",
-      "layer_to": "Testis",
-      "node_to": "BAG2",
-      "weight": 0.0
     },
     {
       "layer_from": "Lung",
@@ -50241,13 +50220,6 @@
       "layer_to": "Skeletal Muscle",
       "node_to": "BAG5",
       "weight": 0.1064
-    },
-    {
-      "layer_from": "Liver",
-      "node_from": "BAG5",
-      "layer_to": "Lung",
-      "node_to": "BAG5",
-      "weight": 0.0
     },
     {
       "layer_from": "Liver",
@@ -50931,13 +50903,6 @@
     {
       "layer_from": "Whole Blood",
       "node_from": "CCT3",
-      "layer_to": "Testis",
-      "node_to": "CCT3",
-      "weight": 0.0
-    },
-    {
-      "layer_from": "Whole Blood",
-      "node_from": "CCT3",
       "layer_to": "Skin",
       "node_to": "CCT3",
       "weight": 0.4286
@@ -51036,13 +51001,6 @@
     {
       "layer_from": "Liver",
       "node_from": "CCT3",
-      "layer_to": "Testis",
-      "node_to": "CCT3",
-      "weight": 0.0
-    },
-    {
-      "layer_from": "Liver",
-      "node_from": "CCT3",
       "layer_to": "Skin",
       "node_to": "CCT3",
       "weight": 0.4091
@@ -51071,23 +51029,9 @@
     {
       "layer_from": "Lung",
       "node_from": "CCT3",
-      "layer_to": "Testis",
-      "node_to": "CCT3",
-      "weight": 0.0
-    },
-    {
-      "layer_from": "Lung",
-      "node_from": "CCT3",
       "layer_to": "Skin",
       "node_to": "CCT3",
       "weight": 0.2917
-    },
-    {
-      "layer_from": "Testis",
-      "node_from": "CCT3",
-      "layer_to": "Skin",
-      "node_to": "CCT3",
-      "weight": 0.0
     },
     {
       "layer_from": "Whole Blood",
@@ -52499,13 +52443,6 @@
     {
       "layer_from": "Whole Blood",
       "node_from": "DNAJA3",
-      "layer_to": "Testis",
-      "node_to": "DNAJA3",
-      "weight": 0.0
-    },
-    {
-      "layer_from": "Whole Blood",
-      "node_from": "DNAJA3",
       "layer_to": "Skin",
       "node_to": "DNAJA3",
       "weight": 0.0435
@@ -52541,13 +52478,6 @@
     {
       "layer_from": "Brain",
       "node_from": "DNAJA3",
-      "layer_to": "Testis",
-      "node_to": "DNAJA3",
-      "weight": 0.0
-    },
-    {
-      "layer_from": "Brain",
-      "node_from": "DNAJA3",
       "layer_to": "Skin",
       "node_to": "DNAJA3",
       "weight": 0.0426
@@ -52576,13 +52506,6 @@
     {
       "layer_from": "Heart",
       "node_from": "DNAJA3",
-      "layer_to": "Testis",
-      "node_to": "DNAJA3",
-      "weight": 0.0
-    },
-    {
-      "layer_from": "Heart",
-      "node_from": "DNAJA3",
       "layer_to": "Skin",
       "node_to": "DNAJA3",
       "weight": 0.0455
@@ -52604,13 +52527,6 @@
     {
       "layer_from": "Liver",
       "node_from": "DNAJA3",
-      "layer_to": "Testis",
-      "node_to": "DNAJA3",
-      "weight": 0.0
-    },
-    {
-      "layer_from": "Liver",
-      "node_from": "DNAJA3",
       "layer_to": "Skin",
       "node_to": "DNAJA3",
       "weight": 0.0513
@@ -52625,13 +52541,6 @@
     {
       "layer_from": "Skeletal Muscle",
       "node_from": "DNAJA3",
-      "layer_to": "Testis",
-      "node_to": "DNAJA3",
-      "weight": 0.0
-    },
-    {
-      "layer_from": "Skeletal Muscle",
-      "node_from": "DNAJA3",
       "layer_to": "Skin",
       "node_to": "DNAJA3",
       "weight": 0.1053
@@ -52639,23 +52548,9 @@
     {
       "layer_from": "Lung",
       "node_from": "DNAJA3",
-      "layer_to": "Testis",
-      "node_to": "DNAJA3",
-      "weight": 0.0
-    },
-    {
-      "layer_from": "Lung",
-      "node_from": "DNAJA3",
       "layer_to": "Skin",
       "node_to": "DNAJA3",
       "weight": 0.1429
-    },
-    {
-      "layer_from": "Testis",
-      "node_from": "DNAJA3",
-      "layer_to": "Skin",
-      "node_to": "DNAJA3",
-      "weight": 0.0
     },
     {
       "layer_from": "Whole Blood",
@@ -53388,13 +53283,6 @@
     {
       "layer_from": "Liver",
       "node_from": "DNAJC10",
-      "layer_to": "Testis",
-      "node_to": "DNAJC10",
-      "weight": 0.0
-    },
-    {
-      "layer_from": "Liver",
-      "node_from": "DNAJC10",
       "layer_to": "Skin",
       "node_to": "DNAJC10",
       "weight": 0.0769
@@ -53433,13 +53321,6 @@
       "layer_to": "Skin",
       "node_to": "DNAJC10",
       "weight": 0.04
-    },
-    {
-      "layer_from": "Testis",
-      "node_from": "DNAJC10",
-      "layer_to": "Skin",
-      "node_to": "DNAJC10",
-      "weight": 0.0
     },
     {
       "layer_from": "Whole Blood",
@@ -53615,13 +53496,6 @@
       "layer_to": "Skin",
       "node_to": "DNAJC13",
       "weight": 0.5745
-    },
-    {
-      "layer_from": "Lung",
-      "node_from": "DNAJC13",
-      "layer_to": "Testis",
-      "node_to": "DNAJC13",
-      "weight": 0.0
     },
     {
       "layer_from": "Lung",
@@ -53811,13 +53685,6 @@
       "layer_to": "Skin",
       "node_to": "DNAJC14",
       "weight": 0.3913
-    },
-    {
-      "layer_from": "Lung",
-      "node_from": "DNAJC14",
-      "layer_to": "Testis",
-      "node_to": "DNAJC14",
-      "weight": 0.0
     },
     {
       "layer_from": "Lung",
@@ -55537,13 +55404,6 @@
     {
       "layer_from": "Liver",
       "node_from": "HSPA14",
-      "layer_to": "Lung",
-      "node_to": "HSPA14",
-      "weight": 0.0
-    },
-    {
-      "layer_from": "Liver",
-      "node_from": "HSPA14",
       "layer_to": "Testis",
       "node_to": "HSPA14",
       "weight": 0.2414
@@ -55575,20 +55435,6 @@
       "layer_to": "Skin",
       "node_to": "HSPA14",
       "weight": 0.5833
-    },
-    {
-      "layer_from": "Lung",
-      "node_from": "HSPA14",
-      "layer_to": "Testis",
-      "node_to": "HSPA14",
-      "weight": 0.0
-    },
-    {
-      "layer_from": "Lung",
-      "node_from": "HSPA14",
-      "layer_to": "Skin",
-      "node_to": "HSPA14",
-      "weight": 0.0
     },
     {
       "layer_from": "Testis",
