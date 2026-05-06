@@ -248,19 +248,19 @@
         </div>
       </div>
       <div class="toc-group">
-        <a href="#gridview" class="l2 toc-toggle" data-group="g-grid">Grid View <span class="toc-chevron">▾</span></a>
-        <div class="toc-children" id="g-grid">
-          <a href="#grid-interactions" class="l3">Interactions</a>
-          <a href="#grid-controls" class="l3">Sidebar Controls</a>
-          <a href="#grid-bipartite" class="l3">Bipartite Layers</a>
-        </div>
-      </div>
-      <div class="toc-group">
         <a href="#layerview" class="l2 toc-toggle" data-group="g-layer">Layer Mode <span class="toc-chevron">▾</span></a>
         <div class="toc-children" id="g-layer">
           <a href="#lv-interactions" class="l3">Interactions</a>
           <a href="#lv-controls" class="l3">Sidebar Controls</a>
           <a href="#lv-geo" class="l3">Geographic Mode</a>
+        </div>
+      </div>
+      <div class="toc-group">
+        <a href="#gridview" class="l2 toc-toggle" data-group="g-grid">Grid View <span class="toc-chevron">▾</span></a>
+        <div class="toc-children" id="g-grid">
+          <a href="#grid-interactions" class="l3">Interactions</a>
+          <a href="#grid-controls" class="l3">Sidebar Controls</a>
+          <a href="#grid-bipartite" class="l3">Bipartite Layers</a>
         </div>
       </div>
       <div class="toc-group">
@@ -682,34 +682,6 @@ Ixodes_ricinus,0.003</code></pre>
     <li><span class="key">Street Map</span> — switch between satellite imagery (default) and OpenStreetMap street tiles.</li>
   </ul>
 
-  <!-- Grid View -->
-  <h2 class="sec mode-grid" id="gridview"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f73ce1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> Grid View</h2>
-  <p>Each layer is rendered in its own mini panel arranged in a responsive grid (a small-multiples or matrix view). All cells share the same axes and node identities, making it easy to compare intralayer structure across layers side-by-side without the visual clutter of the 3D stack.</p>
-  <ul>
-    <li><span class="key">Always-on layer headers</span> — every cell shows the layer name in a header strip; no checkbox needed.</li>
-    <li><span class="key">No 3D perspective</span> — nodes are always plain circles; the Transform Nodes option does not apply.</li>
-    <li><span class="key">Intralayer only</span> — interlayer links are not rendered (use Network or Meta-Network Mode for cross-layer connections).</li>
-    <li><span class="key">Cross-mode selection</span> — clicking a node selects it across all cells and persists when you switch back to Network or Meta-Network Mode.</li>
-  </ul>
-
-  <h3 id="grid-interactions">Interactions</h3>
-  <ul>
-    <li><span class="key">Click node</span> — select that node; every instance of it across cells is highlighted with a yellow ring, and 1-hop neighbours stay opaque while non-neighbours fade out.</li>
-    <li><span class="key">Click empty space</span> — clear the selection.</li>
-    <li><span class="key">Search</span> — typing a node name in the sidebar Search box highlights it in every grid cell, identical to the Network Mode behaviour.</li>
-  </ul>
-
-  <h3 id="grid-controls">Sidebar Controls</h3>
-  <p>The sidebar mirrors Network Mode minus controls that don't apply to a 2D grid. The <strong>Layers</strong> panel hides Stacking, Layer Spacing, and Layer Color By; the <strong>Nodes</strong> panel hides Transform Nodes; the <strong>Intralayer Links</strong> panel hides the manual color picker; and the <strong>Interlayer Links</strong> panel is hidden entirely. The following grid-specific control is added:</p>
-  <ul>
-    <li><span class="key">Columns slider</span> (in the Layers panel, 1–8) — controls how many grid columns the cells are arranged into. Default is <code>ceil(√L)</code> for L layers, rounded up to the next square-ish layout.</li>
-    <li><span class="key">Layer Name Size slider</span> (in the Layers panel, 8–32 px) — adjusts the cell-header font size. The header strip auto-scales with the font so the layer name always fits.</li>
-    <li><span class="key">Node Labels</span> (in the Nodes panel) — same checkbox as Network Mode. When enabled, each node's name is drawn next to it. In bipartite cells the labels are rotated 45° and placed above the upper set or below the lower set, matching the Meta-Network convention.</li>
-  </ul>
-
-  <h3 id="grid-bipartite">Bipartite Layers</h3>
-  <p>When a layer is declared bipartite (<code>layer.bipartite = true</code> with a <code>node_type</code> attribute on its nodes), Grid View positions Set A nodes on the upper row and Set B on the lower row inside each cell, just like the bipartite layout in Network Mode. If the <strong>Set Names</strong> checkbox is on (Layers panel), each cell's left margin labels the two sets with their <code>setALabel</code> and <code>setBLabel</code> values, coloured in the canonical blue/pink set palette.</p>
-
   <!-- Layer Mode -->
   <h2 class="sec mode-layer" id="layerview"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" style="flex-shrink:0"><circle cx="12" cy="5" r="2.5"/><circle cx="5" cy="19" r="2.5"/><circle cx="19" cy="19" r="2.5"/><line x1="12" y1="7.5" x2="5.9" y2="16.6"/><line x1="12" y1="7.5" x2="18.1" y2="16.6"/><line x1="7.4" y1="19" x2="16.6" y2="19"/></svg> Layer Mode</h2>
   <p>Each layer becomes an interactive bubble in a force-directed meta-graph. Individual nodes are abstracted away.</p>
@@ -755,6 +727,34 @@ Ixodes_ricinus,0.003</code></pre>
     <li><strong>Map Opacity</strong>, <strong>Show Map</strong>, and <strong>Street Map</strong> controls appear in the bottom bar (same controls as Map Mode).</li>
     <li>Hover tooltips, bubble selection, and Cmd+click comparison all work normally.</li>
   </ul>
+
+  <!-- Grid View -->
+  <h2 class="sec mode-grid" id="gridview"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f73ce1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> Grid View</h2>
+  <p>Each layer is rendered in its own mini panel arranged in a responsive grid (a small-multiples or matrix view). All cells share the same axes and node identities, making it easy to compare intralayer structure across layers side-by-side without the visual clutter of the 3D stack.</p>
+  <ul>
+    <li><span class="key">Always-on layer headers</span> — every cell shows the layer name in a header strip; no checkbox needed.</li>
+    <li><span class="key">No 3D perspective</span> — nodes are always plain circles; the Transform Nodes option does not apply.</li>
+    <li><span class="key">Intralayer only</span> — interlayer links are not rendered (use Network or Meta-Network Mode for cross-layer connections).</li>
+    <li><span class="key">Cross-mode selection</span> — clicking a node selects it across all cells and persists when you switch back to Network or Meta-Network Mode.</li>
+  </ul>
+
+  <h3 id="grid-interactions">Interactions</h3>
+  <ul>
+    <li><span class="key">Click node</span> — select that node; every instance of it across cells is highlighted with a yellow ring, and 1-hop neighbours stay opaque while non-neighbours fade out.</li>
+    <li><span class="key">Click empty space</span> — clear the selection.</li>
+    <li><span class="key">Search</span> — typing a node name in the sidebar Search box highlights it in every grid cell, identical to the Network Mode behaviour.</li>
+  </ul>
+
+  <h3 id="grid-controls">Sidebar Controls</h3>
+  <p>The sidebar mirrors Network Mode minus controls that don't apply to a 2D grid. The <strong>Layers</strong> panel hides Stacking, Layer Spacing, and Layer Color By; the <strong>Nodes</strong> panel hides Transform Nodes; the <strong>Intralayer Links</strong> panel hides the manual color picker; and the <strong>Interlayer Links</strong> panel is hidden entirely. The following grid-specific control is added:</p>
+  <ul>
+    <li><span class="key">Columns slider</span> (in the Layers panel, 1–8) — controls how many grid columns the cells are arranged into. Default is <code>ceil(√L)</code> for L layers, rounded up to the next square-ish layout.</li>
+    <li><span class="key">Layer Name Size slider</span> (in the Layers panel, 8–32 px) — adjusts the cell-header font size. The header strip auto-scales with the font so the layer name always fits.</li>
+    <li><span class="key">Node Labels</span> (in the Nodes panel) — same checkbox as Network Mode. When enabled, each node's name is drawn next to it. In bipartite cells the labels are rotated 45° and placed above the upper set or below the lower set, matching the Meta-Network convention.</li>
+  </ul>
+
+  <h3 id="grid-bipartite">Bipartite Layers</h3>
+  <p>When a layer is declared bipartite (<code>layer.bipartite = true</code> with a <code>node_type</code> attribute on its nodes), Grid View positions Set A nodes on the upper row and Set B on the lower row inside each cell, just like the bipartite layout in Network Mode. If the <strong>Set Names</strong> checkbox is on (Layers panel), each cell's left margin labels the two sets with their <code>setALabel</code> and <code>setBLabel</code> values, coloured in the canonical blue/pink set palette.</p>
 
   <!-- Meta-Network Mode -->
   <h2 class="sec mode-meta" id="metanetwork"><span style="font-size:18px;font-weight:700;color:#d97706;line-height:1;flex-shrink:0;">Σ</span> Meta-Network Mode</h2>

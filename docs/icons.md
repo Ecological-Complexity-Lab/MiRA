@@ -127,6 +127,26 @@ All icons used in the MiRA manual (`docs/manual.html`), with inline SVG previews
 </tr>
 
 <tr>
+<td><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f73ce1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></td>
+<td>Grid View</td>
+<td><code>#f73ce1</code> (pink)</td>
+<td>
+
+```html
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+     stroke="#f73ce1" stroke-width="2"
+     stroke-linecap="round" stroke-linejoin="round">
+  <rect x="3" y="3" width="7" height="7" rx="1"/>
+  <rect x="14" y="3" width="7" height="7" rx="1"/>
+  <rect x="3" y="14" width="7" height="7" rx="1"/>
+  <rect x="14" y="14" width="7" height="7" rx="1"/>
+</svg>
+```
+
+</td>
+</tr>
+
+<tr>
 <td><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="2.5"/><circle cx="5" cy="19" r="2.5"/><circle cx="19" cy="19" r="2.5"/><line x1="12" y1="7.5" x2="5.9" y2="16.6"/><line x1="12" y1="7.5" x2="18.1" y2="16.6"/><line x1="7.4" y1="19" x2="16.6" y2="19"/></svg></td>
 <td>Layer Mode</td>
 <td><code>#059669</code> (emerald)</td>
@@ -334,6 +354,13 @@ These appear at 14×14 in the top toolbar strip table. Mode icons (Network, Map,
 <td>Layer Mode</td>
 <td>Same shape as section heading</td>
 <td><em>See Layer Mode above, use <code>width="14" height="14"</code></em></td>
+</tr>
+
+<tr>
+<td><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f73ce1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></td>
+<td>Grid View</td>
+<td>Same shape as section heading</td>
+<td><em>See Grid View above, use <code>width="14" height="14"</code></em></td>
 </tr>
 
 <tr>
