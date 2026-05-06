@@ -129,6 +129,24 @@ export function initExportManager({ getRenderer, getAppMode }) {
         });
     }
 
+    // html2canvas does not render the swatch color of native <input type="color">.
+    // In the cloned DOM only, swap each color input for a same-sized <div> whose
+    // background matches input.value so the legend exports with its colors intact.
+    function _replaceColorInputsInClone(clonedDoc) {
+        const inputs = clonedDoc.querySelectorAll('input[type="color"]');
+        inputs.forEach(inp => {
+            const swatch = clonedDoc.createElement('div');
+            const cs = inp.ownerDocument.defaultView?.getComputedStyle(inp);
+            const w = (cs && cs.width)  || '14px';
+            const h = (cs && cs.height) || '14px';
+            swatch.style.cssText =
+                `display:inline-block;width:${w};height:${h};` +
+                `background:${inp.value};border:1px solid rgba(0,0,0,0.15);` +
+                `border-radius:3px;flex-shrink:0;vertical-align:middle;`;
+            inp.parentNode.replaceChild(swatch, inp);
+        });
+    }
+
     // ── Composite visible overlay panels onto offscreen canvas ────────────
     // Captures legend + drill/compare panels (if open) and draws them at
     // their screen positions, scaled to match the export resolution.
@@ -157,6 +175,7 @@ export function initExportManager({ getRenderer, getAppMode }) {
                     allowTaint: true,
                     backgroundColor: null,
                     logging: false,
+                    onclone: _replaceColorInputsInClone,
                 });
                 ctx.drawImage(panelCanvas, rect.left * scale, rect.top * scale,
                     rect.width * scale, rect.height * scale);
