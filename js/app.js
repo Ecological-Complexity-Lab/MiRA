@@ -688,6 +688,10 @@ function loadData(json) {
     try {
         model = parseMultilayerData(json);
 
+        if (model.warnings && model.warnings.length) {
+            alert('Data warnings:\n\n• ' + model.warnings.join('\n• '));
+        }
+
         // Center Leaflet Map if geographic data is present
         const lats = [];
         const lngs = [];
@@ -3683,8 +3687,8 @@ function updateNodeColors() {
 
         renderer.nodeColorFn = (layerName, nodeName) => {
             const info = model.bipartiteInfo.get(layerName);
-            const isSetA = info && info.setA.has(nodeName);
-            const isSetB = info && info.setB.has(nodeName);
+            const isSetA = info?.isBipartite && info.setA.has(nodeName);
+            const isSetB = info?.isBipartite && info.setB.has(nodeName);
 
             if (isSetA) {
                 if (scA) {

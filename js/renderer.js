@@ -877,7 +877,7 @@ export class Renderer {
                 ctx.font = this.labelFont;
                 ctx.fillStyle = 'rgba(0,0,0,0.75)';
 
-                const useDiagonal = this.transformNodes && this.layoutType === 'bipartite' && bpInfo;
+                const useDiagonal = this.transformNodes && this.layoutType === 'bipartite' && bpInfo?.isBipartite;
                 if (useDiagonal) {
                     const above = bpInfo.setA.has(nodeName);
                     ctx.textAlign = 'left';

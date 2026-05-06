@@ -33,17 +33,6 @@ export function parseMultilayerData(json) {
     layersByName.set(layer.layer_name, layer);
   }
 
-  // Classify links as intralayer vs interlayer
-  const intralayerLinks = [];
-  const interlayerLinks = [];
-  for (const link of json.extended) {
-    if (link.layer_from === link.layer_to) {
-      intralayerLinks.push(link);
-    } else {
-      interlayerLinks.push(link);
-    }
-  }
-
   // Build state node map: key = "layerName::nodeName"
   const stateNodeMap = new Map();
   for (const sn of json.state_nodes) {
@@ -60,8 +49,69 @@ export function parseMultilayerData(json) {
     nodesPerLayer.get(sn.layer_name).add(sn.node_name);
   }
 
+  // Determine directed flags up-front (needed for dedup keys below).
+  // directed           — applies to intralayer links
+  // directedInterlayer — applies to interlayer links (defaults to same as directed)
+  const directed = json.directed === true
+    || json.layers.some(l => l.directed === true)
+    || json.extended.some(l => l.layer_from === l.layer_to && l.directed === true);
+
+  const directedInterlayer = json.directed_interlayer === true
+    || directed  // if the whole network is directed, interlayer is too
+    || json.extended.some(l => l.layer_from !== l.layer_to && l.directed === true);
+
+  // ---- Clean & classify links ----
+  // (1) Drop rows with weight === 0 — zero weight means "no link".
+  // (2) Dedupe duplicate edges. For undirected networks, A→B and B→A are the same
+  //     edge and degree/density calculations break if both rows are kept.
+  //     For directed networks, A→B and B→A are distinct, but exact-duplicate rows
+  //     are still dropped.
+  const intralayerLinks = [];
+  const interlayerLinks = [];
+  const intraSeen = new Set();
+  const interSeen = new Set();
+  let droppedZeroWeight = 0;
+  let droppedDuplicates = 0;
+
+  for (const link of json.extended) {
+    if (link.weight !== undefined && link.weight !== null && Number(link.weight) === 0) {
+      droppedZeroWeight++;
+      continue;
+    }
+
+    const isIntra = link.layer_from === link.layer_to;
+    const isDir = isIntra ? directed : directedInterlayer;
+    const key = edgeDedupKey(link, isIntra, isDir);
+    const seen = isIntra ? intraSeen : interSeen;
+    if (seen.has(key)) {
+      droppedDuplicates++;
+      continue;
+    }
+    seen.add(key);
+
+    if (isIntra) intralayerLinks.push(link);
+    else        interlayerLinks.push(link);
+  }
+
+  const warnings = [];
+  if (droppedZeroWeight > 0) {
+    warnings.push(
+      `Dropped ${droppedZeroWeight} edge${droppedZeroWeight === 1 ? '' : 's'} with weight 0 ` +
+      `(weight 0 means "no link" and is treated as no edge).`
+    );
+  }
+  if (droppedDuplicates > 0) {
+    warnings.push(
+      `Dropped ${droppedDuplicates} duplicate edge${droppedDuplicates === 1 ? '' : 's'}` +
+      (directed ? '.' : ' (e.g. both A→B and B→A in an undirected network).')
+    );
+  }
+
+  // Propagate directed flag per link type so the renderer can draw arrowheads.
+  for (const link of intralayerLinks)  link.directed = directed;
+  for (const link of interlayerLinks)  link.directed = directedInterlayer;
+
   // ---- Compute Network Statistics (Degree, Strength) ----
-  // Initialize to 0
   for (const sn of json.state_nodes) {
     sn.degree = 0;
     sn.strength = 0;
@@ -71,12 +121,11 @@ export function parseMultilayerData(json) {
     sn.out_strength = 0;
   }
 
-  // Iterate over all links (O(E) time - very fast for sparse networks)
-  for (const link of json.extended) {
+  for (const link of [...intralayerLinks, ...interlayerLinks]) {
     const fromKey = `${link.layer_from}::${link.node_from}`;
-    const toKey = `${link.layer_to}::${link.node_to}`;
-    const snFrom = stateNodeMap.get(fromKey);
-    const snTo = stateNodeMap.get(toKey);
+    const toKey   = `${link.layer_to}::${link.node_to}`;
+    const snFrom  = stateNodeMap.get(fromKey);
+    const snTo    = stateNodeMap.get(toKey);
     const w = link.weight !== undefined ? link.weight : 1;
 
     if (snFrom) {
@@ -101,21 +150,6 @@ export function parseMultilayerData(json) {
     }
   }
 
-  // Determine directed flags.
-  // directed          — applies to intralayer links
-  // directedInterlayer — applies to interlayer links (defaults to same as directed)
-  const directed = json.directed === true
-    || json.layers.some(l => l.directed === true)
-    || intralayerLinks.some(l => l.directed === true);
-
-  const directedInterlayer = json.directed_interlayer === true
-    || directed  // if the whole network is directed, interlayer is too
-    || interlayerLinks.some(l => l.directed === true);
-
-  // Propagate directed flag per link type so the renderer can draw arrowheads.
-  for (const link of intralayerLinks)  link.directed = directed;
-  for (const link of interlayerLinks)  link.directed = directedInterlayer;
-
   // If intralayer is undirected, remove in/out metrics to avoid cluttering attribute lists.
   if (!directed) {
     for (const sn of json.state_nodes) {
@@ -137,6 +171,20 @@ export function parseMultilayerData(json) {
     json.layers, json.nodes, intralayerLinks, nodesPerLayer, nodesByName
   );
 
+  // Mixed bipartite/unipartite networks are an edge case — the data loads and
+  // renders, but bipartite color/size coding only applies to nodes in the
+  // bipartite layers. Full mixed-network UX is tracked for future development.
+  const bipartiteLayerCount = [...bipartiteInfo.values()].filter(b => b.isBipartite).length;
+  const totalLayers = json.layers.length;
+  if (bipartiteLayerCount > 0 && bipartiteLayerCount < totalLayers) {
+    warnings.push(
+      `This network mixes bipartite and unipartite layers (${bipartiteLayerCount} of ` +
+      `${totalLayers} layers are bipartite). The visualization is supported, but ` +
+      `bipartite color/size coding only applies to nodes in the bipartite layer(s). ` +
+      `Full mixed-network UX is planned for a future release.`
+    );
+  }
+
   return {
     nodes: json.nodes,
     layers: json.layers,
@@ -157,7 +205,26 @@ export function parseMultilayerData(json) {
     linkAttributeNames,
     layerAttributeNames,
     bipartiteInfo,
+    warnings,
   };
+}
+
+/** Canonical key for edge dedup. Direction-preserving when isDir, otherwise pair-sorted. */
+function edgeDedupKey(link, isIntra, isDir) {
+  const SEP = '\x00';
+  if (isIntra) {
+    if (isDir) return `${link.layer_from}${SEP}${link.node_from}${SEP}${link.node_to}`;
+    const [a, b] = [link.node_from, link.node_to].sort();
+    return `${link.layer_from}${SEP}${a}${SEP}${b}`;
+  }
+  // Interlayer
+  if (isDir) {
+    return `${link.layer_from}${SEP}${link.node_from}${SEP}${link.layer_to}${SEP}${link.node_to}`;
+  }
+  const endA = `${link.layer_from}${SEP}${link.node_from}`;
+  const endB = `${link.layer_to}${SEP}${link.node_to}`;
+  const [a, b] = [endA, endB].sort();
+  return `${a}${SEP}${b}`;
 }
 
 /**

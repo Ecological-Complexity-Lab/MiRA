@@ -206,7 +206,7 @@ export function csvToJson(edgeListText, layersText, nodesText, stateNodesText, o
             node_from:  e.node_from,
             layer_to:   e.layer_to,
             node_to:    e.node_to,
-            weight:     e.weight !== undefined && e.weight !== '' ? (parseFloat(e.weight) || 1) : 1,
+            weight:     parseEdgeWeight(e.weight),
         };
         // Preserve any extra columns
         for (const [k, v] of Object.entries(e)) {
@@ -244,4 +244,12 @@ export function csvToJson(edgeListText, layersText, nodesText, stateNodesText, o
     };
 
     return { json, infoMessages, warnings };
+}
+
+/** Parse a CSV weight cell. Empty/missing/non-numeric → 1. Preserves 0 (so the
+ *  parser can drop zero-weight rows downstream rather than silently rewriting them). */
+function parseEdgeWeight(raw) {
+    if (raw === undefined || raw === null || raw === '') return 1;
+    const n = parseFloat(raw);
+    return Number.isFinite(n) ? n : 1;
 }
