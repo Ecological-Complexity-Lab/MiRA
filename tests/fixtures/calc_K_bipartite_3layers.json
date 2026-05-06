@@ -1,0 +1,64 @@
+{
+  "_expected": {
+    "note": "3 bipartite layers. setA='bird' (alphabetical first), setB='plant'.",
+    "setA_label": "bird",
+    "setB_label": "plant",
+    "setA_per_layer": { "L1": ["B1","B2"], "L2": ["B1","B2"], "L3": ["B2"] },
+    "setB_per_layer": { "L1": ["P1","P2"], "L2": ["P2","P3"], "L3": ["P1","P3"] },
+    "setA_jaccard": {
+      "L1_L2": 1.0,
+      "L1_L3": 0.5,
+      "L2_L3": 0.5
+    },
+    "setB_jaccard": {
+      "L1_L2": 0.333,
+      "L1_L3": 0.333,
+      "L2_L3": 0.333
+    },
+    "edge_keys": {
+      "L1": ["B1::P1", "B2::P1", "B1::P2"],
+      "L2": ["B1::P2", "B2::P3"],
+      "L3": ["B2::P1", "B2::P3"]
+    },
+    "edge_jaccard": {
+      "L1_L2": 0.25,
+      "L1_L3": 0.25,
+      "L2_L3": 0.333
+    }
+  },
+  "directed": false,
+  "layers": [
+    { "layer_id": 1, "layer_name": "L1", "bipartite": true },
+    { "layer_id": 2, "layer_name": "L2", "bipartite": true },
+    { "layer_id": 3, "layer_name": "L3", "bipartite": true }
+  ],
+  "nodes": [
+    { "node_id": "P1", "node_name": "P1", "node_type": "plant" },
+    { "node_id": "P2", "node_name": "P2", "node_type": "plant" },
+    { "node_id": "P3", "node_name": "P3", "node_type": "plant" },
+    { "node_id": "B1", "node_name": "B1", "node_type": "bird" },
+    { "node_id": "B2", "node_name": "B2", "node_type": "bird" }
+  ],
+  "state_nodes": [
+    { "layer_name": "L1", "node_name": "P1" },
+    { "layer_name": "L1", "node_name": "P2" },
+    { "layer_name": "L1", "node_name": "B1" },
+    { "layer_name": "L1", "node_name": "B2" },
+    { "layer_name": "L2", "node_name": "P2" },
+    { "layer_name": "L2", "node_name": "P3" },
+    { "layer_name": "L2", "node_name": "B1" },
+    { "layer_name": "L2", "node_name": "B2" },
+    { "layer_name": "L3", "node_name": "P1" },
+    { "layer_name": "L3", "node_name": "P3" },
+    { "layer_name": "L3", "node_name": "B2" }
+  ],
+  "extended": [
+    { "layer_from": "L1", "node_from": "P1", "layer_to": "L1", "node_to": "B1", "weight": 1 },
+    { "layer_from": "L1", "node_from": "P1", "layer_to": "L1", "node_to": "B2", "weight": 1 },
+    { "layer_from": "L1", "node_from": "P2", "layer_to": "L1", "node_to": "B1", "weight": 1 },
+    { "layer_from": "L2", "node_from": "P2", "layer_to": "L2", "node_to": "B1", "weight": 1 },
+    { "layer_from": "L2", "node_from": "P3", "layer_to": "L2", "node_to": "B2", "weight": 1 },
+    { "layer_from": "L3", "node_from": "P1", "layer_to": "L3", "node_to": "B2", "weight": 1 },
+    { "layer_from": "L3", "node_from": "P3", "layer_to": "L3", "node_to": "B2", "weight": 1 }
+  ]
+}

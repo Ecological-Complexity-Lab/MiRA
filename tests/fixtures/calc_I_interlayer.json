@@ -1,0 +1,31 @@
+{
+  "_expected": {
+    "totalIntra": 2,
+    "totalInter": 1,
+    "intra_inter_ratio": 2.0,
+    "jaccard_nodes_L1_L2": 0.333,
+    "participation": { "A": 2, "B": 1, "C": 1 },
+    "note": "L1:{A,B} L2:{A,C}. Shared={A}, union={A,B,C}=3. Jaccard=1/3≈0.333"
+  },
+  "directed": false,
+  "layers": [
+    { "layer_id": 1, "layer_name": "L1" },
+    { "layer_id": 2, "layer_name": "L2" }
+  ],
+  "nodes": [
+    { "node_id": "A", "node_name": "A" },
+    { "node_id": "B", "node_name": "B" },
+    { "node_id": "C", "node_name": "C" }
+  ],
+  "state_nodes": [
+    { "layer_name": "L1", "node_name": "A" },
+    { "layer_name": "L1", "node_name": "B" },
+    { "layer_name": "L2", "node_name": "A" },
+    { "layer_name": "L2", "node_name": "C" }
+  ],
+  "extended": [
+    { "layer_from": "L1", "node_from": "A", "layer_to": "L1", "node_to": "B", "weight": 1 },
+    { "layer_from": "L2", "node_from": "A", "layer_to": "L2", "node_to": "C", "weight": 1 },
+    { "layer_from": "L1", "node_from": "A", "layer_to": "L2", "node_to": "A", "weight": 1 }
+  ]
+}

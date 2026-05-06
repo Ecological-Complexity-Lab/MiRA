@@ -1,0 +1,31 @@
+{
+  "_expected": {
+    "N": 5, "E": 4, "density": 0.4,
+    "degrees":   { "H": 4, "L1": 1, "L2": 1, "L3": 1, "L4": 1 },
+    "strengths": { "H": 10, "L1": 1, "L2": 2, "L3": 3, "L4": 4 },
+    "avg_degree": 1.6,
+    "note": "density = 4 / (5*4/2) = 4/10 = 0.4"
+  },
+  "directed": false,
+  "layers": [{ "layer_id": 1, "layer_name": "L1" }],
+  "nodes": [
+    { "node_id": "H",  "node_name": "H" },
+    { "node_id": "L1", "node_name": "L1" },
+    { "node_id": "L2", "node_name": "L2" },
+    { "node_id": "L3", "node_name": "L3" },
+    { "node_id": "L4", "node_name": "L4" }
+  ],
+  "state_nodes": [
+    { "layer_name": "L1", "node_name": "H" },
+    { "layer_name": "L1", "node_name": "L1" },
+    { "layer_name": "L1", "node_name": "L2" },
+    { "layer_name": "L1", "node_name": "L3" },
+    { "layer_name": "L1", "node_name": "L4" }
+  ],
+  "extended": [
+    { "layer_from": "L1", "node_from": "H", "layer_to": "L1", "node_to": "L1", "weight": 1 },
+    { "layer_from": "L1", "node_from": "H", "layer_to": "L1", "node_to": "L2", "weight": 2 },
+    { "layer_from": "L1", "node_from": "H", "layer_to": "L1", "node_to": "L3", "weight": 3 },
+    { "layer_from": "L1", "node_from": "H", "layer_to": "L1", "node_to": "L4", "weight": 4 }
+  ]
+}

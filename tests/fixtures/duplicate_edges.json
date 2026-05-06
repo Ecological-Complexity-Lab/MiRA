@@ -1,0 +1,24 @@
+{
+  "directed": false,
+  "layers": [
+    { "layer_id": 1, "layer_name": "L1" }
+  ],
+  "nodes": [
+    { "node_id": "A", "node_name": "A" },
+    { "node_id": "B", "node_name": "B" },
+    { "node_id": "C", "node_name": "C" }
+  ],
+  "state_nodes": [
+    { "layer_name": "L1", "node_name": "A" },
+    { "layer_name": "L1", "node_name": "B" },
+    { "layer_name": "L1", "node_name": "C" }
+  ],
+  "extended": [
+    { "layer_from": "L1", "node_from": "A", "layer_to": "L1", "node_to": "B", "weight": 1 },
+    { "layer_from": "L1", "node_from": "B", "layer_to": "L1", "node_to": "A", "weight": 1 },
+    { "layer_from": "L1", "node_from": "A", "layer_to": "L1", "node_to": "C", "weight": 1 },
+    { "layer_from": "L1", "node_from": "C", "layer_to": "L1", "node_to": "A", "weight": 1 },
+    { "layer_from": "L1", "node_from": "B", "layer_to": "L1", "node_to": "C", "weight": 1 },
+    { "layer_from": "L1", "node_from": "C", "layer_to": "L1", "node_to": "B", "weight": 1 }
+  ]
+}

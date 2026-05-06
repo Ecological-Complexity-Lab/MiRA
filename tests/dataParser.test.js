@@ -670,3 +670,365 @@ describe('Group 9 — Mixed multilayer', () => {
     expect(model.bipartiteInfo.get('NonBip').isBipartite).toBe(false)
   })
 })
+
+// ── Group 10 — Degree & strength on known topologies ────────────────────────
+// Each sub-test loads a hand-crafted fixture whose expected values were computed
+// by hand before writing the test. This guards against silent regressions in the
+// degree/strength calculation loop in dataParser.js.
+
+function deg(model, layerName, nodeName) {
+  return model.stateNodeMap.get(`${layerName}::${nodeName}`).degree
+}
+function str(model, layerName, nodeName) {
+  return model.stateNodeMap.get(`${layerName}::${nodeName}`).strength
+}
+function inDeg(model, layerName, nodeName) {
+  return model.stateNodeMap.get(`${layerName}::${nodeName}`).in_degree
+}
+function outDeg(model, layerName, nodeName) {
+  return model.stateNodeMap.get(`${layerName}::${nodeName}`).out_degree
+}
+
+// Fixture A — triangle undirected unweighted
+function makeTriangle() {
+  return {
+    directed: false,
+    layers: [{ layer_id: 1, layer_name: 'L1' }],
+    nodes: [
+      { node_id: 'A', node_name: 'A' },
+      { node_id: 'B', node_name: 'B' },
+      { node_id: 'C', node_name: 'C' },
+    ],
+    state_nodes: [
+      { layer_name: 'L1', node_name: 'A' },
+      { layer_name: 'L1', node_name: 'B' },
+      { layer_name: 'L1', node_name: 'C' },
+    ],
+    extended: [
+      { layer_from: 'L1', node_from: 'A', layer_to: 'L1', node_to: 'B', weight: 1 },
+      { layer_from: 'L1', node_from: 'B', layer_to: 'L1', node_to: 'C', weight: 1 },
+      { layer_from: 'L1', node_from: 'C', layer_to: 'L1', node_to: 'A', weight: 1 },
+    ],
+  }
+}
+
+// Fixture B — directed 3-cycle A→B→C→A
+function makeDirected3Cycle() {
+  return {
+    directed: true,
+    layers: [{ layer_id: 1, layer_name: 'L1' }],
+    nodes: [
+      { node_id: 'A', node_name: 'A' },
+      { node_id: 'B', node_name: 'B' },
+      { node_id: 'C', node_name: 'C' },
+    ],
+    state_nodes: [
+      { layer_name: 'L1', node_name: 'A' },
+      { layer_name: 'L1', node_name: 'B' },
+      { layer_name: 'L1', node_name: 'C' },
+    ],
+    extended: [
+      { layer_from: 'L1', node_from: 'A', layer_to: 'L1', node_to: 'B', weight: 1 },
+      { layer_from: 'L1', node_from: 'B', layer_to: 'L1', node_to: 'C', weight: 1 },
+      { layer_from: 'L1', node_from: 'C', layer_to: 'L1', node_to: 'A', weight: 1 },
+    ],
+  }
+}
+
+// Fixture C — triangle + isolated node D
+function makeTrianglePlusIsolated() {
+  return {
+    directed: false,
+    layers: [{ layer_id: 1, layer_name: 'L1' }],
+    nodes: [
+      { node_id: 'A', node_name: 'A' },
+      { node_id: 'B', node_name: 'B' },
+      { node_id: 'C', node_name: 'C' },
+      { node_id: 'D', node_name: 'D' },
+    ],
+    state_nodes: [
+      { layer_name: 'L1', node_name: 'A' },
+      { layer_name: 'L1', node_name: 'B' },
+      { layer_name: 'L1', node_name: 'C' },
+      { layer_name: 'L1', node_name: 'D' },
+    ],
+    extended: [
+      { layer_from: 'L1', node_from: 'A', layer_to: 'L1', node_to: 'B', weight: 1 },
+      { layer_from: 'L1', node_from: 'B', layer_to: 'L1', node_to: 'C', weight: 1 },
+      { layer_from: 'L1', node_from: 'C', layer_to: 'L1', node_to: 'A', weight: 1 },
+    ],
+  }
+}
+
+// Fixture D — weighted star (hub H + 4 leaves with weights 1,2,3,4)
+function makeWeightedStar() {
+  return {
+    directed: false,
+    layers: [{ layer_id: 1, layer_name: 'L1' }],
+    nodes: [
+      { node_id: 'H',  node_name: 'H'  },
+      { node_id: 'L1', node_name: 'L1' },
+      { node_id: 'L2', node_name: 'L2' },
+      { node_id: 'L3', node_name: 'L3' },
+      { node_id: 'L4', node_name: 'L4' },
+    ],
+    state_nodes: [
+      { layer_name: 'L1', node_name: 'H'  },
+      { layer_name: 'L1', node_name: 'L1' },
+      { layer_name: 'L1', node_name: 'L2' },
+      { layer_name: 'L1', node_name: 'L3' },
+      { layer_name: 'L1', node_name: 'L4' },
+    ],
+    extended: [
+      { layer_from: 'L1', node_from: 'H', layer_to: 'L1', node_to: 'L1', weight: 1 },
+      { layer_from: 'L1', node_from: 'H', layer_to: 'L1', node_to: 'L2', weight: 2 },
+      { layer_from: 'L1', node_from: 'H', layer_to: 'L1', node_to: 'L3', weight: 3 },
+      { layer_from: 'L1', node_from: 'H', layer_to: 'L1', node_to: 'L4', weight: 4 },
+    ],
+  }
+}
+
+// Fixture H — directed path A→B→C→D
+function makeDirectedPath() {
+  return {
+    directed: true,
+    layers: [{ layer_id: 1, layer_name: 'L1' }],
+    nodes: [
+      { node_id: 'A', node_name: 'A' },
+      { node_id: 'B', node_name: 'B' },
+      { node_id: 'C', node_name: 'C' },
+      { node_id: 'D', node_name: 'D' },
+    ],
+    state_nodes: [
+      { layer_name: 'L1', node_name: 'A' },
+      { layer_name: 'L1', node_name: 'B' },
+      { layer_name: 'L1', node_name: 'C' },
+      { layer_name: 'L1', node_name: 'D' },
+    ],
+    extended: [
+      { layer_from: 'L1', node_from: 'A', layer_to: 'L1', node_to: 'B', weight: 1 },
+      { layer_from: 'L1', node_from: 'B', layer_to: 'L1', node_to: 'C', weight: 1 },
+      { layer_from: 'L1', node_from: 'C', layer_to: 'L1', node_to: 'D', weight: 1 },
+    ],
+  }
+}
+
+describe('Group 10 — Degree & strength on known topologies', () => {
+  // ── Fixture A: triangle undirected ──────────────────────────────────────────
+  it('10.1 triangle: each node has degree 2', () => {
+    const m = parseMultilayerData(makeTriangle())
+    expect(deg(m, 'L1', 'A')).toBe(2)
+    expect(deg(m, 'L1', 'B')).toBe(2)
+    expect(deg(m, 'L1', 'C')).toBe(2)
+  })
+
+  it('10.2 triangle: strength equals degree when all weights are 1', () => {
+    const m = parseMultilayerData(makeTriangle())
+    expect(str(m, 'L1', 'A')).toBe(2)
+    expect(str(m, 'L1', 'B')).toBe(2)
+    expect(str(m, 'L1', 'C')).toBe(2)
+  })
+
+  it('10.3 triangle: undirected network has no in/out degree fields', () => {
+    const m = parseMultilayerData(makeTriangle())
+    const sn = m.stateNodeMap.get('L1::A')
+    expect(sn.in_degree).toBeUndefined()
+    expect(sn.out_degree).toBeUndefined()
+  })
+
+  it('10.4 triangle: 3 intralayer edges, 0 interlayer', () => {
+    const m = parseMultilayerData(makeTriangle())
+    expect(m.intralayerLinks).toHaveLength(3)
+    expect(m.interlayerLinks).toHaveLength(0)
+  })
+
+  // ── Fixture B: directed 3-cycle ─────────────────────────────────────────────
+  it('10.5 directed 3-cycle: in_degree = out_degree = 1 for every node', () => {
+    const m = parseMultilayerData(makeDirected3Cycle())
+    for (const n of ['A', 'B', 'C']) {
+      expect(inDeg(m, 'L1', n)).toBe(1)
+      expect(outDeg(m, 'L1', n)).toBe(1)
+    }
+  })
+
+  it('10.6 directed 3-cycle: total degree = in + out = 2 for every node', () => {
+    const m = parseMultilayerData(makeDirected3Cycle())
+    for (const n of ['A', 'B', 'C']) {
+      expect(deg(m, 'L1', n)).toBe(2)
+    }
+  })
+
+  // ── Fixture C: triangle + isolated node ─────────────────────────────────────
+  it('10.7 isolated node has degree 0 and strength 0', () => {
+    const m = parseMultilayerData(makeTrianglePlusIsolated())
+    expect(deg(m, 'L1', 'D')).toBe(0)
+    expect(str(m, 'L1', 'D')).toBe(0)
+  })
+
+  it('10.8 triangle nodes still have degree 2 when isolated node is present', () => {
+    const m = parseMultilayerData(makeTrianglePlusIsolated())
+    for (const n of ['A', 'B', 'C']) {
+      expect(deg(m, 'L1', n)).toBe(2)
+    }
+  })
+
+  // ── Fixture D: weighted star ─────────────────────────────────────────────────
+  it('10.9 hub degree equals number of leaves', () => {
+    const m = parseMultilayerData(makeWeightedStar())
+    expect(deg(m, 'L1', 'H')).toBe(4)
+  })
+
+  it('10.10 hub strength = sum of all edge weights (1+2+3+4 = 10)', () => {
+    const m = parseMultilayerData(makeWeightedStar())
+    expect(str(m, 'L1', 'H')).toBe(10)
+  })
+
+  it('10.11 each leaf has degree 1 and strength equal to its edge weight', () => {
+    const m = parseMultilayerData(makeWeightedStar())
+    expect(deg(m, 'L1', 'L1')).toBe(1);  expect(str(m, 'L1', 'L1')).toBe(1)
+    expect(deg(m, 'L1', 'L2')).toBe(1);  expect(str(m, 'L1', 'L2')).toBe(2)
+    expect(deg(m, 'L1', 'L3')).toBe(1);  expect(str(m, 'L1', 'L3')).toBe(3)
+    expect(deg(m, 'L1', 'L4')).toBe(1);  expect(str(m, 'L1', 'L4')).toBe(4)
+  })
+
+  // ── Fixture H: directed path ────────────────────────────────────────────────
+  it('10.12 directed path: source node has out_degree=1 and in_degree=0', () => {
+    const m = parseMultilayerData(makeDirectedPath())
+    expect(outDeg(m, 'L1', 'A')).toBe(1)
+    expect(inDeg(m,  'L1', 'A')).toBe(0)
+  })
+
+  it('10.13 directed path: sink node has in_degree=1 and out_degree=0', () => {
+    const m = parseMultilayerData(makeDirectedPath())
+    expect(inDeg(m,  'L1', 'D')).toBe(1)
+    expect(outDeg(m, 'L1', 'D')).toBe(0)
+  })
+
+  it('10.14 directed path: interior nodes have in_degree=1 and out_degree=1', () => {
+    const m = parseMultilayerData(makeDirectedPath())
+    for (const n of ['B', 'C']) {
+      expect(inDeg(m, 'L1', n)).toBe(1)
+      expect(outDeg(m, 'L1', n)).toBe(1)
+    }
+  })
+})
+
+// ── Group 11 — Data-quality guards ──────────────────────────────────────────
+// Verify the deduplication and zero-weight-drop logic added in the bug fix.
+
+describe('Group 11 — Data-quality guards', () => {
+  it('11.1 zero-weight edges are dropped and a warning is emitted', () => {
+    const input = {
+      directed: false,
+      layers: [{ layer_id: 1, layer_name: 'L1' }],
+      nodes: [
+        { node_id: 'A', node_name: 'A' },
+        { node_id: 'B', node_name: 'B' },
+      ],
+      state_nodes: [
+        { layer_name: 'L1', node_name: 'A' },
+        { layer_name: 'L1', node_name: 'B' },
+      ],
+      extended: [
+        { layer_from: 'L1', node_from: 'A', layer_to: 'L1', node_to: 'B', weight: 0 },
+      ],
+    }
+    const m = parseMultilayerData(input)
+    expect(m.intralayerLinks).toHaveLength(0)
+    expect(m.warnings.some(w => w.includes('weight 0'))).toBe(true)
+  })
+
+  it('11.2 duplicate undirected edges (A-B and B-A) are deduplicated and warned', () => {
+    const input = {
+      directed: false,
+      layers: [{ layer_id: 1, layer_name: 'L1' }],
+      nodes: [
+        { node_id: 'A', node_name: 'A' },
+        { node_id: 'B', node_name: 'B' },
+      ],
+      state_nodes: [
+        { layer_name: 'L1', node_name: 'A' },
+        { layer_name: 'L1', node_name: 'B' },
+      ],
+      extended: [
+        { layer_from: 'L1', node_from: 'A', layer_to: 'L1', node_to: 'B', weight: 1 },
+        { layer_from: 'L1', node_from: 'B', layer_to: 'L1', node_to: 'A', weight: 1 },
+      ],
+    }
+    const m = parseMultilayerData(input)
+    expect(m.intralayerLinks).toHaveLength(1)
+    expect(m.warnings.some(w => w.includes('duplicate'))).toBe(true)
+  })
+
+  it('11.3 after deduplication degree is 1 not 2', () => {
+    const input = {
+      directed: false,
+      layers: [{ layer_id: 1, layer_name: 'L1' }],
+      nodes: [
+        { node_id: 'A', node_name: 'A' },
+        { node_id: 'B', node_name: 'B' },
+      ],
+      state_nodes: [
+        { layer_name: 'L1', node_name: 'A' },
+        { layer_name: 'L1', node_name: 'B' },
+      ],
+      extended: [
+        { layer_from: 'L1', node_from: 'A', layer_to: 'L1', node_to: 'B', weight: 1 },
+        { layer_from: 'L1', node_from: 'B', layer_to: 'L1', node_to: 'A', weight: 1 },
+      ],
+    }
+    const m = parseMultilayerData(input)
+    expect(deg(m, 'L1', 'A')).toBe(1)
+    expect(deg(m, 'L1', 'B')).toBe(1)
+  })
+
+  it('11.4 directed networks preserve A→B and B→A as distinct edges', () => {
+    const input = {
+      directed: true,
+      layers: [{ layer_id: 1, layer_name: 'L1' }],
+      nodes: [
+        { node_id: 'A', node_name: 'A' },
+        { node_id: 'B', node_name: 'B' },
+      ],
+      state_nodes: [
+        { layer_name: 'L1', node_name: 'A' },
+        { layer_name: 'L1', node_name: 'B' },
+      ],
+      extended: [
+        { layer_from: 'L1', node_from: 'A', layer_to: 'L1', node_to: 'B', weight: 1 },
+        { layer_from: 'L1', node_from: 'B', layer_to: 'L1', node_to: 'A', weight: 1 },
+      ],
+    }
+    const m = parseMultilayerData(input)
+    expect(m.intralayerLinks).toHaveLength(2)
+    expect(m.warnings).toHaveLength(0)
+  })
+
+  it('11.5 mixed bipartite/unipartite network emits a warning', () => {
+    const input = {
+      directed: false,
+      layers: [
+        { layer_id: 1, layer_name: 'Bip', bipartite: true },
+        { layer_id: 2, layer_name: 'Uni' },
+      ],
+      nodes: [
+        { node_id: 'P1', node_name: 'P1', node_type: 'plant' },
+        { node_id: 'B1', node_name: 'B1', node_type: 'bird' },
+        { node_id: 'X',  node_name: 'X'  },
+        { node_id: 'Y',  node_name: 'Y'  },
+      ],
+      state_nodes: [
+        { layer_name: 'Bip', node_name: 'P1' },
+        { layer_name: 'Bip', node_name: 'B1' },
+        { layer_name: 'Uni', node_name: 'X'  },
+        { layer_name: 'Uni', node_name: 'Y'  },
+      ],
+      extended: [
+        { layer_from: 'Bip', node_from: 'P1', layer_to: 'Bip', node_to: 'B1', weight: 1 },
+        { layer_from: 'Uni', node_from: 'X',  layer_to: 'Uni', node_to: 'Y',  weight: 1 },
+      ],
+    }
+    const m = parseMultilayerData(input)
+    expect(m.warnings.some(w => w.toLowerCase().includes('mix'))).toBe(true)
+  })
+})

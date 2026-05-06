@@ -1,0 +1,4 @@
+layer_from,node_from,layer_to,node_to,weight
+L1,A,L1,B,0
+L1,A,L1,C,0
+L1,B,L1,C,2.5

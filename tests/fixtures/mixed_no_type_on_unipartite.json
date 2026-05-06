@@ -1,0 +1,31 @@
+{
+  "directed": false,
+  "layers": [
+    { "layer_id": 1, "layer_name": "Pollination", "bipartite": true },
+    { "layer_id": 2, "layer_name": "Coauthorship", "bipartite": false }
+  ],
+  "nodes": [
+    { "node_id": "P1", "node_name": "P1", "node_type": "plant" },
+    { "node_id": "P2", "node_name": "P2", "node_type": "plant" },
+    { "node_id": "B1", "node_name": "B1", "node_type": "pollinator" },
+    { "node_id": "B2", "node_name": "B2", "node_type": "pollinator" },
+    { "node_id": "X1", "node_name": "X1" },
+    { "node_id": "X2", "node_name": "X2" },
+    { "node_id": "X3", "node_name": "X3" }
+  ],
+  "state_nodes": [
+    { "layer_name": "Pollination", "node_name": "P1" },
+    { "layer_name": "Pollination", "node_name": "P2" },
+    { "layer_name": "Pollination", "node_name": "B1" },
+    { "layer_name": "Pollination", "node_name": "B2" },
+    { "layer_name": "Coauthorship", "node_name": "X1" },
+    { "layer_name": "Coauthorship", "node_name": "X2" },
+    { "layer_name": "Coauthorship", "node_name": "X3" }
+  ],
+  "extended": [
+    { "layer_from": "Pollination", "node_from": "P1", "layer_to": "Pollination", "node_to": "B1", "weight": 1 },
+    { "layer_from": "Pollination", "node_from": "P2", "layer_to": "Pollination", "node_to": "B2", "weight": 1 },
+    { "layer_from": "Coauthorship", "node_from": "X1", "layer_to": "Coauthorship", "node_to": "X2", "weight": 1 },
+    { "layer_from": "Coauthorship", "node_from": "X2", "layer_to": "Coauthorship", "node_to": "X3", "weight": 1 }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "directed": false,
+  "layers": [
+    { "layer_id": 1, "layer_name": "Pollination", "bipartite": true },
+    { "layer_id": 2, "layer_name": "PlantSimilarity", "bipartite": false }
+  ],
+  "nodes": [
+    { "node_id": "P1", "node_name": "P1", "node_type": "plant" },
+    { "node_id": "P2", "node_name": "P2", "node_type": "plant" },
+    { "node_id": "P3", "node_name": "P3", "node_type": "plant" },
+    { "node_id": "B1", "node_name": "B1", "node_type": "pollinator" },
+    { "node_id": "B2", "node_name": "B2", "node_type": "pollinator" }
+  ],
+  "state_nodes": [
+    { "layer_name": "Pollination", "node_name": "P1" },
+    { "layer_name": "Pollination", "node_name": "P2" },
+    { "layer_name": "Pollination", "node_name": "P3" },
+    { "layer_name": "Pollination", "node_name": "B1" },
+    { "layer_name": "Pollination", "node_name": "B2" },
+    { "layer_name": "PlantSimilarity", "node_name": "P1" },
+    { "layer_name": "PlantSimilarity", "node_name": "P2" },
+    { "layer_name": "PlantSimilarity", "node_name": "P3" }
+  ],
+  "extended": [
+    { "layer_from": "Pollination", "node_from": "P1", "layer_to": "Pollination", "node_to": "B1", "weight": 1 },
+    { "layer_from": "Pollination", "node_from": "P1", "layer_to": "Pollination", "node_to": "B2", "weight": 1 },
+    { "layer_from": "Pollination", "node_from": "P2", "layer_to": "Pollination", "node_to": "B1", "weight": 1 },
+    { "layer_from": "Pollination", "node_from": "P3", "layer_to": "Pollination", "node_to": "B2", "weight": 1 },
+    { "layer_from": "PlantSimilarity", "node_from": "P1", "layer_to": "PlantSimilarity", "node_to": "P2", "weight": 0.8 },
+    { "layer_from": "PlantSimilarity", "node_from": "P2", "layer_to": "PlantSimilarity", "node_to": "P3", "weight": 0.6 }
+  ]
+}

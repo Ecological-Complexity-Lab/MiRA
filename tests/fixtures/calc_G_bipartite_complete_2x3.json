@@ -1,0 +1,34 @@
+{
+  "_expected": {
+    "nA": 3, "nB": 2, "E": 6,
+    "setALabel": "bird", "setBLabel": "plant",
+    "bipartite_density": 1.0,
+    "degrees": { "P1": 3, "P2": 3, "B1": 2, "B2": 2, "B3": 2 },
+    "strengths": { "P1": 3, "P2": 3, "B1": 2, "B2": 2, "B3": 2 },
+    "note": "density = 6 / (2*3) = 1.0. setA='bird'(3), setB='plant'(2) — alphabetical type sort"
+  },
+  "directed": false,
+  "layers": [{ "layer_id": 1, "layer_name": "BL", "bipartite": true }],
+  "nodes": [
+    { "node_id": "P1", "node_name": "P1", "node_type": "plant" },
+    { "node_id": "P2", "node_name": "P2", "node_type": "plant" },
+    { "node_id": "B1", "node_name": "B1", "node_type": "bird" },
+    { "node_id": "B2", "node_name": "B2", "node_type": "bird" },
+    { "node_id": "B3", "node_name": "B3", "node_type": "bird" }
+  ],
+  "state_nodes": [
+    { "layer_name": "BL", "node_name": "P1" },
+    { "layer_name": "BL", "node_name": "P2" },
+    { "layer_name": "BL", "node_name": "B1" },
+    { "layer_name": "BL", "node_name": "B2" },
+    { "layer_name": "BL", "node_name": "B3" }
+  ],
+  "extended": [
+    { "layer_from": "BL", "node_from": "P1", "layer_to": "BL", "node_to": "B1", "weight": 1 },
+    { "layer_from": "BL", "node_from": "P1", "layer_to": "BL", "node_to": "B2", "weight": 1 },
+    { "layer_from": "BL", "node_from": "P1", "layer_to": "BL", "node_to": "B3", "weight": 1 },
+    { "layer_from": "BL", "node_from": "P2", "layer_to": "BL", "node_to": "B1", "weight": 1 },
+    { "layer_from": "BL", "node_from": "P2", "layer_to": "BL", "node_to": "B2", "weight": 1 },
+    { "layer_from": "BL", "node_from": "P2", "layer_to": "BL", "node_to": "B3", "weight": 1 }
+  ]
+}

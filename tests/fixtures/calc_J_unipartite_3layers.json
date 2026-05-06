@@ -1,0 +1,51 @@
+{
+  "_expected": {
+    "note": "3 layers, 4 nodes. Each pair shares 2 of 4 nodes → node Jaccard = 0.5 for all pairs.",
+    "node_jaccard": {
+      "L1_L2": 0.5,
+      "L1_L3": 0.5,
+      "L2_L3": 0.5
+    },
+    "edge_keys": {
+      "L1": ["A::B", "B::C"],
+      "L2": ["B::C", "C::D"],
+      "L3": ["A::B", "B::D"]
+    },
+    "edge_jaccard": {
+      "L1_L2": 0.333,
+      "L1_L3": 0.333,
+      "L2_L3": 0.0
+    }
+  },
+  "directed": false,
+  "layers": [
+    { "layer_id": 1, "layer_name": "L1" },
+    { "layer_id": 2, "layer_name": "L2" },
+    { "layer_id": 3, "layer_name": "L3" }
+  ],
+  "nodes": [
+    { "node_id": "A", "node_name": "A" },
+    { "node_id": "B", "node_name": "B" },
+    { "node_id": "C", "node_name": "C" },
+    { "node_id": "D", "node_name": "D" }
+  ],
+  "state_nodes": [
+    { "layer_name": "L1", "node_name": "A" },
+    { "layer_name": "L1", "node_name": "B" },
+    { "layer_name": "L1", "node_name": "C" },
+    { "layer_name": "L2", "node_name": "B" },
+    { "layer_name": "L2", "node_name": "C" },
+    { "layer_name": "L2", "node_name": "D" },
+    { "layer_name": "L3", "node_name": "A" },
+    { "layer_name": "L3", "node_name": "B" },
+    { "layer_name": "L3", "node_name": "D" }
+  ],
+  "extended": [
+    { "layer_from": "L1", "node_from": "A", "layer_to": "L1", "node_to": "B", "weight": 1 },
+    { "layer_from": "L1", "node_from": "B", "layer_to": "L1", "node_to": "C", "weight": 1 },
+    { "layer_from": "L2", "node_from": "B", "layer_to": "L2", "node_to": "C", "weight": 1 },
+    { "layer_from": "L2", "node_from": "C", "layer_to": "L2", "node_to": "D", "weight": 1 },
+    { "layer_from": "L3", "node_from": "A", "layer_to": "L3", "node_to": "B", "weight": 1 },
+    { "layer_from": "L3", "node_from": "B", "layer_to": "L3", "node_to": "D", "weight": 1 }
+  ]
+}
