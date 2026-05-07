@@ -36,9 +36,15 @@ function computeStateNodeMetrics(model) {
   const intraFields = directed
     ? ['intra_in_degree', 'intra_out_degree', 'intra_in_strength', 'intra_out_strength']
     : ['intra_degree', 'intra_strength'];
-  const interFields = directedInterlayer
-    ? ['inter_in_degree', 'inter_out_degree', 'inter_in_strength', 'inter_out_strength']
-    : ['inter_degree', 'inter_strength'];
+  // Only emit interlayer fields when interlayer links exist. A network with
+  // zero cross-layer edges would otherwise carry uniformly-zero columns that
+  // clutter the dropdowns and the info panel for no informational gain.
+  const hasInterlayer = interlayerLinks.length > 0;
+  const interFields = !hasInterlayer
+    ? []
+    : (directedInterlayer
+      ? ['inter_in_degree', 'inter_out_degree', 'inter_in_strength', 'inter_out_strength']
+      : ['inter_degree', 'inter_strength']);
   const fields = [...intraFields, ...interFields];
 
   for (const sn of model.stateNodes) {
@@ -49,8 +55,10 @@ function computeStateNodeMetrics(model) {
     if (link.node_from === link.node_to) continue; // self-loop excluded
     accumulateIntralayer(stateNodeMap, link, directed);
   }
-  for (const link of interlayerLinks) {
-    accumulateInterlayer(stateNodeMap, link, directedInterlayer);
+  if (hasInterlayer) {
+    for (const link of interlayerLinks) {
+      accumulateInterlayer(stateNodeMap, link, directedInterlayer);
+    }
   }
 
   return fields;

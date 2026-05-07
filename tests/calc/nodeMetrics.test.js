@@ -95,13 +95,16 @@ function makeDirectedTwoLayer() {
 
 describe('Group calc/nodeMetrics — multilayer degree/strength split', () => {
 
-  it('1. Single layer: inter_* are 0 and intra_degree matches monolayer degree', () => {
+  it('1. Single layer: inter_* fields are not emitted; intra_degree matches monolayer degree', () => {
     const m = parseMultilayerData(makeMonolayerTriangle())
     for (const sn of m.stateNodes) {
       expect(sn.intra_degree).toBe(2)
-      expect(sn.inter_degree).toBe(0)
-      expect(sn.inter_strength).toBe(0)
+      // No interlayer links → no interlayer fields at all (suppressed
+      // upstream so dropdowns and info panels stay clean).
+      expect(sn).not.toHaveProperty('inter_degree')
+      expect(sn).not.toHaveProperty('inter_strength')
     }
+    expect(m.computedStateNodeAttributes).not.toContain('inter_degree')
   })
 
   it('2. Multiplex with diagonal couplings: inter_degree = M - 1 = 1 for every state node', () => {

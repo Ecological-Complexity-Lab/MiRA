@@ -4022,82 +4022,137 @@ zoomResetBtn.addEventListener('click', () => {
 });
 
 // ---- Node Info Panel ----
+// Format any node/link/layer attribute value for display in the info panel.
+// Maps render as small per-layer breakdowns; arrays as comma-joined values;
+// numbers get a sensible decimal cap. Everything else stringifies normally.
+function formatInfoValue(value) {
+    if (value === null || value === undefined || value === '') return 'N/A';
+    if (value instanceof Map) {
+        if (value.size === 0) return '—';
+        const parts = [];
+        for (const [k, v] of value) {
+            const fv = typeof v === 'number' && !Number.isInteger(v) ? v.toFixed(3) : v;
+            parts.push(`${k}: ${fv}`);
+        }
+        return parts.join(', ');
+    }
+    if (Array.isArray(value)) return value.length ? value.join(', ') : '—';
+    if (typeof value === 'number' && !Number.isInteger(value)) return value.toFixed(3);
+    return String(value);
+}
+
+// Render an info-section with rows. Optional `collapsedByDefault` wraps the
+// rows behind a click-to-expand header so the panel doesn't dominate the
+// viewport when computed properties or long connection lists are present.
+function renderInfoSection(title, rows, { collapsedByDefault = false } = {}) {
+    if (!rows.length) return '';
+    const id = `infosec-${Math.random().toString(36).slice(2, 9)}`;
+    const body = rows.map(({ key, value }) =>
+        `<div class="info-row"><span class="info-key">${key}</span><span class="info-value">${formatInfoValue(value)}</span></div>`
+    ).join('');
+    if (!collapsedByDefault) {
+        return `<div class="info-section"><h4>${title}</h4>${body}</div>`;
+    }
+    return `<div class="info-section">
+        <h4 class="info-toggle" data-target="${id}" style="cursor:pointer;user-select:none;"><span class="info-chevron">▸</span> ${title} <span style="font-weight:normal;color:#9ca3af;font-size:11px;">(click to expand)</span></h4>
+        <div id="${id}" style="display:none;">${body}</div>
+    </div>`;
+}
+
 function showNodeInfo(hit) {
     if (!model) return;
 
     const { layerName, nodeName } = hit;
 
-    // Physical node attributes
     const physicalNode = model.nodesByName.get(nodeName);
-    // State node attributes
     const stateNode = model.stateNodeMap.get(`${layerName}::${nodeName}`);
-    // Connected links
     const connectedLinks = model.extended.filter(
         l => (l.layer_from === layerName && l.node_from === nodeName) ||
             (l.layer_to === layerName && l.node_to === nodeName)
     );
 
+    const computedNode  = new Set(model.computedNodeAttributes || []);
+    const computedState = new Set(model.computedStateNodeAttributes || []);
+    // `_by_layer` Maps and `layers_present` are MiRA-computed metadata too —
+    // pin them to the computed bucket even though they aren't in the
+    // dropdown-attribute marker arrays (those expose only scalar attributes).
+    const COMPUTED_NODE_EXTRAS = new Set(['layers_present']);
+    const isByLayerKey = k => k.endsWith('_by_layer');
+
+    const STRUCTURAL_NODE = new Set(['node_id', 'node_name', 'layer_name']);
+    const STRUCTURAL_STATE = new Set(['layer_id', 'node_id', 'layer_name', 'node_name']);
+
     infoTitle.textContent = nodeName;
 
-    let html = '';
-
-    // Physical node attributes
+    const dataNodeRows = [], computedNodeRows = [];
     if (physicalNode) {
-        html += '<div class="info-section"><h4>Node Attributes</h4>';
         for (const [key, value] of Object.entries(physicalNode)) {
-            if (key === 'node_id') continue;
-            html += `<div class="info-row"><span class="info-key">${key}</span><span class="info-value">${value ?? 'N/A'}</span></div>`;
+            if (STRUCTURAL_NODE.has(key)) continue;
+            const isComputed = computedNode.has(key) || COMPUTED_NODE_EXTRAS.has(key) || isByLayerKey(key);
+            (isComputed ? computedNodeRows : dataNodeRows).push({ key, value });
         }
-        html += '</div>';
     }
 
-    // State node attributes
+    const dataStateRows = [], computedStateRows = [];
     if (stateNode) {
-        html += '<div class="info-section"><h4>State Node (in ' + layerName + ')</h4>';
         for (const [key, value] of Object.entries(stateNode)) {
-            if (['layer_id', 'node_id', 'layer_name', 'node_name'].includes(key)) continue;
-            html += `<div class="info-row"><span class="info-key">${key}</span><span class="info-value">${value ?? 'N/A'}</span></div>`;
+            if (STRUCTURAL_STATE.has(key)) continue;
+            (computedState.has(key) ? computedStateRows : dataStateRows).push({ key, value });
         }
-        html += '</div>';
     }
 
-    // Layer info
     const layerObj = model.layersByName.get(layerName);
-    if (layerObj) {
-        html += '<div class="info-section"><h4>Layer</h4>';
-        for (const [key, value] of Object.entries(layerObj)) {
-            if (key === 'layer_id') continue;
-            html += `<div class="info-row"><span class="info-key">${key}</span><span class="info-value">${value ?? 'N/A'}</span></div>`;
-        }
-        html += '</div>';
-    }
+    const layerRows = layerObj
+        ? Object.entries(layerObj)
+            .filter(([k]) => k !== 'layer_id')
+            .map(([key, value]) => ({ key, value }))
+        : [];
 
-    // Connections
+    let html = '';
+    html += renderInfoSection('Node attributes', dataNodeRows);
+    html += renderInfoSection('State node (in ' + layerName + ')', dataStateRows);
+    html += renderInfoSection('Layer', layerRows);
+    html += renderInfoSection('MiRA-computed', [...computedNodeRows, ...computedStateRows], { collapsedByDefault: true });
+
     if (connectedLinks.length > 0) {
-        html += '<div class="info-section"><h4>Connections (' + connectedLinks.length + ')</h4><ul class="info-connections">';
-        for (const link of connectedLinks) {
+        const items = connectedLinks.map(link => {
             const isFrom = link.node_from === nodeName && link.layer_from === layerName;
             const otherNode = isFrom ? link.node_to : link.node_from;
             const otherLayer = isFrom ? link.layer_to : link.layer_from;
             const isInter = link.layer_from !== link.layer_to;
-            const label = isInter
-                ? `${otherNode} (${otherLayer})`
-                : otherNode;
+            const label = isInter ? `${otherNode} (${otherLayer})` : otherNode;
             const extraAttrs = Object.entries(link)
-                .filter(([k]) => !['layer_from', 'node_from', 'layer_to', 'node_to', 'weight'].includes(k))
+                .filter(([k]) => !['layer_from', 'node_from', 'layer_to', 'node_to', 'weight', 'directed'].includes(k))
                 .filter(([, v]) => v !== null && v !== undefined)
-                .map(([k, v]) => `${k}: ${v}`)
+                .map(([k, v]) => `${k}: ${formatInfoValue(v)}`)
                 .join(', ');
             const suffix = extraAttrs ? ` [${extraAttrs}]` : '';
-            html += `<li>${label}${link.weight !== 1 ? ` (w=${link.weight})` : ''}${suffix}</li>`;
-        }
-        html += '</ul></div>';
+            const wTxt = link.weight !== undefined && link.weight !== 1 ? ` (w=${link.weight})` : '';
+            return `<li>${label}${wTxt}${suffix}</li>`;
+        }).join('');
+        const id = `infosec-conn-${Math.random().toString(36).slice(2, 9)}`;
+        html += `<div class="info-section">
+            <h4 class="info-toggle" data-target="${id}" style="cursor:pointer;user-select:none;"><span class="info-chevron">▸</span> Connections (${connectedLinks.length}) <span style="font-weight:normal;color:#9ca3af;font-size:11px;">(click to expand)</span></h4>
+            <ul class="info-connections" id="${id}" style="display:none;">${items}</ul>
+        </div>`;
     }
 
     infoContent.innerHTML = html;
     infoPanel.classList.add('visible');
     infoPanel.classList.remove('collapsed');
     collapseInfoBtn.textContent = '›';
+
+    // Wire up the toggle headers
+    infoContent.querySelectorAll('.info-toggle').forEach(h => {
+        h.addEventListener('click', () => {
+            const tgt = document.getElementById(h.dataset.target);
+            if (!tgt) return;
+            const open = tgt.style.display !== 'none';
+            tgt.style.display = open ? 'none' : '';
+            const chevron = h.querySelector('.info-chevron');
+            if (chevron) chevron.textContent = open ? '▸' : '▾';
+        });
+    });
 }
 
 function showLinkInfo(link) {

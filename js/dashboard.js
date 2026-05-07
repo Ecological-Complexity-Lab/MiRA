@@ -245,7 +245,6 @@ export class Dashboard {
             ${this._sLayerSimilarity(s, bp)}
             ${this._sDegree(s, bp)}
             ${this._sStrength(s, bp)}
-            ${this._sParticipation(s, bp)}
         </div>`;
 
         this._attachEvents();
@@ -313,24 +312,36 @@ export class Dashboard {
             nodeParticipation.set(sn.node_name, (nodeParticipation.get(sn.node_name) ?? 0) + 1);
         }
 
-        // Degree & strength, summed across layers per physical node, kept
-        // separate for intra and inter (Boccaletti 2014; De Domenico 2015).
-        // For directed networks intra_degree isn't defined as a single
-        // scalar — fall back to the sum of in + out.
-        const sumPair = (sn, undirField, inField, outField) =>
-            (sn[undirField] ?? ((sn[inField] ?? 0) + (sn[outField] ?? 0)));
+        // Degree & strength per physical node, summed across layers, kept
+        // separate for intralayer vs interlayer (Boccaletti 2014; De Domenico
+        // 2015). For directed networks the intra_degree / inter_degree
+        // scalars don't exist on the state node — only their in/out splits —
+        // so we accumulate those into separate maps and let the renderer
+        // pick which set to display.
+        const accumByName = (field) => {
+            const out = new Map();
+            for (const sn of m.stateNodes) {
+                const v = sn[field];
+                if (v === undefined) continue;
+                out.set(sn.node_name, (out.get(sn.node_name) ?? 0) + v);
+            }
+            return out;
+        };
 
-        const nodeIntraDegree   = new Map();
-        const nodeInterDegree   = new Map();
-        const nodeIntraStrength = new Map();
-        const nodeInterStrength = new Map();
-        for (const sn of m.stateNodes) {
-            const k = sn.node_name;
-            nodeIntraDegree.set(k,   (nodeIntraDegree.get(k)   ?? 0) + sumPair(sn, 'intra_degree',   'intra_in_degree',   'intra_out_degree'));
-            nodeInterDegree.set(k,   (nodeInterDegree.get(k)   ?? 0) + sumPair(sn, 'inter_degree',   'inter_in_degree',   'inter_out_degree'));
-            nodeIntraStrength.set(k, (nodeIntraStrength.get(k) ?? 0) + sumPair(sn, 'intra_strength', 'intra_in_strength', 'intra_out_strength'));
-            nodeInterStrength.set(k, (nodeInterStrength.get(k) ?? 0) + sumPair(sn, 'inter_strength', 'inter_in_strength', 'inter_out_strength'));
-        }
+        const nodeMaps = {
+            intra_degree:        accumByName('intra_degree'),
+            intra_strength:      accumByName('intra_strength'),
+            intra_in_degree:     accumByName('intra_in_degree'),
+            intra_out_degree:    accumByName('intra_out_degree'),
+            intra_in_strength:   accumByName('intra_in_strength'),
+            intra_out_strength:  accumByName('intra_out_strength'),
+            inter_degree:        accumByName('inter_degree'),
+            inter_strength:      accumByName('inter_strength'),
+            inter_in_degree:     accumByName('inter_in_degree'),
+            inter_out_degree:    accumByName('inter_out_degree'),
+            inter_in_strength:   accumByName('inter_in_strength'),
+            inter_out_strength:  accumByName('inter_out_strength'),
+        };
 
         // Presence set for matrix ("layerName::nodeName")
         const presence = new Set();
@@ -351,10 +362,12 @@ export class Dashboard {
             setALabel, setBLabel, setANodes, setBNodes, nodeSetMap,
             totalNodes: m.nodes.length, totalLayers: layerNames.length,
             totalIntra: m.intralayerLinks.length, totalInter: m.interlayerLinks.length,
+            hasInterlayer: m.interlayerLinks.length > 0,
+            directedIntra: m.directed ?? false,
+            directedInter: m.directedInterlayer ?? false,
             avgDensity, perLayer, layerNames,
             nodeParticipation,
-            nodeIntraDegree, nodeInterDegree,
-            nodeIntraStrength, nodeInterStrength,
+            nodeMaps,
             presence, sortedNodes, edgeKeySets,
         };
     }
@@ -451,7 +464,8 @@ export class Dashboard {
         const HDR_H = 88;
 
         const flipped   = this._matrixFlipped;
-        const title     = flipped ? 'Layer × Node Presence Matrix' : 'Node × Layer Presence Matrix';
+        const matrixSubtitle = flipped ? 'Layer × Node Presence Matrix' : 'Node × Layer Presence Matrix';
+        const title     = 'Participation';
 
         // Controls row: sort + orientation toggle
         const sortCtrl = `<div class="db-matrix-ctrl">
@@ -527,11 +541,43 @@ export class Dashboard {
             svgContent = colHdrs + rowSvg;
         }
 
+        const histogramHtml = this._participationHistogram(s, bp);
+
         return this._sec('matrix', title, `
+            <div class="db-chart-title" style="margin-bottom:8px;">${matrixSubtitle}</div>
             ${sortCtrl}
             <div class="db-matrix-wrap">
                 <svg width="${svgW}" height="${svgH}" style="overflow:visible">${svgContent}</svg>
+            </div>
+            <div style="margin-top:24px;">
+                <div class="db-chart-title" style="margin-bottom:8px;">Participation distribution (multiplexity)</div>
+                ${histogramHtml}
             </div>`);
+    }
+
+    // Participation histogram (was previously its own section). Returns the
+    // chart-row HTML so _sMatrix can embed it under the presence matrix.
+    _participationHistogram(s, bp) {
+        const L = s.totalLayers;
+        const makeBins = vals => Array.from({ length: L }, (_, i) => ({
+            x0: i + 1,
+            count: vals.filter(v => v === i + 1).length,
+        }));
+
+        if (bp) {
+            const vA = [...s.setANodes].map(n => s.nodeParticipation.get(n) ?? 0);
+            const vB = [...s.setBNodes].map(n => s.nodeParticipation.get(n) ?? 0);
+            return `<div class="db-charts-row">
+                <div class="db-chart-box"><div class="db-chart-title">${s.setALabel}</div>
+                    ${svgHist(makeBins(vA), { width: 300, height: 160, color: SET_A_COLOR, xLabel: 'Number of layers' })}</div>
+                <div class="db-chart-box"><div class="db-chart-title">${s.setBLabel}</div>
+                    ${svgHist(makeBins(vB), { width: 300, height: 160, color: SET_B_COLOR, xLabel: 'Number of layers' })}</div>
+            </div>`;
+        }
+        const v = [...s.nodeParticipation.values()];
+        return `<div class="db-chart-box">
+            ${svgHist(makeBins(v), { width: 460, height: 200, xLabel: 'Number of layers' })}
+        </div>`;
     }
 
     // Integer-valued bin builder, shared by degree and strength panels.
@@ -580,12 +626,34 @@ export class Dashboard {
             ${svgHist(binner(vals), { width: 460, height: 200, color, xLabel })}</div>`;
     }
 
+    // Build the per-section panel list ("intra" / "inter") for a given
+    // primitive ("degree" / "strength"). Splits into in/out when the
+    // matching edge type is directed; skips the inter half when the network
+    // has no interlayer links.
+    _distPanels(s, bp, primitive, opts) {
+        const panels = [];
+        const sides = [
+            { kind: 'intra', label: 'Intralayer', directed: s.directedIntra, color: undefined },
+            ...(s.hasInterlayer ? [{ kind: 'inter', label: 'Interlayer', directed: s.directedInter, color: '#f59e0b' }] : []),
+        ];
+        for (const side of sides) {
+            if (side.directed) {
+                const inMap  = s.nodeMaps[`${side.kind}_in_${primitive}`];
+                const outMap = s.nodeMaps[`${side.kind}_out_${primitive}`];
+                panels.push(this._renderDistPanel(`${side.label} in-${primitive}`,  inMap,  s, bp, { ...opts, color: side.color }));
+                panels.push(this._renderDistPanel(`${side.label} out-${primitive}`, outMap, s, bp, { ...opts, color: side.color }));
+            } else {
+                const map = s.nodeMaps[`${side.kind}_${primitive}`];
+                panels.push(this._renderDistPanel(`${side.label} ${primitive}`, map, s, bp, { ...opts, color: side.color }));
+            }
+        }
+        return panels;
+    }
+
     _sDegree(s, bp) {
-        const binner = vals => this._intBins(vals);
-        const intra = this._renderDistPanel('Intralayer degree', s.nodeIntraDegree, s, bp, { binner, xLabel: 'Degree' });
-        const inter = this._renderDistPanel('Interlayer degree', s.nodeInterDegree, s, bp, { binner, color: '#f59e0b', xLabel: 'Degree' });
-        const content = `<div class="db-degree-grid">${intra}${inter}</div>`;
-        return this._sec('degree', 'Degree Distributions (intra vs inter)', content);
+        const panels = this._distPanels(s, bp, 'degree', { binner: vals => this._intBins(vals), xLabel: 'Degree' });
+        const title = s.hasInterlayer ? 'Degree Distributions (intra vs inter)' : 'Degree Distribution';
+        return this._sec('degree', title, `<div class="db-degree-grid">${panels.join('')}</div>`);
     }
 
     _sStrength(s, bp) {
@@ -599,36 +667,9 @@ export class Dashboard {
         const w0 = allWeights[0];
         if (allWeights.every(w => w === w0)) return '';
 
-        const binner = vals => this._floatBins(vals);
-        const intra = this._renderDistPanel('Intralayer strength', s.nodeIntraStrength, s, bp, { binner, xLabel: 'Strength' });
-        const inter = this._renderDistPanel('Interlayer strength', s.nodeInterStrength, s, bp, { binner, color: '#f59e0b', xLabel: 'Strength' });
-        const content = `<div class="db-degree-grid">${intra}${inter}</div>`;
-        return this._sec('strength', 'Strength Distributions (intra vs inter)', content);
-    }
-
-    _sParticipation(s, bp) {
-        const L       = s.totalLayers;
-        const makeBins = vals => Array.from({ length: L }, (_, i) => ({
-            x0: i + 1,
-            count: vals.filter(v => v === i + 1).length,
-        }));
-
-        let content;
-        if (bp) {
-            const vA = [...s.setANodes].map(n => s.nodeParticipation.get(n) ?? 0);
-            const vB = [...s.setBNodes].map(n => s.nodeParticipation.get(n) ?? 0);
-            content = `<div class="db-charts-row">
-                <div class="db-chart-box"><div class="db-chart-title">${s.setALabel} — layer participation</div>
-                    ${svgHist(makeBins(vA), { width: 300, height: 160, color: SET_A_COLOR, xLabel: 'Number of layers' })}</div>
-                <div class="db-chart-box"><div class="db-chart-title">${s.setBLabel} — layer participation</div>
-                    ${svgHist(makeBins(vB), { width: 300, height: 160, color: SET_B_COLOR, xLabel: 'Number of layers' })}</div>
-            </div>`;
-        } else {
-            const v = [...s.nodeParticipation.values()];
-            content = `<div class="db-chart-box"><div class="db-chart-title">Layer participation (multiplexity)</div>
-                ${svgHist(makeBins(v), { width: 460, height: 200, xLabel: 'Number of layers' })}</div>`;
-        }
-        return this._sec('participation', 'Node Participation (Multiplexity)', content);
+        const panels = this._distPanels(s, bp, 'strength', { binner: vals => this._floatBins(vals), xLabel: 'Strength' });
+        const title = s.hasInterlayer ? 'Strength Distributions (intra vs inter)' : 'Strength Distribution';
+        return this._sec('strength', title, `<div class="db-degree-grid">${panels.join('')}</div>`);
     }
 
     _sSetRatio(s) {
