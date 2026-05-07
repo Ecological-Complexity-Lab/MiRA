@@ -1,3 +1,4 @@
+setwd('~/GitHub/Ecological-Complexity-Lab/emln/')
 devtools::document()
 devtools::check()
 devtools::load_all()
