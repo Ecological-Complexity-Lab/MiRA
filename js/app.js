@@ -3175,23 +3175,64 @@ csvImportLoad.addEventListener('click', () => {
     }
 });
 
+// Append an <optgroup> with one <option> per item. Items is a list of
+// {value, text} objects. Skipped silently when items is empty.
+function appendOptgroup(select, label, items) {
+    if (!items.length) return;
+    const og = document.createElement('optgroup');
+    og.label = label;
+    for (const { value, text } of items) {
+        const opt = document.createElement('option');
+        opt.value = value;
+        opt.textContent = text;
+        og.appendChild(opt);
+    }
+    select.appendChild(og);
+}
+
+// Split MiRA-computed attribute names by side (intra / inter) so the
+// dropdown can show separate optgroups and users don't have to scan
+// one long alphabetical list.
+function splitMiraAttrs(attrs, computedSet) {
+    const fromData = [], intra = [], inter = [];
+    for (const a of attrs) {
+        if (!computedSet.has(a)) { fromData.push(a); continue; }
+        if (a.startsWith('inter_')) inter.push(a);
+        else if (a.startsWith('intra_')) intra.push(a);
+        else fromData.push(a); // fallback for any future computed attr that isn't intra/inter-prefixed
+    }
+    return { fromData, intra, inter };
+}
+
 // ---- Dropdowns ----
 function populateDropdowns() {
     if (!model) return;
 
-    // Node color options
+    const computedNode  = new Set(model.computedNodeAttributes || []);
+    const computedState = new Set(model.computedStateNodeAttributes || []);
+
+    // Node color options — grouped to help users navigate. Optgroups:
+    //   "From data"            (raw attributes from the input file)
+    //   "MiRA — intralayer"    (intra_* fields)
+    //   "MiRA — interlayer"    (inter_* fields, only emitted when inter
+    //                           links exist)
     nodeColorSelect.innerHTML = '<option value="">Default</option>';
-    for (const attr of model.nodeAttributeNames) {
-        const opt = document.createElement('option');
-        opt.value = `node:${attr}`;
-        opt.textContent = `Node: ${attr}`;
-        nodeColorSelect.appendChild(opt);
-    }
-    for (const attr of model.stateNodeAttributeNames) {
-        const opt = document.createElement('option');
-        opt.value = `state:${attr}`;
-        opt.textContent = `State: ${attr}`;
-        nodeColorSelect.appendChild(opt);
+    {
+        const node  = splitMiraAttrs(model.nodeAttributeNames, computedNode);
+        const state = splitMiraAttrs(model.stateNodeAttributeNames, computedState);
+        const toItem = (prefix, src) => a => ({ value: `${src}:${a}`, text: `${prefix}: ${a}` });
+        appendOptgroup(nodeColorSelect, 'From data', [
+            ...node.fromData.map(toItem('Node', 'node')),
+            ...state.fromData.map(toItem('State', 'state')),
+        ]);
+        appendOptgroup(nodeColorSelect, 'MiRA — intralayer', [
+            ...node.intra.map(toItem('Node', 'node')),
+            ...state.intra.map(toItem('State', 'state')),
+        ]);
+        appendOptgroup(nodeColorSelect, 'MiRA — interlayer', [
+            ...node.inter.map(toItem('Node', 'node')),
+            ...state.inter.map(toItem('State', 'state')),
+        ]);
     }
 
     // Bipartite node color options
@@ -3205,6 +3246,13 @@ function populateDropdowns() {
     let hasBipartite = false;
     let labelA = "Set A", labelB = "Set B";
 
+    // Per-set walks collect every attribute exposed on a node belonging to
+    // that set, except (a) structural keys, and (b) MiRA-computed state-node
+    // fields — those are network-wide so we add them to both sets explicitly.
+    const STRUCTURAL_NODE_KEYS = new Set(['node_id', 'node_name']);
+    const STRUCTURAL_STATE_KEYS = new Set(['layer_id', 'node_id', 'layer_name', 'node_name']);
+    const computedStateSet = new Set(model.computedStateNodeAttributes || []);
+
     for (const [layerName, info] of model.bipartiteInfo) {
         if (!info.isBipartite) continue;
         hasBipartite = true;
@@ -3212,32 +3260,42 @@ function populateDropdowns() {
         labelB = info.setBLabel || labelB;
         for (const nodeName of info.setA) {
             const pn = model.nodesByName.get(nodeName);
-            if (pn) Object.keys(pn).forEach(k => { if (k !== 'node_id' && k !== 'node_name') setA_nodeAttrs.add(k); });
+            if (pn) Object.keys(pn).forEach(k => { if (!STRUCTURAL_NODE_KEYS.has(k)) setA_nodeAttrs.add(k); });
             const sn = model.stateNodeMap.get(`${layerName}::${nodeName}`);
-            if (sn) Object.keys(sn).forEach(k => { if (!['layer_id', 'node_id', 'layer_name', 'node_name', 'degree', 'strength', 'in_degree', 'out_degree', 'in_strength', 'out_strength'].includes(k)) setA_stateAttrs.add(k); });
+            if (sn) Object.keys(sn).forEach(k => { if (!STRUCTURAL_STATE_KEYS.has(k) && !computedStateSet.has(k)) setA_stateAttrs.add(k); });
         }
         for (const nodeName of info.setB) {
             const pn = model.nodesByName.get(nodeName);
-            if (pn) Object.keys(pn).forEach(k => { if (k !== 'node_id' && k !== 'node_name') setB_nodeAttrs.add(k); });
+            if (pn) Object.keys(pn).forEach(k => { if (!STRUCTURAL_NODE_KEYS.has(k)) setB_nodeAttrs.add(k); });
             const sn = model.stateNodeMap.get(`${layerName}::${nodeName}`);
-            if (sn) Object.keys(sn).forEach(k => { if (!['layer_id', 'node_id', 'layer_name', 'node_name', 'degree', 'strength', 'in_degree', 'out_degree', 'in_strength', 'out_strength'].includes(k)) setB_stateAttrs.add(k); });
+            if (sn) Object.keys(sn).forEach(k => { if (!STRUCTURAL_STATE_KEYS.has(k) && !computedStateSet.has(k)) setB_stateAttrs.add(k); });
         }
     }
-
-    ['degree', 'strength', 'in_degree', 'out_degree', 'in_strength', 'out_strength'].forEach(attr => {
-        if (model.stateNodeAttributeNames.includes(attr)) {
-            setA_stateAttrs.add(attr);
-            setB_stateAttrs.add(attr);
-        }
-    });
 
     if (hasBipartite) {
         bipartiteColorLabelA.textContent = `Color by ${labelA}`;
         bipartiteColorLabelB.textContent = `Color by ${labelB}`;
-        setA_nodeAttrs.forEach(attr => { const opt = document.createElement('option'); opt.value = `node:${attr}`; opt.textContent = `Node: ${attr}`; nodeColorSelectSetA.appendChild(opt); });
-        setA_stateAttrs.forEach(attr => { const opt = document.createElement('option'); opt.value = `state:${attr}`; opt.textContent = `State: ${attr}`; nodeColorSelectSetA.appendChild(opt); });
-        setB_nodeAttrs.forEach(attr => { const opt = document.createElement('option'); opt.value = `node:${attr}`; opt.textContent = `Node: ${attr}`; nodeColorSelectSetB.appendChild(opt); });
-        setB_stateAttrs.forEach(attr => { const opt = document.createElement('option'); opt.value = `state:${attr}`; opt.textContent = `State: ${attr}`; nodeColorSelectSetB.appendChild(opt); });
+
+        const toItem = (prefix, src) => a => ({ value: `${src}:${a}`, text: `${prefix}: ${a}` });
+        const stateMira = splitMiraAttrs(model.computedStateNodeAttributes || [], computedState);
+
+        const populateSet = (select, nodeAttrSet, stateAttrSet) => {
+            const node = splitMiraAttrs([...nodeAttrSet], computedNode);
+            appendOptgroup(select, 'From data', [
+                ...node.fromData.map(toItem('Node', 'node')),
+                ...[...stateAttrSet].map(toItem('State', 'state')),
+            ]);
+            appendOptgroup(select, 'MiRA — intralayer', [
+                ...node.intra.map(toItem('Node', 'node')),
+                ...stateMira.intra.map(toItem('State', 'state')),
+            ]);
+            appendOptgroup(select, 'MiRA — interlayer', [
+                ...node.inter.map(toItem('Node', 'node')),
+                ...stateMira.inter.map(toItem('State', 'state')),
+            ]);
+        };
+        populateSet(nodeColorSelectSetA, setA_nodeAttrs, setA_stateAttrs);
+        populateSet(nodeColorSelectSetB, setB_nodeAttrs, setB_stateAttrs);
     }
 
     // Node size options
@@ -3255,20 +3313,28 @@ function populateDropdowns() {
         return false;
     };
 
-    const addSizeOpt = (select, source, attr) => {
-        const opt = document.createElement('option');
-        opt.value = `${source}:${attr}`;
-        opt.textContent = `${source === 'node' ? 'Node' : 'State'}: ${attr}`;
-        select.appendChild(opt);
-    };
+    const sizeItem = (prefix, src) => a => ({ value: `${src}:${a}`, text: `${prefix}: ${a}` });
 
-    for (const attr of model.nodeAttributeNames) {
-        if (isNumericAttr(attr, model.nodes)) addSizeOpt(nodeSizeSelect, 'node', attr);
-    }
-    for (const attr of Object.keys(model.stateNodes[0] || {})) {
-        if (!['layer_name', 'node_name', 'layer_id', 'node_id'].includes(attr)) {
-            if (isNumericAttr(attr, model.stateNodes)) addSizeOpt(nodeSizeSelect, 'state', attr);
-        }
+    {
+        const numericNodeAttrs  = model.nodeAttributeNames.filter(a => isNumericAttr(a, model.nodes));
+        const stateAttrCandidates = Object.keys(model.stateNodes[0] || {})
+            .filter(a => !STRUCTURAL_STATE_KEYS.has(a));
+        const numericStateAttrs = stateAttrCandidates.filter(a => isNumericAttr(a, model.stateNodes));
+
+        const node  = splitMiraAttrs(numericNodeAttrs, computedNode);
+        const state = splitMiraAttrs(numericStateAttrs, computedState);
+        appendOptgroup(nodeSizeSelect, 'From data', [
+            ...node.fromData.map(sizeItem('Node', 'node')),
+            ...state.fromData.map(sizeItem('State', 'state')),
+        ]);
+        appendOptgroup(nodeSizeSelect, 'MiRA — intralayer', [
+            ...node.intra.map(sizeItem('Node', 'node')),
+            ...state.intra.map(sizeItem('State', 'state')),
+        ]);
+        appendOptgroup(nodeSizeSelect, 'MiRA — interlayer', [
+            ...node.inter.map(sizeItem('Node', 'node')),
+            ...state.inter.map(sizeItem('State', 'state')),
+        ]);
     }
 
     // Bipartite size selects — only numeric attrs per set
@@ -3276,12 +3342,30 @@ function populateDropdowns() {
         bipartiteSizeLabelA.textContent = `Size by ${labelA}`;
         bipartiteSizeLabelB.textContent = `Size by ${labelB}`;
 
-        const addSetSizeOpts = (select, nodeAttrs, stateAttrs) => {
-            nodeAttrs.forEach(attr => { if (isNumericAttr(attr, model.nodes)) addSizeOpt(select, 'node', attr); });
-            stateAttrs.forEach(attr => { if (isNumericAttr(attr, model.stateNodes)) addSizeOpt(select, 'state', attr); });
+        const stateMira = splitMiraAttrs(
+            (model.computedStateNodeAttributes || []).filter(a => isNumericAttr(a, model.stateNodes)),
+            computedState,
+        );
+
+        const populateSetSize = (select, nodeAttrSet, stateAttrSet) => {
+            const numericNode = [...nodeAttrSet].filter(a => isNumericAttr(a, model.nodes));
+            const numericState = [...stateAttrSet].filter(a => isNumericAttr(a, model.stateNodes));
+            const node = splitMiraAttrs(numericNode, computedNode);
+            appendOptgroup(select, 'From data', [
+                ...node.fromData.map(sizeItem('Node', 'node')),
+                ...numericState.map(sizeItem('State', 'state')),
+            ]);
+            appendOptgroup(select, 'MiRA — intralayer', [
+                ...node.intra.map(sizeItem('Node', 'node')),
+                ...stateMira.intra.map(sizeItem('State', 'state')),
+            ]);
+            appendOptgroup(select, 'MiRA — interlayer', [
+                ...node.inter.map(sizeItem('Node', 'node')),
+                ...stateMira.inter.map(sizeItem('State', 'state')),
+            ]);
         };
-        addSetSizeOpts(nodeSizeSelectSetA, setA_nodeAttrs, setA_stateAttrs);
-        addSetSizeOpts(nodeSizeSelectSetB, setB_nodeAttrs, setB_stateAttrs);
+        populateSetSize(nodeSizeSelectSetA, setA_nodeAttrs, setA_stateAttrs);
+        populateSetSize(nodeSizeSelectSetB, setB_nodeAttrs, setB_stateAttrs);
 
         nodeSizeSelectSetA.disabled = nodeSizeSelectSetA.options.length <= 1;
         nodeSizeSelectSetB.disabled = nodeSizeSelectSetB.options.length <= 1;
@@ -3962,82 +4046,137 @@ zoomResetBtn.addEventListener('click', () => {
 });
 
 // ---- Node Info Panel ----
+// Format any node/link/layer attribute value for display in the info panel.
+// Maps render as small per-layer breakdowns; arrays as comma-joined values;
+// numbers get a sensible decimal cap. Everything else stringifies normally.
+function formatInfoValue(value) {
+    if (value === null || value === undefined || value === '') return 'N/A';
+    if (value instanceof Map) {
+        if (value.size === 0) return '—';
+        const parts = [];
+        for (const [k, v] of value) {
+            const fv = typeof v === 'number' && !Number.isInteger(v) ? v.toFixed(3) : v;
+            parts.push(`${k}: ${fv}`);
+        }
+        return parts.join(', ');
+    }
+    if (Array.isArray(value)) return value.length ? value.join(', ') : '—';
+    if (typeof value === 'number' && !Number.isInteger(value)) return value.toFixed(3);
+    return String(value);
+}
+
+// Render an info-section with rows. Optional `collapsedByDefault` wraps the
+// rows behind a click-to-expand header so the panel doesn't dominate the
+// viewport when computed properties or long connection lists are present.
+function renderInfoSection(title, rows, { collapsedByDefault = false } = {}) {
+    if (!rows.length) return '';
+    const id = `infosec-${Math.random().toString(36).slice(2, 9)}`;
+    const body = rows.map(({ key, value }) =>
+        `<div class="info-row"><span class="info-key">${key}</span><span class="info-value">${formatInfoValue(value)}</span></div>`
+    ).join('');
+    if (!collapsedByDefault) {
+        return `<div class="info-section"><h4>${title}</h4>${body}</div>`;
+    }
+    return `<div class="info-section">
+        <h4 class="info-toggle" data-target="${id}" style="cursor:pointer;user-select:none;"><span class="info-chevron">▸</span> ${title} <span style="font-weight:normal;color:#9ca3af;font-size:11px;">(click to expand)</span></h4>
+        <div id="${id}" style="display:none;">${body}</div>
+    </div>`;
+}
+
 function showNodeInfo(hit) {
     if (!model) return;
 
     const { layerName, nodeName } = hit;
 
-    // Physical node attributes
     const physicalNode = model.nodesByName.get(nodeName);
-    // State node attributes
     const stateNode = model.stateNodeMap.get(`${layerName}::${nodeName}`);
-    // Connected links
     const connectedLinks = model.extended.filter(
         l => (l.layer_from === layerName && l.node_from === nodeName) ||
             (l.layer_to === layerName && l.node_to === nodeName)
     );
 
+    const computedNode  = new Set(model.computedNodeAttributes || []);
+    const computedState = new Set(model.computedStateNodeAttributes || []);
+    // `_by_layer` Maps and `layers_present` are MiRA-computed metadata too —
+    // pin them to the computed bucket even though they aren't in the
+    // dropdown-attribute marker arrays (those expose only scalar attributes).
+    const COMPUTED_NODE_EXTRAS = new Set(['layers_present']);
+    const isByLayerKey = k => k.endsWith('_by_layer');
+
+    const STRUCTURAL_NODE = new Set(['node_id', 'node_name', 'layer_name']);
+    const STRUCTURAL_STATE = new Set(['layer_id', 'node_id', 'layer_name', 'node_name']);
+
     infoTitle.textContent = nodeName;
 
-    let html = '';
-
-    // Physical node attributes
+    const dataNodeRows = [], computedNodeRows = [];
     if (physicalNode) {
-        html += '<div class="info-section"><h4>Node Attributes</h4>';
         for (const [key, value] of Object.entries(physicalNode)) {
-            if (key === 'node_id') continue;
-            html += `<div class="info-row"><span class="info-key">${key}</span><span class="info-value">${value ?? 'N/A'}</span></div>`;
+            if (STRUCTURAL_NODE.has(key)) continue;
+            const isComputed = computedNode.has(key) || COMPUTED_NODE_EXTRAS.has(key) || isByLayerKey(key);
+            (isComputed ? computedNodeRows : dataNodeRows).push({ key, value });
         }
-        html += '</div>';
     }
 
-    // State node attributes
+    const dataStateRows = [], computedStateRows = [];
     if (stateNode) {
-        html += '<div class="info-section"><h4>State Node (in ' + layerName + ')</h4>';
         for (const [key, value] of Object.entries(stateNode)) {
-            if (['layer_id', 'node_id', 'layer_name', 'node_name'].includes(key)) continue;
-            html += `<div class="info-row"><span class="info-key">${key}</span><span class="info-value">${value ?? 'N/A'}</span></div>`;
+            if (STRUCTURAL_STATE.has(key)) continue;
+            (computedState.has(key) ? computedStateRows : dataStateRows).push({ key, value });
         }
-        html += '</div>';
     }
 
-    // Layer info
     const layerObj = model.layersByName.get(layerName);
-    if (layerObj) {
-        html += '<div class="info-section"><h4>Layer</h4>';
-        for (const [key, value] of Object.entries(layerObj)) {
-            if (key === 'layer_id') continue;
-            html += `<div class="info-row"><span class="info-key">${key}</span><span class="info-value">${value ?? 'N/A'}</span></div>`;
-        }
-        html += '</div>';
-    }
+    const layerRows = layerObj
+        ? Object.entries(layerObj)
+            .filter(([k]) => k !== 'layer_id')
+            .map(([key, value]) => ({ key, value }))
+        : [];
 
-    // Connections
+    let html = '';
+    html += renderInfoSection('Node attributes', dataNodeRows);
+    html += renderInfoSection('State node (in ' + layerName + ')', dataStateRows);
+    html += renderInfoSection('Layer', layerRows);
+    html += renderInfoSection('MiRA-computed', [...computedNodeRows, ...computedStateRows], { collapsedByDefault: true });
+
     if (connectedLinks.length > 0) {
-        html += '<div class="info-section"><h4>Connections (' + connectedLinks.length + ')</h4><ul class="info-connections">';
-        for (const link of connectedLinks) {
+        const items = connectedLinks.map(link => {
             const isFrom = link.node_from === nodeName && link.layer_from === layerName;
             const otherNode = isFrom ? link.node_to : link.node_from;
             const otherLayer = isFrom ? link.layer_to : link.layer_from;
             const isInter = link.layer_from !== link.layer_to;
-            const label = isInter
-                ? `${otherNode} (${otherLayer})`
-                : otherNode;
+            const label = isInter ? `${otherNode} (${otherLayer})` : otherNode;
             const extraAttrs = Object.entries(link)
-                .filter(([k]) => !['layer_from', 'node_from', 'layer_to', 'node_to', 'weight'].includes(k))
+                .filter(([k]) => !['layer_from', 'node_from', 'layer_to', 'node_to', 'weight', 'directed'].includes(k))
                 .filter(([, v]) => v !== null && v !== undefined)
-                .map(([k, v]) => `${k}: ${v}`)
+                .map(([k, v]) => `${k}: ${formatInfoValue(v)}`)
                 .join(', ');
             const suffix = extraAttrs ? ` [${extraAttrs}]` : '';
-            html += `<li>${label}${link.weight !== 1 ? ` (w=${link.weight})` : ''}${suffix}</li>`;
-        }
-        html += '</ul></div>';
+            const wTxt = link.weight !== undefined && link.weight !== 1 ? ` (w=${link.weight})` : '';
+            return `<li>${label}${wTxt}${suffix}</li>`;
+        }).join('');
+        const id = `infosec-conn-${Math.random().toString(36).slice(2, 9)}`;
+        html += `<div class="info-section">
+            <h4 class="info-toggle" data-target="${id}" style="cursor:pointer;user-select:none;"><span class="info-chevron">▸</span> Connections (${connectedLinks.length}) <span style="font-weight:normal;color:#9ca3af;font-size:11px;">(click to expand)</span></h4>
+            <ul class="info-connections" id="${id}" style="display:none;">${items}</ul>
+        </div>`;
     }
 
     infoContent.innerHTML = html;
     infoPanel.classList.add('visible');
     infoPanel.classList.remove('collapsed');
     collapseInfoBtn.textContent = '›';
+
+    // Wire up the toggle headers
+    infoContent.querySelectorAll('.info-toggle').forEach(h => {
+        h.addEventListener('click', () => {
+            const tgt = document.getElementById(h.dataset.target);
+            if (!tgt) return;
+            const open = tgt.style.display !== 'none';
+            tgt.style.display = open ? 'none' : '';
+            const chevron = h.querySelector('.info-chevron');
+            if (chevron) chevron.textContent = open ? '▸' : '▾';
+        });
+    });
 }
 
 function showLinkInfo(link) {

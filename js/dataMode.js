@@ -162,13 +162,9 @@ export class DataMode {
         const nodeByStateKey = new Map();
         for (const n of m.nodes) nodeByStateKey.set(`${n.layer_name}::${n.node_name}`, n);
 
-        const degreesMap = new Map();
-        for (const link of m.intralayerLinks) {
-            const kFrom = `${link.layer_from}::${link.node_from}`;
-            const kTo = `${link.layer_from}::${link.node_to}`;
-            degreesMap.set(kFrom, (degreesMap.get(kFrom) || 0) + 1);
-            degreesMap.set(kTo, (degreesMap.get(kTo) || 0) + 1);
-        }
+        // intra_*/inter_* fields are populated by js/calc/nodeMetrics.js and
+        // carried through m.stateNodeAttributeNames, so they flow into the
+        // table via the loop below. No duplicate degree computation needed.
         this._tables.stateNodes = m.stateNodes.map(sn => {
             const row = { node_name: sn.node_name, layer_name: sn.layer_name };
             for (const attr of (m.stateNodeAttributeNames || [])) row[attr] = sn[attr];
@@ -176,7 +172,6 @@ export class DataMode {
             if (nodeEntry) {
                 for (const attr of varyingNodeAttrs) row[attr] = nodeEntry[attr];
             }
-            row.degree = degreesMap.get(`${sn.layer_name}::${sn.node_name}`) || 0;
             return row;
         });
         this._columns.stateNodes = this._deriveColumns(this._tables.stateNodes, ['node_name', 'layer_name']);

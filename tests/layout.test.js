@@ -33,7 +33,7 @@
  *   model.nodesPerLayer — Map<layerName, Set<nodeName>>
  *   model.layers        — [{ layer_name }]
  *   model.intralayerLinks — [{ layer_from, node_from, node_to }]
- *   model.stateNodeMap  — Map<"layer::node", { degree }>  (bipartite nested only)
+ *   model.stateNodeMap  — Map<"layer::node", { intra_degree }>  (bipartite nested only)
  *   model.bipartiteInfo — set externally on the layout instance
  */
 
@@ -65,7 +65,7 @@ function makeModel(nodeNames, edges = [], layerName = LAYER) {
     node_to: e.to,
   }))
   const stateNodeMap = new Map(
-    nodeNames.map(n => [`${layerName}::${n}`, { degree: 1, node_name: n, layer_name: layerName }])
+    nodeNames.map(n => [`${layerName}::${n}`, { intra_degree: 1, node_name: n, layer_name: layerName }])
   )
   return { nodesByName, nodesPerLayer, layers, intralayerLinks, stateNodeMap }
 }
@@ -307,9 +307,9 @@ describe('Group 4 — bipartite layout', () => {
     // so the highest-degree node gets index 0 (leftmost position).
     const model = makeModel(['P1', 'P2', 'P3'], [], LAYER)
     // Give P2 a higher degree than P1 and P3
-    model.stateNodeMap.set(`${LAYER}::P1`, { degree: 1 })
-    model.stateNodeMap.set(`${LAYER}::P2`, { degree: 5 })
-    model.stateNodeMap.set(`${LAYER}::P3`, { degree: 2 })
+    model.stateNodeMap.set(`${LAYER}::P1`, { intra_degree: 1 })
+    model.stateNodeMap.set(`${LAYER}::P2`, { intra_degree: 5 })
+    model.stateNodeMap.set(`${LAYER}::P3`, { intra_degree: 2 })
     const bipartiteInfo = new Map([
       [LAYER, { isBipartite: true, setA: new Set(['P1', 'P2', 'P3']), setB: new Set() }]
     ])
