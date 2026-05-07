@@ -1,6 +1,6 @@
 setwd('~/GitHub/Ecological-Complexity-Lab/emln/')
 devtools::document()
-devtools::check()
+# devtools::check()
 devtools::load_all()
 ?plot_multilayer
 ?multilayer_to_json
@@ -8,7 +8,7 @@ devtools::load_all()
 net <- load_emln(28)               # load a built-in dataset
 net$references
 # Open directly in the browser
-srv <- plot_multilayer(net, bipartite = TRUE)
+srv <- plot_multilayer(net, bipartite = TRUE, browser = 'Chrome')
 httpuv::stopServer(srv)            # stop server when done
 
 # Or export to JSON / CSV for manual upload
