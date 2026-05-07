@@ -12,7 +12,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Active Scope
 
-Work only inside `multilayer_viz/`. Ignore `_archive/` — legacy files only.
+Work only inside `MiRA/`. Ignore `_archive/` — legacy files only.
 
 ---
 
@@ -39,7 +39,7 @@ Browser (Playwright) tests live in `tests/browser/` and require the app to be se
 The app uses native ES6 modules and **cannot** be opened via `file://`. Always serve over HTTP:
 
 ```bash
-cd multilayer_viz
+cd MiRA
 python3 -m http.server 8000
 # Then open http://localhost:8000
 ```
@@ -48,7 +48,7 @@ python3 -m http.server 8000
 
 ## Architecture
 
-The web app lives entirely in `multilayer_viz/`. The `emln/` folder is an R package that bundles a copy of the web app under `emln/inst/multilayer_viz/` — changes to the web app must be manually mirrored there if R integration is needed.
+The web app lives entirely in `MiRA/`. The `emln/` folder is an R package that bundles a copy of the web app under `emln/inst/MiRA/` — changes to the web app must be manually mirrored there if R integration is needed.
 
 ### Data pipeline (the critical path)
 
