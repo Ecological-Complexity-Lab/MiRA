@@ -8,6 +8,8 @@
  * positives on forest/tree structures (issue #23).
  */
 
+import { computeMetrics } from './calc/index.js';
+
 export function parseMultilayerData(json) {
   // Validate required fields
   const required = ['nodes', 'layers', 'extended', 'state_nodes'];
@@ -111,60 +113,33 @@ export function parseMultilayerData(json) {
   for (const link of intralayerLinks)  link.directed = directed;
   for (const link of interlayerLinks)  link.directed = directedInterlayer;
 
-  // ---- Compute Network Statistics (Degree, Strength) ----
-  for (const sn of json.state_nodes) {
-    sn.degree = 0;
-    sn.strength = 0;
-    sn.in_degree = 0;
-    sn.out_degree = 0;
-    sn.in_strength = 0;
-    sn.out_strength = 0;
-  }
+  // ---- Compute node-level metrics (degree, strength — intra vs inter) ----
+  // Math + module layout: see js/calc/ and docs/calculations.md.
+  const metricsModel = {
+    stateNodes: json.state_nodes,
+    nodes: json.nodes,
+    stateNodeMap,
+    intralayerLinks,
+    interlayerLinks,
+    directed,
+    directedInterlayer,
+  };
+  const { stateNodeFields, physicalNodeFields } = computeMetrics(metricsModel);
 
-  for (const link of [...intralayerLinks, ...interlayerLinks]) {
-    const fromKey = `${link.layer_from}::${link.node_from}`;
-    const toKey   = `${link.layer_to}::${link.node_to}`;
-    const snFrom  = stateNodeMap.get(fromKey);
-    const snTo    = stateNodeMap.get(toKey);
-    const w = link.weight !== undefined ? link.weight : 1;
-
-    if (snFrom) {
-      snFrom.degree += 1;
-      snFrom.strength += w;
-      if (link.directed) {
-        snFrom.out_degree += 1;
-        snFrom.out_strength += w;
-      }
-    }
-
-    if (snTo) {
-      // Prevent double counting if it's a self-loop
-      if (fromKey !== toKey) {
-        snTo.degree += 1;
-        snTo.strength += w;
-      }
-      if (link.directed) {
-        snTo.in_degree += 1;
-        snTo.in_strength += w;
-      }
-    }
-  }
-
-  // If intralayer is undirected, remove in/out metrics to avoid cluttering attribute lists.
-  if (!directed) {
-    for (const sn of json.state_nodes) {
-      delete sn.in_degree;
-      delete sn.out_degree;
-      delete sn.in_strength;
-      delete sn.out_strength;
-    }
-  }
-
-  // Extract attribute names for color mapping
-  const nodeAttributeNames = extractExtraAttributes(json.nodes, ['node_id', 'node_name']);
+  // Extract attribute names for color mapping. The Map-valued `_by_layer`
+  // fields and the structural `layers_present` array are excluded — they
+  // aren't usable as scalar coloring attributes. Scalar `_sum` fields and
+  // all state-node fields fall through into the dropdowns.
+  const byLayerFields = physicalNodeFields.map(f => f.replace(/_sum$/, '_by_layer'));
+  const nodeAttributeNames = extractExtraAttributes(json.nodes, ['node_id', 'node_name', 'layers_present', ...byLayerFields]);
   const stateNodeAttributeNames = extractExtraAttributes(json.state_nodes, ['layer_id', 'node_id', 'layer_name', 'node_name']);
   const linkAttributeNames = extractExtraAttributes(json.extended, ['layer_from', 'node_from', 'layer_to', 'node_to', 'weight', 'directed']);
   const layerAttributeNames = extractExtraAttributes(json.layers, ['layer_id', 'layer_name', 'bipartite', 'latitude', 'longitude']);
+
+  // MiRA-computed attribute names — used by the UI to group dropdown entries
+  // under a "MiRA-computed" optgroup separate from "From data".
+  const computedNodeAttributes = [...physicalNodeFields];
+  const computedStateNodeAttributes = [...stateNodeFields];
 
   // ---- Bipartite detection ----
   const bipartiteInfo = detectBipartiteLayers(
@@ -204,6 +179,8 @@ export function parseMultilayerData(json) {
     stateNodeAttributeNames,
     linkAttributeNames,
     layerAttributeNames,
+    computedNodeAttributes,
+    computedStateNodeAttributes,
     bipartiteInfo,
     warnings,
   };

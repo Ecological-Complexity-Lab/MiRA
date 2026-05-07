@@ -3175,23 +3175,51 @@ csvImportLoad.addEventListener('click', () => {
     }
 });
 
+// Append an <optgroup> with one <option> per item. Items is a list of
+// {value, text} objects. Skipped silently when items is empty.
+function appendOptgroup(select, label, items) {
+    if (!items.length) return;
+    const og = document.createElement('optgroup');
+    og.label = label;
+    for (const { value, text } of items) {
+        const opt = document.createElement('option');
+        opt.value = value;
+        opt.textContent = text;
+        og.appendChild(opt);
+    }
+    select.appendChild(og);
+}
+
+// Split attributes into (from-data, MiRA-computed) buckets so the dropdown
+// can show two optgroups. computedSet is a Set<string> of attribute names
+// MiRA derived in dataParser; the rest came in with the user's data.
+function splitByComputed(attrs, computedSet) {
+    const fromData = [], computed = [];
+    for (const a of attrs) (computedSet.has(a) ? computed : fromData).push(a);
+    return { fromData, computed };
+}
+
 // ---- Dropdowns ----
 function populateDropdowns() {
     if (!model) return;
 
-    // Node color options
+    const computedNode  = new Set(model.computedNodeAttributes || []);
+    const computedState = new Set(model.computedStateNodeAttributes || []);
+
+    // Node color options — grouped by "From data" vs "MiRA-computed"
     nodeColorSelect.innerHTML = '<option value="">Default</option>';
-    for (const attr of model.nodeAttributeNames) {
-        const opt = document.createElement('option');
-        opt.value = `node:${attr}`;
-        opt.textContent = `Node: ${attr}`;
-        nodeColorSelect.appendChild(opt);
-    }
-    for (const attr of model.stateNodeAttributeNames) {
-        const opt = document.createElement('option');
-        opt.value = `state:${attr}`;
-        opt.textContent = `State: ${attr}`;
-        nodeColorSelect.appendChild(opt);
+    {
+        const node  = splitByComputed(model.nodeAttributeNames, computedNode);
+        const state = splitByComputed(model.stateNodeAttributeNames, computedState);
+        const toItem = (prefix, src) => a => ({ value: `${src}:${a}`, text: `${prefix}: ${a}` });
+        appendOptgroup(nodeColorSelect, 'From data', [
+            ...node.fromData.map(toItem('Node', 'node')),
+            ...state.fromData.map(toItem('State', 'state')),
+        ]);
+        appendOptgroup(nodeColorSelect, 'MiRA-computed', [
+            ...node.computed.map(toItem('Node', 'node')),
+            ...state.computed.map(toItem('State', 'state')),
+        ]);
     }
 
     // Bipartite node color options
@@ -3205,6 +3233,13 @@ function populateDropdowns() {
     let hasBipartite = false;
     let labelA = "Set A", labelB = "Set B";
 
+    // Per-set walks collect every attribute exposed on a node belonging to
+    // that set, except (a) structural keys, and (b) MiRA-computed state-node
+    // fields — those are network-wide so we add them to both sets explicitly.
+    const STRUCTURAL_NODE_KEYS = new Set(['node_id', 'node_name']);
+    const STRUCTURAL_STATE_KEYS = new Set(['layer_id', 'node_id', 'layer_name', 'node_name']);
+    const computedStateSet = new Set(model.computedStateNodeAttributes || []);
+
     for (const [layerName, info] of model.bipartiteInfo) {
         if (!info.isBipartite) continue;
         hasBipartite = true;
@@ -3212,32 +3247,41 @@ function populateDropdowns() {
         labelB = info.setBLabel || labelB;
         for (const nodeName of info.setA) {
             const pn = model.nodesByName.get(nodeName);
-            if (pn) Object.keys(pn).forEach(k => { if (k !== 'node_id' && k !== 'node_name') setA_nodeAttrs.add(k); });
+            if (pn) Object.keys(pn).forEach(k => { if (!STRUCTURAL_NODE_KEYS.has(k)) setA_nodeAttrs.add(k); });
             const sn = model.stateNodeMap.get(`${layerName}::${nodeName}`);
-            if (sn) Object.keys(sn).forEach(k => { if (!['layer_id', 'node_id', 'layer_name', 'node_name', 'degree', 'strength', 'in_degree', 'out_degree', 'in_strength', 'out_strength'].includes(k)) setA_stateAttrs.add(k); });
+            if (sn) Object.keys(sn).forEach(k => { if (!STRUCTURAL_STATE_KEYS.has(k) && !computedStateSet.has(k)) setA_stateAttrs.add(k); });
         }
         for (const nodeName of info.setB) {
             const pn = model.nodesByName.get(nodeName);
-            if (pn) Object.keys(pn).forEach(k => { if (k !== 'node_id' && k !== 'node_name') setB_nodeAttrs.add(k); });
+            if (pn) Object.keys(pn).forEach(k => { if (!STRUCTURAL_NODE_KEYS.has(k)) setB_nodeAttrs.add(k); });
             const sn = model.stateNodeMap.get(`${layerName}::${nodeName}`);
-            if (sn) Object.keys(sn).forEach(k => { if (!['layer_id', 'node_id', 'layer_name', 'node_name', 'degree', 'strength', 'in_degree', 'out_degree', 'in_strength', 'out_strength'].includes(k)) setB_stateAttrs.add(k); });
+            if (sn) Object.keys(sn).forEach(k => { if (!STRUCTURAL_STATE_KEYS.has(k) && !computedStateSet.has(k)) setB_stateAttrs.add(k); });
         }
     }
-
-    ['degree', 'strength', 'in_degree', 'out_degree', 'in_strength', 'out_strength'].forEach(attr => {
-        if (model.stateNodeAttributeNames.includes(attr)) {
-            setA_stateAttrs.add(attr);
-            setB_stateAttrs.add(attr);
-        }
-    });
 
     if (hasBipartite) {
         bipartiteColorLabelA.textContent = `Color by ${labelA}`;
         bipartiteColorLabelB.textContent = `Color by ${labelB}`;
-        setA_nodeAttrs.forEach(attr => { const opt = document.createElement('option'); opt.value = `node:${attr}`; opt.textContent = `Node: ${attr}`; nodeColorSelectSetA.appendChild(opt); });
-        setA_stateAttrs.forEach(attr => { const opt = document.createElement('option'); opt.value = `state:${attr}`; opt.textContent = `State: ${attr}`; nodeColorSelectSetA.appendChild(opt); });
-        setB_nodeAttrs.forEach(attr => { const opt = document.createElement('option'); opt.value = `node:${attr}`; opt.textContent = `Node: ${attr}`; nodeColorSelectSetB.appendChild(opt); });
-        setB_stateAttrs.forEach(attr => { const opt = document.createElement('option'); opt.value = `state:${attr}`; opt.textContent = `State: ${attr}`; nodeColorSelectSetB.appendChild(opt); });
+
+        const toItem = (prefix, src) => a => ({ value: `${src}:${a}`, text: `${prefix}: ${a}` });
+        const splitNode = attrs => splitByComputed([...attrs], computedNode);
+        const computedStateList = (model.computedStateNodeAttributes || []).filter(a =>
+            model.stateNodeAttributeNames.includes(a)
+        );
+
+        const populateSet = (select, nodeAttrSet, stateAttrSet) => {
+            const node = splitNode(nodeAttrSet);
+            appendOptgroup(select, 'From data', [
+                ...node.fromData.map(toItem('Node', 'node')),
+                ...[...stateAttrSet].map(toItem('State', 'state')),
+            ]);
+            appendOptgroup(select, 'MiRA-computed', [
+                ...node.computed.map(toItem('Node', 'node')),
+                ...computedStateList.map(toItem('State', 'state')),
+            ]);
+        };
+        populateSet(nodeColorSelectSetA, setA_nodeAttrs, setA_stateAttrs);
+        populateSet(nodeColorSelectSetB, setB_nodeAttrs, setB_stateAttrs);
     }
 
     // Node size options
@@ -3255,20 +3299,24 @@ function populateDropdowns() {
         return false;
     };
 
-    const addSizeOpt = (select, source, attr) => {
-        const opt = document.createElement('option');
-        opt.value = `${source}:${attr}`;
-        opt.textContent = `${source === 'node' ? 'Node' : 'State'}: ${attr}`;
-        select.appendChild(opt);
-    };
+    const sizeItem = (prefix, src) => a => ({ value: `${src}:${a}`, text: `${prefix}: ${a}` });
 
-    for (const attr of model.nodeAttributeNames) {
-        if (isNumericAttr(attr, model.nodes)) addSizeOpt(nodeSizeSelect, 'node', attr);
-    }
-    for (const attr of Object.keys(model.stateNodes[0] || {})) {
-        if (!['layer_name', 'node_name', 'layer_id', 'node_id'].includes(attr)) {
-            if (isNumericAttr(attr, model.stateNodes)) addSizeOpt(nodeSizeSelect, 'state', attr);
-        }
+    {
+        const numericNodeAttrs  = model.nodeAttributeNames.filter(a => isNumericAttr(a, model.nodes));
+        const stateAttrCandidates = Object.keys(model.stateNodes[0] || {})
+            .filter(a => !STRUCTURAL_STATE_KEYS.has(a));
+        const numericStateAttrs = stateAttrCandidates.filter(a => isNumericAttr(a, model.stateNodes));
+
+        const node  = splitByComputed(numericNodeAttrs, computedNode);
+        const state = splitByComputed(numericStateAttrs, computedState);
+        appendOptgroup(nodeSizeSelect, 'From data', [
+            ...node.fromData.map(sizeItem('Node', 'node')),
+            ...state.fromData.map(sizeItem('State', 'state')),
+        ]);
+        appendOptgroup(nodeSizeSelect, 'MiRA-computed', [
+            ...node.computed.map(sizeItem('Node', 'node')),
+            ...state.computed.map(sizeItem('State', 'state')),
+        ]);
     }
 
     // Bipartite size selects — only numeric attrs per set
@@ -3276,12 +3324,24 @@ function populateDropdowns() {
         bipartiteSizeLabelA.textContent = `Size by ${labelA}`;
         bipartiteSizeLabelB.textContent = `Size by ${labelB}`;
 
-        const addSetSizeOpts = (select, nodeAttrs, stateAttrs) => {
-            nodeAttrs.forEach(attr => { if (isNumericAttr(attr, model.nodes)) addSizeOpt(select, 'node', attr); });
-            stateAttrs.forEach(attr => { if (isNumericAttr(attr, model.stateNodes)) addSizeOpt(select, 'state', attr); });
+        const computedNumericState = (model.computedStateNodeAttributes || [])
+            .filter(a => isNumericAttr(a, model.stateNodes));
+
+        const populateSetSize = (select, nodeAttrSet, stateAttrSet) => {
+            const numericNode = [...nodeAttrSet].filter(a => isNumericAttr(a, model.nodes));
+            const numericState = [...stateAttrSet].filter(a => isNumericAttr(a, model.stateNodes));
+            const node = splitByComputed(numericNode, computedNode);
+            appendOptgroup(select, 'From data', [
+                ...node.fromData.map(sizeItem('Node', 'node')),
+                ...numericState.map(sizeItem('State', 'state')),
+            ]);
+            appendOptgroup(select, 'MiRA-computed', [
+                ...node.computed.map(sizeItem('Node', 'node')),
+                ...computedNumericState.map(sizeItem('State', 'state')),
+            ]);
         };
-        addSetSizeOpts(nodeSizeSelectSetA, setA_nodeAttrs, setA_stateAttrs);
-        addSetSizeOpts(nodeSizeSelectSetB, setB_nodeAttrs, setB_stateAttrs);
+        populateSetSize(nodeSizeSelectSetA, setA_nodeAttrs, setA_stateAttrs);
+        populateSetSize(nodeSizeSelectSetB, setB_nodeAttrs, setB_stateAttrs);
 
         nodeSizeSelectSetA.disabled = nodeSizeSelectSetA.options.length <= 1;
         nodeSizeSelectSetB.disabled = nodeSizeSelectSetB.options.length <= 1;

@@ -250,17 +250,18 @@ describe('Group 3 — Link classification', () => {
 })
 
 // ── Group 4 — Degree and strength ───────────────────────────────────────────
-// parseMultilayerData computes per-state-node metrics in a single O(E) pass
-// over the edge list and writes them directly onto state_node objects.
-// These metrics drive the colour/size dropdowns in the UI.
+// js/calc/nodeMetrics.js computes per-state-node intra/inter degree+strength
+// in a single O(E) pass per link type and writes the fields directly onto
+// state_node objects. These drive the colour/size dropdowns in the UI.
 //
-// Key subtleties tested here:
-//   - Self-loops must not be double-counted (the "fromKey !== toKey" guard)
+// Key invariants tested here (math: Boccaletti 2014; De Domenico 2015):
+//   - Self-loops are excluded from intra_degree (j ≠ i in the math spec)
 //   - Missing weight defaults to 1 (not 0, not undefined)
-//   - in/out degree are only meaningful when directed=true per-link
+//   - in/out splits are emitted only when the corresponding edge type
+//     (intra or interlayer) is directed
 
 describe('Group 4 — Degree and strength', () => {
-  it('4.1 undirected edge increments degree and strength on both endpoints', () => {
+  it('4.1 undirected edge increments intra_degree and intra_strength on both endpoints', () => {
     const input = {
       layers: [{ layer_id: 1, layer_name: 'L' }],
       nodes: [{ node_id: 'a', node_name: 'A' }, { node_id: 'b', node_name: 'B' }],
@@ -268,13 +269,13 @@ describe('Group 4 — Degree and strength', () => {
       state_nodes: [{ layer_name: 'L', node_name: 'A' }, { layer_name: 'L', node_name: 'B' }],
     }
     const model = parseMultilayerData(input)
-    expect(model.stateNodeMap.get('L::A').degree).toBe(1)
-    expect(model.stateNodeMap.get('L::A').strength).toBe(1)
-    expect(model.stateNodeMap.get('L::B').degree).toBe(1)
-    expect(model.stateNodeMap.get('L::B').strength).toBe(1)
+    expect(model.stateNodeMap.get('L::A').intra_degree).toBe(1)
+    expect(model.stateNodeMap.get('L::A').intra_strength).toBe(1)
+    expect(model.stateNodeMap.get('L::B').intra_degree).toBe(1)
+    expect(model.stateNodeMap.get('L::B').intra_strength).toBe(1)
   })
 
-  it('4.2 explicit weight is accumulated into strength', () => {
+  it('4.2 explicit weight is accumulated into intra_strength', () => {
     const input = {
       layers: [{ layer_id: 1, layer_name: 'L' }],
       nodes: [{ node_id: 'a', node_name: 'A' }, { node_id: 'b', node_name: 'B' }],
@@ -282,13 +283,11 @@ describe('Group 4 — Degree and strength', () => {
       state_nodes: [{ layer_name: 'L', node_name: 'A' }, { layer_name: 'L', node_name: 'B' }],
     }
     const model = parseMultilayerData(input)
-    expect(model.stateNodeMap.get('L::A').strength).toBe(2.5)
-    expect(model.stateNodeMap.get('L::B').strength).toBe(2.5)
+    expect(model.stateNodeMap.get('L::A').intra_strength).toBe(2.5)
+    expect(model.stateNodeMap.get('L::B').intra_strength).toBe(2.5)
   })
 
   it('4.3 missing weight field defaults to 1', () => {
-    // Real CSV imports often omit weight. The default must be 1, not 0 or NaN,
-    // or the node would appear invisible when sized by strength.
     const input = {
       layers: [{ layer_id: 1, layer_name: 'L' }],
       nodes: [{ node_id: 'a', node_name: 'A' }, { node_id: 'b', node_name: 'B' }],
@@ -296,14 +295,14 @@ describe('Group 4 — Degree and strength', () => {
       state_nodes: [{ layer_name: 'L', node_name: 'A' }, { layer_name: 'L', node_name: 'B' }],
     }
     const model = parseMultilayerData(input)
-    expect(model.stateNodeMap.get('L::A').strength).toBe(1)
-    expect(model.stateNodeMap.get('L::B').strength).toBe(1)
+    expect(model.stateNodeMap.get('L::A').intra_strength).toBe(1)
+    expect(model.stateNodeMap.get('L::B').intra_strength).toBe(1)
   })
 
-  it('4.4 self-loop counts degree once, not twice', () => {
-    // The parser guards against double-counting by checking fromKey !== toKey
-    // before incrementing the destination node. Without this guard, self-loops
-    // would produce degree=2 and strength=2.
+  it('4.4 self-loop is excluded from intra_degree (j ≠ i in spec)', () => {
+    // Behaviour change vs. the legacy parser (which counted self-loops once).
+    // The new math follows the multilayer-formalism convention of excluding
+    // i = j from the intralayer-degree summation.
     const input = {
       layers: [{ layer_id: 1, layer_name: 'L' }],
       nodes: [{ node_id: 'a', node_name: 'A' }],
@@ -312,31 +311,26 @@ describe('Group 4 — Degree and strength', () => {
     }
     const model = parseMultilayerData(input)
     const sn = model.stateNodeMap.get('L::A')
-    expect(sn.degree).toBe(1)
-    expect(sn.strength).toBe(1)
+    expect(sn.intra_degree).toBe(0)
+    expect(sn.intra_strength).toBe(0)
   })
 
-  it('4.5 directed edge populates in_degree and out_degree correctly', () => {
-    // NOTE: in/out degree are computed from per-link directed flags, not the
-    // global model.directed flag. The global flag is determined *after* the
-    // degree loop, so setting only json.directed=true would leave in/out
-    // degree at 0. Real directed files (like demo_directed.json) set
-    // directed:true on each individual link.
+  it('4.5 directed edge populates intra_in_degree and intra_out_degree correctly', () => {
     const model = parseMultilayerData(makeWeightedDirected())
     // A→B, C→B
-    expect(model.stateNodeMap.get('L::A').out_degree).toBe(1)
-    expect(model.stateNodeMap.get('L::A').in_degree).toBe(0)
-    expect(model.stateNodeMap.get('L::B').in_degree).toBe(2)
-    expect(model.stateNodeMap.get('L::B').out_degree).toBe(0)
-    expect(model.stateNodeMap.get('L::C').out_degree).toBe(1)
-    expect(model.stateNodeMap.get('L::C').in_degree).toBe(0)
+    expect(model.stateNodeMap.get('L::A').intra_out_degree).toBe(1)
+    expect(model.stateNodeMap.get('L::A').intra_in_degree).toBe(0)
+    expect(model.stateNodeMap.get('L::B').intra_in_degree).toBe(2)
+    expect(model.stateNodeMap.get('L::B').intra_out_degree).toBe(0)
+    expect(model.stateNodeMap.get('L::C').intra_out_degree).toBe(1)
+    expect(model.stateNodeMap.get('L::C').intra_in_degree).toBe(0)
   })
 
-  it('4.6 node with two incoming edges has in_degree 2 and degree 2', () => {
+  it('4.6 node with two incoming directed edges has intra_in_degree 2', () => {
     const model = parseMultilayerData(makeWeightedDirected())
     const snB = model.stateNodeMap.get('L::B')
-    expect(snB.in_degree).toBe(2)
-    expect(snB.degree).toBe(2)
+    expect(snB.intra_in_degree).toBe(2)
+    expect(snB.intra_out_degree).toBe(0)
   })
 })
 
@@ -378,10 +372,10 @@ describe('Group 5 — Directed flag propagation', () => {
     const model = parseMultilayerData(makeMinimal())
     expect(model.directed).toBe(false)
     for (const sn of model.stateNodes) {
-      expect(sn).not.toHaveProperty('in_degree')
-      expect(sn).not.toHaveProperty('out_degree')
-      expect(sn).not.toHaveProperty('in_strength')
-      expect(sn).not.toHaveProperty('out_strength')
+      expect(sn).not.toHaveProperty('intra_in_degree')
+      expect(sn).not.toHaveProperty('intra_out_degree')
+      expect(sn).not.toHaveProperty('intra_in_strength')
+      expect(sn).not.toHaveProperty('intra_out_strength')
     }
   })
 })
@@ -676,17 +670,24 @@ describe('Group 9 — Mixed multilayer', () => {
 // by hand before writing the test. This guards against silent regressions in the
 // degree/strength calculation loop in dataParser.js.
 
+// Helpers reach for the new intra_* fields. For directed networks, the
+// "total" degree is reconstructed as in + out so the existing topology
+// expectations still read naturally.
 function deg(model, layerName, nodeName) {
-  return model.stateNodeMap.get(`${layerName}::${nodeName}`).degree
+  const sn = model.stateNodeMap.get(`${layerName}::${nodeName}`)
+  if (sn.intra_degree !== undefined) return sn.intra_degree
+  return (sn.intra_in_degree ?? 0) + (sn.intra_out_degree ?? 0)
 }
 function str(model, layerName, nodeName) {
-  return model.stateNodeMap.get(`${layerName}::${nodeName}`).strength
+  const sn = model.stateNodeMap.get(`${layerName}::${nodeName}`)
+  if (sn.intra_strength !== undefined) return sn.intra_strength
+  return (sn.intra_in_strength ?? 0) + (sn.intra_out_strength ?? 0)
 }
 function inDeg(model, layerName, nodeName) {
-  return model.stateNodeMap.get(`${layerName}::${nodeName}`).in_degree
+  return model.stateNodeMap.get(`${layerName}::${nodeName}`).intra_in_degree
 }
 function outDeg(model, layerName, nodeName) {
-  return model.stateNodeMap.get(`${layerName}::${nodeName}`).out_degree
+  return model.stateNodeMap.get(`${layerName}::${nodeName}`).intra_out_degree
 }
 
 // Fixture A — triangle undirected unweighted
@@ -832,8 +833,8 @@ describe('Group 10 — Degree & strength on known topologies', () => {
   it('10.3 triangle: undirected network has no in/out degree fields', () => {
     const m = parseMultilayerData(makeTriangle())
     const sn = m.stateNodeMap.get('L1::A')
-    expect(sn.in_degree).toBeUndefined()
-    expect(sn.out_degree).toBeUndefined()
+    expect(sn.intra_in_degree).toBeUndefined()
+    expect(sn.intra_out_degree).toBeUndefined()
   })
 
   it('10.4 triangle: 3 intralayer edges, 0 interlayer', () => {

@@ -244,6 +244,7 @@ export class Dashboard {
             ${this._sMatrix(s, bp)}
             ${this._sLayerSimilarity(s, bp)}
             ${this._sDegree(s, bp)}
+            ${this._sStrength(s, bp)}
             ${this._sParticipation(s, bp)}
         </div>`;
 
@@ -312,10 +313,23 @@ export class Dashboard {
             nodeParticipation.set(sn.node_name, (nodeParticipation.get(sn.node_name) ?? 0) + 1);
         }
 
-        // Degree: summed across all layers per physical node
-        const nodeDegree = new Map();
+        // Degree & strength, summed across layers per physical node, kept
+        // separate for intra and inter (Boccaletti 2014; De Domenico 2015).
+        // For directed networks intra_degree isn't defined as a single
+        // scalar — fall back to the sum of in + out.
+        const sumPair = (sn, undirField, inField, outField) =>
+            (sn[undirField] ?? ((sn[inField] ?? 0) + (sn[outField] ?? 0)));
+
+        const nodeIntraDegree   = new Map();
+        const nodeInterDegree   = new Map();
+        const nodeIntraStrength = new Map();
+        const nodeInterStrength = new Map();
         for (const sn of m.stateNodes) {
-            nodeDegree.set(sn.node_name, (nodeDegree.get(sn.node_name) ?? 0) + (sn.degree ?? 0));
+            const k = sn.node_name;
+            nodeIntraDegree.set(k,   (nodeIntraDegree.get(k)   ?? 0) + sumPair(sn, 'intra_degree',   'intra_in_degree',   'intra_out_degree'));
+            nodeInterDegree.set(k,   (nodeInterDegree.get(k)   ?? 0) + sumPair(sn, 'inter_degree',   'inter_in_degree',   'inter_out_degree'));
+            nodeIntraStrength.set(k, (nodeIntraStrength.get(k) ?? 0) + sumPair(sn, 'intra_strength', 'intra_in_strength', 'intra_out_strength'));
+            nodeInterStrength.set(k, (nodeInterStrength.get(k) ?? 0) + sumPair(sn, 'inter_strength', 'inter_in_strength', 'inter_out_strength'));
         }
 
         // Presence set for matrix ("layerName::nodeName")
@@ -338,7 +352,10 @@ export class Dashboard {
             totalNodes: m.nodes.length, totalLayers: layerNames.length,
             totalIntra: m.intralayerLinks.length, totalInter: m.interlayerLinks.length,
             avgDensity, perLayer, layerNames,
-            nodeParticipation, nodeDegree, presence, sortedNodes, edgeKeySets,
+            nodeParticipation,
+            nodeIntraDegree, nodeInterDegree,
+            nodeIntraStrength, nodeInterStrength,
+            presence, sortedNodes, edgeKeySets,
         };
     }
 
@@ -517,35 +534,76 @@ export class Dashboard {
             </div>`);
     }
 
-    _sDegree(s, bp) {
-        const makeBins = (vals, nBins = 10) => {
-            if (!vals.length) return [];
-            const max = Math.max(...vals);
-            if (max === 0) return [{ x0: 0, count: vals.length }];
-            const bw   = Math.max(1, Math.ceil(max / nBins));
-            const n    = Math.ceil((max + 1) / bw);
-            const bins = Array.from({ length: n }, (_, i) => ({ x0: i * bw, count: 0 }));
-            for (const v of vals) bins[Math.min(Math.floor(v / bw), n - 1)].count++;
-            while (bins.length > 1 && bins.at(-1).count === 0) bins.pop();
-            return bins;
-        };
+    // Integer-valued bin builder, shared by degree and strength panels.
+    _intBins(vals, nBins = 10) {
+        if (!vals.length) return [];
+        const max = Math.max(...vals);
+        if (max === 0) return [{ x0: 0, count: vals.length }];
+        const bw   = Math.max(1, Math.ceil(max / nBins));
+        const n    = Math.ceil((max + 1) / bw);
+        const bins = Array.from({ length: n }, (_, i) => ({ x0: i * bw, count: 0 }));
+        for (const v of vals) bins[Math.min(Math.floor(v / bw), n - 1)].count++;
+        while (bins.length > 1 && bins.at(-1).count === 0) bins.pop();
+        return bins;
+    }
 
-        let content;
+    // Continuous-valued bin builder for strength distributions.
+    _floatBins(vals, nBins = 12) {
+        if (!vals.length) return [];
+        const mn = Math.min(...vals), mx = Math.max(...vals);
+        if (mn === mx) return [{ x0: parseFloat(mn.toFixed(3)), count: vals.length }];
+        const bw   = (mx - mn) / nBins;
+        const bins = Array.from({ length: nBins }, (_, i) => ({
+            x0: parseFloat((mn + i * bw).toFixed(3)), count: 0,
+        }));
+        for (const v of vals) bins[Math.min(Math.floor((v - mn) / bw), nBins - 1)].count++;
+        while (bins.length > 1 && bins.at(-1).count === 0) bins.pop();
+        return bins;
+    }
+
+    // Render a {From-data} × {Set A / Set B / unipartite} histogram grid for
+    // a single primitive (intra or inter, degree or strength). Pulls per-
+    // physical-node sums out of the supplied Map.
+    _renderDistPanel(title, valsMap, s, bp, { binner, color = ACCENT, xLabel }) {
         if (bp) {
-            const dA = [...s.setANodes].map(n => s.nodeDegree.get(n) ?? 0);
-            const dB = [...s.setBNodes].map(n => s.nodeDegree.get(n) ?? 0);
-            content = `<div class="db-charts-row">
-                <div class="db-chart-box"><div class="db-chart-title">${s.setALabel} — degree distribution</div>
-                    ${svgHist(makeBins(dA), { width: 300, height: 160, color: SET_A_COLOR, xLabel: 'Degree' })}</div>
-                <div class="db-chart-box"><div class="db-chart-title">${s.setBLabel} — degree distribution</div>
-                    ${svgHist(makeBins(dB), { width: 300, height: 160, color: SET_B_COLOR, xLabel: 'Degree' })}</div>
+            const dA = [...s.setANodes].map(n => valsMap.get(n) ?? 0);
+            const dB = [...s.setBNodes].map(n => valsMap.get(n) ?? 0);
+            return `<div class="db-charts-row">
+                <div class="db-chart-box"><div class="db-chart-title">${title} — ${s.setALabel}</div>
+                    ${svgHist(binner(dA), { width: 300, height: 160, color: SET_A_COLOR, xLabel })}</div>
+                <div class="db-chart-box"><div class="db-chart-title">${title} — ${s.setBLabel}</div>
+                    ${svgHist(binner(dB), { width: 300, height: 160, color: SET_B_COLOR, xLabel })}</div>
             </div>`;
-        } else {
-            const d = [...s.nodeDegree.values()];
-            content = `<div class="db-chart-box"><div class="db-chart-title">Degree distribution</div>
-                ${svgHist(makeBins(d), { width: 460, height: 200, xLabel: 'Degree' })}</div>`;
         }
-        return this._sec('degree', 'Degree Distributions', content);
+        const vals = [...valsMap.values()];
+        return `<div class="db-chart-box"><div class="db-chart-title">${title}</div>
+            ${svgHist(binner(vals), { width: 460, height: 200, color, xLabel })}</div>`;
+    }
+
+    _sDegree(s, bp) {
+        const binner = vals => this._intBins(vals);
+        const intra = this._renderDistPanel('Intralayer degree', s.nodeIntraDegree, s, bp, { binner, xLabel: 'Degree' });
+        const inter = this._renderDistPanel('Interlayer degree', s.nodeInterDegree, s, bp, { binner, color: '#f59e0b', xLabel: 'Degree' });
+        const content = `<div class="db-degree-grid">${intra}${inter}</div>`;
+        return this._sec('degree', 'Degree Distributions (intra vs inter)', content);
+    }
+
+    _sStrength(s, bp) {
+        // Auto-hide if all weights are identical — strength then conveys no
+        // extra information beyond degree.
+        const allWeights = [
+            ...this.model.intralayerLinks.map(l => l.weight ?? 1),
+            ...this.model.interlayerLinks.map(l => l.weight ?? 1),
+        ];
+        if (allWeights.length === 0) return '';
+        const w0 = allWeights[0];
+        if (allWeights.every(w => w === w0)) return '';
+
+        const binner = vals => this._floatBins(vals);
+        const intra = this._renderDistPanel('Intralayer strength', s.nodeIntraStrength, s, bp, { binner, xLabel: 'Strength' });
+        const inter = this._renderDistPanel('Interlayer strength', s.nodeInterStrength, s, bp, { binner, color: '#f59e0b', xLabel: 'Strength' });
+        const content = `<div class="db-degree-grid">${intra}${inter}</div>`;
+        return this._sec('strength', 'Strength Distributions (intra vs inter)', content);
     }
 
     _sParticipation(s, bp) {
