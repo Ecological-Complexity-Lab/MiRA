@@ -9,6 +9,7 @@
  */
 
 import { BIPARTITE_SET_A_COLOR, BIPARTITE_SET_B_COLOR } from './colorMapper.js';
+import { aggregateMetaNetwork } from './calc/metaAggregation.js';
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -125,84 +126,18 @@ export class MetaNetwork {
     // ── Aggregation ──────────────────────────────────────────────────────────
 
     _aggregate() {
-        const mode     = this.settings.aggregation;
-        const directed = this._model.directed;
-        const links    = this._model.intralayerLinks;
+        // Pure aggregation lives in js/calc/metaAggregation.js. This method
+        // wraps it with the rendering-specific node fields (x/y/vx/vy,
+        // color, radius, bipartite typing) the d3-force loop expects.
+        const { edges, nodes, maxWeight } = aggregateMetaNetwork(this._model, this.settings.aggregation);
+        this._mnEdges = edges;
+        this._maxWeight = maxWeight;
 
-        // edge accumulator: edgeKey → {src, tgt, layers, weightSum, perLayerMap}
-        const edgeMap     = new Map();
-        // nodeName → Set<layerName>
-        const nodeLayerMap = new Map();
-
-        for (const link of links) {
-            const a = link.node_from, b = link.node_to, layer = link.layer_from;
-            const w = link.weight ?? 1;
-            if (!a || !b) continue;
-
-            for (const n of [a, b]) {
-                if (!nodeLayerMap.has(n)) nodeLayerMap.set(n, new Set());
-                nodeLayerMap.get(n).add(layer);
-            }
-
-            // Canonical direction
-            const [src, tgt] = directed ? [a, b] : (a <= b ? [a, b] : [b, a]);
-            const key = `${src}\x00${tgt}`;
-
-            if (!edgeMap.has(key)) {
-                edgeMap.set(key, { src, tgt, layers: new Set(), weightSum: 0, perLayerMap: new Map() });
-            }
-            const e = edgeMap.get(key);
-            e.layers.add(layer);
-            e.weightSum += w;
-            e.perLayerMap.set(layer, (e.perLayerMap.get(layer) ?? 0) + w);
-        }
-
-        // Include nodes that appear in layers but have no intralayer links
-        for (const [layerName, nodeNames] of this._model.nodesPerLayer) {
-            for (const n of nodeNames) {
-                if (!nodeLayerMap.has(n)) nodeLayerMap.set(n, new Set());
-                nodeLayerMap.get(n).add(layerName);
-            }
-        }
-
-        // Build _mnEdges
-        let maxWeight = 0;
-        this._mnEdges = [];
-        for (const { src, tgt, layers, weightSum, perLayerMap } of edgeMap.values()) {
-            const weight =
-                mode === 'union'      ? 1 :
-                mode === 'sumWeights' ? weightSum :
-                                       layers.size; // sumOccurrence
-            const perLayer = [...perLayerMap.entries()]
-                .map(([layerName, w]) => ({ layerName, weight: w }))
-                .sort((a, b) => a.layerName.localeCompare(b.layerName));
-
-            this._mnEdges.push({ source: src, target: tgt, weight, perLayer, _layers: layers });
-            if (weight > maxWeight) maxWeight = weight;
-        }
-        this._maxWeight = maxWeight || 1;
-
-        // Bipartite typing (recomputed each time in case layout setting changed)
         const bpSets = this._useBipartiteLayout ? this._buildBipartiteSets() : null;
 
-        // Adjacency for metaDegree
-        const adjMap = new Map();
-        for (const e of this._mnEdges) {
-            if (!adjMap.has(e.source)) adjMap.set(e.source, new Set());
-            if (!adjMap.has(e.target)) adjMap.set(e.target, new Set());
-            adjMap.get(e.source).add(e.target);
-            adjMap.get(e.target).add(e.source);
-        }
-
-        // Build _mnNodes
         this._mnNodes = [];
         this._nodeMap = new Map();
-        for (const [name, layers] of nodeLayerMap) {
-            const metaDegree   = (adjMap.get(name) ?? new Set()).size;
-            const metaStrength = this._mnEdges
-                .filter(e => e.source === name || e.target === name)
-                .reduce((s, e) => s + e.weight, 0);
-
+        for (const { name, participation, metaDegree, metaStrength, layers } of nodes.values()) {
             let nodeType = null;
             if (bpSets) {
                 if      (bpSets.setA.has(name)) nodeType = 'A';
@@ -210,7 +145,7 @@ export class MetaNetwork {
             }
 
             const node = {
-                name, participation: layers.size, metaDegree, metaStrength, layers,
+                name, participation, metaDegree, metaStrength, layers,
                 nodeType, color: MN_UNIFORM_COLOR, r: MN_DEFAULT_R,
                 x: (Math.random() - 0.5) * 200,
                 y: (Math.random() - 0.5) * 200,

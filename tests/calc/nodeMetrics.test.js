@@ -190,4 +190,47 @@ describe('Group calc/nodeMetrics — multilayer degree/strength split', () => {
     expect(A.inter_degree_by_layer.get('L1')).toBe(1)
     expect(A.inter_degree_by_layer.get('L2')).toBe(1)
   })
+
+  it('Physical-node mean/max aggregations match the per-layer vector', () => {
+    // Asymmetric fixture: A in L1 has 2 intra-edges, in L2 has 0 → mean 1, max 2.
+    const input = {
+      directed: false,
+      layers: [
+        { layer_id: 1, layer_name: 'L1' },
+        { layer_id: 2, layer_name: 'L2' },
+      ],
+      nodes: [
+        { node_id: 'A_L1', layer_name: 'L1', node_name: 'A' },
+        { node_id: 'B_L1', layer_name: 'L1', node_name: 'B' },
+        { node_id: 'C_L1', layer_name: 'L1', node_name: 'C' },
+        { node_id: 'A_L2', layer_name: 'L2', node_name: 'A' },
+      ],
+      state_nodes: [
+        { layer_name: 'L1', node_name: 'A' },
+        { layer_name: 'L1', node_name: 'B' },
+        { layer_name: 'L1', node_name: 'C' },
+        { layer_name: 'L2', node_name: 'A' },
+      ],
+      extended: [
+        { layer_from: 'L1', node_from: 'A', layer_to: 'L1', node_to: 'B', weight: 1 },
+        { layer_from: 'L1', node_from: 'A', layer_to: 'L1', node_to: 'C', weight: 1 },
+        { layer_from: 'L1', node_from: 'A', layer_to: 'L2', node_to: 'A', weight: 1 },
+      ],
+    }
+    const m = parseMultilayerData(input)
+    const A = m.nodes.find(n => n.node_name === 'A')
+    expect(A.intra_degree_sum).toBe(2)   // 2 + 0 across the 2 layers it's in
+    expect(A.intra_degree_mean).toBe(1)  // 2 / 2
+    expect(A.intra_degree_max).toBe(2)
+  })
+
+  it('computedNodeAttributes lists sum/mean/max scalars but excludes _by_layer', () => {
+    const m = parseMultilayerData(makeMultiplex2())
+    expect(m.computedNodeAttributes).toEqual(
+      expect.arrayContaining(['intra_degree_sum', 'intra_degree_mean', 'intra_degree_max'])
+    )
+    for (const a of m.computedNodeAttributes) {
+      expect(a).not.toMatch(/_by_layer$/)
+    }
+  })
 })

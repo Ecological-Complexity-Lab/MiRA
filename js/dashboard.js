@@ -4,6 +4,9 @@
  * distributions, participation histogram, and set-size ratio chart.
  */
 
+import { computeLayerSimilarity } from './calc/similarity.js';
+import { computePerLayerStats } from './calc/layerMetrics.js';
+
 const ACCENT      = '#6366f1';
 const SET_A_COLOR = '#0072b2';
 const SET_B_COLOR = '#f472b6';
@@ -272,38 +275,8 @@ export class Dashboard {
             }
         }
 
-        // Per-layer stats
-        const edgeKeySets = new Map(); // layerName → Set of deduplicated edge keys
-        const perLayer = layerNames.map((layerName, li) => {
-            const nodeSet = m.nodesPerLayer.get(layerName) ?? new Set();
-            const N  = nodeSet.size;
-            const bp = bpInfoAll[li];
-            const isBp = bp?.isBipartite ?? false;
-            const nA = isBp ? (bp.setA?.size ?? 0) : 0;
-            const nB = isBp ? (bp.setB?.size ?? 0) : 0;
-
-            const edgeKeys = new Set();
-            for (const lk of m.intralayerLinks) {
-                if (lk.layer_from !== layerName) continue;
-                const key = isDir
-                    ? `${lk.node_from}→${lk.node_to}`
-                    : [lk.node_from, lk.node_to].sort().join('::');
-                edgeKeys.add(key);
-            }
-            edgeKeySets.set(layerName, edgeKeys);
-            const E = edgeKeys.size;
-
-            let Emax;
-            if (isBp)  Emax = isDir ? 2 * nA * nB : nA * nB;
-            else       Emax = isDir ? N * (N - 1)  : N * (N - 1) / 2;
-            const density = Emax > 0 ? E / Emax : 0;
-
-            return { layerName, N, E, density, nA, nB, isBp };
-        });
-
-        const avgDensity = perLayer.length
-            ? perLayer.reduce((sum, l) => sum + l.density, 0) / perLayer.length
-            : 0;
+        // Per-layer stats — math lives in js/calc/layerMetrics.js.
+        const { perLayer, edgeKeySets, avgDensity } = computePerLayerStats(m);
 
         // Node participation
         const nodeParticipation = new Map();
@@ -835,74 +808,27 @@ export class Dashboard {
     _sLayerSimilarity(s, bp) {
         const L = s.layerNames;
         const n = L.length;
-        const m = this.model;
-
-        // Jaccard index between two sets
-        const jaccard = (A, B) => {
-            if (!A.size && !B.size) return NaN;
-            let inter = 0;
-            const [small, large] = A.size <= B.size ? [A, B] : [B, A];
-            for (const x of small) if (large.has(x)) inter++;
-            return inter / (A.size + B.size - inter);
-        };
-
         const cellSize = n <= 8 ? 44 : n <= 14 ? 32 : n <= 22 ? 22 : 14;
 
-        // Edge similarity matrix (always shown)
-        const matE = Array.from({ length: n }, (_, i) =>
-            Array.from({ length: n }, (_, j) =>
-                jaccard(s.edgeKeySets.get(L[i]) ?? new Set(), s.edgeKeySets.get(L[j]) ?? new Set())
-            )
-        );
+        const sim = computeLayerSimilarity(this.model, s.edgeKeySets, bp
+            ? { setANodes: s.setANodes, setBNodes: s.setBNodes }
+            : {});
 
-        let content;
-        if (bp) {
-            // Per-layer Set A and Set B node subsets
-            const layerA = L.map(ln => {
-                const all = m.nodesPerLayer.get(ln) ?? new Set();
-                return new Set([...all].filter(x => s.setANodes.has(x)));
-            });
-            const layerB = L.map(ln => {
-                const all = m.nodesPerLayer.get(ln) ?? new Set();
-                return new Set([...all].filter(x => s.setBNodes.has(x)));
-            });
-            const matA = Array.from({ length: n }, (_, i) =>
-                Array.from({ length: n }, (_, j) => jaccard(layerA[i], layerA[j]))
-            );
-            const matB = Array.from({ length: n }, (_, i) =>
-                Array.from({ length: n }, (_, j) => jaccard(layerB[i], layerB[j]))
-            );
-            content = `<div class="db-heatmap-col">
-                <div class="db-chart-box">
-                    <div class="db-chart-title">${s.setALabel} node identity (Jaccard)</div>
-                    ${svgHeatmap(matA, L, { accentColor: SET_A_COLOR, cellSize })}
-                </div>
-                <div class="db-chart-box">
-                    <div class="db-chart-title">${s.setBLabel} node identity (Jaccard)</div>
-                    ${svgHeatmap(matB, L, { accentColor: SET_B_COLOR, cellSize })}
-                </div>
-                <div class="db-chart-box">
-                    <div class="db-chart-title">Edge identity (Jaccard)</div>
-                    ${svgHeatmap(matE, L, { accentColor: '#f59e0b', cellSize })}
-                </div>
+        const box = (title, mat, accentColor) => `<div class="db-chart-box">
+            <div class="db-chart-title">${title}</div>
+            ${svgHeatmap(mat, L, { accentColor, cellSize })}
+        </div>`;
+
+        const content = bp
+            ? `<div class="db-heatmap-col">
+                ${box(`${s.setALabel} node identity (Jaccard)`, sim.setA, SET_A_COLOR)}
+                ${box(`${s.setBLabel} node identity (Jaccard)`, sim.setB, SET_B_COLOR)}
+                ${box('Edge identity (Jaccard)', sim.edge, '#f59e0b')}
+            </div>`
+            : `<div class="db-heatmap-col">
+                ${box('Node identity (Jaccard)', sim.node, ACCENT)}
+                ${box('Edge identity (Jaccard)', sim.edge, '#f59e0b')}
             </div>`;
-        } else {
-            const matN = Array.from({ length: n }, (_, i) =>
-                Array.from({ length: n }, (_, j) =>
-                    jaccard(m.nodesPerLayer.get(L[i]) ?? new Set(), m.nodesPerLayer.get(L[j]) ?? new Set())
-                )
-            );
-            content = `<div class="db-heatmap-col">
-                <div class="db-chart-box">
-                    <div class="db-chart-title">Node identity (Jaccard)</div>
-                    ${svgHeatmap(matN, L, { accentColor: ACCENT, cellSize })}
-                </div>
-                <div class="db-chart-box">
-                    <div class="db-chart-title">Edge identity (Jaccard)</div>
-                    ${svgHeatmap(matE, L, { accentColor: '#f59e0b', cellSize })}
-                </div>
-            </div>`;
-        }
 
         return this._sec('similarity', 'Layer Similarity (Jaccard)', content);
     }

@@ -2,7 +2,14 @@
 
 A single-page reference for every quantitative computation MiRA performs on a multilayer network — what it is, where it's computed, and how it's used.
 
-All node-level math (rows 1–11 below) lives in `js/calc/nodeMetrics.js`. Other calculations (density, Jaccard similarity, meta-aggregation) are still in their original modules but will be migrated into `js/calc/` over time.
+All quantitative calculations live under `js/calc/`:
+
+- `nodeMetrics.js` — degree/strength split into intra and inter (rows 1–7)
+- `layerMetrics.js` — per-layer density and edge/node counts (rows 12–16)
+- `similarity.js` — pairwise layer similarity (Jaccard, rows 17–19)
+- `metaAggregation.js` — project the multilayer model onto a meta-graph (rows 27–31)
+
+The dashboard, dataParser, and metaNetwork modules consume these — none of them implement math directly.
 
 Notation:
 - *N(ℓ)* — number of physical nodes in layer ℓ
@@ -30,7 +37,7 @@ Intralayer and interlayer connections are kept **mathematically distinct** at th
 | 4 | Network / Map / Layer / Grid (data prep) | **Interlayer strength** | `inter_strength = Σ_{β≠α} Σ_j a^{αβ}_{ij}` | Weighted analogue of interlayer degree. | [js/calc/nodeMetrics.js](../js/calc/nodeMetrics.js) |
 | 5 | Network / Map / Layer / Grid (data prep) | **Directed in/out splits** | For each of (1)–(4), an in/out variant when the relevant edge type is directed: `intra_in_degree`, `intra_out_degree`, `intra_in_strength`, `intra_out_strength`, plus `inter_*` analogues | Intra splits emitted iff `model.directed`; inter splits iff `model.directedInterlayer`. The undirected scalar is dropped when its directed counterparts are present, so dropdowns stay unambiguous. | [js/calc/nodeMetrics.js](../js/calc/nodeMetrics.js) |
 | 6 | Network / Map / Layer / Grid (data prep) | **Per-physical-node vector across layers** | `<field>_by_layer` = `Map<layerName, value>` for each of (1)–(5) | One value per layer the node occupies. Stored on the physical-node object; visible in the data-table tooltip and available for export. Not exposed as a coloring attribute (it isn't scalar). | [js/calc/nodeMetrics.js](../js/calc/nodeMetrics.js) |
-| 7 | Dashboard / dropdowns | **Per-physical-node layer-summed scalars** | `<field>_sum = Σ_α <field>(i, α)` over the layers i occupies | Scalar aggregate of (6). Drives the dashboard Degree / Strength distribution histograms and appears in the node-attribute color/size dropdowns under the "MiRA-computed" optgroup. No "grand total" is exposed — intra and inter remain separate by default. | [js/calc/nodeMetrics.js](../js/calc/nodeMetrics.js) |
+| 7 | Dashboard / dropdowns | **Per-physical-node scalar aggregates** | `<field>_sum = Σ_α <field>(i, α)`; `<field>_mean = sum / |layers_present(i)|`; `<field>_max = max_α <field>(i, α)` | Three scalar aggregates of (6) per primitive. Drives the dashboard Degree / Strength distribution histograms and appears in the node-attribute color/size dropdowns under the "MiRA-computed" optgroup. No "grand total" is exposed — intra and inter remain separate by default. | [js/calc/nodeMetrics.js](../js/calc/nodeMetrics.js) |
 | 8 | Dashboard | **Node participation** (multiplexity) | `P(v) = ` # distinct layers in which `v` appears as a state node | Counts how many layers a physical node participates in. Drives the **Node Participation (Multiplexity)** histogram and is the default sort key for the Presence Matrix. | [js/dashboard.js:309-313](../js/dashboard.js#L309-L313) |
 | 9 | Meta-Network | **Meta-degree** of physical node `v` | `metaDegree(v) = |{ u : (u, v) ∈ E_meta }|` on the aggregated meta-graph | Number of distinct partners across the layer-aggregated meta-network. Drives node size/color in Meta-Network mode. **Not** the same as `inter_degree_sum` — it operates on the projected meta-graph, while `inter_degree_sum` counts true cross-layer links. | [js/metaNetwork.js:188-201](../js/metaNetwork.js#L188-L201) |
 | 10 | Meta-Network | **Meta-strength** of physical node `v` | `metaStrength(v) = Σ weight(e)` over meta-edges incident to `v` | Weighted analogue of meta-degree on the aggregated graph. Weight depends on aggregation mode (see #28). | [js/metaNetwork.js:202-204](../js/metaNetwork.js#L202-L204) |
@@ -42,11 +49,11 @@ Intralayer and interlayer connections are kept **mathematically distinct** at th
 
 | # | Mode / Section | Property | Formula | Description | File |
 |---|---|---|---|---|---|
-| 12 | Dashboard — Per-Layer Overview | **Layer density** | Unipartite undirected: `ρ(ℓ) = E(ℓ) / [N(ℓ)(N(ℓ)−1)/2]`. Unipartite directed: `ρ(ℓ) = E(ℓ) / [N(ℓ)(N(ℓ)−1)]`. Bipartite undirected: `ρ(ℓ) = E(ℓ) / (n_A · n_B)`. Bipartite directed: `ρ(ℓ) = E(ℓ) / (2 · n_A · n_B)`. | Fraction of possible edges actually present, computed on a deduplicated edge set so undirected double-listings (A→B and B→A) don't inflate it. | [js/dashboard.js:285-302](../js/dashboard.js#L285-L302) |
-| 13 | Dashboard | **Average layer density** | `avgρ = (1/L) · Σ_ℓ ρ(ℓ)` | KPI card in the Summary section. | [js/dashboard.js:304-306](../js/dashboard.js#L304-L306) |
-| 14 | Dashboard — Per-Layer Overview | **Nodes per layer** `N(ℓ)` | `N(ℓ) = |nodesPerLayer(ℓ)|` | Bar-chart variable; in bipartite mode shown as a stacked bar of `n_A` vs `n_B`. | [js/dashboard.js:277-283](../js/dashboard.js#L277-L283) |
-| 15 | Dashboard — Per-Layer Overview | **Edges per layer** `E(ℓ)` | `E(ℓ) = |{deduplicated edge keys in ℓ}|`; key is `from→to` (directed) or sorted pair (undirected) | Edges are deduplicated to neutralise CSV/JSON duplicate listings before counting. | [js/dashboard.js:285-294](../js/dashboard.js#L285-L294) |
-| 16 | Dashboard — Set Size Ratio | **Bipartite set-size ratio** | `(n_A(ℓ), n_B(ℓ))` per layer | Stacked-bar visualisation of how the two bipartite sets balance across layers. | [js/dashboard.js:576-583](../js/dashboard.js#L576-L583) |
+| 12 | Dashboard — Per-Layer Overview | **Layer density** | Unipartite undirected: `ρ(ℓ) = E(ℓ) / [N(ℓ)(N(ℓ)−1)/2]`. Unipartite directed: `ρ(ℓ) = E(ℓ) / [N(ℓ)(N(ℓ)−1)]`. Bipartite undirected: `ρ(ℓ) = E(ℓ) / (n_A · n_B)`. Bipartite directed: `ρ(ℓ) = E(ℓ) / (2 · n_A · n_B)`. | Fraction of possible edges actually present, computed on a deduplicated edge set so undirected double-listings (A→B and B→A) don't inflate it. | [js/calc/layerMetrics.js](../js/calc/layerMetrics.js) |
+| 13 | Dashboard | **Average layer density** | `avgρ = (1/L) · Σ_ℓ ρ(ℓ)` | KPI card in the Summary section. | [js/calc/layerMetrics.js](../js/calc/layerMetrics.js) |
+| 14 | Dashboard — Per-Layer Overview | **Nodes per layer** `N(ℓ)` | `N(ℓ) = |nodesPerLayer(ℓ)|` | Bar-chart variable; in bipartite mode shown as a stacked bar of `n_A` vs `n_B`. | [js/calc/layerMetrics.js](../js/calc/layerMetrics.js) |
+| 15 | Dashboard — Per-Layer Overview | **Edges per layer** `E(ℓ)` | `E(ℓ) = |{deduplicated edge keys in ℓ}|`; key is `from→to` (directed) or sorted pair (undirected) | Edges are deduplicated to neutralise CSV/JSON duplicate listings before counting. | [js/calc/layerMetrics.js](../js/calc/layerMetrics.js) |
+| 16 | Dashboard — Set Size Ratio | **Bipartite set-size ratio** | `(n_A(ℓ), n_B(ℓ))` per layer | Stacked-bar visualisation of how the two bipartite sets balance across layers. | [js/dashboard.js](../js/dashboard.js) |
 
 ---
 
@@ -54,9 +61,9 @@ Intralayer and interlayer connections are kept **mathematically distinct** at th
 
 | # | Mode / Section | Property | Formula | Description | File |
 |---|---|---|---|---|---|
-| 17 | Dashboard — Layer Similarity | **Jaccard (node identity)** between layers ℓ_i and ℓ_j | `J(A, B) = |A ∩ B| / |A ∪ B|` with `A = nodes(ℓ_i)`, `B = nodes(ℓ_j)` | Heatmap quantifying how much two layers share node identities. Returns `NaN` when both sets are empty. | [js/dashboard.js:741-748, 791-795](../js/dashboard.js#L741-L748) |
-| 18 | Dashboard — Layer Similarity | **Jaccard (edge identity)** between layers | `J(E_i, E_j)` over deduplicated edge-key sets | Heatmap of edge-set overlap between layers. Always shown (unipartite + bipartite). | [js/dashboard.js:752-757](../js/dashboard.js#L752-L757) |
-| 19 | Dashboard — Layer Similarity (bipartite) | **Per-set Jaccard** (Set A and Set B node identity) | `J(A_i ∩ Set_X, A_j ∩ Set_X)` for `X ∈ {A, B}` | Two extra heatmaps for bipartite networks comparing each set's identity overlap across layers. | [js/dashboard.js:760-789](../js/dashboard.js#L760-L789) |
+| 17 | Dashboard — Layer Similarity | **Jaccard (node identity)** between layers ℓ_i and ℓ_j | `J(A, B) = |A ∩ B| / |A ∪ B|` with `A = nodes(ℓ_i)`, `B = nodes(ℓ_j)` | Heatmap quantifying how much two layers share node identities. Returns `NaN` when both sets are empty. | [js/calc/similarity.js](../js/calc/similarity.js) |
+| 18 | Dashboard — Layer Similarity | **Jaccard (edge identity)** between layers | `J(E_i, E_j)` over deduplicated edge-key sets | Heatmap of edge-set overlap between layers. Always shown (unipartite + bipartite). | [js/calc/similarity.js](../js/calc/similarity.js) |
+| 19 | Dashboard — Layer Similarity (bipartite) | **Per-set Jaccard** (Set A and Set B node identity) | `J(A_i ∩ Set_X, A_j ∩ Set_X)` for `X ∈ {A, B}` | Two extra heatmaps for bipartite networks comparing each set's identity overlap across layers. | [js/calc/similarity.js](../js/calc/similarity.js) |
 | 20 | Dashboard — Presence Matrix | **Node × Layer presence** `1_{v ∈ ℓ}` | `presence(v, ℓ) = 1` iff state node `(ℓ, v)` exists | Binary matrix view, sortable by participation, name, or bipartite set. Flippable to layer-rows orientation. | [js/dashboard.js:321-323, 432-517](../js/dashboard.js#L321-L323) |
 
 ---
@@ -78,11 +85,11 @@ Intralayer and interlayer connections are kept **mathematically distinct** at th
 
 | # | Mode / Section | Property | Formula | Description | File |
 |---|---|---|---|---|---|
-| 27 | Meta-Network | **Edge weight (union mode)** | `w_meta(u, v) = 1` whenever ≥1 layer has edge `(u, v)` | Treats the meta-graph as a simple unweighted union across layers. | [js/metaNetwork.js:170-183](../js/metaNetwork.js#L170-L183) |
-| 28 | Meta-Network | **Edge weight (sumOccurrence)** | `w_meta(u, v) = |{ ℓ : (u, v) ∈ E(ℓ) }|` | Counts in how many layers the edge appears. | [js/metaNetwork.js:170-183](../js/metaNetwork.js#L170-L183) |
-| 29 | Meta-Network | **Edge weight (sumWeights)** | `w_meta(u, v) = Σ_ℓ w_ℓ(u, v)` | Sums layer-specific weights of the same edge. | [js/metaNetwork.js:137-183](../js/metaNetwork.js#L137-L183) |
-| 30 | Meta-Network | **Edge canonicalisation** | Directed: keep `(a, b)` as listed. Undirected: sort `(a, b)` so `min, max` is the canonical key | Prevents `(A, B)` and `(B, A)` from being counted as two distinct meta-edges. | [js/metaNetwork.js:147-149](../js/metaNetwork.js#L147-L149) |
-| 31 | Meta-Network | **Per-layer edge contribution** | For each meta-edge: list of `(layerName, weight)` it appears in | Used in tooltips and per-edge breakdown display. | [js/metaNetwork.js:152-178](../js/metaNetwork.js#L152-L178) |
+| 27 | Meta-Network | **Edge weight (union mode)** | `w_meta(u, v) = 1` whenever ≥1 layer has edge `(u, v)` | Treats the meta-graph as a simple unweighted union across layers. | [js/calc/metaAggregation.js](../js/calc/metaAggregation.js) |
+| 28 | Meta-Network | **Edge weight (sumOccurrence)** | `w_meta(u, v) = |{ ℓ : (u, v) ∈ E(ℓ) }|` | Counts in how many layers the edge appears. | [js/calc/metaAggregation.js](../js/calc/metaAggregation.js) |
+| 29 | Meta-Network | **Edge weight (sumWeights)** | `w_meta(u, v) = Σ_ℓ w_ℓ(u, v)` | Sums layer-specific weights of the same edge. | [js/calc/metaAggregation.js](../js/calc/metaAggregation.js) |
+| 30 | Meta-Network | **Edge canonicalisation** | Directed: keep `(a, b)` as listed. Undirected: sort `(a, b)` so `min, max` is the canonical key | Prevents `(A, B)` and `(B, A)` from being counted as two distinct meta-edges. | [js/calc/metaAggregation.js](../js/calc/metaAggregation.js) |
+| 31 | Meta-Network | **Per-layer edge contribution** | For each meta-edge: list of `(layerName, weight)` it appears in | Used in tooltips and per-edge breakdown display. | [js/calc/metaAggregation.js](../js/calc/metaAggregation.js) |
 | 32 | Meta-Network — Bipartite | **Set assignment** | `node ∈ Set A` iff it belongs to set A in any bipartite layer; conflicts (in both A and B) are resolved by removing it from B | Lets the meta-network adopt a single bipartite typing across the whole network. | [js/metaNetwork.js:114-123](../js/metaNetwork.js#L114-L123) |
 
 ---

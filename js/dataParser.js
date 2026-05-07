@@ -128,9 +128,9 @@ export function parseMultilayerData(json) {
 
   // Extract attribute names for color mapping. The Map-valued `_by_layer`
   // fields and the structural `layers_present` array are excluded — they
-  // aren't usable as scalar coloring attributes. Scalar `_sum` fields and
-  // all state-node fields fall through into the dropdowns.
-  const byLayerFields = physicalNodeFields.map(f => f.replace(/_sum$/, '_by_layer'));
+  // aren't usable as scalar coloring attributes. Scalar aggregates (`_sum`,
+  // `_mean`, `_max`) and all state-node fields fall through into the dropdowns.
+  const byLayerFields = stateNodeFields.map(f => `${f}_by_layer`);
   const nodeAttributeNames = extractExtraAttributes(json.nodes, ['node_id', 'node_name', 'layers_present', ...byLayerFields]);
   const stateNodeAttributeNames = extractExtraAttributes(json.state_nodes, ['layer_id', 'node_id', 'layer_name', 'node_name']);
   const linkAttributeNames = extractExtraAttributes(json.extended, ['layer_from', 'node_from', 'layer_to', 'node_to', 'weight', 'directed']);
