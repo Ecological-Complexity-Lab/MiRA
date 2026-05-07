@@ -110,7 +110,6 @@ function computePhysicalNodeMetrics(model, stateNodeFields) {
   const byLayerFields = stateNodeFields.map(f => `${f}_by_layer`);
   const sumFields     = stateNodeFields.map(f => `${f}_sum`);
   const meanFields    = stateNodeFields.map(f => `${f}_mean`);
-  const maxFields     = stateNodeFields.map(f => `${f}_max`);
 
   const entriesByName = new Map();
   for (const node of model.nodes) {
@@ -122,7 +121,6 @@ function computePhysicalNodeMetrics(model, stateNodeFields) {
     const layersPresent = [];
     const byLayerMaps = byLayerFields.map(() => new Map());
     const sums = sumFields.map(() => 0);
-    const maxes = maxFields.map(() => 0);
 
     for (const sn of model.stateNodes) {
       if (sn.node_name !== entries[0].node_name) continue;
@@ -131,7 +129,6 @@ function computePhysicalNodeMetrics(model, stateNodeFields) {
         const v = sn[f] ?? 0;
         byLayerMaps[i].set(sn.layer_name, v);
         sums[i] += v;
-        if (v > maxes[i]) maxes[i] = v;
       });
     }
 
@@ -145,12 +142,11 @@ function computePhysicalNodeMetrics(model, stateNodeFields) {
       byLayerFields.forEach((f, i) => { node[f] = byLayerMaps[i]; });
       sumFields.forEach((f, i)     => { node[f] = sums[i]; });
       meanFields.forEach((f, i)    => { node[f] = means[i]; });
-      maxFields.forEach((f, i)     => { node[f] = maxes[i]; });
     }
   }
 
-  // Only scalar fields are returned to the dropdown wiring — the `_by_layer`
-  // Maps aren't usable as scalar coloring attributes, and layers_present is
-  // a structural field. Order: sum first (default), then mean, then max.
-  return [...sumFields, ...meanFields, ...maxFields];
+  // Order in the dropdowns matches stateNodeFields (intra→inter, degree→
+  // strength), with sum and mean for each base field placed adjacent so
+  // related aggregations stay grouped.
+  return stateNodeFields.flatMap(f => [`${f}_sum`, `${f}_mean`]);
 }

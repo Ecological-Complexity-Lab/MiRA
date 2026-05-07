@@ -191,8 +191,8 @@ describe('Group calc/nodeMetrics — multilayer degree/strength split', () => {
     expect(A.inter_degree_by_layer.get('L2')).toBe(1)
   })
 
-  it('Physical-node mean/max aggregations match the per-layer vector', () => {
-    // Asymmetric fixture: A in L1 has 2 intra-edges, in L2 has 0 → mean 1, max 2.
+  it('Physical-node mean aggregation matches sum / |layers_present|', () => {
+    // Asymmetric fixture: A in L1 has 2 intra-edges, in L2 has 0 → mean 1.
     const input = {
       directed: false,
       layers: [
@@ -221,16 +221,20 @@ describe('Group calc/nodeMetrics — multilayer degree/strength split', () => {
     const A = m.nodes.find(n => n.node_name === 'A')
     expect(A.intra_degree_sum).toBe(2)   // 2 + 0 across the 2 layers it's in
     expect(A.intra_degree_mean).toBe(1)  // 2 / 2
-    expect(A.intra_degree_max).toBe(2)
   })
 
-  it('computedNodeAttributes lists sum/mean/max scalars but excludes _by_layer', () => {
+  it('computedNodeAttributes lists sum/mean scalars in intra→inter order', () => {
     const m = parseMultilayerData(makeMultiplex2())
     expect(m.computedNodeAttributes).toEqual(
-      expect.arrayContaining(['intra_degree_sum', 'intra_degree_mean', 'intra_degree_max'])
+      expect.arrayContaining(['intra_degree_sum', 'intra_degree_mean'])
     )
     for (const a of m.computedNodeAttributes) {
       expect(a).not.toMatch(/_by_layer$/)
+      expect(a).not.toMatch(/_max$/)
     }
+    // Order check: every intra_* entry comes before every inter_* entry.
+    const lastIntra = m.computedNodeAttributes.findLastIndex(a => a.startsWith('intra_'))
+    const firstInter = m.computedNodeAttributes.findIndex(a => a.startsWith('inter_'))
+    expect(firstInter).toBeGreaterThan(lastIntra)
   })
 })

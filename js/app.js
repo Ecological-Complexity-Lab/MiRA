@@ -3177,6 +3177,13 @@ csvImportLoad.addEventListener('click', () => {
 
 // Append an <optgroup> with one <option> per item. Items is a list of
 // {value, text} objects. Skipped silently when items is empty.
+// Interlayer-related options (attribute name contains "inter_" or "inter-")
+// are tinted with the default interlayer-link blue so users can scan the
+// dropdown by colour.
+const INTER_OPTION_COLOR = '#1e64dc';
+function isInterAttr(text) {
+    return /\binter[_\- ]/.test(text);
+}
 function appendOptgroup(select, label, items) {
     if (!items.length) return;
     const og = document.createElement('optgroup');
@@ -3185,6 +3192,7 @@ function appendOptgroup(select, label, items) {
         const opt = document.createElement('option');
         opt.value = value;
         opt.textContent = text;
+        if (isInterAttr(text)) opt.style.color = INTER_OPTION_COLOR;
         og.appendChild(opt);
     }
     select.appendChild(og);
