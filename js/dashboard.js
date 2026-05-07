@@ -14,10 +14,6 @@ const BAR_FILL    = 'rgba(99,102,241,0.72)';
 const GRID        = '#e5e7eb';
 const TEXT        = '#374151';
 const SUBTEXT     = '#9ca3af';
-// Match the default interlayer link colour used elsewhere in the app
-// (#1e64dc) so users see a consistent visual language: anything to do
-// with cross-layer edges renders in this blue.
-const INTER_HEX   = '#1e64dc';
 
 // ─── Number formats ──────────────────────────────────────────────────────────
 const fmtInteger = d3.format('.0f');   // counts: 1234 → "1234"
@@ -611,7 +607,7 @@ export class Dashboard {
         const panels = [];
         const sides = [
             { kind: 'intra', label: 'Intralayer', directed: s.directedIntra, color: undefined },
-            ...(s.hasInterlayer ? [{ kind: 'inter', label: 'Interlayer', directed: s.directedInter, color: INTER_HEX }] : []),
+            ...(s.hasInterlayer ? [{ kind: 'inter', label: 'Interlayer', directed: s.directedInter, color: '#f59e0b' }] : []),
         ];
         for (const side of sides) {
             if (side.directed) {
@@ -660,7 +656,7 @@ export class Dashboard {
 
     _sWeightDist(s) {
         const INTRA_COLOR  = BAR_FILL;
-        const INTER_COLOR  = 'rgba(30,100,220,0.75)'; // #1e64dc with alpha
+        const INTER_COLOR  = 'rgba(245,158,11,0.75)';
         const W_HIST = 420, H_HIST = 220;
 
         const makeBins = (weights, nBins = 15) => {
@@ -752,15 +748,13 @@ export class Dashboard {
             layerNames.forEach((colLn, j) => {
                 const cnt  = countMat[i][j];
                 const t    = cnt / maxCount;
-                const fill = _lerpColor(t, INTER_HEX);
+                const fill = _lerpColor(t, '#f59e0b');
                 const x    = LABEL_W + j * cellSize;
                 const isSelected = this._interPair && this._interPair.from === rowLn && this._interPair.to === colLn;
                 const stroke = isSelected ? '#1f2937' : GRID;
                 const sw     = isSelected ? 2 : 0.5;
                 const fs     = Math.min(10, cellSize * 0.27);
-                // Pick white text on darker cells; #1e64dc luminance ≈ 0.37 so
-                // we cross the threshold at lower fills than for amber.
-                const textFill = (1 + (((30*0.299+100*0.587+220*0.114)/255) - 1) * t) < 0.52 ? '#fff' : TEXT;
+                const textFill = (1 + (((245*0.299+158*0.587+11*0.114)/255) - 1) * t) < 0.52 ? '#fff' : TEXT;
                 cells += `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" class="db-inter-cell" data-from="${rowLn}" data-to="${colLn}" style="cursor:${cnt > 0 ? 'pointer' : 'default'}"/>`;
                 if (cellSize >= 14 && cnt > 0) {
                     cells += `<text x="${x + cellSize / 2}" y="${y + cellSize / 2 + fs * 0.4}" text-anchor="middle" font-size="${fs}" fill="${textFill}" pointer-events="none">${cnt}</text>`;

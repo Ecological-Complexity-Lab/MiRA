@@ -3177,13 +3177,6 @@ csvImportLoad.addEventListener('click', () => {
 
 // Append an <optgroup> with one <option> per item. Items is a list of
 // {value, text} objects. Skipped silently when items is empty.
-// Interlayer-related options (attribute name contains "inter_" or "inter-")
-// are tinted with the default interlayer-link blue so users can scan the
-// dropdown by colour.
-const INTER_OPTION_COLOR = '#1e64dc';
-function isInterAttr(text) {
-    return /\binter[_\- ]/.test(text);
-}
 function appendOptgroup(select, label, items) {
     if (!items.length) return;
     const og = document.createElement('optgroup');
@@ -3192,19 +3185,23 @@ function appendOptgroup(select, label, items) {
         const opt = document.createElement('option');
         opt.value = value;
         opt.textContent = text;
-        if (isInterAttr(text)) opt.style.color = INTER_OPTION_COLOR;
         og.appendChild(opt);
     }
     select.appendChild(og);
 }
 
-// Split attributes into (from-data, MiRA-computed) buckets so the dropdown
-// can show two optgroups. computedSet is a Set<string> of attribute names
-// MiRA derived in dataParser; the rest came in with the user's data.
-function splitByComputed(attrs, computedSet) {
-    const fromData = [], computed = [];
-    for (const a of attrs) (computedSet.has(a) ? computed : fromData).push(a);
-    return { fromData, computed };
+// Split MiRA-computed attribute names by side (intra / inter) so the
+// dropdown can show separate optgroups and users don't have to scan
+// one long alphabetical list.
+function splitMiraAttrs(attrs, computedSet) {
+    const fromData = [], intra = [], inter = [];
+    for (const a of attrs) {
+        if (!computedSet.has(a)) { fromData.push(a); continue; }
+        if (a.startsWith('inter_')) inter.push(a);
+        else if (a.startsWith('intra_')) intra.push(a);
+        else fromData.push(a); // fallback for any future computed attr that isn't intra/inter-prefixed
+    }
+    return { fromData, intra, inter };
 }
 
 // ---- Dropdowns ----
@@ -3214,19 +3211,27 @@ function populateDropdowns() {
     const computedNode  = new Set(model.computedNodeAttributes || []);
     const computedState = new Set(model.computedStateNodeAttributes || []);
 
-    // Node color options — grouped by "From data" vs "MiRA-computed"
+    // Node color options — grouped to help users navigate. Optgroups:
+    //   "From data"            (raw attributes from the input file)
+    //   "MiRA — intralayer"    (intra_* fields)
+    //   "MiRA — interlayer"    (inter_* fields, only emitted when inter
+    //                           links exist)
     nodeColorSelect.innerHTML = '<option value="">Default</option>';
     {
-        const node  = splitByComputed(model.nodeAttributeNames, computedNode);
-        const state = splitByComputed(model.stateNodeAttributeNames, computedState);
+        const node  = splitMiraAttrs(model.nodeAttributeNames, computedNode);
+        const state = splitMiraAttrs(model.stateNodeAttributeNames, computedState);
         const toItem = (prefix, src) => a => ({ value: `${src}:${a}`, text: `${prefix}: ${a}` });
         appendOptgroup(nodeColorSelect, 'From data', [
             ...node.fromData.map(toItem('Node', 'node')),
             ...state.fromData.map(toItem('State', 'state')),
         ]);
-        appendOptgroup(nodeColorSelect, 'MiRA-computed', [
-            ...node.computed.map(toItem('Node', 'node')),
-            ...state.computed.map(toItem('State', 'state')),
+        appendOptgroup(nodeColorSelect, 'MiRA — intralayer', [
+            ...node.intra.map(toItem('Node', 'node')),
+            ...state.intra.map(toItem('State', 'state')),
+        ]);
+        appendOptgroup(nodeColorSelect, 'MiRA — interlayer', [
+            ...node.inter.map(toItem('Node', 'node')),
+            ...state.inter.map(toItem('State', 'state')),
         ]);
     }
 
@@ -3272,20 +3277,21 @@ function populateDropdowns() {
         bipartiteColorLabelB.textContent = `Color by ${labelB}`;
 
         const toItem = (prefix, src) => a => ({ value: `${src}:${a}`, text: `${prefix}: ${a}` });
-        const splitNode = attrs => splitByComputed([...attrs], computedNode);
-        const computedStateList = (model.computedStateNodeAttributes || []).filter(a =>
-            model.stateNodeAttributeNames.includes(a)
-        );
+        const stateMira = splitMiraAttrs(model.computedStateNodeAttributes || [], computedState);
 
         const populateSet = (select, nodeAttrSet, stateAttrSet) => {
-            const node = splitNode(nodeAttrSet);
+            const node = splitMiraAttrs([...nodeAttrSet], computedNode);
             appendOptgroup(select, 'From data', [
                 ...node.fromData.map(toItem('Node', 'node')),
                 ...[...stateAttrSet].map(toItem('State', 'state')),
             ]);
-            appendOptgroup(select, 'MiRA-computed', [
-                ...node.computed.map(toItem('Node', 'node')),
-                ...computedStateList.map(toItem('State', 'state')),
+            appendOptgroup(select, 'MiRA — intralayer', [
+                ...node.intra.map(toItem('Node', 'node')),
+                ...stateMira.intra.map(toItem('State', 'state')),
+            ]);
+            appendOptgroup(select, 'MiRA — interlayer', [
+                ...node.inter.map(toItem('Node', 'node')),
+                ...stateMira.inter.map(toItem('State', 'state')),
             ]);
         };
         populateSet(nodeColorSelectSetA, setA_nodeAttrs, setA_stateAttrs);
@@ -3315,15 +3321,19 @@ function populateDropdowns() {
             .filter(a => !STRUCTURAL_STATE_KEYS.has(a));
         const numericStateAttrs = stateAttrCandidates.filter(a => isNumericAttr(a, model.stateNodes));
 
-        const node  = splitByComputed(numericNodeAttrs, computedNode);
-        const state = splitByComputed(numericStateAttrs, computedState);
+        const node  = splitMiraAttrs(numericNodeAttrs, computedNode);
+        const state = splitMiraAttrs(numericStateAttrs, computedState);
         appendOptgroup(nodeSizeSelect, 'From data', [
             ...node.fromData.map(sizeItem('Node', 'node')),
             ...state.fromData.map(sizeItem('State', 'state')),
         ]);
-        appendOptgroup(nodeSizeSelect, 'MiRA-computed', [
-            ...node.computed.map(sizeItem('Node', 'node')),
-            ...state.computed.map(sizeItem('State', 'state')),
+        appendOptgroup(nodeSizeSelect, 'MiRA — intralayer', [
+            ...node.intra.map(sizeItem('Node', 'node')),
+            ...state.intra.map(sizeItem('State', 'state')),
+        ]);
+        appendOptgroup(nodeSizeSelect, 'MiRA — interlayer', [
+            ...node.inter.map(sizeItem('Node', 'node')),
+            ...state.inter.map(sizeItem('State', 'state')),
         ]);
     }
 
@@ -3332,20 +3342,26 @@ function populateDropdowns() {
         bipartiteSizeLabelA.textContent = `Size by ${labelA}`;
         bipartiteSizeLabelB.textContent = `Size by ${labelB}`;
 
-        const computedNumericState = (model.computedStateNodeAttributes || [])
-            .filter(a => isNumericAttr(a, model.stateNodes));
+        const stateMira = splitMiraAttrs(
+            (model.computedStateNodeAttributes || []).filter(a => isNumericAttr(a, model.stateNodes)),
+            computedState,
+        );
 
         const populateSetSize = (select, nodeAttrSet, stateAttrSet) => {
             const numericNode = [...nodeAttrSet].filter(a => isNumericAttr(a, model.nodes));
             const numericState = [...stateAttrSet].filter(a => isNumericAttr(a, model.stateNodes));
-            const node = splitByComputed(numericNode, computedNode);
+            const node = splitMiraAttrs(numericNode, computedNode);
             appendOptgroup(select, 'From data', [
                 ...node.fromData.map(sizeItem('Node', 'node')),
                 ...numericState.map(sizeItem('State', 'state')),
             ]);
-            appendOptgroup(select, 'MiRA-computed', [
-                ...node.computed.map(sizeItem('Node', 'node')),
-                ...computedNumericState.map(sizeItem('State', 'state')),
+            appendOptgroup(select, 'MiRA — intralayer', [
+                ...node.intra.map(sizeItem('Node', 'node')),
+                ...stateMira.intra.map(sizeItem('State', 'state')),
+            ]);
+            appendOptgroup(select, 'MiRA — interlayer', [
+                ...node.inter.map(sizeItem('Node', 'node')),
+                ...stateMira.inter.map(sizeItem('State', 'state')),
             ]);
         };
         populateSetSize(nodeSizeSelectSetA, setA_nodeAttrs, setA_stateAttrs);
