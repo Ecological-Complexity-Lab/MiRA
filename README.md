@@ -72,6 +72,9 @@ multilayer_to_json(net, file = "my_network.json", bipartite = TRUE)
 multilayer_to_csv(net, path = "my_network/")
 ```
 
+## App development process
+We developed the MiRA codebase using an AI-assisted workflow. Initial scaffolding and iterative feature implementation were carried out using Claude Code (Anthropic), an agentic AI programming tool, with Claude Sonnet~4.6 used for routine implementation tasks and Claude Opus~4 used for complex architectural decisions and refactoring. Human oversight was applied throughout: all AI-generated code was reviewed, debugged, and revised. We paid particular attention to calculation of properties, domain-specific logic, including bipartite layout computation, geographic placement of layers, multilayer data structure validation, and EMLN integration. The codebase was audited periodically to identify inconsistencies between behavior and documentation, to enforce modularity via refactoring, and to remove redundancy introduced during iterative development.
+
 ## Feedback and issues
 
 Feedback and bug reports are welcome at [GitHub Issues](https://github.com/Ecological-Complexity-Lab/MiRA/issues).
