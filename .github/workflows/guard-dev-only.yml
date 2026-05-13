@@ -1,0 +1,59 @@
+name: guard-dev-only
+
+# Fails if any Tier 3 (development-only) path appears on main.
+# Catches accidental development -> main merges before they ship.
+# Source of truth for the list: docs/branching-strategy.md (on the development branch).
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fail if dev-only paths appear on main
+        run: |
+          set -e
+          fail=0
+          # Exact paths and directory prefixes
+          for p in \
+            CLAUDE.md \
+            .claude \
+            docs/branching-strategy.md \
+            docs/useful-commands.md \
+            docs/calculations.md \
+            docs/icons.md \
+            docs/visualization_guidelines.md \
+            data/process \
+            dev \
+            logos \
+            test-results \
+            bugs.md \
+            next_step.md
+          do
+            if git ls-tree -r HEAD --name-only | grep -qE "^${p}(/|$)"; then
+              echo "::error::Dev-only path '$p' must not exist on main"
+              fail=1
+            fi
+          done
+          # Globs
+          if git ls-tree -r HEAD --name-only | grep -qE '^attempt_summary_.*\.md$'; then
+            echo "::error::attempt_summary_*.md must not exist on main"
+            fail=1
+          fi
+          if git ls-tree -r HEAD --name-only | grep -qE '\.tgz$'; then
+            echo "::error::*.tgz must not exist on main"
+            fail=1
+          fi
+          if [ $fail -eq 1 ]; then
+            echo ""
+            echo "These paths live on the 'development' branch only."
+            echo "If they appeared here, you likely merged development into main by mistake."
+            exit 1
+          fi
+          echo "✓ main contains no Tier 3 paths"
