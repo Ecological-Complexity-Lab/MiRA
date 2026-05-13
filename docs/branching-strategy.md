@@ -57,6 +57,7 @@ Not every "internal" file needs to be hidden. The trick is to split files into t
 | `.github/workflows/` | 1 | ✅ | ✅ | CI workflow definitions |
 | *(none currently)* | 2 | ✅ | ✅ | Reserved for "internal but harmless" files; currently empty by choice |
 | `CLAUDE.md` | 3 | ❌ | ✅ | Agent instructions for Claude Code |
+| `.claude/` | 3 | ❌ | ✅ | Claude Code local settings (`settings.json`, `launch.json`) — personal paths and permission allowlists |
 | `docs/useful-commands.md` | 3 | ❌ | ✅ | Dev cheat-sheet |
 | `attempt_summary_*.md` | 3 | ❌ | ✅ | Post-mortem notes from failed attempts |
 | `bugs.md` | 3 | ❌ | ✅ | Internal bug-tracking notes |
@@ -431,6 +432,7 @@ Keep them on disk only, not tracked. Pros: simplest. Cons: lose them when switch
 Anything in this list lives on `development` only and is removed from `main` in the cutover commit. This is the **Tier 3** list from the "What lives where" table above — Tier 1 files stay on `main` and don't appear here; Tier 2 is currently empty.
 
 - `CLAUDE.md`
+- `.claude/` (Claude Code settings; personal paths, not portable)
 - `docs/useful-commands.md`
 - `attempt_summary_*.md` (any file matching this glob)
 - `bugs.md`, `next_step.md` (if present)
