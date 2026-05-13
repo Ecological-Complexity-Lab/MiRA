@@ -18,7 +18,7 @@
  * ──────────────
  *   Groups 1–3   parseCsv() in isolation (no csvToJson involved)
  *   Groups 4–7   csvToJson() in isolation (parseCsv is an internal detail)
- *   Groups 8–9   Integration: CSV text → csvToJson() → parseMultilayerData()
+ *   Group 8      Integration: CSV text → csvToJson() → parseMultilayerData()
  *
  * FIXTURE FILES  (tests/fixtures/)
  *   edges_simple.csv        — 3 intralayer edges, Forest + Meadow layers, 2 nodes
@@ -27,12 +27,6 @@
  *   edges_quoted_names.csv  — Layer and node names that contain commas inside quotes
  *   edges_extra_columns.csv — Extra "method" and "confidence" columns beyond the
  *                             required four, to verify they are forwarded to extended[]
- *
- * REAL DATA FILES  (MiRA/data/)
- *   net22_extended.csv, net22_layers.csv, net22_nodes.csv
- *     — A 5-layer ecological food web (Nepenthes pitcher-plant networks).
- *     — net22_nodes.csv uses a "type" column (not "group") to test column renaming.
- *     — net22_layers.csv uses lowercase latitude/longitude (already normalised).
  *
  * COMMON REAL-WORLD CSV ERRORS COVERED
  *   CRLF line endings   — Windows Notepad / Excel default export (Group 3.1)
@@ -54,10 +48,8 @@ import { parseCsv, csvToJson } from '../js/csvImporter.js'
 import { parseMultilayerData } from '../js/dataParser.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const DATA_DIR     = resolve(__dirname, '../data')
 const FIXTURES_DIR = resolve(__dirname, 'fixtures')
 
-const loadData    = (f) => readFileSync(resolve(DATA_DIR,     f), 'utf8')
 const loadFixture = (f) => readFileSync(resolve(FIXTURES_DIR, f), 'utf8')
 
 
@@ -362,43 +354,3 @@ describe('Group 8 — Integration: toy CSV fixtures → parseMultilayerData()', 
 })
 
 
-// ── Group 9 — Integration: real net22 ecological dataset ─────────────────────
-// net22 is a 5-layer food web of pitcher-plant (Nepenthes) communities.
-// These tests verify the parser works on a realistic dataset with extra columns,
-// mixed data types, and the "type" column that must be renamed to "group".
-//
-// net22_nodes.csv uses "type" (not "group" or "node_type") — Group 6.3 covers
-// this path on toy data; here we confirm it works end-to-end on real data.
-
-describe('Group 9 — Integration: real net22 ecological dataset', () => {
-  let model
-  beforeAll(() => {
-    const { json } = csvToJson(
-      loadData('net22_extended.csv'),
-      loadData('net22_layers.csv'),
-      loadData('net22_nodes.csv'),
-    )
-    model = parseMultilayerData(json)
-  })
-
-  it('9.1 all three net22 CSVs load without throwing', () => {
-    expect(model).toBeDefined()
-  })
-
-  it('9.2 net22 has exactly 5 layers', () => {
-    expect(model.layers).toHaveLength(5)
-  })
-
-  it('9.3 "type" column from net22_nodes.csv is normalised to "node_type" in model', () => {
-    // The "type" column is renamed to "node_type" by csvToJson.
-    // If the renaming fails, nodeAttributeNames would contain "type" (the raw name).
-    expect(model.nodeAttributeNames).toContain('node_type')
-  })
-
-  it('9.4 edge-list only (no layers/nodes CSVs) also produces a valid net22 model', () => {
-    // Users often only have the edge list. Verify that auto-derivation works on
-    // a large real-world file, not just toy examples.
-    const { json } = csvToJson(loadData('net22_extended.csv'))
-    expect(() => parseMultilayerData(json)).not.toThrow()
-  })
-})

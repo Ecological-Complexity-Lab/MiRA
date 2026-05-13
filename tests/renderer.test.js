@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 /**
  * renderer.test.js — Unit tests for Renderer pure-math methods
  *

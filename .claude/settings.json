@@ -178,7 +178,12 @@
       "Bash(node --check /Users/shai/GitHub/ecomplab/MiRA/js/app.js)",
       "Bash(node --check /Users/shai/GitHub/ecomplab/MiRA/js/tourManager.js)",
       "Bash(curl -sL \"https://gist.githubusercontent.com/shainova/6dafb353f31faf4df7bd338566a2dc2b/raw/\")",
-      "Bash(xargs -n1 basename)"
+      "Bash(xargs -n1 basename)",
+      "Bash(curl -s -o /dev/null -w \"index.html: %{http_code}\\\\nstyle.css: \" http://localhost:8765/index.html)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\napp.js: \" http://localhost:8765/css/style.css)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:8765/js/app.js)",
+      "Bash(curl -s http://localhost:8765/index.html)",
+      "Bash(pkill -f \"http.server 8765\")"
     ],
     "additionalDirectories": [
       "/Users/shai/GitHub/ecomplab/emln",
