@@ -53,6 +53,7 @@ Not every "internal" file needs to be hidden. The trick is to split files into t
 | `LICENSE.md` | 1 | ✅ | ✅ | License |
 | `CNAME` | 1 | ✅ | ✅ | GitHub Pages custom-domain binding (`mira.ecomplab.com`) |
 | `package.json` | 1 | ✅ | ✅ | npm scripts + dev dependencies |
+| `config/` | 1 | ✅ | ✅ | Test runner configs (`vitest.config.js`, `playwright.config.js`) |
 | `scripts/sync-emln.sh` | 1 | ✅ | ✅ | Mirrors the web app into the `emln` R package |
 | `.github/workflows/` | 1 | ✅ | ✅ | CI workflow definitions |
 | *(none currently)* | 2 | ✅ | ✅ | Reserved for "internal but harmless" files; currently empty by choice |
