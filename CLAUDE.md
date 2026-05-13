@@ -18,7 +18,32 @@ Work only inside `MiRA/`. Ignore `_archive/` — legacy files only.
 
 ## Git Workflow (always follow this)
 
-All work is committed and pushed directly on `main`.
+`main` is protected — **direct pushes are rejected.** All app changes go via PR.
+
+**Day-to-day app work (on `main`'s side via worktree `MiRA/`):**
+
+```bash
+git switch -c feat/<short-name>    # or fix/, refactor/, chore/, etc.
+# ...edit, test...
+git push -u origin feat/<short-name>
+# Open PR to main on GitHub; merge once `vitest` + `guard` checks are green
+```
+
+Required status checks on `main`:
+- `vitest` — unit tests must pass
+- `guard` — fails if any Tier 3 path (CLAUDE.md, .claude/, dev/, etc.) appears on main
+
+**Tier 3 work (planning notes, attempt summaries, agent instructions, etc.) on `development`'s side via worktree `MiRA-dev/`:**
+Commit and push directly to `development`. No PR required; `development` is unprotected.
+
+**Syncing `main` → `development`** (run periodically from `MiRA-dev/`):
+
+```bash
+git merge main
+git push
+```
+
+Never merge `development → main` — the `guard` workflow will block it, and the strategy doc explains why ([docs/branching-strategy.md](docs/branching-strategy.md)).
 
 ---
 
