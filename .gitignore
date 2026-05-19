@@ -2,3 +2,10 @@
 node_modules/
 .claude/
 .Rhistory
+
+# Large raw inputs for data/process build scripts — keep build scripts + small files in git,
+# fetch heavy CSVs/zips manually from the upstream deposit as needed.
+data/process/Kay2024/raw/interaction_*.csv
+
+# Third-party reference clones (re-clone from upstream rather than vendor).
+data/process/Kay2024/AntSocialNetworkComparative-main/
