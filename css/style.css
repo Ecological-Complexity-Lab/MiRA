@@ -933,6 +933,16 @@ body {
   border-color: rgba(235,52,210,0.4);
   box-shadow: 0 4px 15px rgba(235,52,210,0.15);
 }
+.btn-domain-epidemiology {
+  background: linear-gradient(135deg, rgba(37,99,235,0.11), rgba(59,130,246,0.11));
+  border-color: rgba(37,99,235,0.27);
+  color: #1d4ed8;
+}
+.btn-domain-epidemiology:hover {
+  background: linear-gradient(135deg, rgba(37,99,235,0.21), rgba(59,130,246,0.21));
+  border-color: rgba(37,99,235,0.4);
+  box-shadow: 0 4px 15px rgba(37,99,235,0.15);
+}
 
 .dialog-box h4 {
   font-size: 14px;

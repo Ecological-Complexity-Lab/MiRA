@@ -23,6 +23,7 @@ const DOMAIN_PILL_STYLES = {
     'Neuroscience':         'background:rgba(139,92,246,0.18); border:1px solid rgba(139,92,246,0.35); color:#6d28d9;',
     'Population genetics':  'background:rgba(245,158,11,0.16); border:1px solid rgba(245,158,11,0.33); color:#b45309;',
     'Molecular Biology':    'background:rgba(235,52,210,0.15); border:1px solid rgba(235,52,210,0.32); color:#9b1599;',
+    'Epidemiology':         'background:rgba(37,99,235,0.15); border:1px solid rgba(37,99,235,0.32); color:#1d4ed8;',
 };
 
 // Multilayer-type pill — uniform gray regardless of type.
@@ -146,6 +147,24 @@ export const DATASET_INFO = {
         network: 'Undirected · multiplex · GTEx co-expression · chaperone proteome subset',
         nodeAttrs: ['family (HSP40 / HSP70 / HSP90 / HSP60 / coHSP90 / NEF / Prefoldin / other)', 'core_variable (Core / Variable)', 'stress (stress-inducible Yes / No)'],
         linkAttrs: ['weight (absolute Pearson r for intralayer; Jaccard similarity of co-expression partners for interlayer)'],
+    },
+
+    mastrandrea2015_highschool: {
+        domain: 'Epidemiology',
+        mlType: 'multiplex',
+        name: 'French high-school social multiplex',
+        citation: 'Mastrandrea et al. 2015',
+        doi: 'https://doi.org/10.1371/journal.pone.0136497',
+        dataDoi: 'http://www.sociopatterns.org/datasets/high-school-contact-and-friendship-networks/',
+        dataLabel: 'Data (SocioPatterns):',
+        layers: '4 layers — Contact (RFID face-to-face proximity), Diary (self-reported contacts), Friendship (survey), Facebook',
+        nodes: '329 students across 9 classes (Lycée Thiers, Marseille, 2013)',
+        links: '8,009 intralayer (Contact 5,818 · Diary 348 · Friendship 406 · Facebook 1,437)',
+        network: 'Undirected · multiplex · social contact network used for epidemic modelling',
+        nodeAttrs: ['class (9 classes)', 'sex (F / M / Unknown)'],
+        linkAttrs: ['weight (Contact: 20 s RFID events summed; Diary: duration tier 1–4; Friendship/Facebook: binary)'],
+        license: 'CC-BY-NC-SA 3.0',
+        licenseUrl: 'https://creativecommons.org/licenses/by-nc-sa/3.0/',
     },
 
     // ---- Benchmark / stress-test datasets ----
