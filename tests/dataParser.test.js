@@ -395,6 +395,7 @@ describe('Group 6 — Attribute name extraction', () => {
     expect(model.nodeAttributeNames).toContain('group')
     expect(model.nodeAttributeNames).not.toContain('node_id')
     expect(model.nodeAttributeNames).not.toContain('node_name')
+    expect(model.nodeAttributeNames).not.toContain('layer_name')
   })
 
   it('6.2 extra link attribute appears in linkAttributeNames; standard keys excluded', () => {
