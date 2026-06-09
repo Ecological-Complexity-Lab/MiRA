@@ -3247,9 +3247,14 @@ function populateDropdowns() {
     let labelA = "Set A", labelB = "Set B";
 
     // Per-set walks collect every attribute exposed on a node belonging to
-    // that set, except (a) structural keys, and (b) MiRA-computed state-node
-    // fields — those are network-wide so we add them to both sets explicitly.
-    const STRUCTURAL_NODE_KEYS = new Set(['node_id', 'node_name']);
+    // that set, intersected with the canonical scalar allowlists. Node attrs
+    // are filtered through model.nodeAttributeNames so structural keys
+    // (layer_name), MiRA metadata (layers_present), and Map-valued `_by_layer`
+    // fields never leak into the dropdown — those would render as "[object Map]"
+    // and force categorical mode on what should be continuous scales. State
+    // attrs exclude structural keys and MiRA-computed fields (network-wide, so
+    // added to both sets explicitly via stateMira below).
+    const nodeAttrAllowed = new Set(model.nodeAttributeNames || []);
     const STRUCTURAL_STATE_KEYS = new Set(['layer_id', 'node_id', 'layer_name', 'node_name']);
     const computedStateSet = new Set(model.computedStateNodeAttributes || []);
 
@@ -3260,13 +3265,13 @@ function populateDropdowns() {
         labelB = info.setBLabel || labelB;
         for (const nodeName of info.setA) {
             const pn = model.nodesByName.get(nodeName);
-            if (pn) Object.keys(pn).forEach(k => { if (!STRUCTURAL_NODE_KEYS.has(k)) setA_nodeAttrs.add(k); });
+            if (pn) Object.keys(pn).forEach(k => { if (nodeAttrAllowed.has(k)) setA_nodeAttrs.add(k); });
             const sn = model.stateNodeMap.get(`${layerName}::${nodeName}`);
             if (sn) Object.keys(sn).forEach(k => { if (!STRUCTURAL_STATE_KEYS.has(k) && !computedStateSet.has(k)) setA_stateAttrs.add(k); });
         }
         for (const nodeName of info.setB) {
             const pn = model.nodesByName.get(nodeName);
-            if (pn) Object.keys(pn).forEach(k => { if (!STRUCTURAL_NODE_KEYS.has(k)) setB_nodeAttrs.add(k); });
+            if (pn) Object.keys(pn).forEach(k => { if (nodeAttrAllowed.has(k)) setB_nodeAttrs.add(k); });
             const sn = model.stateNodeMap.get(`${layerName}::${nodeName}`);
             if (sn) Object.keys(sn).forEach(k => { if (!STRUCTURAL_STATE_KEYS.has(k) && !computedStateSet.has(k)) setB_stateAttrs.add(k); });
         }
