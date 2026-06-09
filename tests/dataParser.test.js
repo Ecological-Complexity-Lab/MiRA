@@ -398,6 +398,30 @@ describe('Group 6 — Attribute name extraction', () => {
     expect(model.nodeAttributeNames).not.toContain('layer_name')
   })
 
+  // Contract relied on by app.js's bipartite color/size dropdowns: every name
+  // in nodeAttributeNames must map to a SCALAR value on the node objects.
+  // The per-set walk in populateDropdowns() collects keys off node objects and
+  // intersects them with this list, so any non-scalar leak (Map-valued
+  // `_by_layer` fields, the `layers_present` array) would render as
+  // "[object Map]" and force categorical mode on continuous data.
+  it('6.1b nodeAttributeNames contains only scalar attributes (no Map/array leaks)', () => {
+    const input = makeMinimal()
+    const model = parseMultilayerData(input)
+    // The fixture's interlayer link means computeMetrics writes `_by_layer`
+    // Maps and a `layers_present` array onto the node objects — exactly the
+    // fields that must NOT surface as colour/size attributes.
+    expect(model.nodeAttributeNames).not.toContain('layers_present')
+    expect(model.nodeAttributeNames.some(a => a.endsWith('_by_layer'))).toBe(false)
+    for (const attr of model.nodeAttributeNames) {
+      for (const node of model.nodes) {
+        const v = node[attr]
+        if (v === undefined || v === null) continue
+        expect(v instanceof Map, `${attr} is a Map on a node`).toBe(false)
+        expect(Array.isArray(v), `${attr} is an array on a node`).toBe(false)
+      }
+    }
+  })
+
   it('6.2 extra link attribute appears in linkAttributeNames; standard keys excluded', () => {
     const input = makeMinimal()
     input.extended[0].type = 'mutualism'
