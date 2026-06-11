@@ -2326,7 +2326,7 @@ function openLayerComparison(nameA, nameB) {
 
 function _drawComparisonHistogram(canvas, degsA, degsB, colorA, colorB) {
     const ctx = canvas.getContext('2d');
-    const W = cssW, H = cssH;
+    const W = canvas.width, H = canvas.height;
     const PAD = { top: 6, right: 8, bottom: 22, left: 28 };
     ctx.clearRect(0, 0, W, H);
     if (!degsA.length && !degsB.length) return;
@@ -2532,7 +2532,7 @@ function openLayerDrillDown(layerName) {
 
 function _drawDegreeHistogram(canvas, degByType, allDegrees) {
     const ctx  = canvas.getContext('2d');
-    const W    = cssW, H = cssH;
+    const W    = canvas.width, H = canvas.height;
     const PAD  = { top: 8, right: 8, bottom: 28, left: 32 };
     ctx.clearRect(0, 0, W, H);
 
