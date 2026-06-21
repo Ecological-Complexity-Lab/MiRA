@@ -282,6 +282,7 @@ const tooltip = document.getElementById('tooltip');
 
 // ---- Application State ----
 let appMode = 'network'; // 'network', 'map', 'layer', 'dashboard', 'metanetwork', 'data', or 'grid'
+let currentDatasetName = null; // name of the loaded dataset (demo payloads carry dataset.name); used by feedback diagnostics
 let gridView = null;
 let layerViewHandlers = null;
 let lvRAF  = null; // requestAnimationFrame id for layer-view animation
@@ -687,6 +688,7 @@ function resetVisualizationOptions() {
 function loadData(json) {
     try {
         model = parseMultilayerData(json);
+        currentDatasetName = json?.dataset?.name ?? null;
 
         if (model.warnings && model.warnings.length) {
             alert('Data warnings:\n\n• ' + model.warnings.join('\n• '));
@@ -4843,6 +4845,101 @@ citeDialog.querySelectorAll('.cite-copy-btn').forEach(btn => {
 
 document.addEventListener('keydown', e => {
     if (e.key === 'Escape' && citeDialog.style.display !== 'none') closeCiteDialog();
+});
+
+// ---- Feedback Dialog ----
+const feedbackBtn          = document.getElementById('feedbackBtn');
+const feedbackDialog       = document.getElementById('feedbackDialog');
+const feedbackDialogClose  = document.getElementById('feedbackDialogClose');
+const feedbackCancelBtn    = document.getElementById('feedbackCancelBtn');
+const feedbackDoneBtn      = document.getElementById('feedbackDoneBtn');
+const feedbackForm         = document.getElementById('feedbackForm');
+const feedbackType         = document.getElementById('feedbackType');
+const feedbackMessage      = document.getElementById('feedbackMessage');
+const feedbackEmail        = document.getElementById('feedbackEmail');
+const feedbackIncludeDiag  = document.getElementById('feedbackIncludeDiag');
+const feedbackDiagPreview  = document.getElementById('feedbackDiagPreview');
+const feedbackCharCount    = document.getElementById('feedbackCharCount');
+const feedbackError        = document.getElementById('feedbackError');
+const feedbackThanks       = document.getElementById('feedbackThanks');
+
+// Collect optional technical context to help triage bug reports.
+function buildFeedbackDiagnostics() {
+    const version = document.querySelector('.branding-version')?.textContent?.trim() ?? 'unknown';
+    const network = model
+        ? `${model.layers.length} layers · ${model.nodes.length} nodes · ${model.extended.length} links`
+        : 'none loaded';
+    return {
+        appVersion: version,
+        mode: appMode,
+        dataset: currentDatasetName ?? '(user-loaded or none)',
+        network,
+        url: location.href,
+        userAgent: navigator.userAgent,
+        screen: `${window.innerWidth}×${window.innerHeight}`,
+        timestamp: new Date().toISOString(),
+    };
+}
+
+function refreshFeedbackDiagPreview() {
+    feedbackDiagPreview.textContent = JSON.stringify(buildFeedbackDiagnostics(), null, 2);
+}
+
+function openFeedbackDialog() {
+    // Reset to the form view each time it opens.
+    feedbackForm.style.display   = '';
+    feedbackThanks.style.display = 'none';
+    feedbackError.style.display  = 'none';
+    refreshFeedbackDiagPreview();
+    feedbackDialog.style.display = 'flex';
+    feedbackMessage.focus();
+}
+function closeFeedbackDialog() { feedbackDialog.style.display = 'none'; }
+
+feedbackBtn.addEventListener('click', openFeedbackDialog);
+feedbackDialogClose.addEventListener('click', closeFeedbackDialog);
+feedbackCancelBtn.addEventListener('click', closeFeedbackDialog);
+feedbackDoneBtn.addEventListener('click', closeFeedbackDialog);
+feedbackDialog.addEventListener('click', e => {
+    if (e.target === feedbackDialog) closeFeedbackDialog();
+});
+feedbackMessage.addEventListener('input', () => {
+    feedbackCharCount.textContent = feedbackMessage.value.trim().length;
+});
+
+feedbackForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const message = feedbackMessage.value.trim();
+    if (!message) {
+        feedbackError.textContent = 'Please enter a message before sending.';
+        feedbackError.style.display = '';
+        feedbackMessage.focus();
+        return;
+    }
+    feedbackError.style.display = 'none';
+
+    // Assemble the submission payload.
+    const payload = {
+        type: feedbackType.value,
+        message,
+        email: feedbackEmail.value.trim() || null,
+        diagnostics: feedbackIncludeDiag.checked ? buildFeedbackDiagnostics() : null,
+    };
+
+    // STAGE 1 (stub): no network call yet — log the payload and confirm so the
+    // flow is fully testable locally. Stage 2 wires this to the Google Form
+    // formResponse endpoint.
+    console.log('[feedback] would submit:', payload);
+
+    // Show the thank-you state and reset the form for next time.
+    feedbackForm.reset();
+    feedbackCharCount.textContent = '0';
+    feedbackForm.style.display   = 'none';
+    feedbackThanks.style.display = '';
+});
+
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && feedbackDialog.style.display !== 'none') closeFeedbackDialog();
 });
 
 // ---- Legend Visibility Toggle ----
