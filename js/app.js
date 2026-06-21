@@ -4848,6 +4848,17 @@ document.addEventListener('keydown', e => {
 });
 
 // ---- Feedback Dialog ----
+// Google Form backend — submissions record as rows in the linked Google Sheet.
+// The form ID + entry.* field IDs come from the form's "Get pre-filled link".
+// These are not secrets: the form accepts anonymous submissions by design.
+const FEEDBACK_FORM_ACTION = 'https://docs.google.com/forms/d/e/1FAIpQLSeP98-QmARW8U5AxMhB8ao8VRrCRsXIJCnTlgY-q59glC0LIw/formResponse';
+const FEEDBACK_ENTRY = {
+    type:        'entry.1413619499',
+    message:     'entry.1277274355',
+    email:       'entry.2082989449',
+    diagnostics: 'entry.686937648',
+};
+
 const feedbackBtn          = document.getElementById('feedbackBtn');
 const feedbackDialog       = document.getElementById('feedbackDialog');
 const feedbackDialogClose  = document.getElementById('feedbackDialogClose');
@@ -4907,7 +4918,7 @@ feedbackMessage.addEventListener('input', () => {
     feedbackCharCount.textContent = feedbackMessage.value.trim().length;
 });
 
-feedbackForm.addEventListener('submit', e => {
+feedbackForm.addEventListener('submit', async e => {
     e.preventDefault();
     const message = feedbackMessage.value.trim();
     if (!message) {
@@ -4919,23 +4930,38 @@ feedbackForm.addEventListener('submit', e => {
     feedbackError.style.display = 'none';
 
     // Assemble the submission payload.
-    const payload = {
-        type: feedbackType.value,
-        message,
-        email: feedbackEmail.value.trim() || null,
-        diagnostics: feedbackIncludeDiag.checked ? buildFeedbackDiagnostics() : null,
-    };
+    const diagnostics = feedbackIncludeDiag.checked ? buildFeedbackDiagnostics() : null;
+    const body = new URLSearchParams();
+    body.set(FEEDBACK_ENTRY.type,        feedbackType.value);
+    body.set(FEEDBACK_ENTRY.message,     message);
+    body.set(FEEDBACK_ENTRY.email,       feedbackEmail.value.trim());
+    body.set(FEEDBACK_ENTRY.diagnostics, diagnostics ? JSON.stringify(diagnostics, null, 2) : '');
 
-    // STAGE 1 (stub): no network call yet — log the payload and confirm so the
-    // flow is fully testable locally. Stage 2 wires this to the Google Form
-    // formResponse endpoint.
-    console.log('[feedback] would submit:', payload);
-
-    // Show the thank-you state and reset the form for next time.
-    feedbackForm.reset();
-    feedbackCharCount.textContent = '0';
-    feedbackForm.style.display   = 'none';
-    feedbackThanks.style.display = '';
+    feedbackSendBtn.disabled = true;
+    feedbackSendBtn.textContent = 'Sending…';
+    try {
+        // Google Forms doesn't send CORS headers, so this is a fire-and-forget
+        // no-cors POST: it reaches Google and records a row, but the opaque
+        // response is unreadable — hence the optimistic confirmation below.
+        await fetch(FEEDBACK_FORM_ACTION, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: body.toString(),
+        });
+        feedbackForm.reset();
+        feedbackCharCount.textContent = '0';
+        feedbackForm.style.display   = 'none';
+        feedbackThanks.style.display = '';
+    } catch (err) {
+        // no-cors only rejects on a network-level failure (offline, blocked).
+        console.error('[feedback] submit failed:', err);
+        feedbackError.textContent = 'Could not send feedback (network error). Please try again.';
+        feedbackError.style.display = '';
+    } finally {
+        feedbackSendBtn.disabled = false;
+        feedbackSendBtn.textContent = 'Send feedback';
+    }
 });
 
 document.addEventListener('keydown', e => {
