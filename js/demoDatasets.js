@@ -102,6 +102,7 @@ export const DATASET_INFO = {
         linkAttrs: ['(unweighted — edge indicates a shared recombinant sequence block)'],
     },
     diseasome_multiplex: {
+        hidden: true,  // Kept (JSON + description) but removed from the example list; flip to false to restore.
         domain: 'Biomedicine',
         mlType: 'multiplex',
         name: 'Human disease multiplex network',
