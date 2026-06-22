@@ -4920,7 +4920,14 @@ feedbackMessage.addEventListener('input', () => {
 
 feedbackForm.addEventListener('submit', async e => {
     e.preventDefault();
+    const email   = feedbackEmail.value.trim();
     const message = feedbackMessage.value.trim();
+    if (!email || !feedbackEmail.checkValidity()) {
+        feedbackError.textContent = 'Please enter a valid email address before sending.';
+        feedbackError.style.display = '';
+        feedbackEmail.focus();
+        return;
+    }
     if (!message) {
         feedbackError.textContent = 'Please enter a message before sending.';
         feedbackError.style.display = '';
@@ -4934,7 +4941,7 @@ feedbackForm.addEventListener('submit', async e => {
     const body = new URLSearchParams();
     body.set(FEEDBACK_ENTRY.type,        feedbackType.value);
     body.set(FEEDBACK_ENTRY.message,     message);
-    body.set(FEEDBACK_ENTRY.email,       feedbackEmail.value.trim());
+    body.set(FEEDBACK_ENTRY.email,       email);
     body.set(FEEDBACK_ENTRY.diagnostics, diagnostics ? JSON.stringify(diagnostics, null, 2) : '');
 
     feedbackSendBtn.disabled = true;
