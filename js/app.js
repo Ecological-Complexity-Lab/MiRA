@@ -265,6 +265,10 @@ const lvStreetMapCheckbox = document.getElementById('lvStreetMapCheckbox');
 const showSetNamesCheckbox = document.getElementById('showSetNamesCheckbox');
 const bipartiteNestedCheckbox = document.getElementById('bipartiteNestedCheckbox');
 const sectionInterLinks      = document.getElementById('sectionInterLinks');
+// Clear the bluish "look here" highlight (added in loadData) whenever the user
+// opens/interacts with the Interlayer links section. Permanent listener so the
+// highlight re-applies and re-clears correctly across dataset loads.
+sectionInterLinks.addEventListener('toggle', () => sectionInterLinks.classList.remove('attn-highlight'));
 const showInterlayerCheckbox = document.getElementById('showInterlayerCheckbox');
 const layoutSelect = document.getElementById('layoutSelect');
 const nodeSizeSlider = document.getElementById('nodeSizeSlider');
@@ -722,7 +726,10 @@ function loadData(json) {
         const hasInterlayer = model.interlayerLinks.length > 0;
         sectionInterLinks.style.display = hasInterlayer ? '' : 'none';
         if (hasInterlayer) {
-            setTimeout(() => showBounceArrow(sectionInterLinks.querySelector('summary'), 'left'), 800);
+            // Draw attention to the section with a static bluish highlight
+            // (cleared on first open — see the 'toggle' listener above) instead
+            // of a bouncing arrow.
+            sectionInterLinks.classList.add('attn-highlight');
             const iWeights = model.interlayerLinks.map(l => l.weight || 0).filter(w => w > 0);
             const maxIW = iWeights.length ? Math.max(...iWeights) : 1;
             interlayerWeightSlider.max  = maxIW.toFixed(4);
@@ -4669,26 +4676,9 @@ function _createLVLegendBtn(scale) {
 // ---- Tour ----
 const tourBtn = document.getElementById('tourBtn');
 tourBtn.addEventListener('click', startTour);
-setTimeout(() => showBounceArrow(tourBtn, 'up'), 1200);
-
-function showBounceArrow(el, dir) {
-    if (dir === 'up') {
-        const rect = el.getBoundingClientRect();
-        const span = document.createElement('span');
-        span.className = 'bounce-arrow-fixed';
-        span.textContent = '⬆';
-        span.style.left = `${rect.left + rect.width / 2 - 10}px`;
-        span.style.top  = `${rect.bottom + 4}px`;
-        document.body.appendChild(span);
-        span.addEventListener('animationend', () => span.remove(), { once: true });
-    } else {
-        const span = document.createElement('span');
-        span.className = 'bounce-arrow-inline';
-        span.textContent = '⬅';
-        el.appendChild(span);
-        span.addEventListener('animationend', () => span.remove(), { once: true });
-    }
-}
+// The Tour/Help buttons and the Interlayer links section are drawn attention via
+// static indigo highlights (see .attn-btn and .control-section.attn-highlight in
+// style.css) instead of bouncing arrows, which distracted users sensitive to motion.
 
 // ---- Help Popup ----
 const helpBtn            = document.getElementById('helpBtn');
