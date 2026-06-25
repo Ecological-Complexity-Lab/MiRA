@@ -221,6 +221,7 @@ export function initDemoDatasets(loadData) {
 
         const loadBtn = document.createElement('button');
         loadBtn.className    = `btn ${domainClass}`;
+        loadBtn.dataset.file = file;   // stable hook for browser tests
         loadBtn.style.cssText = 'flex:1; text-align:left; padding:7px 10px; line-height:1.3;';
         loadBtn.innerHTML = `
             <span style="display:flex; align-items:baseline; width:100%; gap:6px; margin-bottom:2px;">
