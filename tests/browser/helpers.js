@@ -1,27 +1,26 @@
 /**
- * Shared helpers for Playwright browser tests.
+ * Shared helpers for the MiRA browser smoke suite.
+ *
+ * Keep selectors centralised here: if a DOM id or the demo-dialog markup
+ * changes, this is the single place to update.
  */
 
 /**
- * Wait for the app JS to finish initializing.
- * At this commit the app does NOT auto-load data, so we just wait for
- * the canvas and toolbar to be present and the page to be idle.
+ * Wait for the app to finish its synchronous init.
+ * MiRA does not auto-load data on a plain page load, so "ready" just means
+ * the scripts ran and the main canvas exists.
  */
 export async function waitForAppReady(page) {
-  // 'load' ensures all scripts have been fetched and executed
   await page.waitForLoadState('load')
-  // 'networkidle' ensures app.js module has finished its synchronous init
   await page.waitForLoadState('networkidle', { timeout: 15000 })
   await page.waitForSelector('#networkCanvas', { timeout: 10000 })
 }
 
-
 /**
- * Open a control panel <details> section by its id.
- * e.g. openSection(page, 'sectionLayers')
+ * Open a control-panel <details> section by id (e.g. 'sectionLayers').
+ * Sets `open` directly to bypass the fixed panel's viewport constraints.
  */
 export async function openSection(page, sectionId) {
-  // Set open attribute directly via JS — bypasses viewport constraints of the fixed panel
   await page.evaluate(id => {
     const el = document.getElementById(id)
     if (el) el.open = true
@@ -29,39 +28,45 @@ export async function openSection(page, sectionId) {
 }
 
 /**
- * Dismiss the "Data loaded" notice modal if it appears.
+ * Dismiss the "Data loaded" notice if it appears. Non-fatal — the modal
+ * is not shown for every dataset/path.
  */
 export async function dismissDataNotice(page) {
-  const notice = page.locator('#dataLoadedNotice')
   const okBtn = page.locator('#dataLoadedOk')
   try {
-    await notice.waitFor({ state: 'visible', timeout: 3000 })
+    await page.locator('#dataLoadedNotice').waitFor({ state: 'visible', timeout: 2000 })
     await okBtn.click()
-    await notice.waitFor({ state: 'hidden', timeout: 3000 })
+    await page.locator('#dataLoadedNotice').waitFor({ state: 'hidden', timeout: 3000 })
   } catch {
-    // Modal didn't appear — that's fine
+    // Modal didn't appear — fine.
   }
 }
 
 /**
- * Load one of the built-in demo datasets by its data-file value.
- * e.g. loadDemoDataset(page, 'pond_ecosystem')
+ * Load a bundled demo dataset by its file key (e.g. 'costa2020').
+ * Opens the demo dialog and clicks the matching load button, which is
+ * tagged with `data-file` for exactly this purpose. Resolves once the
+ * dataset JSON has been fetched and loadData() has populated the UI.
  */
-export async function loadDemoDataset(page, dataFile) {
-  await dismissDataNotice(page)
-  // Open dialog via JS — avoids click-timing races with parallel workers
+export async function loadDemoDataset(page, file) {
   await page.evaluate(() => {
     document.getElementById('demoDialog').style.display = 'flex'
   })
   await page.locator('#demoDialog').waitFor({ state: 'visible', timeout: 5000 })
-  // Click button and wait for the JSON fetch to complete before checking the dropdown
+
   await Promise.all([
-    page.waitForResponse(r => r.url().includes(`${dataFile}.json`) && r.status() === 200, { timeout: 20000 }),
-    page.locator(`button.demo-dataset-btn[data-file="${dataFile}"]`).click({ force: true }),
+    page.waitForResponse(
+      r => r.url().includes(`/data/${file}.json`) && r.status() === 200,
+      { timeout: 20000 },
+    ),
+    page.locator(`#demoDatasetList button[data-file="${file}"]`).click({ force: true }),
   ])
-  // Wait for loadData() to populate the color dropdown
+
+  // loadData() populates the node-colour dropdown once the model is built.
   await page.waitForFunction(() => {
     const sel = document.getElementById('nodeColorSelect')
     return sel && sel.options.length > 1
   }, { timeout: 10000 })
+
+  await dismissDataNotice(page)
 }
