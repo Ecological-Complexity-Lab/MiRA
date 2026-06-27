@@ -387,8 +387,9 @@
 
   <h4 style="margin-top:14px">Global fields</h4>
   <ul>
-    <li><code>directed</code> <em>(Boolean)</em> — renders arrowheads on all edges. Default: <code>false</code>.</li>
-    <li><code>directed_interlayer</code> <em>(Boolean, optional)</em> — when <code>true</code>, interlayer edges are treated as directed even if the overall network is undirected. Useful for temporal networks where direction represents time (e.g. year t → year t+1). Defaults to the value of <code>directed</code>.</li>
+    <li><code>directed</code> <em>(Boolean)</em> — marks <strong>intralayer</strong> edges as directed (renders arrowheads). Setting it <code>true</code> also forces <code>directed_interlayer</code> to <code>true</code>. Default: <code>false</code>.</li>
+    <li><code>directed_interlayer</code> <em>(Boolean, optional)</em> — applies to <strong>interlayer</strong> edges: when <code>true</code>, they are treated as directed even if the overall network is undirected. Useful for temporal networks where direction represents time (e.g. year t → year t+1). Defaults to the value of <code>directed</code>.</li>
+    <li>Both flags can also be <strong>inferred from the data</strong>: if any individual edge carries a <code>directed</code> property (see the <code>extended</code> array), the matching global flag is set to <code>true</code> automatically.</li>
   </ul>
 
   <h4><code>layers</code> array</h4>
@@ -410,10 +411,11 @@
   </ul>
 
   <h4><code>extended</code> array</h4>
-  <p>One row per edge. Intralayer and interlayer edges both go here.</p>
+  <p>One row per edge — intralayer and interlayer edges both go in this single list. An edge is classified <strong>automatically</strong> as intralayer when <code>layer_from</code> equals <code>layer_to</code>, and as interlayer otherwise.</p>
   <ul>
     <li><code>layer_from</code>, <code>node_from</code>, <code>layer_to</code>, <code>node_to</code> — required.</li>
-    <li><code>weight</code> <em>(optional)</em> — line thickness/opacity. Defaults to 1.</li>
+    <li><code>weight</code> <em>(optional)</em> — sets edge line width (thicker = higher weight) and feeds the weight-threshold filter that hides links below a chosen value. Defaults to 1. <em>(Weight itself is not a selectable link-colour attribute.)</em></li>
+    <li><code>directed</code> <em>(optional, per-edge Boolean)</em> — marks this individual edge as directed; if any edge sets it, the matching global flag (<code>directed</code> for intralayer, <code>directed_interlayer</code> for interlayer) is inferred as <code>true</code>.</li>
     <li>Any extra fields become selectable attributes for color/size mapping.</li>
   </ul>
 
