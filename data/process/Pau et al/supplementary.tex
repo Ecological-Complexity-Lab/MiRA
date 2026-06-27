@@ -1,0 +1,315 @@
+\documentclass[]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{enumitem}
+\usepackage{graphicx} % for figures
+\usepackage{epsfig}
+\usepackage{epstopdf}
+\usepackage{times} % Times fonts
+\usepackage{dcolumn} % Align table columns on decimal point
+\usepackage{url}
+\usepackage{xcolor}
+\usepackage{stackengine}
+\usepackage{tabularx}
+\usepackage[all]{xy}
+\usepackage{mdwlist}
+\usepackage{xr}
+\usepackage{float}
+\usepackage{lineno}
+\usepackage{csvsimple}
+\usepackage{longtable}
+\usepackage[a4paper, margin=2cm]{geometry} % adjust margins as needed
+\usepackage{booktabs}
+\usepackage{adjustbox}
+\usepackage{authblk}  % for author-affiliation layout
+\usepackage[skip=10pt]{caption}
+\usepackage{longtable}
+\usepackage{booktabs}  % Para \toprule, \midrule y \bottomrule
+
+
+\renewcommand{\(}{\left(}
+\renewcommand{\)}{\right)}
+\renewcommand{\[}{\left[}
+\renewcommand{\]}{\right]}
+
+\pdfminorversion=5
+\pdfobjcompresslevel=3 
+\pdfcompresslevel=9
+
+\newcommand{\beginsupplement}{%
+  \setcounter{table}{0}%
+  \renewcommand{\thetable}{S\arabic{table}}%
+  \setcounter{figure}{0}%
+  \renewcommand{\thefigure}{S\arabic{figure}}%
+}
+
+\renewcommand{\theequation}{S\arabic{equation}}
+\renewcommand{\thesection}{S\arabic{section}}
+
+\date{}
+
+\linespread{1.1}
+
+\beginsupplement
+
+\title{Comparative Assessment of Automated and Manual Monitoring in Comprehensive Plant–Pollinator Communities}
+
+%\author[1]{Pau Enric Serra-Marin}
+%\author[2]{Albert Solé-Ribalta}
+%\author[3]{Arancha Lana}
+%\author[2,4]{Sandra Hervías-Parejo}
+%\author[2]{Javier Borge-Holthoefer}
+%\author[1]{Anna Traveset}
+%\affil[1]{Global Change Research Group, Mediterranean Institute of Advanced Studies (IMEDEA, CSIC-UIB), Illes Balears, Spain}
+%\affil[2]{Internet Interdisciplinary Institute (IN3), Universitat Oberta de Catalunya (UOC), Barcelona, Catalonia, Spain}
+%\affil[3]{Data Lab, Mediterranean Institute of Advanced Studies (IMEDEA, CSIC-UIB), Illes Balears, Spain}
+%\affil[4]{Centre for Functional Ecology (CFE), TERRA Associate Laboratory, Department of Life Sciences, University of Coimbra, Portugal}
+
+\begin{document}
+%\linenumbers
+\maketitle
+
+\subsection*{Supplementary Material}
+
+
+
+
+
+\begin{table}[h!]
+\centering
+\caption{Pollinator functional groups, included in the YOLOv5 training dataset, indicating the number of individuals, and the representative species in each group.}
+\label{tab_sup_1}
+\small
+\begin{tabular}{l r p{8cm}}
+\toprule
+\textbf{Functional Group} & \textbf{Nº Individuals}& \textbf{Representative Species} \\
+\midrule
+Large Bees                & 1,674  & \textit{Amegilla quadrifasciata}, \textit{Apis mellifera}, \textit{Anthophora balearica}, \textit{Bombus terrestris}, \textit{Bombus hispanica}, \textit{Colletes} sp. \\
+Small Bees                & 1,223  & \textit{Andrena} sp., \textit{Hyaleus} sp., \textit{Lasioglossum} sp., \textit{Nomioides} sp. \\
+Hoverflies                & 523    & \textit{Eristalis} sp., \textit{Eristalinus} sp., \textit{Eupeodes} sp., \textit{Scaeva} sp., \textit{Ischiodon} sp., etc. \\
+Lepidoptera               & 428    & \textit{Autographa gamma}, \textit{Lycaena} sp., \textit{Macroglossum stellatarum}, \textit{Vanessa} sp. \\
+Dipterans                 & 201    & \textit{Exoprosopa} sp., \textit{Musca} sp., \textit{Pyrrellia} sp., \textit{Sarcophaga} sp. \\
+Wasps                     & 201    & \textit{Ancistrocerus} sp., \textit{Megascolia} sp., \textit{Polistes} sp., etc. \\
+Coleopterans              & 189    & \textit{Anaspis} sp., \textit{Attagenus trifasciatus}, \textit{Dasytes} sp., etc. \\
+Small Dipterans           & 216    & \textit{Pthirrita} sp., \textit{Acanthiophilus helianthi}, \textit{Agromyzidae} sp., \textit{Sphenella marginata} \\
+Small Coleopterans        & 216    & \textit{Meligethes} sp., \textit{Mordellistena} spp., \textit{Psylliodes} sp., etc. \\
+Other Arthropods          & 61     & Mostly ants, Thysanoptera, Hemiptera, etc. \\
+Unknown insect & 384    & No functional group assigned \\
+Moths                     & 17     & No species assigned \\
+\bottomrule
+\end{tabular}
+\label{yolo_dataset_pollinator_description}
+\end{table}
+
+
+\begin{longtable}{l r l l r}
+  \caption{Plant species included in the YOLOv5 training dataset, indicating the number of individuals, data source, island of collection, and year of record. The ACS refers to the Automatic Camera System, with three configurations: V2 (wide-angle lens), HQ (high-quality lens with 35mm focal length), and NoIR (wide nocturnal lens equipped with infrared sensors).}
+  \label{tab:plant_individuals} \\
+  \toprule
+  Plant sp & Nº individuals & Source & Island & Year \\
+  \midrule
+  \endfirsthead
+
+  \caption[]{(Continued)} \\
+  \toprule
+  Plant sp & Nº individuals & Source & Island & Year \\
+  \midrule
+  \endhead
+
+  \midrule
+  \multicolumn{5}{r}{\textit{Continued on next page}} \\
+  \midrule
+  \endfoot
+
+  \bottomrule
+  \endlastfoot
+
+    \textit{Cakile maritima}               & 3 & ACS-V2    & Menorca    & 2021 \\
+    \textit{Chrysanthemum coronarium}      & 2 & ACS-V2    & Menorca    & 2021 \\
+   \textit{ Cistus monspeliensis}          & 2 & ACS-V2    & Menorca    & 2021 \\
+    \textit{Convolvulus} sp.                   & 2 & ACS-V2    & Menorca    & 2021 \\
+    \textit{Dorycnium fulgurans}           & 2 & ACS-V2    & Menorca    & 2021 \\
+    \textit{Euphorbia serrata}             & 2 & ACS-V2    & Menorca    & 2021 \\
+    \textit{Helianthemum} sp.               & 2 & ACS-V2    & Menorca    & 2021 \\
+    \textit{Launea cervicornis}            & 2 & ACS-V2    & Menorca    & 2021 \\
+    \textit{Lavatera maritima}             & 3 & ACS-V2    & Cabrera    & 2021 \\
+    \textit{Reichardia picroides}          & 2 & ACS-V2    & Menorca    & 2021 \\
+    \textit{Santolina chamaecyparissus}    & 2 & ACS-V2    & Menorca    & 2021 \\
+    \textit{Teucrium capitatum}            & 4 & ACS-V2    & Menorca    & 2021 \\
+    \textit{Allium ampeloprasum}          & 1 & ACS-V2    & Cabrera    & 2022 \\
+    \textit{Allium} sp.                     & 1 & ACS-V2    & Cabrera    & 2022 \\
+    \textit{Anacamptis pyramidalis}        & 1 & ACS-V2    & Cabrera    & 2022 \\
+    \textit{Asteriscus aquaticus}          & 1 & ACS-V2    & Cabrera    & 2022 \\
+    \textit{Astragalus balearicus}         & 1 & ACS-V2    & Cabrera    & 2022 \\
+    \textit{Blackstonia perfoliata}        & 1 & ACS-V2    & Cabrera    & 2022 \\
+    \textit{Cakile maritima}               & 1 & ACS-V2    & Cabrera    & 2022 \\
+    \textit{Cistus monspeliensis}          & 1 & ACS-V2    & Cabrera    & 2022 \\
+    \textit{Daucus carota}                 & 1 & ACS-V2    & Cabrera    & 2022 \\
+    \textit{Dorycnium fulgurans}           & 1 & ACS-V2    & Cabrera    & 2022 \\
+    \textit{Euphorbia dendroides}          & 1 & ACS-V2    & Cabrera    & 2022 \\
+    \textit{Euphrobia serrata}             & 1 & ACS-V2    & Cabrera    & 2022 \\
+    \textit{Fumana ericoides}              & 1 & ACS-V2    & Cabrera    & 2022 \\
+    \textit{Gladiolus communis}            & 1 & ACS-V2    & Cabrera    & 2022 \\
+    \textit{Globularia alypum}             & 1 & ACS-V2    & Cabrera    & 2022 \\
+    \textit{Lavatera arborea}              & 1 & ACS-V2    & Cabrera    & 2022 \\
+    \textit{Limonium} sp.                   & 1 & ACS-V2    & Cabrera    & 2022 \\
+    \textit{Ruta} sp.                       & 1 & ACS-V2    & Cabrera    & 2022 \\
+    \textit{Sedum sediforme}               & 1 & ACS-V2    & Cabrera    & 2022 \\
+    \textit{Teucrium capitatum}            & 1 & ACS-V2    & Cabrera    & 2022 \\
+    \textit{Allium ampeloprasum}           & 1 & ACS-HQ    & Cabrera    & 2023 \\
+    \textit{Allium} sp.                     & 1 & ACS-HQ    & Cabrera    & 2023 \\
+    \textit{Asteriscus aquaticus}          & 1 & ACS-HQ    & Cabrera    & 2023 \\
+    \textit{Astragalus balearicus}         & 1 & ACS-HQ    & Cabrera    & 2023 \\
+    \textit{Blackstonia perfoliata}        & 1 & ACS-HQ    & Cabrera    & 2023 \\
+    \textit{Cakile maritima}               & 1 & ACS-HQ    & Cabrera    & 2023 \\
+    \textit{Cistus monspeliensis}          & 1 & ACS-HQ    & Cabrera    & 2023 \\
+    \textit{Daucus carota}                 & 1 & ACS-HQ    & Cabrera    & 2023 \\
+    \textit{Dorycnium fulgurans}           & 1 & ACS-HQ    & Cabrera    & 2023 \\
+    \textit{Euphorbia dendroides}          & 1 & ACS-HQ    & Cabrera    & 2023 \\
+    \textit{Euphorbia serrata}             & 1 & ACS-HQ    & Cabrera    & 2023 \\
+    \textit{Fumana ericoides}              & 1 & ACS-HQ    & Cabrera    & 2023 \\
+    \textit{Globularia alypum}             & 1 & ACS-HQ    & Cabrera    & 2023 \\
+    \textit{Limonium} sp.                   & 1 & ACS-HQ    & Cabrera    & 2023 \\
+    \textit{Ruta} sp.                       & 1 & ACS-HQ    & Cabrera    & 2023 \\
+    \textit{Sedum sediforme}               & 1 & ACS-HQ    & Cabrera    & 2023 \\
+    \textit{Teucrium capitatum}            & 1 & ACS-HQ    & Cabrera    & 2023 \\
+    \textit{Salvia rosmarinus}             & 1 & ACS-NoIR & Cabrera    & 2023 \\
+    \textit{Dittrichia viscosa}            & 1 & ACS-NoIR & Cabrera    & 2023 \\
+    \textit{Urginea maritima}              & 1 & ACS-NoIR & Cabrera    & 2023 \\
+    \textit{Cakile maritima}               & 4 & ACS-HQ    & Formentera & 2024 \\
+    \textit{Daucus carota}                 & 2 & ACS-HQ    & Formentera & 2024 \\
+    \textit{Echium simplex}                & 3 & ACS-HQ    & Formentera & 2024 \\
+    \textit{Helichrysum stoechas}          & 2 & ACS-HQ    & Formentera & 2024 \\
+    \textit{Lotus cytisoides}              & 2 & ACS-HQ    & Formentera & 2024 \\
+    \textit{Micromeria} sp.                 & 2 & ACS-HQ    & Formentera & 2024 \\
+    \textit{Sonchus tenerrimus}            & 2 & ACS-HQ    & Formentera & 2024 \\
+    \textit{Teucrium capitatum}            & 2 & ACS-HQ    & Formentera & 2024 \\
+    \textit{Thymus} sp.                    & 3 & ACS-HQ    & Formentera & 2024 \\
+    \textit{Aloe vera}                     & 1 & ACS-HQ    & Eivissa    & 2024 \\
+    \textit{Asphodelus fistulosus}         & 1 & ACS-HQ    & Eivissa    & 2024 \\
+   \textit{ Bellardia trixago}             & 1 & ACS-HQ    & Eivissa    & 2024 \\
+    \textit{Bituminaria bituminosa}        & 1 & ACS-HQ    & Eivissa    & 2024 \\
+    \textit{Carlina} sp.                   & 1 & ACS-HQ    & Eivissa    & 2024 \\
+    \textit{Chrysanthemum coronarium}      & 1 & ACS-HQ    & Eivissa    & 2024 \\
+    \textit{Cistus albidus}                & 1 & ACS-HQ    & Eivissa    & 2024 \\
+    \textit{Convolvulus} sp.               & 1 & ACS-HQ    & Eivissa    & 2024 \\
+    \textit{Diplotaxis} sp.                & 1 & ACS-HQ    & Eivissa    & 2024 \\
+    \textit{Echium simplex}                & 1 & ACS-HQ    & Eivissa    & 2024 \\
+    \textit{Erica multiflora}              & 1 & ACS-HQ    & Eivissa    & 2024 \\
+    \textit{Foeniculum vulgare}            & 1 & ACS-HQ    & Eivissa    & 2024 \\
+    \textit{Galactites tormentosa}         & 1 & ACS-HQ    & Eivissa    & 2024 \\
+    \textit{Launea cervicornis}            & 1 & ACS-HQ    & Eivissa    & 2024 \\
+    \textit{Lavandula dentata}             & 1 & ACS-HQ    & Eivissa    & 2024 \\
+    \textit{Phlomis} sp.                    & 1 & ACS-HQ    & Eivissa    & 2024 \\
+    \textit{Reichardia picroides}          & 1 & ACS-HQ    & Eivissa    & 2024 \\
+    \textit{Reseda} sp.                     & 1 & ACS-HQ    & Eivissa    & 2024 \\
+    \textit{Rubus ulmifolius}              & 1 & ACS-HQ    & Eivissa    & 2024 \\
+    \textit{Salvia rosmarinus}             & 1 & ACS-HQ    & Eivissa    & 2024 \\
+\end{longtable}
+
+
+\begin{table}[ht]
+\centering
+\caption{Performance metrics for the leave-one-out experiments. Each row corresponds to a test in which the indicated plant species was included only in the test set—meaning no examples from that species were used during training or validation. P refers to \textit{Precision} and R to \textit{Recall}. The \textit{Validation} columns report results on the validation set, while the \textit{Test} columns show the outcomes obtained during the test stage.}
+\begin{tabular}{lcccccccc}
+\hline
+\textbf{Model} & \multicolumn{4}{c}{\textbf{Validation}} & \multicolumn{4}{c}{\textbf{Test}} \\
+\cmidrule(lr){2-5} \cmidrule(lr){6-9}
+ & P & R & mAP@50 & F1 & P & R & mAP@50 & F1 \\
+\hline
+\textit{Cakile maritima} & 0.97 & 0.96 & 0.98 & 0.96 & 0.69 & 0.43 & 0.50 & 0.53 \\
+\textit{Helichrysum stoechas} & 0.94 & 0.92 & 0.96 & 0.92 & 0.70 & 0.31 & 0.44 & 0.43 \\
+\textit{Lotus cytisoides} & 0.93 & 0.91 & 0.95 & 0.91 & 0.58 & 0.66 & 0.55 & 0.61 \\
+\textit{Sonchus tenerrimus} & 0.94 & 0.94 & 0.97 & 0.94 & 0.94 & 0.90 & 0.93 & 0.91 \\
+\textit{Daucus carota}, \textit{H. stoechas}, \textit{Reichardia picroides} & 0.93 & 0.91 & 0.94 & 0.91 & 0.88 & 0.51 & 0.62 & 0.64 \\
+\hline
+\end{tabular}
+\label{tab:leave_one_out}
+\end{table}
+
+
+\begin{table}[h!]
+\centering
+\caption{Comparison of pollinator detections by YOLOv5 and manual review across diurnal and nocturnal video samples (Videos 1 to 12). Detection counts are shown as YOLOv5 / Manual Review. The number of false positives for each video is reported in the bottom row. Videos were recorded using the Automatic Camera System, with three configurations: V2 (wide-angle lens), HQ (high-quality lens with 35mm focal length), and Noct (wide nocturnal lens equipped with infrared sensors).}
+\label{manual_video_review}
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{lcccccccccccc}
+\toprule
+\textbf{Pollinator} & \textbf{1 (V2)} & \textbf{2 (V2)} & \textbf{3 (HQ)} & \textbf{4 (V2)} & \textbf{5 (V2)} & \textbf{6 (HQ)} & \textbf{7 (HQ)} & \textbf{8 (V2)} & \textbf{9 (V2)} & \textbf{10 (NoIR)} & \textbf{11 (NoIR)} & \textbf{12 (NoIR)} \\
+\midrule
+\textit{Anthophora} sp.      & 4 / 4 &        & 6 / 6 & 6 / 6 & 1 / 1 & 3 / 3 & 4 / 5 &        & 2 / 3 &        &        &        \\
+\textit{Colletes} sp.        &       &        & 4 / 4 &       &       & 5 / 5 &       & 2 / 2 &       &        &        &        \\
+\textit{Nomioides} sp.       &       &        & 1 / 1 &       &       & 1 / 1 &       &       &       &        &        &        \\
+\textit{Sarcophaga} sp.                     &       & 1 / 1  &       &       & 2 / 2 &       &       &       &       &        &        &        \\
+Microdiptera sp.                &       &        & 3 / 4 & 1 / 3 &       & 0 / 1 & 1 / 2 & 0 / 1 &       &        &        &        \\
+\textit{Eristalinus} sp.    &       &        &       &       & 2 / 2 &       &       &       &       &        &        &        \\
+\textit{Lasioglossum} sp.   &       &        & 1 / 1 &       &       & 1 / 1 &       &       &       &        &        &        \\
+Moth                        &       &        &       &       &       &       &       &       &       & 3 / 3  & 2 / 2  & 5 / 5  \\
+\midrule
+False positives             & 2     & 2      & 0     & 1     & 0     & 1     & 0     & 1     & 0     & 0      & 0      & 2      \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+
+%\begin{figure*}[t!]
+%    \centering
+%    \begin{tabular}{l}
+%        \includegraphics[width=0.8\columnwidth]{figs/methods_map.png}
+%    \end{tabular}
+%    \caption{Map of the Balearic Islands showing the location of sampling sites across %four islands (Menorca, Eivissa, Formentera, and Cabrera). Two sampling methods were used: automatic camera systems (ACS; camera icon) and direct observations (OBS; person icon). Sampling was conducted across three habitat types: dune systems (yellow), rocky coastal areas (gray), and pine forests (green). The inset map shows the location of the Balearic Islands in the Mediterranean Sea. The zoom-in panel displays detailed sampling sites on the island of Cabrera.}
+%    \label{cumulative}
+%\end{figure*}
+
+\begin{table}[ht]
+\centering
+\caption{Results of Wilcoxon signed-rank (Paired Wilcoxon test) tests comparing methods for the Connectance, Network‐level Specialisation and Robustness metrics by habitat and year}
+\label{tab:wilcox_results_combined}
+\begin{tabular}{l l r r r}
+\hline
+\textbf{Group}         & \textbf{Metric}                         & \textbf{N pairs} & \textbf{W statistic} & \textbf{p-value} \\
+\hline
+\noalign{\vskip 0.5em}
+\multicolumn{5}{l}{\textbf{Habitat}} \\[0.5em]
+Dune system            & Connectance                             & 17                & 61                     & 0.74            \\
+                       & Network‐level Specialisation            & 17                & 83                     & 0.45            \\
+                       & Robustness                              & 11                & 47                      & 0.24            \\
+Pine forest            & Connectance                             & 10                & 7                      & 0.14            \\
+                       & Network‐level Specialisation            & 10                & 12                     & 0.13            \\
+                       & Robustness                              & 7                 & 24                      & 0.11          \\
+Rocky coastal          & Connectance                             & 22                & 51                     & 0.03*            \\
+                       & Network‐level Specialisation            & 22                & 46                     & 0.01*            \\
+                       & Robustness                              & 17                & 116                     & 0.04*          \\
+\noalign{\vskip 0.5em}
+\multicolumn{5}{l}{\textbf{Year}} \\[0.5em]
+2022                   & Connectance                             & 23                & 83                     & 0.27            \\
+                       & Network‐level Specialisation            & 23                & 143                    & 0.60            \\
+                       & Robustness                              & 17              & 91                     & 0.517            \\
+2023                   & Connectance                             & 26                & 72                     & 0.04*            \\
+                       & Network‐level Specialisation            & 26                & 45                     & $< 0.01$*             \\
+                       & Robustness                              &18                & 158                   & $< 0.01$*            \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{figure*}[t!]
+    \centering
+    \begin{tabular}{l}
+        \includegraphics[width=0.8\columnwidth]{figs/heatmap_braycurtis_binaria.png}\end{tabular}
+    \caption{Bray–Curtis dissimilarity heat-map comparing plant‐species composition across habitats. Values range from 0 (identical assemblages) to 1 (completely dissimilar), with warmer colours indicating greater compositional divergence. Each cell reports the pairwise Bray–Curtis distance between study sites.}
+    \label{Sfig:braycurtis}
+\end{figure*}
+
+\begin{figure*}[t!]
+    \centering
+    \begin{tabular}{l}
+        \includegraphics[width=0.8\columnwidth]{figs/cumulative_species_richness_community.png}
+    \end{tabular}
+    \caption{Cumulative pollinator species richness per visit across study sites for each method: direct observations (blue), Automatic Camera System (orange) and both methods merged (black). The curves show how species richness increases with sampling effort, allowing comparison of completeness between focal observations.}
+    \label{cumulative}
+\end{figure*}
+
+
+
+\end{document}

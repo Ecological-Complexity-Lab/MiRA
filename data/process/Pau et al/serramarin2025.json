@@ -1,0 +1,5685 @@
+{
+  "directed": false,
+  "directed_interlayer": false,
+  "dataset": {
+    "name": "Serra-Marín et al. 2025 — Cabrera plant–pollinator monitoring (Human vs ACS)",
+    "site": "Cabrera Archipelago National Park, Balearic Islands, Spain",
+    "year": 2025,
+    "source_url": "",
+    "paper_doi": "",
+    "license": ""
+  },
+  "layers": [
+    {
+      "layer_id": 1,
+      "layer_name": "Human (OBS)",
+      "bipartite": true,
+      "setA_type": "pollinator",
+      "description": "Direct human field observation of plant–pollinator visits."
+    },
+    {
+      "layer_id": 2,
+      "layer_name": "Camera (ACS)",
+      "bipartite": true,
+      "setA_type": "pollinator",
+      "description": "Automatic Camera System (Raspberry-Pi cameras + YOLOv5 detection)."
+    }
+  ],
+  "nodes": [
+    {
+      "node_id": "Human (OBS)::Allium ampeloprasum",
+      "layer_name": "Human (OBS)",
+      "node_name": "Allium ampeloprasum",
+      "node_type": "plant"
+    },
+    {
+      "node_id": "Human (OBS)::Allium sp.",
+      "layer_name": "Human (OBS)",
+      "node_name": "Allium sp.",
+      "node_type": "plant"
+    },
+    {
+      "node_id": "Human (OBS)::Asphodelus fistulosus",
+      "layer_name": "Human (OBS)",
+      "node_name": "Asphodelus fistulosus",
+      "node_type": "plant"
+    },
+    {
+      "node_id": "Human (OBS)::Asteriscus aquaticus",
+      "layer_name": "Human (OBS)",
+      "node_name": "Asteriscus aquaticus",
+      "node_type": "plant"
+    },
+    {
+      "node_id": "Human (OBS)::Astragalus balearicus",
+      "layer_name": "Human (OBS)",
+      "node_name": "Astragalus balearicus",
+      "node_type": "plant"
+    },
+    {
+      "node_id": "Human (OBS)::Blackstonia perfoliata",
+      "layer_name": "Human (OBS)",
+      "node_name": "Blackstonia perfoliata",
+      "node_type": "plant"
+    },
+    {
+      "node_id": "Human (OBS)::Cakile maritima",
+      "layer_name": "Human (OBS)",
+      "node_name": "Cakile maritima",
+      "node_type": "plant"
+    },
+    {
+      "node_id": "Human (OBS)::Cistus monspeliensis",
+      "layer_name": "Human (OBS)",
+      "node_name": "Cistus monspeliensis",
+      "node_type": "plant"
+    },
+    {
+      "node_id": "Human (OBS)::Daucus carota L. subsp. Majoricus",
+      "layer_name": "Human (OBS)",
+      "node_name": "Daucus carota L. subsp. Majoricus",
+      "node_type": "plant"
+    },
+    {
+      "node_id": "Human (OBS)::Dorycnium fulgurans",
+      "layer_name": "Human (OBS)",
+      "node_name": "Dorycnium fulgurans",
+      "node_type": "plant"
+    },
+    {
+      "node_id": "Human (OBS)::Euphorbia dendroides",
+      "layer_name": "Human (OBS)",
+      "node_name": "Euphorbia dendroides",
+      "node_type": "plant"
+    },
+    {
+      "node_id": "Human (OBS)::Euphorbia serrata",
+      "layer_name": "Human (OBS)",
+      "node_name": "Euphorbia serrata",
+      "node_type": "plant"
+    },
+    {
+      "node_id": "Human (OBS)::Fumana ericoides",
+      "layer_name": "Human (OBS)",
+      "node_name": "Fumana ericoides",
+      "node_type": "plant"
+    },
+    {
+      "node_id": "Human (OBS)::Gladiolus communis",
+      "layer_name": "Human (OBS)",
+      "node_name": "Gladiolus communis",
+      "node_type": "plant"
+    },
+    {
+      "node_id": "Human (OBS)::Globularia alypum",
+      "layer_name": "Human (OBS)",
+      "node_name": "Globularia alypum",
+      "node_type": "plant"
+    },
+    {
+      "node_id": "Human (OBS)::Helichrysum stoechas",
+      "layer_name": "Human (OBS)",
+      "node_name": "Helichrysum stoechas",
+      "node_type": "plant"
+    },
+    {
+      "node_id": "Human (OBS)::Limonium sp.",
+      "layer_name": "Human (OBS)",
+      "node_name": "Limonium sp.",
+      "node_type": "plant"
+    },
+    {
+      "node_id": "Human (OBS)::Lonicera implexa",
+      "layer_name": "Human (OBS)",
+      "node_name": "Lonicera implexa",
+      "node_type": "plant"
+    },
+    {
+      "node_id": "Human (OBS)::Rosmarinus officinalis",
+      "layer_name": "Human (OBS)",
+      "node_name": "Rosmarinus officinalis",
+      "node_type": "plant"
+    },
+    {
+      "node_id": "Human (OBS)::Ruta chalepensis",
+      "layer_name": "Human (OBS)",
+      "node_name": "Ruta chalepensis",
+      "node_type": "plant"
+    },
+    {
+      "node_id": "Human (OBS)::Sedum sediforme",
+      "layer_name": "Human (OBS)",
+      "node_name": "Sedum sediforme",
+      "node_type": "plant"
+    },
+    {
+      "node_id": "Human (OBS)::Teucrium capitatum",
+      "layer_name": "Human (OBS)",
+      "node_name": "Teucrium capitatum",
+      "node_type": "plant"
+    },
+    {
+      "node_id": "Human (OBS)::Acanthiophilus helianthi",
+      "layer_name": "Human (OBS)",
+      "node_name": "Acanthiophilus helianthi",
+      "node_type": "pollinator",
+      "family": "Tephritidae",
+      "functional_group": "DI"
+    },
+    {
+      "node_id": "Human (OBS)::Agromyzidae sp",
+      "layer_name": "Human (OBS)",
+      "node_name": "Agromyzidae sp",
+      "node_type": "pollinator",
+      "family": "Agromyzidae",
+      "functional_group": "DI"
+    },
+    {
+      "node_id": "Human (OBS)::Anaspis sp.",
+      "layer_name": "Human (OBS)",
+      "node_name": "Anaspis sp.",
+      "node_type": "pollinator",
+      "family": "Scraptiidae",
+      "functional_group": "CO"
+    },
+    {
+      "node_id": "Human (OBS)::Ancistrocerus ebusianus",
+      "layer_name": "Human (OBS)",
+      "node_name": "Ancistrocerus ebusianus",
+      "node_type": "pollinator",
+      "family": "Eumenidae",
+      "functional_group": "WA"
+    },
+    {
+      "node_id": "Human (OBS)::Anthomyia confusanea",
+      "layer_name": "Human (OBS)",
+      "node_name": "Anthomyia confusanea",
+      "node_type": "pollinator",
+      "family": "Anthomyiidae",
+      "functional_group": "DI"
+    },
+    {
+      "node_id": "Human (OBS)::Anthomyiidae sp.",
+      "layer_name": "Human (OBS)",
+      "node_name": "Anthomyiidae sp.",
+      "node_type": "pollinator",
+      "family": "Anthomyiidae",
+      "functional_group": "DI"
+    },
+    {
+      "node_id": "Human (OBS)::Anthophora balearica",
+      "layer_name": "Human (OBS)",
+      "node_name": "Anthophora balearica",
+      "node_type": "pollinator",
+      "family": "Apidae",
+      "functional_group": "BE"
+    },
+    {
+      "node_id": "Human (OBS)::Autographa gamma",
+      "layer_name": "Human (OBS)",
+      "node_name": "Autographa gamma",
+      "node_type": "pollinator",
+      "family": "Noctuidae",
+      "functional_group": "LE"
+    },
+    {
+      "node_id": "Human (OBS)::Calliphoridae sp.",
+      "layer_name": "Human (OBS)",
+      "node_name": "Calliphoridae sp.",
+      "node_type": "pollinator",
+      "family": "Calliphoridae",
+      "functional_group": "DI"
+    },
+    {
+      "node_id": "Human (OBS)::Camponotus sp",
+      "layer_name": "Human (OBS)",
+      "node_name": "Camponotus sp",
+      "node_type": "pollinator",
+      "family": "Formicidae",
+      "functional_group": "OT"
+    },
+    {
+      "node_id": "Human (OBS)::Centrocoris sp",
+      "layer_name": "Human (OBS)",
+      "node_name": "Centrocoris sp",
+      "node_type": "pollinator",
+      "family": "Coreidae",
+      "functional_group": "OT"
+    },
+    {
+      "node_id": "Human (OBS)::Cheilosia latifrons",
+      "layer_name": "Human (OBS)",
+      "node_name": "Cheilosia latifrons",
+      "node_type": "pollinator",
+      "family": "Syrphidae",
+      "functional_group": "HO"
+    },
+    {
+      "node_id": "Human (OBS)::Chelosia sp.",
+      "layer_name": "Human (OBS)",
+      "node_name": "Chelosia sp.",
+      "node_type": "pollinator",
+      "family": "Syrphidae",
+      "functional_group": "HO"
+    },
+    {
+      "node_id": "Human (OBS)::Chrysopa viridana",
+      "layer_name": "Human (OBS)",
+      "node_name": "Chrysopa viridana",
+      "node_type": "pollinator",
+      "family": "Chrysopidae",
+      "functional_group": "OT"
+    },
+    {
+      "node_id": "Human (OBS)::Clairvillia pninae",
+      "layer_name": "Human (OBS)",
+      "node_name": "Clairvillia pninae",
+      "node_type": "pollinator",
+      "family": "Tachinidae",
+      "functional_group": "DI"
+    },
+    {
+      "node_id": "Human (OBS)::Colias crocea",
+      "layer_name": "Human (OBS)",
+      "node_name": "Colias crocea",
+      "node_type": "pollinator",
+      "family": "Pieridae",
+      "functional_group": "LE"
+    },
+    {
+      "node_id": "Human (OBS)::Crematogaster sp.",
+      "layer_name": "Human (OBS)",
+      "node_name": "Crematogaster sp.",
+      "node_type": "pollinator",
+      "family": "Formicidae",
+      "functional_group": "OT"
+    },
+    {
+      "node_id": "Human (OBS)::Dasytes nigroaeneus",
+      "layer_name": "Human (OBS)",
+      "node_name": "Dasytes nigroaeneus",
+      "node_type": "pollinator",
+      "family": "Dasytidae",
+      "functional_group": "CO"
+    },
+    {
+      "node_id": "Human (OBS)::Episyrphus balteatus",
+      "layer_name": "Human (OBS)",
+      "node_name": "Episyrphus balteatus",
+      "node_type": "pollinator",
+      "family": "Syrphidae",
+      "functional_group": "HO"
+    },
+    {
+      "node_id": "Human (OBS)::Eristalinus sepulcharis",
+      "layer_name": "Human (OBS)",
+      "node_name": "Eristalinus sepulcharis",
+      "node_type": "pollinator",
+      "family": "Shyrphidae",
+      "functional_group": "HO"
+    },
+    {
+      "node_id": "Human (OBS)::Eristalis similis",
+      "layer_name": "Human (OBS)",
+      "node_name": "Eristalis similis",
+      "node_type": "pollinator",
+      "family": "Syrphidae",
+      "functional_group": "HO"
+    },
+    {
+      "node_id": "Human (OBS)::Eristalis tenax",
+      "layer_name": "Human (OBS)",
+      "node_name": "Eristalis tenax",
+      "node_type": "pollinator",
+      "family": "Syrphidae",
+      "functional_group": "HO"
+    },
+    {
+      "node_id": "Human (OBS)::Eumenes dubius",
+      "layer_name": "Human (OBS)",
+      "node_name": "Eumenes dubius",
+      "node_type": "pollinator",
+      "family": "Eumenidae",
+      "functional_group": "WA"
+    },
+    {
+      "node_id": "Human (OBS)::Eupeodes corollae",
+      "layer_name": "Human (OBS)",
+      "node_name": "Eupeodes corollae",
+      "node_type": "pollinator",
+      "family": "Syrphidae",
+      "functional_group": "HO"
+    },
+    {
+      "node_id": "Human (OBS)::Exoprosopa cf. bowdeni",
+      "layer_name": "Human (OBS)",
+      "node_name": "Exoprosopa cf. bowdeni",
+      "node_type": "pollinator",
+      "family": "Bombyliidae",
+      "functional_group": "DI"
+    },
+    {
+      "node_id": "Human (OBS)::Gasteruption spp.",
+      "layer_name": "Human (OBS)",
+      "node_name": "Gasteruption spp.",
+      "node_type": "pollinator",
+      "family": "Gasteruptidae",
+      "functional_group": "WA"
+    },
+    {
+      "node_id": "Human (OBS)::Gonepterix cleopatra",
+      "layer_name": "Human (OBS)",
+      "node_name": "Gonepterix cleopatra",
+      "node_type": "pollinator",
+      "family": "Pieridae",
+      "functional_group": "LE"
+    },
+    {
+      "node_id": "Human (OBS)::Hydrellia sp",
+      "layer_name": "Human (OBS)",
+      "node_name": "Hydrellia sp",
+      "node_type": "pollinator",
+      "family": "Ephydridae",
+      "functional_group": "DI"
+    },
+    {
+      "node_id": "Human (OBS)::Hylaeus imparilis",
+      "layer_name": "Human (OBS)",
+      "node_name": "Hylaeus imparilis",
+      "node_type": "pollinator",
+      "family": "Colletidae",
+      "functional_group": "BE"
+    },
+    {
+      "node_id": "Human (OBS)::Lasioglossum sp.",
+      "layer_name": "Human (OBS)",
+      "node_name": "Lasioglossum sp.",
+      "node_type": "pollinator",
+      "family": "Halictidae",
+      "functional_group": "BE"
+    },
+    {
+      "node_id": "Human (OBS)::Lasiommata megera",
+      "layer_name": "Human (OBS)",
+      "node_name": "Lasiommata megera",
+      "node_type": "pollinator",
+      "family": "Nymphalidae",
+      "functional_group": "LE"
+    },
+    {
+      "node_id": "Human (OBS)::Lucilia silvarum",
+      "layer_name": "Human (OBS)",
+      "node_name": "Lucilia silvarum",
+      "node_type": "pollinator",
+      "family": "Calliphoridae",
+      "functional_group": "DI"
+    },
+    {
+      "node_id": "Human (OBS)::Lydella nigrescens",
+      "layer_name": "Human (OBS)",
+      "node_name": "Lydella nigrescens",
+      "node_type": "pollinator",
+      "family": "Tachinidae",
+      "functional_group": "DI"
+    },
+    {
+      "node_id": "Human (OBS)::Lydella sp.",
+      "layer_name": "Human (OBS)",
+      "node_name": "Lydella sp.",
+      "node_type": "pollinator",
+      "family": "Tachinidae",
+      "functional_group": "DI"
+    },
+    {
+      "node_id": "Human (OBS)::Lydella thompsoni",
+      "layer_name": "Human (OBS)",
+      "node_name": "Lydella thompsoni",
+      "node_type": "pollinator",
+      "family": "Tachinidae",
+      "functional_group": "DI"
+    },
+    {
+      "node_id": "Human (OBS)::Macroglossum stellatarum",
+      "layer_name": "Human (OBS)",
+      "node_name": "Macroglossum stellatarum",
+      "node_type": "pollinator",
+      "family": "Sphingidae",
+      "functional_group": "LE"
+    },
+    {
+      "node_id": "Human (OBS)::Megachile sp.",
+      "layer_name": "Human (OBS)",
+      "node_name": "Megachile sp.",
+      "node_type": "pollinator",
+      "family": "Megachilidae",
+      "functional_group": "BE"
+    },
+    {
+      "node_id": "Human (OBS)::Megaselia sp.",
+      "layer_name": "Human (OBS)",
+      "node_name": "Megaselia sp.",
+      "node_type": "pollinator",
+      "family": "Phoridae",
+      "functional_group": "DI"
+    },
+    {
+      "node_id": "Human (OBS)::Melanostoma scalare",
+      "layer_name": "Human (OBS)",
+      "node_name": "Melanostoma scalare",
+      "node_type": "pollinator",
+      "family": "Syrphidae",
+      "functional_group": "HO"
+    },
+    {
+      "node_id": "Human (OBS)::Meligethes sp.",
+      "layer_name": "Human (OBS)",
+      "node_name": "Meligethes sp.",
+      "node_type": "pollinator",
+      "family": "Nitidulidae",
+      "functional_group": "CO"
+    },
+    {
+      "node_id": "Human (OBS)::Meliscaeva auricollis",
+      "layer_name": "Human (OBS)",
+      "node_name": "Meliscaeva auricollis",
+      "node_type": "pollinator",
+      "family": "Syrphidae",
+      "functional_group": "HO"
+    },
+    {
+      "node_id": "Human (OBS)::Microdiptera sp1.",
+      "layer_name": "Human (OBS)",
+      "node_name": "Microdiptera sp1.",
+      "node_type": "pollinator",
+      "family": "?",
+      "functional_group": "DI"
+    },
+    {
+      "node_id": "Human (OBS)::Monomorium sp",
+      "layer_name": "Human (OBS)",
+      "node_name": "Monomorium sp",
+      "node_type": "pollinator",
+      "family": "Formicidae",
+      "functional_group": "OT"
+    },
+    {
+      "node_id": "Human (OBS)::Mordellistena sp.",
+      "layer_name": "Human (OBS)",
+      "node_name": "Mordellistena sp.",
+      "node_type": "pollinator",
+      "family": "Mordellidae",
+      "functional_group": "CO"
+    },
+    {
+      "node_id": "Human (OBS)::Musca domestica",
+      "layer_name": "Human (OBS)",
+      "node_name": "Musca domestica",
+      "node_type": "pollinator",
+      "family": "Muscidae",
+      "functional_group": "DI"
+    },
+    {
+      "node_id": "Human (OBS)::Muscidae sp.",
+      "layer_name": "Human (OBS)",
+      "node_name": "Muscidae sp.",
+      "node_type": "pollinator",
+      "family": "Muscidae",
+      "functional_group": "DI"
+    },
+    {
+      "node_id": "Human (OBS)::Muscidae sp1",
+      "layer_name": "Human (OBS)",
+      "node_name": "Muscidae sp1",
+      "node_type": "pollinator",
+      "family": "Muscidae",
+      "functional_group": "DI"
+    },
+    {
+      "node_id": "Human (OBS)::Phthiria cf pulicularia",
+      "layer_name": "Human (OBS)",
+      "node_name": "Phthiria cf pulicularia",
+      "node_type": "pollinator",
+      "family": "Bombyliidae",
+      "functional_group": "DI"
+    },
+    {
+      "node_id": "Human (OBS)::Phthiria sp.",
+      "layer_name": "Human (OBS)",
+      "node_name": "Phthiria sp.",
+      "node_type": "pollinator",
+      "family": "Bombyliidae",
+      "functional_group": "DI"
+    },
+    {
+      "node_id": "Human (OBS)::Phyto melanocephala",
+      "layer_name": "Human (OBS)",
+      "node_name": "Phyto melanocephala",
+      "node_type": "pollinator",
+      "family": "Rhinophoridae",
+      "functional_group": "DI"
+    },
+    {
+      "node_id": "Human (OBS)::Pieris rapae",
+      "layer_name": "Human (OBS)",
+      "node_name": "Pieris rapae",
+      "node_type": "pollinator",
+      "family": "Pieridae",
+      "functional_group": "LE"
+    },
+    {
+      "node_id": "Human (OBS)::Platypalpus sp.",
+      "layer_name": "Human (OBS)",
+      "node_name": "Platypalpus sp.",
+      "node_type": "pollinator",
+      "family": "Hybotidae",
+      "functional_group": "DI"
+    },
+    {
+      "node_id": "Human (OBS)::Podarcis lilfordi",
+      "layer_name": "Human (OBS)",
+      "node_name": "Podarcis lilfordi",
+      "node_type": "pollinator",
+      "family": "Lacertidae",
+      "functional_group": "VE"
+    },
+    {
+      "node_id": "Human (OBS)::Pyrellia vivida",
+      "layer_name": "Human (OBS)",
+      "node_name": "Pyrellia vivida",
+      "node_type": "pollinator",
+      "family": "Muscidae",
+      "functional_group": "DI"
+    },
+    {
+      "node_id": "Human (OBS)::Sarcophaga sp.",
+      "layer_name": "Human (OBS)",
+      "node_name": "Sarcophaga sp.",
+      "node_type": "pollinator",
+      "family": "Sarcophagidae",
+      "functional_group": "DI"
+    },
+    {
+      "node_id": "Human (OBS)::Sphaeroceridae sp",
+      "layer_name": "Human (OBS)",
+      "node_name": "Sphaeroceridae sp",
+      "node_type": "pollinator",
+      "family": "Sphaeroceridae",
+      "functional_group": "DI"
+    },
+    {
+      "node_id": "Human (OBS)::Sphaerophoria sp.",
+      "layer_name": "Human (OBS)",
+      "node_name": "Sphaerophoria sp.",
+      "node_type": "pollinator",
+      "family": "Syrphidae",
+      "functional_group": "HO"
+    },
+    {
+      "node_id": "Human (OBS)::Sphenella marginata",
+      "layer_name": "Human (OBS)",
+      "node_name": "Sphenella marginata",
+      "node_type": "pollinator",
+      "family": "Tephritidae",
+      "functional_group": "DI"
+    },
+    {
+      "node_id": "Human (OBS)::Spilostethus pandurus",
+      "layer_name": "Human (OBS)",
+      "node_name": "Spilostethus pandurus",
+      "node_type": "pollinator",
+      "family": "Lygaeidae",
+      "functional_group": "OT"
+    },
+    {
+      "node_id": "Human (OBS)::Stenopterus sp.",
+      "layer_name": "Human (OBS)",
+      "node_name": "Stenopterus sp.",
+      "node_type": "pollinator",
+      "family": "Cerambycidae",
+      "functional_group": "CO"
+    },
+    {
+      "node_id": "Human (OBS)::Stictopleurus abutilon",
+      "layer_name": "Human (OBS)",
+      "node_name": "Stictopleurus abutilon",
+      "node_type": "pollinator",
+      "family": "Rhopalidae",
+      "functional_group": "OT"
+    },
+    {
+      "node_id": "Human (OBS)::Stomorhina lunata",
+      "layer_name": "Human (OBS)",
+      "node_name": "Stomorhina lunata",
+      "node_type": "pollinator",
+      "family": "Rhiniidae",
+      "functional_group": "DI"
+    },
+    {
+      "node_id": "Human (OBS)::Tachysphex obscuripennis",
+      "layer_name": "Human (OBS)",
+      "node_name": "Tachysphex obscuripennis",
+      "node_type": "pollinator",
+      "family": "Sphecidae",
+      "functional_group": "WA"
+    },
+    {
+      "node_id": "Human (OBS)::Tapinoma nigerrinum",
+      "layer_name": "Human (OBS)",
+      "node_name": "Tapinoma nigerrinum",
+      "node_type": "pollinator",
+      "family": "Formicidae",
+      "functional_group": "OT"
+    },
+    {
+      "node_id": "Human (OBS)::Tapinoma sp",
+      "layer_name": "Human (OBS)",
+      "node_name": "Tapinoma sp",
+      "node_type": "pollinator",
+      "family": "Formicidae",
+      "functional_group": "OT"
+    },
+    {
+      "node_id": "Human (OBS)::Thyridanthrax elegans",
+      "layer_name": "Human (OBS)",
+      "node_name": "Thyridanthrax elegans",
+      "node_type": "pollinator",
+      "family": "Bombyliidae",
+      "functional_group": "DI"
+    },
+    {
+      "node_id": "Human (OBS)::Unknown insect",
+      "layer_name": "Human (OBS)",
+      "node_name": "Unknown insect",
+      "node_type": "pollinator",
+      "family": "unknown family",
+      "functional_group": "unkown fg"
+    },
+    {
+      "node_id": "Human (OBS)::Vanessa atalanta",
+      "layer_name": "Human (OBS)",
+      "node_name": "Vanessa atalanta",
+      "node_type": "pollinator",
+      "family": "Nymphalidae",
+      "functional_group": "LE"
+    },
+    {
+      "node_id": "Human (OBS)::Vanessa cardui",
+      "layer_name": "Human (OBS)",
+      "node_name": "Vanessa cardui",
+      "node_type": "pollinator",
+      "family": "Nymphalidae",
+      "functional_group": "LE"
+    },
+    {
+      "node_id": "Camera (ACS)::Allium ampeloprasum",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Allium ampeloprasum",
+      "node_type": "plant"
+    },
+    {
+      "node_id": "Camera (ACS)::Allium sp.",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Allium sp.",
+      "node_type": "plant"
+    },
+    {
+      "node_id": "Camera (ACS)::Anacamptis pyramidalis",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Anacamptis pyramidalis",
+      "node_type": "plant"
+    },
+    {
+      "node_id": "Camera (ACS)::Asphodelus fistulosus",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Asphodelus fistulosus",
+      "node_type": "plant"
+    },
+    {
+      "node_id": "Camera (ACS)::Asteriscus aquaticus",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Asteriscus aquaticus",
+      "node_type": "plant"
+    },
+    {
+      "node_id": "Camera (ACS)::Astragalus balearicus",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Astragalus balearicus",
+      "node_type": "plant"
+    },
+    {
+      "node_id": "Camera (ACS)::Blackstonia perfoliata",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Blackstonia perfoliata",
+      "node_type": "plant"
+    },
+    {
+      "node_id": "Camera (ACS)::Cakile maritima",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Cakile maritima",
+      "node_type": "plant"
+    },
+    {
+      "node_id": "Camera (ACS)::Cistus monspeliensis",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Cistus monspeliensis",
+      "node_type": "plant"
+    },
+    {
+      "node_id": "Camera (ACS)::Daucus carota L. subsp. Majoricus",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Daucus carota L. subsp. Majoricus",
+      "node_type": "plant"
+    },
+    {
+      "node_id": "Camera (ACS)::Dorycnium fulgurans",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Dorycnium fulgurans",
+      "node_type": "plant"
+    },
+    {
+      "node_id": "Camera (ACS)::Euphorbia dendroides",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Euphorbia dendroides",
+      "node_type": "plant"
+    },
+    {
+      "node_id": "Camera (ACS)::Euphorbia serrata",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Euphorbia serrata",
+      "node_type": "plant"
+    },
+    {
+      "node_id": "Camera (ACS)::Fumana ericoides",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Fumana ericoides",
+      "node_type": "plant"
+    },
+    {
+      "node_id": "Camera (ACS)::Globularia alypum",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Globularia alypum",
+      "node_type": "plant"
+    },
+    {
+      "node_id": "Camera (ACS)::Helichrysum stoechas",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Helichrysum stoechas",
+      "node_type": "plant"
+    },
+    {
+      "node_id": "Camera (ACS)::Limonium sp.",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Limonium sp.",
+      "node_type": "plant"
+    },
+    {
+      "node_id": "Camera (ACS)::Lonicera implexa",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Lonicera implexa",
+      "node_type": "plant"
+    },
+    {
+      "node_id": "Camera (ACS)::Rosmarinus officinalis",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Rosmarinus officinalis",
+      "node_type": "plant"
+    },
+    {
+      "node_id": "Camera (ACS)::Ruta chalepensis",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Ruta chalepensis",
+      "node_type": "plant"
+    },
+    {
+      "node_id": "Camera (ACS)::Sedum sediforme",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Sedum sediforme",
+      "node_type": "plant"
+    },
+    {
+      "node_id": "Camera (ACS)::Teucrium capitatum",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Teucrium capitatum",
+      "node_type": "plant"
+    },
+    {
+      "node_id": "Camera (ACS)::Anaspis sp.",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Anaspis sp.",
+      "node_type": "pollinator",
+      "family": "Scraptiidae",
+      "functional_group": "CO"
+    },
+    {
+      "node_id": "Camera (ACS)::Ancistrocerus ebusianus",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Ancistrocerus ebusianus",
+      "node_type": "pollinator",
+      "family": "Eumenidae",
+      "functional_group": "WA"
+    },
+    {
+      "node_id": "Camera (ACS)::Anthomyia confusanea",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Anthomyia confusanea",
+      "node_type": "pollinator",
+      "family": "Anthomyiidae",
+      "functional_group": "DI"
+    },
+    {
+      "node_id": "Camera (ACS)::Anthomyiidae sp.",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Anthomyiidae sp.",
+      "node_type": "pollinator",
+      "family": "Anthomyiidae",
+      "functional_group": "DI"
+    },
+    {
+      "node_id": "Camera (ACS)::Anthophora balearica",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Anthophora balearica",
+      "node_type": "pollinator",
+      "family": "Apidae",
+      "functional_group": "BE"
+    },
+    {
+      "node_id": "Camera (ACS)::Autographa gamma",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Autographa gamma",
+      "node_type": "pollinator",
+      "family": "Noctuidae",
+      "functional_group": "LE"
+    },
+    {
+      "node_id": "Camera (ACS)::Bombyliidae sp.",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Bombyliidae sp.",
+      "node_type": "pollinator",
+      "family": "Bombyliidae",
+      "functional_group": "DI"
+    },
+    {
+      "node_id": "Camera (ACS)::Calliphoridae sp.",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Calliphoridae sp.",
+      "node_type": "pollinator",
+      "family": "Calliphoridae",
+      "functional_group": "DI"
+    },
+    {
+      "node_id": "Camera (ACS)::Camponotus sp",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Camponotus sp",
+      "node_type": "pollinator",
+      "family": "Formicidae",
+      "functional_group": "OT"
+    },
+    {
+      "node_id": "Camera (ACS)::Cheilosia latifrons",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Cheilosia latifrons",
+      "node_type": "pollinator",
+      "family": "Syrphidae",
+      "functional_group": "HO"
+    },
+    {
+      "node_id": "Camera (ACS)::Chelosia sp.",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Chelosia sp.",
+      "node_type": "pollinator",
+      "family": "Syrphidae",
+      "functional_group": "HO"
+    },
+    {
+      "node_id": "Camera (ACS)::Chrysopa viridana",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Chrysopa viridana",
+      "node_type": "pollinator",
+      "family": "Chrysopidae",
+      "functional_group": "OT"
+    },
+    {
+      "node_id": "Camera (ACS)::Clairvillia pninae",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Clairvillia pninae",
+      "node_type": "pollinator",
+      "family": "Tachinidae",
+      "functional_group": "DI"
+    },
+    {
+      "node_id": "Camera (ACS)::Colias crocea",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Colias crocea",
+      "node_type": "pollinator",
+      "family": "Pieridae",
+      "functional_group": "LE"
+    },
+    {
+      "node_id": "Camera (ACS)::Crematogaster sp.",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Crematogaster sp.",
+      "node_type": "pollinator",
+      "family": "Formicidae",
+      "functional_group": "OT"
+    },
+    {
+      "node_id": "Camera (ACS)::Dasytes nigroaeneus",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Dasytes nigroaeneus",
+      "node_type": "pollinator",
+      "family": "Dasytidae",
+      "functional_group": "CO"
+    },
+    {
+      "node_id": "Camera (ACS)::Episyrphus balteatus",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Episyrphus balteatus",
+      "node_type": "pollinator",
+      "family": "Syrphidae",
+      "functional_group": "HO"
+    },
+    {
+      "node_id": "Camera (ACS)::Eristalinus sepulcharis",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Eristalinus sepulcharis",
+      "node_type": "pollinator",
+      "family": "Shyrphidae",
+      "functional_group": "HO"
+    },
+    {
+      "node_id": "Camera (ACS)::Eristalis similis",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Eristalis similis",
+      "node_type": "pollinator",
+      "family": "Syrphidae",
+      "functional_group": "HO"
+    },
+    {
+      "node_id": "Camera (ACS)::Eristalis tenax",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Eristalis tenax",
+      "node_type": "pollinator",
+      "family": "Syrphidae",
+      "functional_group": "HO"
+    },
+    {
+      "node_id": "Camera (ACS)::Eumenes dubius",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Eumenes dubius",
+      "node_type": "pollinator",
+      "family": "Eumenidae",
+      "functional_group": "WA"
+    },
+    {
+      "node_id": "Camera (ACS)::Eupeodes corollae",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Eupeodes corollae",
+      "node_type": "pollinator",
+      "family": "Syrphidae",
+      "functional_group": "HO"
+    },
+    {
+      "node_id": "Camera (ACS)::Exoprosopa cf. bowdeni",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Exoprosopa cf. bowdeni",
+      "node_type": "pollinator",
+      "family": "Bombyliidae",
+      "functional_group": "DI"
+    },
+    {
+      "node_id": "Camera (ACS)::Gonepterix cleopatra",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Gonepterix cleopatra",
+      "node_type": "pollinator",
+      "family": "Pieridae",
+      "functional_group": "LE"
+    },
+    {
+      "node_id": "Camera (ACS)::Hydrellia sp",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Hydrellia sp",
+      "node_type": "pollinator",
+      "family": "Ephydridae",
+      "functional_group": "DI"
+    },
+    {
+      "node_id": "Camera (ACS)::Hylaeus imparilis",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Hylaeus imparilis",
+      "node_type": "pollinator",
+      "family": "Colletidae",
+      "functional_group": "BE"
+    },
+    {
+      "node_id": "Camera (ACS)::Lasioglossum sp.",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Lasioglossum sp.",
+      "node_type": "pollinator",
+      "family": "Halictidae",
+      "functional_group": "BE"
+    },
+    {
+      "node_id": "Camera (ACS)::Lasiommata megera",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Lasiommata megera",
+      "node_type": "pollinator",
+      "family": "Nymphalidae",
+      "functional_group": "LE"
+    },
+    {
+      "node_id": "Camera (ACS)::Lucilia silvarum",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Lucilia silvarum",
+      "node_type": "pollinator",
+      "family": "Calliphoridae",
+      "functional_group": "DI"
+    },
+    {
+      "node_id": "Camera (ACS)::Lydella nigrescens",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Lydella nigrescens",
+      "node_type": "pollinator",
+      "family": "Tachinidae",
+      "functional_group": "DI"
+    },
+    {
+      "node_id": "Camera (ACS)::Lydella thompsoni",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Lydella thompsoni",
+      "node_type": "pollinator",
+      "family": "Tachinidae",
+      "functional_group": "DI"
+    },
+    {
+      "node_id": "Camera (ACS)::Macroglossum stellatarum",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Macroglossum stellatarum",
+      "node_type": "pollinator",
+      "family": "Sphingidae",
+      "functional_group": "LE"
+    },
+    {
+      "node_id": "Camera (ACS)::Megachile sp.",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Megachile sp.",
+      "node_type": "pollinator",
+      "family": "Megachilidae",
+      "functional_group": "BE"
+    },
+    {
+      "node_id": "Camera (ACS)::Megaselia sp.",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Megaselia sp.",
+      "node_type": "pollinator",
+      "family": "Phoridae",
+      "functional_group": "DI"
+    },
+    {
+      "node_id": "Camera (ACS)::Melanostoma scalare",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Melanostoma scalare",
+      "node_type": "pollinator",
+      "family": "Syrphidae",
+      "functional_group": "HO"
+    },
+    {
+      "node_id": "Camera (ACS)::Meligethes sp.",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Meligethes sp.",
+      "node_type": "pollinator",
+      "family": "Nitidulidae",
+      "functional_group": "CO"
+    },
+    {
+      "node_id": "Camera (ACS)::Meliscaeva auricollis",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Meliscaeva auricollis",
+      "node_type": "pollinator",
+      "family": "Syrphidae",
+      "functional_group": "HO"
+    },
+    {
+      "node_id": "Camera (ACS)::Monomorium sp",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Monomorium sp",
+      "node_type": "pollinator",
+      "family": "Formicidae",
+      "functional_group": "OT"
+    },
+    {
+      "node_id": "Camera (ACS)::Mordellistena sp.",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Mordellistena sp.",
+      "node_type": "pollinator",
+      "family": "Mordellidae",
+      "functional_group": "CO"
+    },
+    {
+      "node_id": "Camera (ACS)::Musca domestica",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Musca domestica",
+      "node_type": "pollinator",
+      "family": "Muscidae",
+      "functional_group": "DI"
+    },
+    {
+      "node_id": "Camera (ACS)::Muscidae sp.",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Muscidae sp.",
+      "node_type": "pollinator",
+      "family": "Muscidae",
+      "functional_group": "DI"
+    },
+    {
+      "node_id": "Camera (ACS)::Phoenicurus ochruros",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Phoenicurus ochruros",
+      "node_type": "pollinator",
+      "family": "Muscicapidae",
+      "functional_group": "VE"
+    },
+    {
+      "node_id": "Camera (ACS)::Phthiria cf pulicularia",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Phthiria cf pulicularia",
+      "node_type": "pollinator",
+      "family": "Bombyliidae",
+      "functional_group": "DI"
+    },
+    {
+      "node_id": "Camera (ACS)::Phthiria sp.",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Phthiria sp.",
+      "node_type": "pollinator",
+      "family": "Bombyliidae",
+      "functional_group": "DI"
+    },
+    {
+      "node_id": "Camera (ACS)::Phyto melanocephala",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Phyto melanocephala",
+      "node_type": "pollinator",
+      "family": "Rhinophoridae",
+      "functional_group": "DI"
+    },
+    {
+      "node_id": "Camera (ACS)::Pieris rapae",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Pieris rapae",
+      "node_type": "pollinator",
+      "family": "Pieridae",
+      "functional_group": "LE"
+    },
+    {
+      "node_id": "Camera (ACS)::Platypalpus sp.",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Platypalpus sp.",
+      "node_type": "pollinator",
+      "family": "Hybotidae",
+      "functional_group": "DI"
+    },
+    {
+      "node_id": "Camera (ACS)::Podarcis lilfordi",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Podarcis lilfordi",
+      "node_type": "pollinator",
+      "family": "Lacertidae",
+      "functional_group": "VE"
+    },
+    {
+      "node_id": "Camera (ACS)::Pyrellia vivida",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Pyrellia vivida",
+      "node_type": "pollinator",
+      "family": "Muscidae",
+      "functional_group": "DI"
+    },
+    {
+      "node_id": "Camera (ACS)::Sarcophaga sp.",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Sarcophaga sp.",
+      "node_type": "pollinator",
+      "family": "Sarcophagidae",
+      "functional_group": "DI"
+    },
+    {
+      "node_id": "Camera (ACS)::Sphaerophoria sp.",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Sphaerophoria sp.",
+      "node_type": "pollinator",
+      "family": "Syrphidae",
+      "functional_group": "HO"
+    },
+    {
+      "node_id": "Camera (ACS)::Spilostethus pandurus",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Spilostethus pandurus",
+      "node_type": "pollinator",
+      "family": "Lygaeidae",
+      "functional_group": "OT"
+    },
+    {
+      "node_id": "Camera (ACS)::Stenopterus sp.",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Stenopterus sp.",
+      "node_type": "pollinator",
+      "family": "Cerambycidae",
+      "functional_group": "CO"
+    },
+    {
+      "node_id": "Camera (ACS)::Stictopleurus abutilon",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Stictopleurus abutilon",
+      "node_type": "pollinator",
+      "family": "Rhopalidae",
+      "functional_group": "OT"
+    },
+    {
+      "node_id": "Camera (ACS)::Tapinoma nigerrinum",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Tapinoma nigerrinum",
+      "node_type": "pollinator",
+      "family": "Formicidae",
+      "functional_group": "OT"
+    },
+    {
+      "node_id": "Camera (ACS)::Tapinoma sp",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Tapinoma sp",
+      "node_type": "pollinator",
+      "family": "Formicidae",
+      "functional_group": "OT"
+    },
+    {
+      "node_id": "Camera (ACS)::Unknown insect",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Unknown insect",
+      "node_type": "pollinator",
+      "family": "unknown family",
+      "functional_group": "unkown fg"
+    },
+    {
+      "node_id": "Camera (ACS)::Vanessa atalanta",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Vanessa atalanta",
+      "node_type": "pollinator",
+      "family": "Nymphalidae",
+      "functional_group": "LE"
+    },
+    {
+      "node_id": "Camera (ACS)::Vanessa cardui",
+      "layer_name": "Camera (ACS)",
+      "node_name": "Vanessa cardui",
+      "node_type": "pollinator",
+      "family": "Nymphalidae",
+      "functional_group": "LE"
+    }
+  ],
+  "extended": [
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Allium ampeloprasum",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Eristalis similis",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Allium ampeloprasum",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Eupeodes corollae",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Allium ampeloprasum",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Mordellistena sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Allium ampeloprasum",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Musca domestica",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Allium sp.",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Lasioglossum sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Allium sp.",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Meligethes sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Allium sp.",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Mordellistena sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Anacamptis pyramidalis",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Podarcis lilfordi",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Asphodelus fistulosus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Anthophora balearica",
+      "weight": 8
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Asteriscus aquaticus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Anthomyiidae sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Asteriscus aquaticus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Bombyliidae sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Asteriscus aquaticus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Eristalis similis",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Asteriscus aquaticus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Exoprosopa cf. bowdeni",
+      "weight": 3
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Asteriscus aquaticus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Lasioglossum sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Asteriscus aquaticus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Monomorium sp",
+      "weight": 2
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Asteriscus aquaticus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Musca domestica",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Asteriscus aquaticus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Phthiria sp.",
+      "weight": 4
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Asteriscus aquaticus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Sarcophaga sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Asteriscus aquaticus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Tapinoma sp",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Astragalus balearicus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Anthophora balearica",
+      "weight": 14
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Astragalus balearicus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Cheilosia latifrons",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Astragalus balearicus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Dasytes nigroaeneus",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Astragalus balearicus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Episyrphus balteatus",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Astragalus balearicus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Eupeodes corollae",
+      "weight": 4
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Astragalus balearicus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Lasioglossum sp.",
+      "weight": 6
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Astragalus balearicus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Meligethes sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Astragalus balearicus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Meliscaeva auricollis",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Astragalus balearicus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Phthiria sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Astragalus balearicus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Podarcis lilfordi",
+      "weight": 14
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Astragalus balearicus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Sarcophaga sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Astragalus balearicus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Tapinoma sp",
+      "weight": 2
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Blackstonia perfoliata",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Eupeodes corollae",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Blackstonia perfoliata",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Lasioglossum sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Anaspis sp.",
+      "weight": 2
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Ancistrocerus ebusianus",
+      "weight": 14
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Anthomyia confusanea",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Anthomyiidae sp.",
+      "weight": 14
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Anthophora balearica",
+      "weight": 18
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Autographa gamma",
+      "weight": 14
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Chrysopa viridana",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Clairvillia pninae",
+      "weight": 7
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Colias crocea",
+      "weight": 2
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Dasytes nigroaeneus",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Episyrphus balteatus",
+      "weight": 8
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Eristalis similis",
+      "weight": 6
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Eristalis tenax",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Eupeodes corollae",
+      "weight": 20
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Exoprosopa cf. bowdeni",
+      "weight": 13
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Hydrellia sp",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Hylaeus imparilis",
+      "weight": 10
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Lasioglossum sp.",
+      "weight": 60
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Lasiommata megera",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Lucilia silvarum",
+      "weight": 2
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Lydella nigrescens",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Megachile sp.",
+      "weight": 2
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Meligethes sp.",
+      "weight": 3
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Mordellistena sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Musca domestica",
+      "weight": 2
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Phoenicurus ochruros",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Phthiria cf pulicularia",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Phthiria sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Pieris rapae",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Podarcis lilfordi",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Pyrellia vivida",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Sarcophaga sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Sphaerophoria sp.",
+      "weight": 2
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Spilostethus pandurus",
+      "weight": 2
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Anaspis sp.",
+      "weight": 3
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Ancistrocerus ebusianus",
+      "weight": 2
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Anthomyia confusanea",
+      "weight": 4
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Anthomyiidae sp.",
+      "weight": 2
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Dasytes nigroaeneus",
+      "weight": 4
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Episyrphus balteatus",
+      "weight": 7
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Eristalis similis",
+      "weight": 7
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Eupeodes corollae",
+      "weight": 6
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Exoprosopa cf. bowdeni",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Lasioglossum sp.",
+      "weight": 12
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Lydella nigrescens",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Melanostoma scalare",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Meligethes sp.",
+      "weight": 8
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Monomorium sp",
+      "weight": 3
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Mordellistena sp.",
+      "weight": 2
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Musca domestica",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Phthiria sp.",
+      "weight": 2
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Phyto melanocephala",
+      "weight": 4
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Podarcis lilfordi",
+      "weight": 13
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Pyrellia vivida",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Tapinoma nigerrinum",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Tapinoma sp",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Vanessa atalanta",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Anaspis sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Anthomyia confusanea",
+      "weight": 6
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Anthomyiidae sp.",
+      "weight": 3
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Camponotus sp",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Cheilosia latifrons",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Chelosia sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Chrysopa viridana",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Crematogaster sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Episyrphus balteatus",
+      "weight": 24
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Eupeodes corollae",
+      "weight": 34
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Exoprosopa cf. bowdeni",
+      "weight": 2
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Hylaeus imparilis",
+      "weight": 3
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Lasioglossum sp.",
+      "weight": 34
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Lydella nigrescens",
+      "weight": 6
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Lydella thompsoni",
+      "weight": 11
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Megaselia sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Monomorium sp",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Musca domestica",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Phthiria sp.",
+      "weight": 2
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Phyto melanocephala",
+      "weight": 3
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Podarcis lilfordi",
+      "weight": 23
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Pyrellia vivida",
+      "weight": 2
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Sarcophaga sp.",
+      "weight": 3
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Sphaerophoria sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Spilostethus pandurus",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Tapinoma sp",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Unknown insect",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Dorycnium fulgurans",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Ancistrocerus ebusianus",
+      "weight": 4
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Dorycnium fulgurans",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Eupeodes corollae",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Dorycnium fulgurans",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Exoprosopa cf. bowdeni",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Dorycnium fulgurans",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Hydrellia sp",
+      "weight": 2
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Dorycnium fulgurans",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Lasioglossum sp.",
+      "weight": 12
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Dorycnium fulgurans",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Podarcis lilfordi",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Euphorbia dendroides",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Anthomyiidae sp.",
+      "weight": 2
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Euphorbia dendroides",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Calliphoridae sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Euphorbia dendroides",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Mordellistena sp.",
+      "weight": 2
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Euphorbia dendroides",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Musca domestica",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Euphorbia dendroides",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Podarcis lilfordi",
+      "weight": 17
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Euphorbia dendroides",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Sarcophaga sp.",
+      "weight": 2
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Euphorbia serrata",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Lasioglossum sp.",
+      "weight": 3
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Euphorbia serrata",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Meligethes sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Euphorbia serrata",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Phthiria sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Euphorbia serrata",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Podarcis lilfordi",
+      "weight": 15
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Fumana ericoides",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Anthomyiidae sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Fumana ericoides",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Dasytes nigroaeneus",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Fumana ericoides",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Eupeodes corollae",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Fumana ericoides",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Lasioglossum sp.",
+      "weight": 3
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Fumana ericoides",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Podarcis lilfordi",
+      "weight": 8
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Globularia alypum",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Eristalis similis",
+      "weight": 2
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Globularia alypum",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Exoprosopa cf. bowdeni",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Globularia alypum",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Lasioglossum sp.",
+      "weight": 5
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Globularia alypum",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Phthiria sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Helichrysum stoechas",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Anaspis sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Helichrysum stoechas",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Ancistrocerus ebusianus",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Helichrysum stoechas",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Anthomyiidae sp.",
+      "weight": 5
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Helichrysum stoechas",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Autographa gamma",
+      "weight": 3
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Helichrysum stoechas",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Dasytes nigroaeneus",
+      "weight": 2
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Helichrysum stoechas",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Eristalis similis",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Helichrysum stoechas",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Eristalis tenax",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Helichrysum stoechas",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Eumenes dubius",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Helichrysum stoechas",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Eupeodes corollae",
+      "weight": 4
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Helichrysum stoechas",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Exoprosopa cf. bowdeni",
+      "weight": 2
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Helichrysum stoechas",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Hylaeus imparilis",
+      "weight": 4
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Helichrysum stoechas",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Lasioglossum sp.",
+      "weight": 46
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Helichrysum stoechas",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Macroglossum stellatarum",
+      "weight": 2
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Helichrysum stoechas",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Meligethes sp.",
+      "weight": 2
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Helichrysum stoechas",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Meliscaeva auricollis",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Helichrysum stoechas",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Phthiria sp.",
+      "weight": 2
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Helichrysum stoechas",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Podarcis lilfordi",
+      "weight": 8
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Helichrysum stoechas",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Tapinoma sp",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Helichrysum stoechas",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Vanessa atalanta",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Helichrysum stoechas",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Vanessa cardui",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Limonium sp.",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Anaspis sp.",
+      "weight": 5
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Limonium sp.",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Ancistrocerus ebusianus",
+      "weight": 2
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Limonium sp.",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Anthomyiidae sp.",
+      "weight": 4
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Limonium sp.",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Autographa gamma",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Limonium sp.",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Bombyliidae sp.",
+      "weight": 2
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Limonium sp.",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Clairvillia pninae",
+      "weight": 3
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Limonium sp.",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Dasytes nigroaeneus",
+      "weight": 2
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Limonium sp.",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Eristalinus sepulcharis",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Limonium sp.",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Eumenes dubius",
+      "weight": 4
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Limonium sp.",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Eupeodes corollae",
+      "weight": 2
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Limonium sp.",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Exoprosopa cf. bowdeni",
+      "weight": 4
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Limonium sp.",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Lasioglossum sp.",
+      "weight": 28
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Limonium sp.",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Lucilia silvarum",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Limonium sp.",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Macroglossum stellatarum",
+      "weight": 2
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Limonium sp.",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Meliscaeva auricollis",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Limonium sp.",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Mordellistena sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Limonium sp.",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Musca domestica",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Limonium sp.",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Phthiria cf pulicularia",
+      "weight": 2
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Limonium sp.",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Podarcis lilfordi",
+      "weight": 6
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Limonium sp.",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Sarcophaga sp.",
+      "weight": 2
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Limonium sp.",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Stenopterus sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Limonium sp.",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Vanessa cardui",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Lonicera implexa",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Lasioglossum sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Lonicera implexa",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Macroglossum stellatarum",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Rosmarinus officinalis",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Anthophora balearica",
+      "weight": 25
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Rosmarinus officinalis",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Lasioglossum sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Rosmarinus officinalis",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Macroglossum stellatarum",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Rosmarinus officinalis",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Meliscaeva auricollis",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Rosmarinus officinalis",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Podarcis lilfordi",
+      "weight": 45
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Ruta chalepensis",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Lasioglossum sp.",
+      "weight": 4
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Ruta chalepensis",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Podarcis lilfordi",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Ruta chalepensis",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Pyrellia vivida",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Sedum sediforme",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Anaspis sp.",
+      "weight": 2
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Sedum sediforme",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Anthomyiidae sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Sedum sediforme",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Exoprosopa cf. bowdeni",
+      "weight": 3
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Sedum sediforme",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Hydrellia sp",
+      "weight": 3
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Sedum sediforme",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Hylaeus imparilis",
+      "weight": 6
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Sedum sediforme",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Lasioglossum sp.",
+      "weight": 35
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Sedum sediforme",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Megachile sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Sedum sediforme",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Meligethes sp.",
+      "weight": 5
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Sedum sediforme",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Mordellistena sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Sedum sediforme",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Pyrellia vivida",
+      "weight": 2
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Anaspis sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Anthomyiidae sp.",
+      "weight": 3
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Colias crocea",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Dasytes nigroaeneus",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Eristalis tenax",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Eupeodes corollae",
+      "weight": 7
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Exoprosopa cf. bowdeni",
+      "weight": 15
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Gonepterix cleopatra",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Lasioglossum sp.",
+      "weight": 14
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Lydella nigrescens",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Macroglossum stellatarum",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Megaselia sp.",
+      "weight": 2
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Meligethes sp.",
+      "weight": 8
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Meliscaeva auricollis",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Musca domestica",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Muscidae sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Phthiria cf pulicularia",
+      "weight": 3
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Phthiria sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Platypalpus sp.",
+      "weight": 2
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Podarcis lilfordi",
+      "weight": 3
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Sphaerophoria sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Spilostethus pandurus",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Stictopleurus abutilon",
+      "weight": 3
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Tapinoma nigerrinum",
+      "weight": 1
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Vanessa atalanta",
+      "weight": 3
+    },
+    {
+      "layer_from": "Camera (ACS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Camera (ACS)",
+      "node_to": "Vanessa cardui",
+      "weight": 8
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Allium ampeloprasum",
+      "layer_to": "Human (OBS)",
+      "node_to": "Eupeodes corollae",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Allium ampeloprasum",
+      "layer_to": "Human (OBS)",
+      "node_to": "Microdiptera sp1.",
+      "weight": 4
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Allium sp.",
+      "layer_to": "Human (OBS)",
+      "node_to": "Anaspis sp.",
+      "weight": 5
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Allium sp.",
+      "layer_to": "Human (OBS)",
+      "node_to": "Episyrphus balteatus",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Allium sp.",
+      "layer_to": "Human (OBS)",
+      "node_to": "Eristalis similis",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Allium sp.",
+      "layer_to": "Human (OBS)",
+      "node_to": "Eupeodes corollae",
+      "weight": 3
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Allium sp.",
+      "layer_to": "Human (OBS)",
+      "node_to": "Lasioglossum sp.",
+      "weight": 4
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Allium sp.",
+      "layer_to": "Human (OBS)",
+      "node_to": "Meligethes sp.",
+      "weight": 3
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Allium sp.",
+      "layer_to": "Human (OBS)",
+      "node_to": "Mordellistena sp.",
+      "weight": 2
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Allium sp.",
+      "layer_to": "Human (OBS)",
+      "node_to": "Musca domestica",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Allium sp.",
+      "layer_to": "Human (OBS)",
+      "node_to": "Podarcis lilfordi",
+      "weight": 2
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Allium sp.",
+      "layer_to": "Human (OBS)",
+      "node_to": "Pyrellia vivida",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Allium sp.",
+      "layer_to": "Human (OBS)",
+      "node_to": "Sarcophaga sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Allium sp.",
+      "layer_to": "Human (OBS)",
+      "node_to": "Sphaerophoria sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Allium sp.",
+      "layer_to": "Human (OBS)",
+      "node_to": "Stomorhina lunata",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Allium sp.",
+      "layer_to": "Human (OBS)",
+      "node_to": "Vanessa atalanta",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Asphodelus fistulosus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Anthophora balearica",
+      "weight": 6
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Asphodelus fistulosus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Eristalis similis",
+      "weight": 2
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Asphodelus fistulosus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Eupeodes corollae",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Asphodelus fistulosus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Lasioglossum sp.",
+      "weight": 2
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Asphodelus fistulosus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Platypalpus sp.",
+      "weight": 2
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Asteriscus aquaticus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Dasytes nigroaeneus",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Asteriscus aquaticus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Exoprosopa cf. bowdeni",
+      "weight": 6
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Asteriscus aquaticus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Lasioglossum sp.",
+      "weight": 7
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Asteriscus aquaticus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Megaselia sp.",
+      "weight": 2
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Asteriscus aquaticus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Monomorium sp",
+      "weight": 3
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Asteriscus aquaticus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Pyrellia vivida",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Asteriscus aquaticus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Tapinoma nigerrinum",
+      "weight": 2
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Asteriscus aquaticus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Unknown insect",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Astragalus balearicus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Anthophora balearica",
+      "weight": 16
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Astragalus balearicus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Eristalis similis",
+      "weight": 3
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Astragalus balearicus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Eupeodes corollae",
+      "weight": 3
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Astragalus balearicus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Podarcis lilfordi",
+      "weight": 7
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Astragalus balearicus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Vanessa cardui",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Blackstonia perfoliata",
+      "layer_to": "Human (OBS)",
+      "node_to": "Eupeodes corollae",
+      "weight": 2
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Blackstonia perfoliata",
+      "layer_to": "Human (OBS)",
+      "node_to": "Musca domestica",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Blackstonia perfoliata",
+      "layer_to": "Human (OBS)",
+      "node_to": "Unknown insect",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Human (OBS)",
+      "node_to": "Anaspis sp.",
+      "weight": 6
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Human (OBS)",
+      "node_to": "Ancistrocerus ebusianus",
+      "weight": 52
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Human (OBS)",
+      "node_to": "Anthomyia confusanea",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Human (OBS)",
+      "node_to": "Anthomyiidae sp.",
+      "weight": 7
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Human (OBS)",
+      "node_to": "Anthophora balearica",
+      "weight": 33
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Human (OBS)",
+      "node_to": "Autographa gamma",
+      "weight": 8
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Human (OBS)",
+      "node_to": "Colias crocea",
+      "weight": 2
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Human (OBS)",
+      "node_to": "Dasytes nigroaeneus",
+      "weight": 8
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Human (OBS)",
+      "node_to": "Episyrphus balteatus",
+      "weight": 5
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Human (OBS)",
+      "node_to": "Eristalis similis",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Human (OBS)",
+      "node_to": "Eumenes dubius",
+      "weight": 6
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Human (OBS)",
+      "node_to": "Eupeodes corollae",
+      "weight": 46
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Human (OBS)",
+      "node_to": "Exoprosopa cf. bowdeni",
+      "weight": 43
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Human (OBS)",
+      "node_to": "Hydrellia sp",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Human (OBS)",
+      "node_to": "Hylaeus imparilis",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Human (OBS)",
+      "node_to": "Lasioglossum sp.",
+      "weight": 160
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Human (OBS)",
+      "node_to": "Lasiommata megera",
+      "weight": 6
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Human (OBS)",
+      "node_to": "Lucilia silvarum",
+      "weight": 3
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Human (OBS)",
+      "node_to": "Lydella nigrescens",
+      "weight": 9
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Human (OBS)",
+      "node_to": "Lydella thompsoni",
+      "weight": 3
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Human (OBS)",
+      "node_to": "Megaselia sp.",
+      "weight": 9
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Human (OBS)",
+      "node_to": "Meligethes sp.",
+      "weight": 3
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Human (OBS)",
+      "node_to": "Meliscaeva auricollis",
+      "weight": 7
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Human (OBS)",
+      "node_to": "Microdiptera sp1.",
+      "weight": 9
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Human (OBS)",
+      "node_to": "Monomorium sp",
+      "weight": 3
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Human (OBS)",
+      "node_to": "Mordellistena sp.",
+      "weight": 3
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Human (OBS)",
+      "node_to": "Musca domestica",
+      "weight": 3
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Human (OBS)",
+      "node_to": "Phthiria sp.",
+      "weight": 3
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Human (OBS)",
+      "node_to": "Pieris rapae",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Human (OBS)",
+      "node_to": "Platypalpus sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Human (OBS)",
+      "node_to": "Podarcis lilfordi",
+      "weight": 6
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Human (OBS)",
+      "node_to": "Pyrellia vivida",
+      "weight": 8
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Human (OBS)",
+      "node_to": "Sarcophaga sp.",
+      "weight": 5
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Human (OBS)",
+      "node_to": "Sphaeroceridae sp",
+      "weight": 7
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Human (OBS)",
+      "node_to": "Sphaerophoria sp.",
+      "weight": 6
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Human (OBS)",
+      "node_to": "Spilostethus pandurus",
+      "weight": 4
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Human (OBS)",
+      "node_to": "Stomorhina lunata",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Human (OBS)",
+      "node_to": "Tachysphex obscuripennis",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Human (OBS)",
+      "node_to": "Tapinoma nigerrinum",
+      "weight": 6
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cakile maritima",
+      "layer_to": "Human (OBS)",
+      "node_to": "Vanessa cardui",
+      "weight": 2
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Human (OBS)",
+      "node_to": "Anaspis sp.",
+      "weight": 10
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Human (OBS)",
+      "node_to": "Ancistrocerus ebusianus",
+      "weight": 8
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Human (OBS)",
+      "node_to": "Anthomyia confusanea",
+      "weight": 3
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Human (OBS)",
+      "node_to": "Anthomyiidae sp.",
+      "weight": 4
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Human (OBS)",
+      "node_to": "Anthophora balearica",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Human (OBS)",
+      "node_to": "Dasytes nigroaeneus",
+      "weight": 25
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Human (OBS)",
+      "node_to": "Episyrphus balteatus",
+      "weight": 14
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Human (OBS)",
+      "node_to": "Eristalis similis",
+      "weight": 24
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Human (OBS)",
+      "node_to": "Eupeodes corollae",
+      "weight": 52
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Human (OBS)",
+      "node_to": "Exoprosopa cf. bowdeni",
+      "weight": 5
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Human (OBS)",
+      "node_to": "Hydrellia sp",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Human (OBS)",
+      "node_to": "Lasioglossum sp.",
+      "weight": 28
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Human (OBS)",
+      "node_to": "Lydella nigrescens",
+      "weight": 4
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Human (OBS)",
+      "node_to": "Lydella thompsoni",
+      "weight": 3
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Human (OBS)",
+      "node_to": "Macroglossum stellatarum",
+      "weight": 2
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Human (OBS)",
+      "node_to": "Melanostoma scalare",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Human (OBS)",
+      "node_to": "Meligethes sp.",
+      "weight": 27
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Human (OBS)",
+      "node_to": "Meliscaeva auricollis",
+      "weight": 2
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Human (OBS)",
+      "node_to": "Monomorium sp",
+      "weight": 3
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Human (OBS)",
+      "node_to": "Musca domestica",
+      "weight": 18
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Human (OBS)",
+      "node_to": "Phyto melanocephala",
+      "weight": 14
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Human (OBS)",
+      "node_to": "Platypalpus sp.",
+      "weight": 10
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Human (OBS)",
+      "node_to": "Podarcis lilfordi",
+      "weight": 10
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Human (OBS)",
+      "node_to": "Pyrellia vivida",
+      "weight": 2
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Human (OBS)",
+      "node_to": "Sarcophaga sp.",
+      "weight": 2
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Human (OBS)",
+      "node_to": "Spilostethus pandurus",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Human (OBS)",
+      "node_to": "Tapinoma nigerrinum",
+      "weight": 2
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Human (OBS)",
+      "node_to": "Tapinoma sp",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Human (OBS)",
+      "node_to": "Vanessa atalanta",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Cistus monspeliensis",
+      "layer_to": "Human (OBS)",
+      "node_to": "Vanessa cardui",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Acanthiophilus helianthi",
+      "weight": 3
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Agromyzidae sp",
+      "weight": 3
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Anaspis sp.",
+      "weight": 14
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Ancistrocerus ebusianus",
+      "weight": 4
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Anthomyia confusanea",
+      "weight": 2
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Anthomyiidae sp.",
+      "weight": 3
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Camponotus sp",
+      "weight": 3
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Cheilosia latifrons",
+      "weight": 8
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Chelosia sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Chrysopa viridana",
+      "weight": 3
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Crematogaster sp.",
+      "weight": 7
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Dasytes nigroaeneus",
+      "weight": 2
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Episyrphus balteatus",
+      "weight": 21
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Eristalis similis",
+      "weight": 13
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Eristalis tenax",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Eumenes dubius",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Eupeodes corollae",
+      "weight": 55
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Exoprosopa cf. bowdeni",
+      "weight": 13
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Gasteruption spp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Hydrellia sp",
+      "weight": 4
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Hylaeus imparilis",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Lasioglossum sp.",
+      "weight": 133
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Lasiommata megera",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Lydella nigrescens",
+      "weight": 7
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Lydella thompsoni",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Macroglossum stellatarum",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Megaselia sp.",
+      "weight": 2
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Melanostoma scalare",
+      "weight": 5
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Meligethes sp.",
+      "weight": 7
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Meliscaeva auricollis",
+      "weight": 5
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Mordellistena sp.",
+      "weight": 7
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Musca domestica",
+      "weight": 15
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Muscidae sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Phthiria cf pulicularia",
+      "weight": 3
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Phthiria sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Podarcis lilfordi",
+      "weight": 29
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Pyrellia vivida",
+      "weight": 23
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Sarcophaga sp.",
+      "weight": 8
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Sphaerophoria sp.",
+      "weight": 2
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Sphenella marginata",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Spilostethus pandurus",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Stenopterus sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Unknown insect",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Vanessa atalanta",
+      "weight": 5
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Daucus carota L. subsp. Majoricus",
+      "layer_to": "Human (OBS)",
+      "node_to": "Vanessa cardui",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Dorycnium fulgurans",
+      "layer_to": "Human (OBS)",
+      "node_to": "Ancistrocerus ebusianus",
+      "weight": 7
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Dorycnium fulgurans",
+      "layer_to": "Human (OBS)",
+      "node_to": "Eupeodes corollae",
+      "weight": 4
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Dorycnium fulgurans",
+      "layer_to": "Human (OBS)",
+      "node_to": "Hydrellia sp",
+      "weight": 3
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Dorycnium fulgurans",
+      "layer_to": "Human (OBS)",
+      "node_to": "Lasioglossum sp.",
+      "weight": 21
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Dorycnium fulgurans",
+      "layer_to": "Human (OBS)",
+      "node_to": "Podarcis lilfordi",
+      "weight": 2
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Euphorbia dendroides",
+      "layer_to": "Human (OBS)",
+      "node_to": "Anthomyiidae sp.",
+      "weight": 6
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Euphorbia dendroides",
+      "layer_to": "Human (OBS)",
+      "node_to": "Anthophora balearica",
+      "weight": 5
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Euphorbia dendroides",
+      "layer_to": "Human (OBS)",
+      "node_to": "Calliphoridae sp.",
+      "weight": 3
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Euphorbia dendroides",
+      "layer_to": "Human (OBS)",
+      "node_to": "Dasytes nigroaeneus",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Euphorbia dendroides",
+      "layer_to": "Human (OBS)",
+      "node_to": "Episyrphus balteatus",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Euphorbia dendroides",
+      "layer_to": "Human (OBS)",
+      "node_to": "Eristalis similis",
+      "weight": 2
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Euphorbia dendroides",
+      "layer_to": "Human (OBS)",
+      "node_to": "Eumenes dubius",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Euphorbia dendroides",
+      "layer_to": "Human (OBS)",
+      "node_to": "Eupeodes corollae",
+      "weight": 11
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Euphorbia dendroides",
+      "layer_to": "Human (OBS)",
+      "node_to": "Lasioglossum sp.",
+      "weight": 3
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Euphorbia dendroides",
+      "layer_to": "Human (OBS)",
+      "node_to": "Meligethes sp.",
+      "weight": 2
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Euphorbia dendroides",
+      "layer_to": "Human (OBS)",
+      "node_to": "Meliscaeva auricollis",
+      "weight": 7
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Euphorbia dendroides",
+      "layer_to": "Human (OBS)",
+      "node_to": "Musca domestica",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Euphorbia dendroides",
+      "layer_to": "Human (OBS)",
+      "node_to": "Muscidae sp1",
+      "weight": 2
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Euphorbia dendroides",
+      "layer_to": "Human (OBS)",
+      "node_to": "Platypalpus sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Euphorbia dendroides",
+      "layer_to": "Human (OBS)",
+      "node_to": "Podarcis lilfordi",
+      "weight": 12
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Euphorbia dendroides",
+      "layer_to": "Human (OBS)",
+      "node_to": "Pyrellia vivida",
+      "weight": 9
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Euphorbia dendroides",
+      "layer_to": "Human (OBS)",
+      "node_to": "Sarcophaga sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Euphorbia dendroides",
+      "layer_to": "Human (OBS)",
+      "node_to": "Spilostethus pandurus",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Euphorbia dendroides",
+      "layer_to": "Human (OBS)",
+      "node_to": "Tapinoma sp",
+      "weight": 4
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Euphorbia serrata",
+      "layer_to": "Human (OBS)",
+      "node_to": "Anaspis sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Euphorbia serrata",
+      "layer_to": "Human (OBS)",
+      "node_to": "Anthophora balearica",
+      "weight": 4
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Euphorbia serrata",
+      "layer_to": "Human (OBS)",
+      "node_to": "Dasytes nigroaeneus",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Euphorbia serrata",
+      "layer_to": "Human (OBS)",
+      "node_to": "Eupeodes corollae",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Euphorbia serrata",
+      "layer_to": "Human (OBS)",
+      "node_to": "Lasioglossum sp.",
+      "weight": 15
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Euphorbia serrata",
+      "layer_to": "Human (OBS)",
+      "node_to": "Meligethes sp.",
+      "weight": 4
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Euphorbia serrata",
+      "layer_to": "Human (OBS)",
+      "node_to": "Musca domestica",
+      "weight": 3
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Euphorbia serrata",
+      "layer_to": "Human (OBS)",
+      "node_to": "Platypalpus sp.",
+      "weight": 8
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Fumana ericoides",
+      "layer_to": "Human (OBS)",
+      "node_to": "Anthophora balearica",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Fumana ericoides",
+      "layer_to": "Human (OBS)",
+      "node_to": "Eristalis similis",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Fumana ericoides",
+      "layer_to": "Human (OBS)",
+      "node_to": "Lasioglossum sp.",
+      "weight": 10
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Fumana ericoides",
+      "layer_to": "Human (OBS)",
+      "node_to": "Platypalpus sp.",
+      "weight": 2
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Fumana ericoides",
+      "layer_to": "Human (OBS)",
+      "node_to": "Podarcis lilfordi",
+      "weight": 15
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Fumana ericoides",
+      "layer_to": "Human (OBS)",
+      "node_to": "Stomorhina lunata",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Fumana ericoides",
+      "layer_to": "Human (OBS)",
+      "node_to": "Tapinoma sp",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Gladiolus communis",
+      "layer_to": "Human (OBS)",
+      "node_to": "Lasioglossum sp.",
+      "weight": 4
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Globularia alypum",
+      "layer_to": "Human (OBS)",
+      "node_to": "Anthophora balearica",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Globularia alypum",
+      "layer_to": "Human (OBS)",
+      "node_to": "Eupeodes corollae",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Globularia alypum",
+      "layer_to": "Human (OBS)",
+      "node_to": "Lasioglossum sp.",
+      "weight": 9
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Globularia alypum",
+      "layer_to": "Human (OBS)",
+      "node_to": "Podarcis lilfordi",
+      "weight": 3
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Globularia alypum",
+      "layer_to": "Human (OBS)",
+      "node_to": "Tapinoma sp",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Helichrysum stoechas",
+      "layer_to": "Human (OBS)",
+      "node_to": "Anaspis sp.",
+      "weight": 5
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Helichrysum stoechas",
+      "layer_to": "Human (OBS)",
+      "node_to": "Ancistrocerus ebusianus",
+      "weight": 8
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Helichrysum stoechas",
+      "layer_to": "Human (OBS)",
+      "node_to": "Autographa gamma",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Helichrysum stoechas",
+      "layer_to": "Human (OBS)",
+      "node_to": "Dasytes nigroaeneus",
+      "weight": 2
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Helichrysum stoechas",
+      "layer_to": "Human (OBS)",
+      "node_to": "Eupeodes corollae",
+      "weight": 12
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Helichrysum stoechas",
+      "layer_to": "Human (OBS)",
+      "node_to": "Exoprosopa cf. bowdeni",
+      "weight": 5
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Helichrysum stoechas",
+      "layer_to": "Human (OBS)",
+      "node_to": "Hylaeus imparilis",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Helichrysum stoechas",
+      "layer_to": "Human (OBS)",
+      "node_to": "Lasioglossum sp.",
+      "weight": 41
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Helichrysum stoechas",
+      "layer_to": "Human (OBS)",
+      "node_to": "Lydella nigrescens",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Helichrysum stoechas",
+      "layer_to": "Human (OBS)",
+      "node_to": "Lydella thompsoni",
+      "weight": 5
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Helichrysum stoechas",
+      "layer_to": "Human (OBS)",
+      "node_to": "Macroglossum stellatarum",
+      "weight": 6
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Helichrysum stoechas",
+      "layer_to": "Human (OBS)",
+      "node_to": "Meligethes sp.",
+      "weight": 2
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Helichrysum stoechas",
+      "layer_to": "Human (OBS)",
+      "node_to": "Microdiptera sp1.",
+      "weight": 2
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Helichrysum stoechas",
+      "layer_to": "Human (OBS)",
+      "node_to": "Monomorium sp",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Helichrysum stoechas",
+      "layer_to": "Human (OBS)",
+      "node_to": "Musca domestica",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Helichrysum stoechas",
+      "layer_to": "Human (OBS)",
+      "node_to": "Phthiria cf pulicularia",
+      "weight": 5
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Helichrysum stoechas",
+      "layer_to": "Human (OBS)",
+      "node_to": "Phthiria sp.",
+      "weight": 4
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Helichrysum stoechas",
+      "layer_to": "Human (OBS)",
+      "node_to": "Platypalpus sp.",
+      "weight": 2
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Helichrysum stoechas",
+      "layer_to": "Human (OBS)",
+      "node_to": "Podarcis lilfordi",
+      "weight": 2
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Helichrysum stoechas",
+      "layer_to": "Human (OBS)",
+      "node_to": "Pyrellia vivida",
+      "weight": 2
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Helichrysum stoechas",
+      "layer_to": "Human (OBS)",
+      "node_to": "Stictopleurus abutilon",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Helichrysum stoechas",
+      "layer_to": "Human (OBS)",
+      "node_to": "Tachysphex obscuripennis",
+      "weight": 5
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Helichrysum stoechas",
+      "layer_to": "Human (OBS)",
+      "node_to": "Tapinoma nigerrinum",
+      "weight": 7
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Helichrysum stoechas",
+      "layer_to": "Human (OBS)",
+      "node_to": "Vanessa cardui",
+      "weight": 2
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Limonium sp.",
+      "layer_to": "Human (OBS)",
+      "node_to": "Anaspis sp.",
+      "weight": 7
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Limonium sp.",
+      "layer_to": "Human (OBS)",
+      "node_to": "Ancistrocerus ebusianus",
+      "weight": 7
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Limonium sp.",
+      "layer_to": "Human (OBS)",
+      "node_to": "Autographa gamma",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Limonium sp.",
+      "layer_to": "Human (OBS)",
+      "node_to": "Clairvillia pninae",
+      "weight": 5
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Limonium sp.",
+      "layer_to": "Human (OBS)",
+      "node_to": "Colias crocea",
+      "weight": 2
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Limonium sp.",
+      "layer_to": "Human (OBS)",
+      "node_to": "Eristalinus sepulcharis",
+      "weight": 2
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Limonium sp.",
+      "layer_to": "Human (OBS)",
+      "node_to": "Eumenes dubius",
+      "weight": 5
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Limonium sp.",
+      "layer_to": "Human (OBS)",
+      "node_to": "Eupeodes corollae",
+      "weight": 6
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Limonium sp.",
+      "layer_to": "Human (OBS)",
+      "node_to": "Exoprosopa cf. bowdeni",
+      "weight": 26
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Limonium sp.",
+      "layer_to": "Human (OBS)",
+      "node_to": "Lasioglossum sp.",
+      "weight": 231
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Limonium sp.",
+      "layer_to": "Human (OBS)",
+      "node_to": "Macroglossum stellatarum",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Limonium sp.",
+      "layer_to": "Human (OBS)",
+      "node_to": "Meligethes sp.",
+      "weight": 4
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Limonium sp.",
+      "layer_to": "Human (OBS)",
+      "node_to": "Mordellistena sp.",
+      "weight": 5
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Limonium sp.",
+      "layer_to": "Human (OBS)",
+      "node_to": "Sarcophaga sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Limonium sp.",
+      "layer_to": "Human (OBS)",
+      "node_to": "Sphaerophoria sp.",
+      "weight": 2
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Limonium sp.",
+      "layer_to": "Human (OBS)",
+      "node_to": "Stenopterus sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Limonium sp.",
+      "layer_to": "Human (OBS)",
+      "node_to": "Thyridanthrax elegans",
+      "weight": 4
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Limonium sp.",
+      "layer_to": "Human (OBS)",
+      "node_to": "Vanessa cardui",
+      "weight": 4
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Lonicera implexa",
+      "layer_to": "Human (OBS)",
+      "node_to": "Gonepterix cleopatra",
+      "weight": 2
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Lonicera implexa",
+      "layer_to": "Human (OBS)",
+      "node_to": "Macroglossum stellatarum",
+      "weight": 5
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Rosmarinus officinalis",
+      "layer_to": "Human (OBS)",
+      "node_to": "Anthomyiidae sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Rosmarinus officinalis",
+      "layer_to": "Human (OBS)",
+      "node_to": "Anthophora balearica",
+      "weight": 6
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Rosmarinus officinalis",
+      "layer_to": "Human (OBS)",
+      "node_to": "Lasioglossum sp.",
+      "weight": 2
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Rosmarinus officinalis",
+      "layer_to": "Human (OBS)",
+      "node_to": "Macroglossum stellatarum",
+      "weight": 2
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Rosmarinus officinalis",
+      "layer_to": "Human (OBS)",
+      "node_to": "Meliscaeva auricollis",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Rosmarinus officinalis",
+      "layer_to": "Human (OBS)",
+      "node_to": "Podarcis lilfordi",
+      "weight": 4
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Ruta chalepensis",
+      "layer_to": "Human (OBS)",
+      "node_to": "Ancistrocerus ebusianus",
+      "weight": 2
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Ruta chalepensis",
+      "layer_to": "Human (OBS)",
+      "node_to": "Lasioglossum sp.",
+      "weight": 5
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Ruta chalepensis",
+      "layer_to": "Human (OBS)",
+      "node_to": "Sphaerophoria sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Sedum sediforme",
+      "layer_to": "Human (OBS)",
+      "node_to": "Anaspis sp.",
+      "weight": 2
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Sedum sediforme",
+      "layer_to": "Human (OBS)",
+      "node_to": "Anthomyia confusanea",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Sedum sediforme",
+      "layer_to": "Human (OBS)",
+      "node_to": "Dasytes nigroaeneus",
+      "weight": 12
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Sedum sediforme",
+      "layer_to": "Human (OBS)",
+      "node_to": "Hydrellia sp",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Sedum sediforme",
+      "layer_to": "Human (OBS)",
+      "node_to": "Lasioglossum sp.",
+      "weight": 124
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Sedum sediforme",
+      "layer_to": "Human (OBS)",
+      "node_to": "Megachile sp.",
+      "weight": 2
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Sedum sediforme",
+      "layer_to": "Human (OBS)",
+      "node_to": "Mordellistena sp.",
+      "weight": 3
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Sedum sediforme",
+      "layer_to": "Human (OBS)",
+      "node_to": "Musca domestica",
+      "weight": 4
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Sedum sediforme",
+      "layer_to": "Human (OBS)",
+      "node_to": "Spilostethus pandurus",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Human (OBS)",
+      "node_to": "Anaspis sp.",
+      "weight": 17
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Human (OBS)",
+      "node_to": "Ancistrocerus ebusianus",
+      "weight": 3
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Human (OBS)",
+      "node_to": "Anthomyia confusanea",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Human (OBS)",
+      "node_to": "Autographa gamma",
+      "weight": 2
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Human (OBS)",
+      "node_to": "Centrocoris sp",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Human (OBS)",
+      "node_to": "Cheilosia latifrons",
+      "weight": 9
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Human (OBS)",
+      "node_to": "Colias crocea",
+      "weight": 4
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Human (OBS)",
+      "node_to": "Dasytes nigroaeneus",
+      "weight": 4
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Human (OBS)",
+      "node_to": "Episyrphus balteatus",
+      "weight": 3
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Human (OBS)",
+      "node_to": "Eristalis similis",
+      "weight": 2
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Human (OBS)",
+      "node_to": "Eupeodes corollae",
+      "weight": 59
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Human (OBS)",
+      "node_to": "Exoprosopa cf. bowdeni",
+      "weight": 78
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Human (OBS)",
+      "node_to": "Gonepterix cleopatra",
+      "weight": 2
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Human (OBS)",
+      "node_to": "Hylaeus imparilis",
+      "weight": 4
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Human (OBS)",
+      "node_to": "Lasioglossum sp.",
+      "weight": 84
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Human (OBS)",
+      "node_to": "Lydella nigrescens",
+      "weight": 4
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Human (OBS)",
+      "node_to": "Lydella sp.",
+      "weight": 2
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Human (OBS)",
+      "node_to": "Lydella thompsoni",
+      "weight": 7
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Human (OBS)",
+      "node_to": "Macroglossum stellatarum",
+      "weight": 5
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Human (OBS)",
+      "node_to": "Megaselia sp.",
+      "weight": 2
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Human (OBS)",
+      "node_to": "Meligethes sp.",
+      "weight": 15
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Human (OBS)",
+      "node_to": "Meliscaeva auricollis",
+      "weight": 3
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Human (OBS)",
+      "node_to": "Microdiptera sp1.",
+      "weight": 4
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Human (OBS)",
+      "node_to": "Monomorium sp",
+      "weight": 3
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Human (OBS)",
+      "node_to": "Musca domestica",
+      "weight": 8
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Human (OBS)",
+      "node_to": "Phthiria cf pulicularia",
+      "weight": 8
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Human (OBS)",
+      "node_to": "Phthiria sp.",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Human (OBS)",
+      "node_to": "Platypalpus sp.",
+      "weight": 2
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Human (OBS)",
+      "node_to": "Podarcis lilfordi",
+      "weight": 4
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Human (OBS)",
+      "node_to": "Pyrellia vivida",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Human (OBS)",
+      "node_to": "Sarcophaga sp.",
+      "weight": 4
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Human (OBS)",
+      "node_to": "Spilostethus pandurus",
+      "weight": 4
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Human (OBS)",
+      "node_to": "Stictopleurus abutilon",
+      "weight": 1
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Human (OBS)",
+      "node_to": "Tapinoma nigerrinum",
+      "weight": 4
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Human (OBS)",
+      "node_to": "Vanessa atalanta",
+      "weight": 6
+    },
+    {
+      "layer_from": "Human (OBS)",
+      "node_from": "Teucrium capitatum",
+      "layer_to": "Human (OBS)",
+      "node_to": "Vanessa cardui",
+      "weight": 15
+    }
+  ],
+  "state_nodes": [
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Allium ampeloprasum"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Allium sp."
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Asphodelus fistulosus"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Asteriscus aquaticus"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Astragalus balearicus"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Blackstonia perfoliata"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Cakile maritima"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Cistus monspeliensis"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Daucus carota L. subsp. Majoricus"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Dorycnium fulgurans"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Euphorbia dendroides"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Euphorbia serrata"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Fumana ericoides"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Gladiolus communis"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Globularia alypum"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Helichrysum stoechas"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Limonium sp."
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Lonicera implexa"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Rosmarinus officinalis"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Ruta chalepensis"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Sedum sediforme"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Teucrium capitatum"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Acanthiophilus helianthi"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Agromyzidae sp"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Anaspis sp."
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Ancistrocerus ebusianus"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Anthomyia confusanea"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Anthomyiidae sp."
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Anthophora balearica"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Autographa gamma"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Calliphoridae sp."
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Camponotus sp"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Centrocoris sp"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Cheilosia latifrons"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Chelosia sp."
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Chrysopa viridana"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Clairvillia pninae"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Colias crocea"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Crematogaster sp."
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Dasytes nigroaeneus"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Episyrphus balteatus"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Eristalinus sepulcharis"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Eristalis similis"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Eristalis tenax"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Eumenes dubius"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Eupeodes corollae"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Exoprosopa cf. bowdeni"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Gasteruption spp."
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Gonepterix cleopatra"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Hydrellia sp"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Hylaeus imparilis"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Lasioglossum sp."
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Lasiommata megera"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Lucilia silvarum"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Lydella nigrescens"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Lydella sp."
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Lydella thompsoni"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Macroglossum stellatarum"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Megachile sp."
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Megaselia sp."
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Melanostoma scalare"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Meligethes sp."
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Meliscaeva auricollis"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Microdiptera sp1."
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Monomorium sp"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Mordellistena sp."
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Musca domestica"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Muscidae sp."
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Muscidae sp1"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Phthiria cf pulicularia"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Phthiria sp."
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Phyto melanocephala"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Pieris rapae"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Platypalpus sp."
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Podarcis lilfordi"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Pyrellia vivida"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Sarcophaga sp."
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Sphaeroceridae sp"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Sphaerophoria sp."
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Sphenella marginata"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Spilostethus pandurus"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Stenopterus sp."
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Stictopleurus abutilon"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Stomorhina lunata"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Tachysphex obscuripennis"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Tapinoma nigerrinum"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Tapinoma sp"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Thyridanthrax elegans"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Unknown insect"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Vanessa atalanta"
+    },
+    {
+      "layer_name": "Human (OBS)",
+      "node_name": "Vanessa cardui"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Allium ampeloprasum"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Allium sp."
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Anacamptis pyramidalis"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Asphodelus fistulosus"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Asteriscus aquaticus"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Astragalus balearicus"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Blackstonia perfoliata"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Cakile maritima"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Cistus monspeliensis"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Daucus carota L. subsp. Majoricus"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Dorycnium fulgurans"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Euphorbia dendroides"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Euphorbia serrata"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Fumana ericoides"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Globularia alypum"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Helichrysum stoechas"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Limonium sp."
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Lonicera implexa"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Rosmarinus officinalis"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Ruta chalepensis"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Sedum sediforme"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Teucrium capitatum"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Anaspis sp."
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Ancistrocerus ebusianus"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Anthomyia confusanea"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Anthomyiidae sp."
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Anthophora balearica"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Autographa gamma"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Bombyliidae sp."
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Calliphoridae sp."
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Camponotus sp"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Cheilosia latifrons"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Chelosia sp."
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Chrysopa viridana"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Clairvillia pninae"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Colias crocea"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Crematogaster sp."
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Dasytes nigroaeneus"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Episyrphus balteatus"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Eristalinus sepulcharis"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Eristalis similis"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Eristalis tenax"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Eumenes dubius"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Eupeodes corollae"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Exoprosopa cf. bowdeni"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Gonepterix cleopatra"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Hydrellia sp"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Hylaeus imparilis"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Lasioglossum sp."
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Lasiommata megera"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Lucilia silvarum"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Lydella nigrescens"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Lydella thompsoni"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Macroglossum stellatarum"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Megachile sp."
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Megaselia sp."
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Melanostoma scalare"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Meligethes sp."
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Meliscaeva auricollis"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Monomorium sp"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Mordellistena sp."
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Musca domestica"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Muscidae sp."
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Phoenicurus ochruros"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Phthiria cf pulicularia"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Phthiria sp."
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Phyto melanocephala"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Pieris rapae"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Platypalpus sp."
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Podarcis lilfordi"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Pyrellia vivida"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Sarcophaga sp."
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Sphaerophoria sp."
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Spilostethus pandurus"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Stenopterus sp."
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Stictopleurus abutilon"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Tapinoma nigerrinum"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Tapinoma sp"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Unknown insect"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Vanessa atalanta"
+    },
+    {
+      "layer_name": "Camera (ACS)",
+      "node_name": "Vanessa cardui"
+    }
+  ]
+}
