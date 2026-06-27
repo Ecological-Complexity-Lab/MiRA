@@ -1,5 +1,20 @@
 # MiRA — Multilayer Interactive Rendering Application
 
+> [!WARNING]
+> ## 🚧 You are on the `development` branch
+>
+> This is **not** the public-facing branch. For the clean, user-facing version of MiRA, switch to [**`main`**](https://github.com/Ecological-Complexity-Lab/MiRA/tree/main).
+>
+> **What this branch is for.** `development` is the long-lived home for *everything* — the full app (identical to `main`) **plus** development-only artifacts that are deliberately kept off the public branch: planning notes, attempt summaries, internal references, raw data-conversion sources, design drafts, agent instructions (`CLAUDE.md`), and the [branching-strategy doc](docs/branching-strategy.md). Nothing here is secret — branches separate code, not visibility — but it's not first-impression material.
+>
+> **How it's used.**
+> - `main` is **protected**: all user-facing app changes land there via pull request (CI must pass `vitest` + `guard`).
+> - `development` is **unprotected**: development-only ("Tier 3") files are committed and pushed here directly, no PR needed.
+> - `main` is periodically merged **into** `development` (`git merge main` from the `MiRA-dev` worktree) to keep the app code in sync.
+> - **Never** merge `development → main` — the `guard` workflow blocks it, since that would leak Tier 3 files onto the public branch.
+>
+> See [docs/branching-strategy.md](docs/branching-strategy.md) for the full rationale and file-tier breakdown.
+
 [![Project Status: Active](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 [![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
