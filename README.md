@@ -1,19 +1,11 @@
 # MiRA — Multilayer Interactive Rendering Application
 
-> [!WARNING]
 > ## 🚧 You are on the `development` branch
 >
 > This is **not** the public-facing branch. For the clean, user-facing version of MiRA, switch to [**`main`**](https://github.com/Ecological-Complexity-Lab/MiRA/tree/main).
 >
-> **What this branch is for.** `development` is the long-lived home for *everything* — the full app (identical to `main`) **plus** development-only artifacts that are deliberately kept off the public branch: planning notes, attempt summaries, internal references, raw data-conversion sources, design drafts, agent instructions (`CLAUDE.md`), and the [branching-strategy doc](docs/branching-strategy.md). Nothing here is secret — branches separate code, not visibility — but it's not first-impression material.
->
 > **How it's used.**
-> - `main` is **protected**: all user-facing app changes land there via pull request (CI must pass `vitest` + `guard`).
-> - `development` is **unprotected**: development-only ("Tier 3") files are committed and pushed here directly, no PR needed.
-> - `main` is periodically merged **into** `development` (`git merge main` from the `MiRA-dev` worktree) to keep the app code in sync.
-> - **Never** merge `development → main` — the `guard` workflow blocks it, since that would leak Tier 3 files onto the public branch.
->
-> See [docs/branching-strategy.md](docs/branching-strategy.md) for the full rationale and file-tier breakdown.
+> - `main` is **protected**: all user-facing app changes land there via pull request (CI must pass `vitest` + `guard`). See [docs/branching-strategy.md](docs/branching-strategy.md) for the full rationale and file-tier breakdown.
 
 [![Project Status: Active](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html)
@@ -24,45 +16,9 @@
 An interactive, browser-based visualization tool for multilayer networks. While developed with biology in mind, MiRA can render any multilayer network. Available as a standalone web app and also fully integrated into the [`emln`](https://github.com/Ecological-Complexity-Lab/emln) R package.
 
 
-## 📝 Citation
-If you use MiRA to explore your networks as part of your published research or to produce figures, please cite our preprint:
-
-Nehoray SM, Bloch Y and Pilosof S (2026). **Interactively visualizing biological multilayer networks using MiRA**. _arXiv_:2605.09597 [cs.SI]. [https://doi.org/10.48550/arXiv.2605.09597](https://doi.org/10.48550/arXiv.2605.09597)
-
-<details>
-<summary>BibTeX</summary>
-
-```bibtex
-@article{Nehoray2026,
-  title        = {Interactively visualizing biological multilayer networks using {MiRA}},
-  author       = {Nehoray, Shir Miryam and Bloch, Yuval and Pilosof, Shai},
-  journal      = {arXiv [cs.SI]},
-  year         = {2026},
-  eprint       = {2605.09597},
-  archivePrefix= {arXiv},
-  primaryClass = {cs.SI},
-  doi          = {10.48550/arXiv.2605.09597},
-  url          = {https://doi.org/10.48550/arXiv.2605.09597}
-}
-```
-</details>
-
 ## 📄 Documentation and help
 
 Full feature reference, data format guide, and controls reference: **[mira.ecomplab.com/docs/manual.html](https://mira.ecomplab.com/docs/manual.html)** (also accessible via the **?** button inside the app).
-
-## ✨ Visualization modes
-
-- **Network Mode** — 3D stacked-layer canvas with rotate, pan, drag, hover, and selection.
-- **Map Mode** — layers placed on an interactive Leaflet world map using geographic coordinates.
-- **Grid View** — small-multiples matrix layout: each layer in its own panel, all sharing the same color and selection state. Ideal for comparing intralayer structure across many layers simultaneously.
-- **Layer View** — meta-graph where each layer is a force-directed bubble with micro-graph previews and side-by-side comparison panels.
-- **Meta-Network Mode** — aggregated single-layer view of cross-layer connectivity.
-- **Dashboard Mode** — analytics panels: KPI cards, per-layer charts, presence matrix, Jaccard similarity heatmaps, degree distributions, link weight distributions, node participation, and bipartite set-size ratios.
-- **Data Mode** — tabular inspection and subsetting of nodes, links, and layer attributes.
-
-### Best visualization practices:
-Multilayer networks are inherently complex. Unlike monolayer networks, which can be visualized in 2D, the 3D representation of multilayer networks adds visual complexity. Therefore, while it is possible to load large networks, visualizing small to medium-sized networks is more effective. The more layers and interlayer links present, the more entangled the visualization will be. Furthermore, visualizations heavily loaded with links will be slower to interact with (e.g., dragging and navigating the network). **MiRA** is designed to help you manage this complexity — for example, by allowing you to set thresholds on visualized links, apply different layouts, and by using summary visualizations such as *Layer View*, *Grid View*, and *Meta-Network* modes, and by filtering layers, nodes, and links in Data mode. For detailed guidance on choosing the right mode and managing visual complexity, see the [Visualization Guidelines](https://mira.ecomplab.com/docs/manual.html#guidelines) section of the manual.
 
 ## 🚀 Loading MiRA
 
@@ -92,17 +48,6 @@ MiRA has no build step; the runtime libraries are loaded directly in [`index.htm
 | [Leaflet](https://leafletjs.com/) | 1.9.4 | Map Mode base layers |
 
 The development and test toolchain (Vitest, Playwright, jsdom, and helper libraries) is declared in [`package.json`](package.json) and locked to exact resolved versions in the committed [`package-lock.json`](package-lock.json), so `npm ci` reproduces the test environment exactly.
-
-## 🗂️ Built-in Example Datasets
-
-Nine empirical multilayer networks are bundled for immediate exploration, from six biological domains, covering pollination, host–parasite interactions, seed dispersal, gene recombination, human disease, brain connectivity, plasmid sharing, and protein–protein interactions. See the full list and references in the [manual](https://mira.ecomplab.com/docs/manual.html).
-
-## 📥 Import Your Own Multilayer Network
-
-- **JSON** — native format.
-- **CSV** — extended edge list + optional layer and node attribute files.
-
-See the [manual](https://mira.ecomplab.com/docs/manual.html#data-import) for schemas.
 
 ## 🔗 Integration with the R Package `emln`
 
