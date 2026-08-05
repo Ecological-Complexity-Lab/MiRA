@@ -1,0 +1,35 @@
+# MiRA — Multilayer Interactive Rendering Application
+
+> MiRA (Multilayer Interactive Rendering Application) is a free, browser-based, installation-free tool for interactive visualisation of multilayer networks in ecology and biology.
+
+MiRA runs entirely in the browser with no installation, no account, and no server-side
+processing. Multilayer networks are uploaded as JSON or CSV, or passed directly from the
+emln R package. Sessions can be saved and restored; figures export as PNG, JPG, or PDF.
+MiRA is a visualisation tool, not an analysis package: analytical results such as module
+affiliation or centrality should be computed upstream and uploaded as node, link, or layer
+attributes, where they become available for colour mapping, node sizing, and filtering.
+
+MiRA provides seven visualization modes: Network Mode (3D stacked layers), Map Mode
+(layers on a geographic map), Layer View (layers as a meta-graph of force-directed bubbles),
+Grid View (small-multiples, one panel per layer), Meta-Network Mode (aggregated single-layer
+view), Dashboard Mode (analytics panels), and Data Mode (tabular inspection and subsetting).
+MiRA supports bipartite networks (e.g. plant–pollinator, host–parasite), spatial/geographic
+layer placement, temporal and multiplex networks, and directed links.
+
+## Documentation
+- [Manual](https://mira.ecomplab.com/docs/manual.html): full documentation of all modes, the JSON schema, and CSV import.
+- [Data format](https://mira.ecomplab.com/data-format.html): the multilayer network JSON schema and CSV import layout.
+
+## Tutorials
+- [Plant–pollinator network visualisation](https://mira.ecomplab.com/tutorial-plant-pollinator.html): visualizing a bipartite plant–pollinator multilayer network.
+- [Spatial ecological network map](https://mira.ecomplab.com/tutorial-spatial-map.html): placing network layers on a geographic map with Map Mode.
+- [Temporal network visualisation](https://mira.ecomplab.com/tutorial-temporal.html): visualizing change across time in a temporal multilayer network.
+- [Multilayer brain network visualisation](https://mira.ecomplab.com/tutorial-brain-network.html): visualizing a multilayer human brain connectome.
+
+## Comparison
+- [Comparison with other tools](https://mira.ecomplab.com/compare.html): how MiRA compares with muxViz, Arena3Dweb, Gephi, and Cytoscape for multilayer network visualisation.
+
+## Source and citation
+- [GitHub repository](https://github.com/Ecological-Complexity-Lab/MiRA): source code, issue tracker, CC BY-NC-SA 4.0.
+- [Preprint](https://arxiv.org/abs/2605.09597): Nehoray, Bloch & Pilosof, Interactively visualizing biological multilayer networks using MiRA.
+- [emln R package](https://github.com/Ecological-Complexity-Lab/emln): data structures and `plot_multilayer()` integration.
