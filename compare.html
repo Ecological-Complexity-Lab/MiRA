@@ -119,22 +119,6 @@
             <td class="tool"><span class="yes">Yes</span> — interactive GUI</td>
           </tr>
           <tr>
-            <td>Built-in network analysis (centralities, communities, etc.)</td>
-            <td class="tool"><span class="warn">Descriptive summaries</span> — analysis is done upstream and uploaded as attributes</td>
-            <td class="tool"><span class="yes">Extensive</span> — multilayer centralities, communities, reducibility</td>
-            <td class="tool"><span class="warn">Some</span> — degree, betweenness, clustering, community detection</td>
-            <td class="tool"><span class="yes">Extensive</span> — statistics, modularity, centralities</td>
-            <td class="tool"><span class="yes">Extensive</span> — via apps (e.g. clusterMaker, NetworkAnalyzer)</td>
-          </tr>
-          <tr>
-            <td>3D rendering</td>
-            <td class="tool"><span class="warn">Pseudo-3D</span> — oblique stacked-layer projection</td>
-            <td class="tool"><span class="yes">Yes</span> — 3D (OpenGL)</td>
-            <td class="tool"><span class="yes">Yes</span> — true 3D scene</td>
-            <td class="tool"><span class="warn">Mostly 2D</span></td>
-            <td class="tool"><span class="warn">Mostly 2D</span></td>
-          </tr>
-          <tr>
             <td>Figure / data export</td>
             <td class="tool">PNG, JPG, PDF; reproducible session file (data included)</td>
             <td class="tool">R graphics (PDF, PNG)</td>
@@ -153,47 +137,6 @@
         </tbody>
       </table>
     </div>
-
-    <h2>Where each tool is strongest</h2>
-    <h3>MiRA</h3>
-    <p>
-      MiRA is the tool to reach for when you want to <em>see</em> a multilayer network quickly and
-      interactively without installing anything or writing code. It is the only tool in this set
-      that combines dedicated bipartite layouts with geographic layer placement — the two features
-      ecological multilayer networks most often need — alongside live filtering, cross-layer
-      highlighting, and seven linked visualization modes. It reads JSON or CSV, or plots directly
-      from the <a href="https://github.com/Ecological-Complexity-Lab/emln">emln</a> R package, and
-      saves a self-contained session file that reopens the full visualization with its data.
-    </p>
-    <h3>muxViz</h3>
-    <p>
-      muxViz is the most analytically complete tool for multilayer networks. If you need multilayer
-      centralities, community detection, reducibility analysis, or georeferenced layers and you are
-      comfortable in R, muxViz is hard to beat. Its interactivity is limited compared with a live
-      web app, and it does not handle bipartite networks, but its analytical depth is a genuine
-      strength.
-    </p>
-    <h3>Arena3D<sup>web</sup></h3>
-    <p>
-      Arena3D<sup>web</sup> renders beautiful, fully interactive true-3D multilayer scenes in the
-      browser and exposes an API for integration into other pipelines. It was designed for
-      biomedical networks and does not support bipartite structures or geographic layouts, but for
-      immersive 3D exploration and programmatic embedding it is excellent.
-    </p>
-    <h3>Gephi</h3>
-    <p>
-      Gephi is a mature, general-purpose network tool built for large single-layer graphs. Its
-      layout algorithms, statistics, and ability to handle very large networks are outstanding. It
-      is not multilayer-native and needs a desktop install, but for scale and general graph
-      analysis it remains a standard.
-    </p>
-    <h3>Cytoscape</h3>
-    <p>
-      Cytoscape is the standard for molecular and biological network analysis, with a large
-      ecosystem of apps for enrichment, clustering, and data integration. It is a desktop
-      application built around single-graph analysis rather than multilayer visualisation, but its
-      app ecosystem and analytical reach are major strengths.
-    </p>
 
     <hr>
     <p class="note">
