@@ -4,16 +4,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MiRA — Interactive Multilayer Network Visualisation</title>
   <meta name="description"
-    content="Interactive multilayer network visualizer with 7 visualization modes.">
-  <title>MiRA — Multilayer Interactive Rendering Application</title>
+    content="MiRA (Multilayer Interactive Rendering Application) is a free, browser-based, installation-free tool for interactive visualisation of multilayer networks in ecology and biology.">
+  <link rel="canonical" href="https://mira.ecomplab.com/">
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 
   <!-- Open Graph — link previews on Slack, Facebook, LinkedIn, iMessage, etc. -->
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="MiRA">
-  <meta property="og:title" content="MiRA — Multilayer Interactive Rendering Application">
-  <meta property="og:description" content="Interactive multilayer network visualizer with 7 visualization modes.">
+  <meta property="og:site_name" content="MiRA — Multilayer Network Visualisation">
+  <meta property="og:title" content="MiRA — Interactive Multilayer Network Visualisation">
+  <meta property="og:description" content="Free, browser-based, installation-free visualisation of multilayer networks. Upload JSON or CSV, or plot directly from the emln R package.">
   <meta property="og:url" content="https://mira.ecomplab.com/">
   <meta property="og:image" content="https://mira.ecomplab.com/assets/social-card.png">
   <meta property="og:image:width" content="1200">
@@ -22,8 +23,8 @@
 
   <!-- Twitter / X card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="MiRA — Multilayer Interactive Rendering Application">
-  <meta name="twitter:description" content="Interactive multilayer network visualizer with 7 visualization modes.">
+  <meta name="twitter:title" content="MiRA — Interactive Multilayer Network Visualisation">
+  <meta name="twitter:description" content="Free, browser-based visualisation of multilayer networks for ecology and biology.">
   <meta name="twitter:image" content="https://mira.ecomplab.com/assets/social-card.png">
 
   <!-- PapaParse — CSV parser -->
@@ -42,6 +43,53 @@
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
   <link rel="stylesheet" href="css/style.css">
+
+  <!-- JSON-LD structured data — disambiguates this MiRA (multilayer network tool) from other "MIRA" entities -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "MiRA",
+    "alternateName": "Multilayer Interactive Rendering Application",
+    "description": "MiRA (Multilayer Interactive Rendering Application) is a free, browser-based, installation-free tool for interactive visualisation of multilayer networks in ecology and biology.",
+    "url": "https://mira.ecomplab.com/",
+    "applicationCategory": "Scientific Application",
+    "applicationSubCategory": "Network Visualisation",
+    "operatingSystem": "Any (modern web browser)",
+    "browserRequirements": "Requires a modern desktop or laptop browser with JavaScript enabled.",
+    "softwareVersion": "1.0",
+    "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "isAccessibleForFree": true,
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "codeRepository": "https://github.com/Ecological-Complexity-Lab/MiRA",
+    "programmingLanguage": "JavaScript",
+    "featureList": [
+      "Network Mode — all layers rendered together in a 3D stacked-layer view with rotate, pan, drag, hover, and node selection",
+      "Map Mode — layers placed on an interactive world map by geographic coordinates",
+      "Layer View — meta-graph where each layer is a force-directed bubble with micro-graph previews and comparison panels",
+      "Grid View — small-multiples matrix layout, one panel per layer sharing color and selection state",
+      "Meta-Network Mode — aggregated single-layer view of cross-layer connectivity",
+      "Dashboard Mode — analytics panels: KPI cards, per-layer charts, presence matrix, Jaccard similarity heatmaps, degree and link-weight distributions",
+      "Data Mode — tabular inspection, filtering, and subsetting of nodes, links, and layer attributes"
+    ],
+    "keywords": "multilayer network, multiplex network, network visualisation, ecological network, bipartite network, temporal network, interactive visualisation, emln",
+    "author": [
+      { "@type": "Person", "name": "Shir Miryam Nehoray", "identifier": "https://orcid.org/0009-0001-8453-4426" },
+      { "@type": "Person", "name": "Yuval Bloch" },
+      { "@type": "Person", "name": "Shai Pilosof", "identifier": "https://orcid.org/0000-0003-0430-5568" }
+    ],
+    "publisher": {
+      "@type": "Organization",
+      "name": "Ecological Complexity Lab, Ben-Gurion University of the Negev",
+      "url": "https://ecomplab.com"
+    },
+    "citation": "https://arxiv.org/abs/2605.09597",
+    "sameAs": [
+      "https://github.com/Ecological-Complexity-Lab/MiRA",
+      "https://arxiv.org/abs/2605.09597"
+    ]
+  }
+  </script>
 </head>
 
 <body>
