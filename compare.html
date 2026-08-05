@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multilayer network visualisation tools compared | MiRA Multilayer Network Visualisation</title>
+  <meta name="description"
+    content="A factual comparison of MiRA, muxViz, Arena3Dweb, Gephi, and Cytoscape for visualizing multilayer networks: browser-based use, programming, bipartite and geographic support, interactivity, analysis, export, and licence.">
+  <link rel="canonical" href="https://mira.ecomplab.com/compare.html">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MiRA — Multilayer Network Visualisation">
+  <meta property="og:title" content="Multilayer network visualisation tools compared">
+  <meta property="og:description" content="How MiRA compares with muxViz, Arena3Dweb, Gephi, and Cytoscape for multilayer network visualisation.">
+  <meta property="og:url" content="https://mira.ecomplab.com/compare.html">
+  <meta property="og:image" content="https://mira.ecomplab.com/assets/social-card.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Multilayer network visualisation tools compared">
+  <meta name="twitter:description" content="MiRA vs muxViz, Arena3Dweb, Gephi, and Cytoscape.">
+  <meta name="twitter:image" content="https://mira.ecomplab.com/assets/social-card.png">
+  <link rel="stylesheet" href="css/content.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="inner">
+      <a href="index.html"><img src="assets/MiRA_logo.svg" alt="MiRA — Multilayer Interactive Rendering Application"></a>
+      <nav>
+        <a href="index.html">App</a>
+        <a href="docs/manual.html">Manual</a>
+        <a href="data-format.html">Data format</a>
+        <a href="compare.html">Compare</a>
+        <a href="https://github.com/Ecological-Complexity-Lab/MiRA">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <p class="crumbs"><a href="index.html">MiRA</a> › Tool comparison</p>
+
+    <h1>How MiRA compares with other multilayer network visualisation tools</h1>
+    <p class="lead">
+      MiRA is a free, browser-based, installation-free tool for interactive visualisation of
+      multilayer networks in ecology and biology. This page compares it fairly with four other
+      widely used tools — <strong>muxViz</strong>, <strong>Arena3D<sup>web</sup></strong>,
+      <strong>Gephi</strong>, and <strong>Cytoscape</strong> — so you can pick the right tool for
+      your question. Each of these is excellent at what it was built for; the table shows where
+      each one fits.
+    </p>
+
+    <div class="callout">
+      <strong>Short version.</strong> If you need to <em>explore</em> a multilayer network —
+      especially a bipartite (e.g. plant–pollinator, host–parasite) or geographically explicit
+      one — in a browser with no installation and no code, MiRA is designed for exactly that.
+      If your priority is deep multilayer <em>analysis</em> (muxViz), photorealistic 3D scenes
+      with an integration API (Arena3D<sup>web</sup>), very large single-graph layouts (Gephi),
+      or a biology app ecosystem (Cytoscape), those tools may serve you better.
+    </div>
+
+    <h2>Feature comparison</h2>
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Capability</th>
+            <th>MiRA</th>
+            <th>muxViz</th>
+            <th>Arena3D<sup>web</sup></th>
+            <th>Gephi</th>
+            <th>Cytoscape</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Runs in a browser, no installation</td>
+            <td class="tool"><span class="yes">Yes</span></td>
+            <td class="tool"><span class="no">No</span> — R package/GUI, installed locally</td>
+            <td class="tool"><span class="yes">Yes</span> — web app (also self-hostable)</td>
+            <td class="tool"><span class="no">No</span> — desktop application</td>
+            <td class="tool"><span class="no">No</span> — desktop application</td>
+          </tr>
+          <tr>
+            <td>Coding required to produce a visualization</td>
+            <td class="tool"><span class="yes">No</span> — point-and-click (optional R via emln)</td>
+            <td class="tool"><span class="warn">Yes</span> — R</td>
+            <td class="tool"><span class="yes">No</span> — point-and-click (optional API)</td>
+            <td class="tool"><span class="yes">No</span> — GUI (optional scripting)</td>
+            <td class="tool"><span class="yes">No</span> — GUI (optional scripting)</td>
+          </tr>
+          <tr>
+            <td>Built specifically for multilayer / multiplex networks</td>
+            <td class="tool"><span class="yes">Yes</span></td>
+            <td class="tool"><span class="yes">Yes</span></td>
+            <td class="tool"><span class="yes">Yes</span></td>
+            <td class="tool"><span class="warn">No</span> — general single-graph tool</td>
+            <td class="tool"><span class="warn">No</span> — general single-graph tool (multilayer via apps)</td>
+          </tr>
+          <tr>
+            <td>Bipartite networks (e.g. plant–pollinator, host–parasite)</td>
+            <td class="tool"><span class="yes">Yes</span> — dedicated bipartite layout</td>
+            <td class="tool"><span class="no">No</span></td>
+            <td class="tool"><span class="no">No</span></td>
+            <td class="tool"><span class="warn">Partial</span> — can draw them, no bipartite-aware multilayer layout</td>
+            <td class="tool"><span class="warn">Partial</span> — can draw them, no bipartite-aware multilayer layout</td>
+          </tr>
+          <tr>
+            <td>Geographic placement of layers</td>
+            <td class="tool"><span class="yes">Yes</span> — Map Mode (layers on a world map)</td>
+            <td class="tool"><span class="yes">Yes</span> — georeferenced layers on OpenStreetMap</td>
+            <td class="tool"><span class="no">No</span></td>
+            <td class="tool"><span class="warn">Partial</span> — node geo-layout via a plugin</td>
+            <td class="tool"><span class="no">Not built in</span></td>
+          </tr>
+          <tr>
+            <td>Live interactive exploration (filter, threshold, highlight across layers)</td>
+            <td class="tool"><span class="yes">Yes</span> — full</td>
+            <td class="tool"><span class="warn">Limited</span> — rotate/zoom 3D; no live filtering</td>
+            <td class="tool"><span class="yes">Yes</span> — real-time 3D manipulation and highlighting</td>
+            <td class="tool"><span class="yes">Yes</span> — interactive GUI</td>
+            <td class="tool"><span class="yes">Yes</span> — interactive GUI</td>
+          </tr>
+          <tr>
+            <td>Built-in network analysis (centralities, communities, etc.)</td>
+            <td class="tool"><span class="warn">Descriptive summaries</span> — analysis is done upstream and uploaded as attributes</td>
+            <td class="tool"><span class="yes">Extensive</span> — multilayer centralities, communities, reducibility</td>
+            <td class="tool"><span class="warn">Some</span> — degree, betweenness, clustering, community detection</td>
+            <td class="tool"><span class="yes">Extensive</span> — statistics, modularity, centralities</td>
+            <td class="tool"><span class="yes">Extensive</span> — via apps (e.g. clusterMaker, NetworkAnalyzer)</td>
+          </tr>
+          <tr>
+            <td>3D rendering</td>
+            <td class="tool"><span class="warn">Pseudo-3D</span> — oblique stacked-layer projection</td>
+            <td class="tool"><span class="yes">Yes</span> — 3D (OpenGL)</td>
+            <td class="tool"><span class="yes">Yes</span> — true 3D scene</td>
+            <td class="tool"><span class="warn">Mostly 2D</span></td>
+            <td class="tool"><span class="warn">Mostly 2D</span></td>
+          </tr>
+          <tr>
+            <td>Figure / data export</td>
+            <td class="tool">PNG, JPG, PDF; reproducible session file (data included)</td>
+            <td class="tool">R graphics (PDF, PNG)</td>
+            <td class="tool">PNG; session JSON (data included)</td>
+            <td class="tool">PDF, SVG, PNG; GEXF, GraphML</td>
+            <td class="tool">PNG, PDF, SVG; many network formats</td>
+          </tr>
+          <tr>
+            <td>Licence</td>
+            <td class="tool">CC BY-NC-SA 4.0</td>
+            <td class="tool">GPL</td>
+            <td class="tool">Free, open-source (web)</td>
+            <td class="tool">CDDL / GPL</td>
+            <td class="tool">LGPL</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Where each tool is strongest</h2>
+    <h3>MiRA</h3>
+    <p>
+      MiRA is the tool to reach for when you want to <em>see</em> a multilayer network quickly and
+      interactively without installing anything or writing code. It is the only tool in this set
+      that combines dedicated bipartite layouts with geographic layer placement — the two features
+      ecological multilayer networks most often need — alongside live filtering, cross-layer
+      highlighting, and seven linked visualization modes. It reads JSON or CSV, or plots directly
+      from the <a href="https://github.com/Ecological-Complexity-Lab/emln">emln</a> R package, and
+      saves a self-contained session file that reopens the full visualization with its data.
+    </p>
+    <h3>muxViz</h3>
+    <p>
+      muxViz is the most analytically complete tool for multilayer networks. If you need multilayer
+      centralities, community detection, reducibility analysis, or georeferenced layers and you are
+      comfortable in R, muxViz is hard to beat. Its interactivity is limited compared with a live
+      web app, and it does not handle bipartite networks, but its analytical depth is a genuine
+      strength.
+    </p>
+    <h3>Arena3D<sup>web</sup></h3>
+    <p>
+      Arena3D<sup>web</sup> renders beautiful, fully interactive true-3D multilayer scenes in the
+      browser and exposes an API for integration into other pipelines. It was designed for
+      biomedical networks and does not support bipartite structures or geographic layouts, but for
+      immersive 3D exploration and programmatic embedding it is excellent.
+    </p>
+    <h3>Gephi</h3>
+    <p>
+      Gephi is a mature, general-purpose network tool built for large single-layer graphs. Its
+      layout algorithms, statistics, and ability to handle very large networks are outstanding. It
+      is not multilayer-native and needs a desktop install, but for scale and general graph
+      analysis it remains a standard.
+    </p>
+    <h3>Cytoscape</h3>
+    <p>
+      Cytoscape is the standard for molecular and biological network analysis, with a large
+      ecosystem of apps for enrichment, clustering, and data integration. It is a desktop
+      application built around single-graph analysis rather than multilayer visualisation, but its
+      app ecosystem and analytical reach are major strengths.
+    </p>
+
+    <hr>
+    <p class="note">
+      Claims about MiRA are drawn from its source code and manual. Claims about muxViz,
+      Arena3D<sup>web</sup>, Gephi, and Cytoscape are drawn from those projects' own documentation
+      and papers and were last checked in August 2026; capabilities change between versions, so
+      verify against the current release for a specific decision. Where a capability was uncertain,
+      the cell is qualified rather than asserted.
+    </p>
+
+    <footer class="site">
+      MiRA (Multilayer Interactive Rendering Application) —
+      <a href="index.html">app</a> ·
+      <a href="docs/manual.html">manual</a> ·
+      <a href="https://github.com/Ecological-Complexity-Lab/MiRA">source (CC BY-NC-SA 4.0)</a> ·
+      <a href="https://arxiv.org/abs/2605.09597">preprint</a>
+    </footer>
+  </div>
+</body>
+</html>

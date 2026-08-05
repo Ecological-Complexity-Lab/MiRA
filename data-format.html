@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multilayer network JSON and CSV format | MiRA Multilayer Network Visualisation</title>
+  <meta name="description"
+    content="The multilayer network data format MiRA reads: the JSON schema (layers, nodes, extended edge list, state nodes) and the CSV import layout, with worked examples for bipartite, spatial, and temporal networks.">
+  <link rel="canonical" href="https://mira.ecomplab.com/data-format.html">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MiRA — Multilayer Network Visualisation">
+  <meta property="og:title" content="Multilayer network JSON and CSV format">
+  <meta property="og:description" content="The JSON schema and CSV import layout MiRA uses for multilayer networks.">
+  <meta property="og:url" content="https://mira.ecomplab.com/data-format.html">
+  <meta property="og:image" content="https://mira.ecomplab.com/assets/social-card.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Multilayer network JSON and CSV format">
+  <meta name="twitter:description" content="The JSON schema and CSV import layout MiRA uses for multilayer networks.">
+  <meta name="twitter:image" content="https://mira.ecomplab.com/assets/social-card.png">
+  <link rel="stylesheet" href="css/content.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="inner">
+      <a href="index.html"><img src="assets/MiRA_logo.svg" alt="MiRA — Multilayer Interactive Rendering Application"></a>
+      <nav>
+        <a href="index.html">App</a>
+        <a href="docs/manual.html">Manual</a>
+        <a href="data-format.html">Data format</a>
+        <a href="compare.html">Compare</a>
+        <a href="https://github.com/Ecological-Complexity-Lab/MiRA">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <p class="crumbs"><a href="index.html">MiRA</a> › Data format</p>
+
+    <h1>The multilayer network data format MiRA reads</h1>
+    <p class="lead">
+      MiRA reads a multilayer network as either a single <strong>JSON</strong> file or a set of
+      <strong>CSV</strong> files. Both describe the same thing: layers, nodes, an edge list that
+      holds intralayer and interlayer links together, and the (layer, node) pairs that make up the
+      network. This page is the quick reference; the <a href="docs/manual.html#data-import">manual</a>
+      has the exhaustive version.
+    </p>
+
+    <h2>How do I format a multilayer network as JSON for MiRA?</h2>
+    <p>
+      A MiRA JSON file has four arrays — <code>layers</code>, <code>nodes</code>,
+      <code>extended</code> (the edge list), and <code>state_nodes</code> — plus global flags.
+      An edge is classified as intralayer when <code>layer_from</code> equals <code>layer_to</code>,
+      and interlayer otherwise.
+    </p>
+    <pre><code>{
+  "directed": false,
+  "directed_interlayer": false,
+  "layers": [
+    { "layer_id": 1, "layer_name": "Forest",
+      "latitude": 42.3, "longitude": 3.1,
+      "bipartite": true, "setA_type": "pollinator" }
+  ],
+  "nodes": [
+    { "node_id": "sp_1", "node_name": "Bee", "node_type": "pollinator" }
+  ],
+  "extended": [
+    { "layer_from": "Forest", "node_from": "Bee",
+      "layer_to": "Forest", "node_to": "Flower", "weight": 1.5 }
+  ],
+  "state_nodes": [
+    { "layer_name": "Forest", "node_name": "Bee" }
+  ]
+}</code></pre>
+
+    <h3>Field reference</h3>
+    <ul>
+      <li><code>directed</code> <em>(Boolean)</em> — marks intralayer edges as directed (draws
+        arrowheads). Setting it <code>true</code> also forces <code>directed_interlayer</code> true.
+        Default <code>false</code>.</li>
+      <li><code>directed_interlayer</code> <em>(Boolean, optional)</em> — treats interlayer edges as
+        directed even when the network is otherwise undirected (useful for temporal networks where
+        direction encodes time, e.g. year <em>t</em> → <em>t</em>+1).</li>
+      <li><code>layers[]</code> — <code>layer_id</code>, <code>layer_name</code>; optional
+        <code>latitude</code>/<code>longitude</code> (unlock <a href="tutorial-spatial-map.html">Map
+        Mode</a>); optional <code>bipartite</code> and <code>setA_type</code> (see below). Extra
+        fields become color/size attributes.</li>
+      <li><code>nodes[]</code> — <code>node_id</code>, <code>node_name</code>; <code>node_type</code>
+        is required for bipartite layers. Extra fields become <em>physical</em> attributes (constant
+        across layers).</li>
+      <li><code>extended[]</code> — <code>layer_from</code>, <code>node_from</code>,
+        <code>layer_to</code>, <code>node_to</code> (required); optional <code>weight</code> (line
+        width + threshold filter) and per-edge <code>directed</code>.</li>
+      <li><code>state_nodes[]</code> — <code>layer_name</code>, <code>node_name</code> for every
+        (layer, node) pair present. Extra fields become <em>per-layer</em> (state) attributes that
+        can differ for the same node across layers (e.g. <code>abundance</code>,
+        <code>module</code>).</li>
+    </ul>
+
+    <div class="callout">
+      <strong>Bipartite is never auto-detected.</strong> Mark a layer with
+      <code>"bipartite": true</code> and give its nodes a <code>node_type</code> with exactly two
+      distinct values <em>within that layer</em>. Use <code>setA_type</code> to pin which type is
+      drawn on top (by ecological convention the higher trophic level — pollinator, parasite,
+      disperser). Different layers may pair different node types (diagonal coupling), so more than
+      two <code>node_type</code> values globally is fine.
+    </div>
+
+    <h2>How do I import a multilayer network from CSV into MiRA?</h2>
+    <p>
+      The CSV importer accepts up to four files. Only the edge list is required; the other three add
+      attributes. Comma, tab, and semicolon delimiters are auto-detected.
+    </p>
+    <ul>
+      <li><strong>Extended edge list</strong> (required) — <code>layer_from</code>,
+        <code>node_from</code>, <code>layer_to</code>, <code>node_to</code>, optional
+        <code>weight</code>. Intralayer and interlayer links share this one file.</li>
+      <li><strong>Layer attributes</strong> (optional) — <code>layer_id</code>,
+        <code>layer_name</code>, <code>latitude</code>, <code>longitude</code>,
+        <code>bipartite</code> (TRUE/FALSE), <code>setA_type</code>, plus any extra layer columns.</li>
+      <li><strong>Node attributes</strong> (optional) — <code>node_name</code> (required),
+        <code>node_type</code> (required when any layer is bipartite), plus physical attributes
+        constant across layers (e.g. <code>body_mass</code>, <code>guild</code>).</li>
+      <li><strong>State-node attributes</strong> (optional) — <code>layer_name</code>,
+        <code>node_name</code>, plus per-layer attributes that vary across layers (e.g.
+        <code>abundance</code>, <code>module</code>).</li>
+    </ul>
+
+    <h3>Worked example — edge list</h3>
+    <pre><code>layer_from,node_from,layer_to,node_to,weight
+1982,Apodemus_agrarius,1982,Ixodes_ricinus,1
+1982,Apodemus_peninsulae,1982,Ixodes_ricinus,1
+1983,Apodemus_agrarius,1983,Ixodes_ricinus,1</code></pre>
+    <p>
+      The (layer, node) pairs are derived automatically from the edge list — you never list them by
+      hand. See the <a href="docs/manual.html#import-csv">manual</a> for the full four-file example
+      with per-layer abundance.
+    </p>
+
+    <div class="callout">
+      <strong>From R:</strong> the <a href="https://github.com/Ecological-Complexity-Lab/emln">emln</a>
+      package writes both formats directly — <code>multilayer_to_json(net, bipartite = TRUE)</code>
+      and <code>multilayer_to_csv(net, path = "my_network/")</code> — or plots straight into MiRA
+      with <code>plot_multilayer()</code>.
+    </div>
+
+    <footer class="site">
+      MiRA (Multilayer Interactive Rendering Application) —
+      <a href="index.html">app</a> ·
+      <a href="docs/manual.html">manual</a> ·
+      <a href="compare.html">tool comparison</a> ·
+      <a href="https://arxiv.org/abs/2605.09597">preprint</a>
+    </footer>
+  </div>
+</body>
+</html>

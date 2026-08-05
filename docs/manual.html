@@ -3,8 +3,50 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MiRA — Manual</title>
+  <title>MiRA Manual — Multilayer Network Visualisation Documentation</title>
+  <meta name="description"
+    content="Full documentation for MiRA (Multilayer Interactive Rendering Application): all seven visualization modes, the JSON schema, CSV import, session save/restore, figure export, and emln R-package integration.">
+  <link rel="canonical" href="https://mira.ecomplab.com/docs/manual.html">
   <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MiRA — Multilayer Network Visualisation">
+  <meta property="og:title" content="MiRA Manual — Multilayer Network Visualisation Documentation">
+  <meta property="og:description" content="Full documentation of MiRA's visualization modes, the JSON schema, CSV import, and emln R-package integration.">
+  <meta property="og:url" content="https://mira.ecomplab.com/docs/manual.html">
+  <meta property="og:image" content="https://mira.ecomplab.com/assets/social-card.png">
+  <meta property="og:image:alt" content="MiRA logo — stacked multilayer network">
+
+  <!-- Twitter / X card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="MiRA Manual — Multilayer Network Visualisation Documentation">
+  <meta name="twitter:description" content="Documentation for MiRA: modes, data formats, and emln integration.">
+  <meta name="twitter:image" content="https://mira.ecomplab.com/assets/social-card.png">
+
+  <!-- JSON-LD structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "MiRA Manual — Multilayer Network Visualisation Documentation",
+    "description": "Full documentation for MiRA (Multilayer Interactive Rendering Application): visualization modes, the JSON schema, CSV import, session save/restore, figure export, and emln R-package integration.",
+    "url": "https://mira.ecomplab.com/docs/manual.html",
+    "inLanguage": "en",
+    "isPartOf": { "@type": "WebSite", "name": "MiRA — Multilayer Network Visualisation", "url": "https://mira.ecomplab.com/" },
+    "about": { "@type": "SoftwareApplication", "name": "MiRA", "alternateName": "Multilayer Interactive Rendering Application", "url": "https://mira.ecomplab.com/" },
+    "author": [
+      { "@type": "Person", "name": "Shir Miryam Nehoray", "identifier": "https://orcid.org/0009-0001-8453-4426" },
+      { "@type": "Person", "name": "Yuval Bloch" },
+      { "@type": "Person", "name": "Shai Pilosof", "identifier": "https://orcid.org/0000-0003-0430-5568" }
+    ],
+    "publisher": {
+      "@type": "Organization",
+      "name": "Ecological Complexity Lab, Ben-Gurion University of the Negev",
+      "url": "https://ecomplab.com"
+    }
+  }
+  </script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -359,6 +401,15 @@
     </div>
   </div>
 
+  <div class="info-box"><strong>Guides:</strong>
+    <a href="../data-format.html">Data format reference</a> ·
+    <a href="../tutorial-plant-pollinator.html">Plant–pollinator</a> ·
+    <a href="../tutorial-spatial-map.html">Spatial map</a> ·
+    <a href="../tutorial-temporal.html">Temporal</a> ·
+    <a href="../tutorial-brain-network.html">Brain network</a> ·
+    <a href="../compare.html">Tool comparison</a>
+  </div>
+
   <hr>
 
   <!-- ── DATA IMPORT ───────────────────────────────────────────── -->
@@ -368,8 +419,8 @@
   <h3 id="import-example">Load Example Data</h3>
   <p>Opens a dialog with nine built-in datasets. See <a href="#examples">Built-in Datasets</a> below for the full list.</p>
 
-  <h3 id="import-json">Load User Data (JSON)</h3>
-  <p>Upload a <code>.json</code> file formatted according to the JSON format below.</p>
+  <h3 id="import-json">How do I import a JSON file into MiRA?</h3>
+  <p>Click <strong>Load Data</strong> in the Data panel and upload a <code>.json</code> file formatted according to the JSON format below (four arrays: <code>layers</code>, <code>nodes</code>, <code>extended</code>, and <code>state_nodes</code>). JSON is MiRA's native format.</p>
 
   <pre style="background:#f3f4f6;border:1px solid #e5e7eb;border-radius:6px;padding:16px;font-size:12px;overflow-x:auto;line-height:1.6"><code style="background:none;border:none;padding:0;color:#1f2937">{
   "directed": false,
@@ -429,8 +480,8 @@
     <li>Any extra fields carry <strong>per-layer node attributes</strong> — attributes whose value can differ for the same node in different layers (e.g. <code>abundance</code>, <code>module</code>). These are distinct from physical node attributes (in the <code>nodes</code> array), which are constant across layers.</li>
   </ul>
 
-  <h3 id="import-csv">Load User Data (CSV)</h3>
-  <p>Load network data from CSV files. A modal dialog accepts up to four files:</p>
+  <h3 id="import-csv">How do I import a CSV file into MiRA?</h3>
+  <p>Click <strong>Load Data</strong> in the Data panel and choose CSV. A modal dialog accepts up to four CSV files — only the extended edge list is required; the other three add layer, node, and per-layer (state-node) attributes:</p>
   <ul>
     <li><em>Extended Edge List</em> <strong>(required)</strong> — one row per link, columns: <code>layer_from</code>, <code>node_from</code>, <code>layer_to</code>, <code>node_to</code>, <code>weight</code> (optional). Both intralayer and interlayer links go in this single file.</li>
     <li><em>Layer Attributes</em> (optional) — columns: <code>layer_id</code>, <code>layer_name</code>, <code>latitude</code>, <code>longitude</code>, <code>bipartite</code> (TRUE/FALSE), <code>setA_type</code> (optional — pins the top-row <code>node_type</code> for bipartite layers), and any additional columns for layer attributes (e.g. <code>area</code>, <code>elevation</code>) which become available for color mapping. If omitted, layers are derived from the edge list and all treated as unipartite.</li>
@@ -618,7 +669,7 @@ Ixodes_ricinus,0.003</code></pre>
 
   <!-- ── MODES ─────────────────────────────────────────────────────── -->
   <h2 class="sec mode-misc" id="modes"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#374151" stroke-width="1.5" stroke-linejoin="round" style="flex-shrink:0"><path d="M3.88884 9.66294C4.39329 10 5.09552 10 6.49998 10C7.90445 10 8.60668 10 9.11113 9.66294C9.32951 9.51702 9.51701 9.32952 9.66292 9.11114C9.99998 8.60669 9.99998 7.90446 9.99998 6.5C9.99998 5.09554 9.99998 4.39331 9.66292 3.88886C9.51701 3.67048 9.32951 3.48298 9.11113 3.33706C8.60668 3 7.90445 3 6.49998 3C5.09552 3 4.39329 3 3.88884 3.33706C3.67046 3.48298 3.48296 3.67048 3.33705 3.88886C2.99998 4.39331 2.99998 5.09554 2.99998 6.5C2.99998 7.90446 2.99998 8.60669 3.33705 9.11114C3.48296 9.32952 3.67046 9.51702 3.88884 9.66294Z"/><path d="M14.8888 9.66294C15.3933 10 16.0955 10 17.5 10C18.9044 10 19.6067 10 20.1111 9.66294C20.3295 9.51702 20.517 9.32952 20.6629 9.11114C21 8.60669 21 7.90446 21 6.5C21 5.09554 21 4.39331 20.6629 3.88886C20.517 3.67048 20.3295 3.48298 20.1111 3.33706C19.6067 3 18.9044 3 17.5 3C16.0955 3 15.3933 3 14.8888 3.33706C14.6705 3.48298 14.483 3.67048 14.337 3.88886C14 4.39331 14 5.09554 14 6.5C14 7.90446 14 8.60669 14.337 9.11114C14.483 9.32952 14.6705 9.51702 14.8888 9.66294Z"/><path d="M3.88884 20.6629C4.39329 21 5.09552 21 6.49998 21C7.90445 21 8.60668 21 9.11113 20.6629C9.32951 20.517 9.51701 20.3295 9.66292 20.1111C9.99998 19.6067 9.99998 18.9045 9.99998 17.5C9.99998 16.0955 9.99998 15.3933 9.66292 14.8889C9.51701 14.6705 9.32951 14.483 9.11113 14.3371C8.60668 14 7.90445 14 6.49998 14C5.09552 14 4.39329 14 3.88884 14.3371C3.67046 14.483 3.48296 14.6705 3.33705 14.8889C2.99998 15.3933 2.99998 16.0955 2.99998 17.5C2.99998 18.9045 2.99998 19.6067 3.33705 20.1111C3.48296 20.3295 3.67046 20.517 3.88884 20.6629Z"/><path d="M14.8888 20.6629C15.3933 21 16.0955 21 17.5 21C18.9044 21 19.6067 21 20.1111 20.6629C20.3295 20.517 20.517 20.3295 20.6629 20.1111C21 19.6067 21 18.9045 21 17.5C21 16.0955 21 15.3933 20.6629 14.8889C20.517 14.6705 20.3295 14.483 20.1111 14.3371C19.6067 14 18.9044 14 17.5 14C16.0955 14 15.3933 14 14.8888 14.3371C14.6705 14.483 14.483 14.6705 14.337 14.8889C14 15.3933 14 16.0955 14 17.5C14 18.9045 14 19.6067 14.337 20.1111C14.483 20.3295 14.6705 20.517 14.8888 20.6629Z"/></svg> Visualization Modes</h2>
-  <p>Six modes are available, switched via the top toolbar strip. <strong>The left sidebar is dynamic</strong> — its panels (Data, Layers, Nodes, Intralayer Links, Interlayer Links, Search, and others) change automatically to show controls relevant to the active mode.</p>
+  <p>Seven modes are available, switched via the top toolbar strip: Network, Map, Layer, Grid, Meta-Network, Dashboard, and Data. <strong>The left sidebar is dynamic</strong> — its panels (Data, Layers, Nodes, Intralayer Links, Interlayer Links, Search, and others) change automatically to show controls relevant to the active mode.</p>
 
   <!-- Network Mode -->
   <h2 class="sec mode-network" id="network"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6d28d9" stroke-width="2" stroke-linejoin="round" style="flex-shrink:0"><polygon points="12,2 22,8.5 12,15 2,8.5"/><polyline points="2,12 12,18.5 22,12"/><polyline points="2,16 12,22.5 22,16"/></svg> Network Mode <span class="badge">Default</span></h2>
@@ -931,8 +982,8 @@ Ixodes_ricinus,0.003</code></pre>
   </ul>
   <p>Default colors are assigned from a built-in palette and can be customized at any time.</p>
 
-  <h3 id="dm-export">CSV Export</h3>
-  <p>Click the <strong>Export CSV</strong> button to download the currently visible (filtered) rows as a <code>.csv</code> file. The export respects all active column filters and row selections — only what you see in the table is exported.</p>
+  <h3 id="dm-export">How do I export table data as CSV from MiRA?</h3>
+  <p>In Data Mode, click the <strong>Export CSV</strong> button to download the currently visible (filtered) rows as a <code>.csv</code> file. The export respects all active column filters and row selections — only what you see in the table is exported.</p>
 
   <hr>
 
@@ -1154,6 +1205,9 @@ Ixodes_ricinus,0.003</code></pre>
     </tbody>
   </table>
 
+  <h3 id="export-figure">How do I export a publication-quality figure from MiRA?</h3>
+  <p>Click the <strong>Snapshot</strong> button in the top toolbar strip. MiRA produces a high-resolution export of the current view in any visualization mode; choose <strong>PNG</strong>, <strong>JPG</strong>, or <strong>PDF</strong>, and optionally include the backdrop grid. The snapshot captures exactly what is on screen, so set your colors, sizes, thresholds, and camera angle first.</p>
+
   <hr>
 
   <!-- ── SESSION SAVE / LOAD ───────────────────────────────────────── -->
@@ -1339,7 +1393,7 @@ multilayer_to_csv(net, dir = "out/", prefix = "net60", bipartite = TRUE)</code><
   <p style="margin-top:8px"><strong>Returns:</strong> the httpuv server handle. Call <code>httpuv::stopServer(srv)</code> or close R to shut it down. To kill all app servers from the terminal: <code>lsof -ti TCP:8000-8200 | xargs kill -9</code></p>
 
   <h3 id="emln-json">multilayer_to_json()</h3>
-  <p>Exports the network to the <a href="#data-format">JSON format</a> expected by MiRA. Returns the JSON string, or writes it to a file.</p>
+  <p>Exports the network to the <a href="../data-format.html">JSON format</a> expected by MiRA. Returns the JSON string, or writes it to a file.</p>
   <table style="width:100%;border-collapse:collapse;font-size:13px;margin-top:8px">
     <thead><tr style="background:#f3f4f6"><th style="padding:6px 10px;text-align:left;border:1px solid #e5e7eb">Argument</th><th style="padding:6px 10px;text-align:left;border:1px solid #e5e7eb">Default</th><th style="padding:6px 10px;text-align:left;border:1px solid #e5e7eb">Description</th></tr></thead>
     <tbody>

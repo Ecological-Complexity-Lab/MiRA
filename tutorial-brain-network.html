@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multilayer brain network visualisation | MiRA Multilayer Network Visualisation</title>
+  <meta name="description"
+    content="Step-by-step walkthrough for visualizing a multilayer human brain connectome in MiRA, using the structural connectome dataset (Keresztes et al. 2022) with layers as time points.">
+  <link rel="canonical" href="https://mira.ecomplab.com/tutorial-brain-network.html">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MiRA — Multilayer Network Visualisation">
+  <meta property="og:title" content="Multilayer brain network visualisation with MiRA">
+  <meta property="og:description" content="Visualize a multilayer human brain connectome in the browser, no installation or code.">
+  <meta property="og:url" content="https://mira.ecomplab.com/tutorial-brain-network.html">
+  <meta property="og:image" content="https://mira.ecomplab.com/assets/social-card.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Multilayer brain network visualisation with MiRA">
+  <meta name="twitter:description" content="A connectome walkthrough using the Keresztes et al. 2022 dataset.">
+  <meta name="twitter:image" content="https://mira.ecomplab.com/assets/social-card.png">
+  <link rel="stylesheet" href="css/content.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="inner">
+      <a href="index.html"><img src="assets/MiRA_logo.svg" alt="MiRA — Multilayer Interactive Rendering Application"></a>
+      <nav>
+        <a href="index.html">App</a>
+        <a href="docs/manual.html">Manual</a>
+        <a href="data-format.html">Data format</a>
+        <a href="compare.html">Compare</a>
+        <a href="https://github.com/Ecological-Complexity-Lab/MiRA">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <p class="crumbs"><a href="index.html">MiRA</a> › Tutorials › Brain network</p>
+
+    <h1>How do I visualize a multilayer brain network in MiRA?</h1>
+    <p class="lead">
+      A <strong>multilayer connectome</strong> represents the brain as regions (nodes) linked by
+      structural or functional connections, with each layer a subject, condition, or time point.
+      MiRA renders this as a stacked 3D network in the browser — no installation, no code — and
+      MiRA works for any unipartite multilayer network, not only ecological ones.
+    </p>
+
+    <h2>The dataset</h2>
+    <p>
+      The <strong>human brain structural connectome</strong>
+      (<a href="https://doi.org/10.1038/s41598-022-06697-4">Keresztes et al. 2022</a>) has 3 layers,
+      124 nodes, 372 state nodes, and 1,827 within-layer plus 220 between-layer links. Each layer is
+      a time point; nodes are brain regions; interlayer links couple the same region across layers.
+      It is undirected and unipartite.
+    </p>
+
+    <h2>Walkthrough</h2>
+    <ol class="steps">
+      <li>Open <a href="index.html">MiRA</a>, click <strong>Load Example Data</strong>, and choose
+        <em>Human brain structural connectome</em>.</li>
+      <li>In <strong>Network Mode</strong>, rotate and pan the stacked 3D view to see the three
+        layers and the interlayer links coupling the same regions across time.</li>
+      <li>In the <strong>Nodes</strong> panel, size nodes by degree to find hub regions, and colour
+        by any region attribute present in the data.</li>
+      <li>Use the <strong>Intralayer Links</strong> threshold to hide weak connections and expose
+        the strong structural backbone within each layer.</li>
+      <li>Switch to <strong>Grid View</strong> to compare the three layers as small multiples, then
+        to <strong>Meta-Network Mode</strong> for an aggregated single-layer summary of cross-layer
+        connectivity.</li>
+      <li>Open <strong>Dashboard Mode</strong> for degree distributions, the presence matrix, and
+        the layer-similarity heatmap quantifying how connectivity changes between time points.</li>
+    </ol>
+
+    <div class="callout">
+      <strong>Beyond ecology.</strong> Although MiRA was built with biology in mind, it renders any
+      multilayer network. Connectomes, protein–protein interaction networks, and social networks
+      all load through the same <a href="data-format.html">JSON or CSV format</a>.
+    </div>
+
+    <h2>Use your own data</h2>
+    <p>
+      Represent each subject, condition, or time point as a layer, couple repeated regions with
+      interlayer links, and export to MiRA's <a href="data-format.html">JSON or CSV format</a>. Then
+      use <strong>Load Data</strong> and follow the same steps.
+    </p>
+
+    <footer class="site">
+      MiRA (Multilayer Interactive Rendering Application) —
+      <a href="index.html">app</a> ·
+      <a href="docs/manual.html">manual</a> ·
+      <a href="compare.html">tool comparison</a> ·
+      <a href="https://arxiv.org/abs/2605.09597">preprint</a>
+    </footer>
+  </div>
+</body>
+</html>

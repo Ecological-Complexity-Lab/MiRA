@@ -6,13 +6,15 @@
 [![R package: emln](https://img.shields.io/badge/R%20package-emln-blue.svg)](https://github.com/Ecological-Complexity-Lab/emln)
 [![arXiv](https://img.shields.io/badge/arXiv-2605.09597-b31b1b.svg)](https://doi.org/10.48550/arXiv.2605.09597)
 
-An interactive, browser-based visualization tool for multilayer networks. While developed with biology in mind, MiRA can render any multilayer network. Available as a standalone web app and also fully integrated into the [`emln`](https://github.com/Ecological-Complexity-Lab/emln) R package.
+MiRA (Multilayer Interactive Rendering Application) is a free, browser-based, installation-free tool for interactive visualisation of multilayer networks in ecology and biology. While developed with biology in mind, MiRA can render any multilayer network. Available as a standalone web app and also fully integrated into the [`emln`](https://github.com/Ecological-Complexity-Lab/emln) R package.
 
 
 ## 📝 Citation
 If you use MiRA to explore your networks as part of your published research or to produce figures, please cite our preprint:
 
 Nehoray SM, Bloch Y and Pilosof S (2026). **Interactively visualizing biological multilayer networks using MiRA**. _arXiv_:2605.09597 [cs.SI]. [https://doi.org/10.48550/arXiv.2605.09597](https://doi.org/10.48550/arXiv.2605.09597)
+
+> **Software archive:** a Zenodo DOI will be minted for the archived software release. _TODO: DOI not yet minted — add here and to the `sameAs` list in the JSON-LD on `index.html` once available._
 
 <details>
 <summary>BibTeX</summary>
