@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spatial ecological network map visualisation | MiRA Multilayer Network Visualisation</title>
+  <meta name="description"
+    content="Step-by-step walkthrough for placing multilayer network layers on a geographic map in MiRA using Map Mode, with the Basque Country spatial pollination dataset (Magrach et al. 2024).">
+  <link rel="canonical" href="https://mira.ecomplab.com/tutorial-spatial-map.html">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MiRA — Multilayer Network Visualisation">
+  <meta property="og:title" content="Spatial ecological network map visualisation with MiRA">
+  <meta property="og:description" content="Place network layers on a geographic map in the browser with MiRA's Map Mode.">
+  <meta property="og:url" content="https://mira.ecomplab.com/tutorial-spatial-map.html">
+  <meta property="og:image" content="https://mira.ecomplab.com/assets/social-card.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Spatial ecological network map visualisation with MiRA">
+  <meta name="twitter:description" content="Map Mode walkthrough using the Basque Country spatial pollination dataset.">
+  <meta name="twitter:image" content="https://mira.ecomplab.com/assets/social-card.png">
+  <link rel="stylesheet" href="css/content.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="inner">
+      <a href="index.html"><img src="assets/MiRA_logo.svg" alt="MiRA — Multilayer Interactive Rendering Application"></a>
+      <nav>
+        <a href="index.html">App</a>
+        <a href="docs/manual.html">Manual</a>
+        <a href="data-format.html">Data format</a>
+        <a href="compare.html">Compare</a>
+        <a href="https://github.com/Ecological-Complexity-Lab/MiRA">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <p class="crumbs"><a href="index.html">MiRA</a> › Tutorials › Spatial map</p>
+
+    <h1>How do I put a spatial ecological network on a map in MiRA?</h1>
+    <p class="lead">
+      In a <strong>spatial multilayer network</strong>, each layer is a place — a site, patch, or
+      island — with real geographic coordinates. MiRA's <strong>Map Mode</strong> positions each
+      layer at its longitude and latitude on an interactive world map, so the network's spatial
+      arrangement is visible directly rather than abstracted away.
+    </p>
+
+    <h2>The dataset</h2>
+    <p>
+      The <strong>Basque Country spatial pollination network</strong>
+      (<a href="https://doi.org/10.1111/geb.70000">Magrach et al. 2024</a>) has 5 layers,
+      137 nodes, and 376 within-layer plus 142 between-layer links. Each layer is a sampling site
+      with GPS coordinates; interlayer links connect the same species recorded at more than one
+      site. It is undirected, bipartite, and spatial.
+    </p>
+
+    <h2>Walkthrough</h2>
+    <ol class="steps">
+      <li>Open <a href="index.html">MiRA</a>, click <strong>Load Example Data</strong>, and choose
+        <em>Basque Country spatial pollination network</em>.</li>
+      <li>Switch to <strong>Map Mode</strong> from the top toolbar. MiRA places each layer at its
+        coordinates on a Leaflet base map. Map Mode is only available when layers carry
+        <code>latitude</code> and <code>longitude</code> values.</li>
+      <li>Pan and zoom the map to see how the sites are distributed geographically, and how
+        interlayer links bridge nearby versus distant sites.</li>
+      <li>Use the <strong>Interlayer Links</strong> controls to emphasise the between-site
+        connections — these show which species are shared across the landscape.</li>
+      <li>Switch back to <strong>Network Mode</strong> to inspect the internal structure of each
+        site without the geographic constraint, then return to Map Mode for spatial context. The
+        two views answer different questions about the same data.</li>
+      <li>Open <strong>Dashboard Mode</strong> to quantify site-to-site overlap with the layer
+        similarity (Jaccard) heatmap.</li>
+    </ol>
+
+    <div class="callout">
+      <strong>Requirement.</strong> Map Mode needs geographic coordinates on every layer. In JSON,
+      add <code>latitude</code> and <code>longitude</code> to each layer; in CSV, add those columns
+      to the layers file. See the <a href="data-format.html">data format</a> page.
+    </div>
+
+    <h2>Use your own data</h2>
+    <p>
+      Add coordinates to your layers and export to MiRA's <a href="data-format.html">JSON or CSV
+      format</a>, then use <strong>Load Data</strong>. Map Mode will appear automatically once
+      coordinates are present.
+    </p>
+
+    <footer class="site">
+      MiRA (Multilayer Interactive Rendering Application) —
+      <a href="index.html">app</a> ·
+      <a href="docs/manual.html">manual</a> ·
+      <a href="compare.html">tool comparison</a> ·
+      <a href="https://arxiv.org/abs/2605.09597">preprint</a>
+    </footer>
+  </div>
+</body>
+</html>

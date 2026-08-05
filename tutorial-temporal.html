@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Temporal network visualisation in the browser | MiRA Multilayer Network Visualisation</title>
+  <meta name="description"
+    content="Step-by-step walkthrough for visualizing a temporal multilayer network in MiRA, using the Portuguese seed dispersal dataset (Costa et al. 2020) where each layer is a time period.">
+  <link rel="canonical" href="https://mira.ecomplab.com/tutorial-temporal.html">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MiRA — Multilayer Network Visualisation">
+  <meta property="og:title" content="Temporal network visualisation with MiRA">
+  <meta property="og:description" content="Visualize change over time in a temporal multilayer network, in the browser.">
+  <meta property="og:url" content="https://mira.ecomplab.com/tutorial-temporal.html">
+  <meta property="og:image" content="https://mira.ecomplab.com/assets/social-card.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Temporal network visualisation with MiRA">
+  <meta name="twitter:description" content="A temporal multilayer walkthrough using the Portuguese seed dispersal dataset.">
+  <meta name="twitter:image" content="https://mira.ecomplab.com/assets/social-card.png">
+  <link rel="stylesheet" href="css/content.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="inner">
+      <a href="index.html"><img src="assets/MiRA_logo.svg" alt="MiRA — Multilayer Interactive Rendering Application"></a>
+      <nav>
+        <a href="index.html">App</a>
+        <a href="docs/manual.html">Manual</a>
+        <a href="data-format.html">Data format</a>
+        <a href="compare.html">Compare</a>
+        <a href="https://github.com/Ecological-Complexity-Lab/MiRA">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <p class="crumbs"><a href="index.html">MiRA</a> › Tutorials › Temporal</p>
+
+    <h1>How do I visualize a temporal network in MiRA?</h1>
+    <p class="lead">
+      In a <strong>temporal multilayer network</strong>, each layer is a snapshot in time — a
+      season, month, or year. Interlayer links connect the same node across consecutive layers, so
+      you can see which interactions persist, appear, or disappear over time. MiRA visualizes this
+      in the browser with no installation and no code.
+    </p>
+
+    <h2>The dataset</h2>
+    <p>
+      The <strong>Portuguese temporal seed dispersal network</strong>
+      (<a href="https://doi.org/10.1111/1365-2745.13391">Costa et al. 2020</a>) has 5 layers,
+      29 nodes, and 170 within-layer plus 43 between-layer links. Each layer is a time period;
+      nodes are plants and their seed-dispersing animals; interlayer links couple the same species
+      across time. It is bipartite and temporal — small enough to read every link clearly.
+    </p>
+
+    <h2>Walkthrough</h2>
+    <ol class="steps">
+      <li>Open <a href="index.html">MiRA</a>, click <strong>Load Example Data</strong>, and choose
+        <em>Portuguese temporal seed dispersal network</em>.</li>
+      <li>In <strong>Network Mode</strong>, the layers stack in time order. Rotate the view so the
+        time axis runs left to right, and follow the interlayer links to see continuity between
+        periods.</li>
+      <li>Switch to <strong>Grid View</strong> to place each time period in its own panel. This is
+        the clearest way to see turnover — which interactions are present early, which appear late,
+        and which persist throughout.</li>
+      <li>Use <strong>Search</strong> to highlight one species across every time period at once,
+        tracing its interaction history through the sequence.</li>
+      <li>Use the <strong>Interlayer Links</strong> controls to emphasise temporal coupling, and the
+        intralayer threshold to focus on the strongest interactions in each period.</li>
+      <li>Open <strong>Dashboard Mode</strong> to compare periods quantitatively with degree
+        distributions and the layer-similarity heatmap — adjacent time periods that are similar
+        indicate stability; dissimilar ones indicate rapid change.</li>
+    </ol>
+
+    <div class="callout">
+      <strong>Reading time in a stack.</strong> Because MiRA stacks layers, temporal order is
+      spatial order. Keep your layers sorted chronologically in the data so the stack reads as a
+      timeline. See the <a href="data-format.html">data format</a> page for layer ordering.
+    </div>
+
+    <h2>Use your own data</h2>
+    <p>
+      Represent each time point as a layer and couple repeated nodes with interlayer links, then
+      export to MiRA's <a href="data-format.html">JSON or CSV format</a> and use
+      <strong>Load Data</strong>. The <a href="https://github.com/Ecological-Complexity-Lab/emln">emln</a>
+      R package builds temporal multilayer structures directly.
+    </p>
+
+    <footer class="site">
+      MiRA (Multilayer Interactive Rendering Application) —
+      <a href="index.html">app</a> ·
+      <a href="docs/manual.html">manual</a> ·
+      <a href="compare.html">tool comparison</a> ·
+      <a href="https://arxiv.org/abs/2605.09597">preprint</a>
+    </footer>
+  </div>
+</body>
+</html>

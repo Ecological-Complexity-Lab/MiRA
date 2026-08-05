@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plant–pollinator network visualisation | MiRA Multilayer Network Visualisation</title>
+  <meta name="description"
+    content="Step-by-step walkthrough for visualizing a bipartite plant–pollinator multilayer network in MiRA, using the Canary Islands pollination dataset (Vitali et al. 2024).">
+  <link rel="canonical" href="https://mira.ecomplab.com/tutorial-plant-pollinator.html">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MiRA — Multilayer Network Visualisation">
+  <meta property="og:title" content="Plant–pollinator network visualisation with MiRA">
+  <meta property="og:description" content="Visualize a bipartite plant–pollinator multilayer network in the browser, no installation or code.">
+  <meta property="og:url" content="https://mira.ecomplab.com/tutorial-plant-pollinator.html">
+  <meta property="og:image" content="https://mira.ecomplab.com/assets/social-card.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Plant–pollinator network visualisation with MiRA">
+  <meta name="twitter:description" content="A bipartite multilayer walkthrough using the Canary Islands pollination dataset.">
+  <meta name="twitter:image" content="https://mira.ecomplab.com/assets/social-card.png">
+  <link rel="stylesheet" href="css/content.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="inner">
+      <a href="index.html"><img src="assets/MiRA_logo.svg" alt="MiRA — Multilayer Interactive Rendering Application"></a>
+      <nav>
+        <a href="index.html">App</a>
+        <a href="docs/manual.html">Manual</a>
+        <a href="data-format.html">Data format</a>
+        <a href="compare.html">Compare</a>
+        <a href="https://github.com/Ecological-Complexity-Lab/MiRA">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <p class="crumbs"><a href="index.html">MiRA</a> › Tutorials › Plant–pollinator</p>
+
+    <h1>How do I visualize a plant–pollinator network in MiRA?</h1>
+    <p class="lead">
+      Plant–pollinator networks are <strong>bipartite</strong>: links run between two groups
+      (pollinators and plants), never within a group. When the same interaction is recorded at
+      several sites or times, it becomes a <strong>bipartite multilayer network</strong>. This
+      walkthrough uses a bundled empirical example so you can follow along in the browser with no
+      installation and no code.
+    </p>
+
+    <h2>The dataset</h2>
+    <p>
+      The <strong>Canary Islands pollination network</strong>
+      (<a href="https://doi.org/10.1111/1365-2656.14174">Vitali et al. 2024</a>) has 5 layers,
+      235 nodes, and 651 within-layer plus 154 between-layer links. Each layer is an island;
+      nodes are pollinators and plants; interlayer links connect the same species appearing on
+      more than one island. It is undirected, bipartite, and geographically explicit.
+    </p>
+
+    <h2>Walkthrough</h2>
+    <ol class="steps">
+      <li>Open <a href="index.html">MiRA</a>, click <strong>Load Example Data</strong>, and choose
+        <em>Canary Islands pollination network</em>. It loads directly into Network Mode.</li>
+      <li>Because the dataset declares bipartite layers, MiRA draws each layer as two rows —
+        pollinators on one side, plants on the other. This is the layout that makes bipartite
+        structure legible; a single-row layout would hide it.</li>
+      <li>In the <strong>Nodes</strong> panel, colour nodes by <code>node_type</code> to separate
+        pollinators from plants at a glance, and size them by degree to spot generalist species.</li>
+      <li>Use the <strong>Intralayer Links</strong> threshold slider to hide weak interactions and
+        reveal the backbone of strong, frequent visits.</li>
+      <li>Switch to <strong>Grid View</strong> to see all five islands side by side as small
+        multiples — ideal for comparing which islands share structure and which are distinct.</li>
+      <li>Type a pollinator's name in <strong>Search</strong> to highlight every copy of it across
+        all islands at once, showing how a single species links the layers.</li>
+      <li>Open <strong>Dashboard Mode</strong> for the bipartite set-size ratios, degree
+        distributions, and layer-similarity (Jaccard) heatmaps.</li>
+    </ol>
+
+    <div class="callout">
+      <strong>Why bipartite matters.</strong> MiRA is one of the few multilayer visualisation
+      tools with a dedicated bipartite layout. If your data are bipartite, declare it (see the
+      <a href="data-format.html">data format</a> page) so the two node sets are laid out and
+      coloured correctly.
+    </div>
+
+    <h2>Use your own data</h2>
+    <p>
+      Export your network to MiRA's <a href="data-format.html">JSON or CSV format</a> — from the
+      <a href="https://github.com/Ecological-Complexity-Lab/emln">emln</a> R package,
+      <code>multilayer_to_json(net, bipartite = TRUE)</code> does this directly — then use
+      <strong>Load Data</strong> instead of the example loader. Everything above applies unchanged.
+    </p>
+
+    <footer class="site">
+      MiRA (Multilayer Interactive Rendering Application) —
+      <a href="index.html">app</a> ·
+      <a href="docs/manual.html">manual</a> ·
+      <a href="compare.html">tool comparison</a> ·
+      <a href="https://arxiv.org/abs/2605.09597">preprint</a>
+    </footer>
+  </div>
+</body>
+</html>
