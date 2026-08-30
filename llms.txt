@@ -32,4 +32,4 @@ layer placement, temporal and multiplex networks, and directed links.
 ## Source and citation
 - [GitHub repository](https://github.com/Ecological-Complexity-Lab/MiRA): source code, issue tracker, CC BY-NC-SA 4.0.
 - [Preprint](https://arxiv.org/abs/2605.09597): Nehoray, Bloch & Pilosof, Interactively visualizing biological multilayer networks using MiRA.
-- [emln R package](https://github.com/Ecological-Complexity-Lab/emln): data structures and `plot_multilayer()` integration.
+- [emln R package](https://emln.ecomplab.com): data structures and `plot_multilayer()` integration.
