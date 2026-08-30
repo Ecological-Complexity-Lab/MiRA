@@ -496,7 +496,7 @@ export class Renderer {
 
     _drawPlaceholder(ctx, w, h) {
         const logoGap = 16;
-        const line1   = 'Welcome to MiRA, the Multilayer Interactive Rendering App';
+        const line1   = 'Welcome to MiRA (v1.1), the Multilayer Interactive Rendering App';
         const devBy   = 'Developed by the ';
         const labName = 'Ecological Complexity Lab';
         const line3   = 'Load a multilayer network via the Data panel to visualize';
