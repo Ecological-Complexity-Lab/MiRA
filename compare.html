@@ -532,11 +532,11 @@
     "mainEntity": [
       { "@type": "Question", "name": "What is a multilayer network?", "acceptedAnswer": { "@type": "Answer", "text": "A multilayer network is composed of a set of layers (each is a network), which represent different states of the entire system, such as different kinds of interactions, spatial locations or temporal time points. The layers are a single linked structure via interlayer links, rather than collapsed into a single graph." } },
       { "@type": "Question", "name": "Is MiRA free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. MiRA is free and open source under the CC BY-NC-SA 4.0 license, runs in any modern web browser, and requires no account or sign-up." } },
-      { "@type": "Question", "name": "Do I need to know how to code to use MiRA?", "acceptedAnswer": { "@type": "Answer", "text": "No. MiRA is entirely point-and-click in the browser. If you work in R, you can also plot directly from the emln package, but coding is optional." } },
-      { "@type": "Question", "name": "Can MiRA visualize bipartite networks such as plant-pollinator or host-parasite webs?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. MiRA has a dedicated bipartite layout that draws the two node sets — for example pollinators and plants — in separate rows. Mark a layer as bipartite in your data and MiRA lays it out automatically." } },
+      { "@type": "Question", "name": "Do I need to know how to code to use MiRA?", "acceptedAnswer": { "@type": "Answer", "text": "No. MiRA is entirely point-and-click in the browser. If you work in R, you can also plot directly from the emln package \u2014 see emln integration in the manual \u2014 but coding is optional." } },
+      { "@type": "Question", "name": "Can MiRA visualize bipartite networks such as plant\u2013pollinator or host\u2013parasite webs?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. MiRA has a dedicated bipartite layout that draws the two node sets — for example pollinators and plants — in separate rows. Mark a layer as bipartite in your data and MiRA lays it out automatically." } },
       { "@type": "Question", "name": "What data formats does MiRA read?", "acceptedAnswer": { "@type": "Answer", "text": "MiRA reads JSON or CSV (an extended edge list plus optional layer, node, and state-node attribute files), or a network passed directly from the emln R package." } },
       { "@type": "Question", "name": "How is MiRA different from other software?", "acceptedAnswer": { "@type": "Answer", "text": "Each of the existing tools covers part of what multilayer visualization needs. For example, muxViz and pymnet are focused on analysis, Arena3Dweb for biomedical 3D scenes, and Gephi and Cytoscape for general single-layer graphs. MiRA is the only browser-based, no-code tool that combines bipartite and geographic support with seven linked visualization modes." } },
-      { "@type": "Question", "name": "How do I cite MiRA?", "acceptedAnswer": { "@type": "Answer", "text": "Cite the preprint: Nehoray, Bloch and Pilosof (2026), Interactively visualizing biological multilayer networks using MiRA, arXiv:2605.09597. To cite the software itself, use the Zenodo DOI 10.5281/zenodo.22096810." } }
+      { "@type": "Question", "name": "How do I cite MiRA?", "acceptedAnswer": { "@type": "Answer", "text": "Cite the preprint: Nehoray, Bloch & Pilosof (2026), Interactively visualizing biological multilayer networks using MiRA, arXiv:2605.09597. To cite the software itself, use the Zenodo DOI 10.5281/zenodo.22096810." } }
     ]
   }
   </script>
@@ -843,11 +843,11 @@
       <div class="faq">
         <details>
           <summary>What is a multilayer network?</summary>
-          <p>A multilayer network represents several kinds of connection — across sites, seasons, or
-            interaction types — in one linked structure, rather than collapsing them into a single graph.
-            Common ecological cases include multiplex, temporal, spatial, and bipartite networks.
-            MiRA visualizes all of these — see the <a href="docs/manual.html#modes">visualization modes</a> in the
-            manual.</p>
+          <p>A multilayer network is composed of a set of layers (each is a network), which represent
+            different states of the entire system, such as different kinds of interactions, spatial
+            locations or temporal time points. The layers are a single linked structure via interlayer
+            links, rather than collapsed into a single graph. MiRA visualizes all of these — see the
+            <a href="docs/manual.html#modes">visualization modes</a> in the manual.</p>
         </details>
         <details>
           <summary>Is MiRA free?</summary>
