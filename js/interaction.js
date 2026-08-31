@@ -238,6 +238,9 @@ export class InteractionHandler {
                 return;
             }
 
+            // Splash screen: nothing to hover, and app.js owns the cursor for its action links.
+            if (!this.renderer.model) return;
+
             // Hover detection
             const prevHoveredNode = this.renderer.hoveredNode;
             const prevHoveredLink = this.renderer.hoveredLink;

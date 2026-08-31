@@ -2036,3 +2036,20 @@ body {
   display: flex;
   gap: 6px;
 }
+/* ============================================
+   "MiRA at a glance" figure modal (splash screen)
+   ============================================ */
+.glance-dialog-box {
+  position: relative;
+  width: min(1150px, 94vw);   /* overrides the fixed 360px on .dialog-box */
+  max-width: 94vw;
+  padding: 34px 18px 18px;
+}
+.glance-modal-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 78vh;
+  object-fit: contain;
+  border-radius: 8px;
+}
