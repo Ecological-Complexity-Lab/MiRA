@@ -6,7 +6,7 @@ export class GridView {
         this._lastCells = []; // {layerName, cellX, cellY, cellW, cellH, nodePositions: Map}
     }
 
-    // Mirrors renderer._computeFocusSet: all instances + 1-hop neighbours
+    // Mirrors renderer._computeFocusSet: all instances + 1-hop neighbors
     _computeFocusSet(nodeName, model) {
         const set = new Set();
         for (const layer of model.layers) {

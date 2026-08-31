@@ -1,7 +1,7 @@
 /**
  * MiRA browser smoke suite.
  *
- * Scope: confirm the app loads, a bundled dataset loads, every visualisation
+ * Scope: confirm the app loads, a bundled dataset loads, every visualization
  * mode renders without a runtime error, and the core network-mode controls
  * are wired up. This is render-without-error coverage, not visual-correctness
  * checking (the canvas is verified by humans).

@@ -13,7 +13,7 @@ import { aggregateMetaNetwork } from './calc/metaAggregation.js';
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
-const MN_ROW_SPACING   = 150;   // sim-coord distance from centre to each bipartite row
+const MN_ROW_SPACING   = 150;   // sim-coord distance from center to each bipartite row
 const MN_MIN_R         = 5;
 const MN_MAX_R         = 22;
 const MN_DEFAULT_R     = 10;

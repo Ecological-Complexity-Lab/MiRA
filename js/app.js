@@ -4728,7 +4728,7 @@ const HELP_CONTENT = {
         title: '▦ Grid View',
         body: `<p>Each layer is drawn in its own cell of a responsive grid (a small-multiples / matrix view) so you can compare intralayer structure across layers side-by-side.</p>
 <ul style="padding-left:16px;margin:8px 0;">
-  <li><b>Click</b> a node — highlights every instance of it across all cells, plus its 1-hop neighbours</li>
+  <li><b>Click</b> a node — highlights every instance of it across all cells, plus its 1-hop neighbors</li>
   <li><b>Click</b> empty space — clear the selection</li>
   <li><b>Search</b> (left panel) — highlights a node in every cell</li>
   <li><b>Columns slider</b> (Layers panel) — set how many columns the cells wrap into</li>
