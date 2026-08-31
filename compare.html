@@ -140,10 +140,7 @@
     /* Product screenshot under the hero */
     .shot-wrap {
       max-width: 1000px;
-      margin: -40px auto 0;
-      padding: 0 20px;
-      position: relative;
-      z-index: 2;
+      margin: 30px auto 0;
     }
 
     .shot {
@@ -153,6 +150,16 @@
       border: 1px solid #e9e6f2;
       background: #fff;
       box-shadow: 0 24px 60px rgba(17, 12, 46, .22);
+    }
+
+    /* "At a glance" conceptual figure */
+    .glance-fig {
+      width: 100%;
+      display: block;
+      border-radius: 12px;
+      border: 1px solid #e9e6f2;
+      background: #fff;
+      padding: 10px;
     }
 
     /* Section scaffolding */
@@ -606,11 +613,20 @@
     </div>
   </section>
 
-  <!-- ── PRODUCT SHOT ─────────────────────────────────────────────── -->
-  <div class="shot-wrap">
-    <img class="shot" src="assets/mira-multilayer-network.png"
-      alt="MiRA showing a five-layer bipartite multilayer network in Network Mode, with interlayer links connecting shared species across layers">
-  </div>
+
+  <!-- ── AT A GLANCE ──────────────────────────────────────────────── -->
+  <section class="band tint">
+    <div class="band-inner">
+      <div class="kicker">At a glance</div>
+      <h2>Interact with your multilayer network and format it for publications</h2>
+      <p class="intro">
+        Load a multilayer network, explore it through seven linked modes, and save the result —
+        all in the browser, without installing anything or writing code.
+      </p>
+      <img class="glance-fig" src="assets/mira-at-a-glance.png"
+        alt="MiRA at a glance: (1) load multilayer data from the example datasets, the emln R package, a JSON file, or CSV files; (2) explore it in seven interactive modes — Network, Map, Layer, Grid, Meta-Network, Dashboard, and Data; (3) save the result as a PNG, JPG, or PDF image, or as a session file that reloads the full state including the data. MiRA is browser-based with no install, free and open source, requires no coding, offers coordinated mode transitions, and supports bipartite networks.">
+    </div>
+  </section>
 
   <!-- ── SEVEN MODES ──────────────────────────────────────────────── -->
   <section class="band">
@@ -831,6 +847,10 @@
           <h3>Brain network →</h3>
           <p>Explore a multilayer human brain connectome — beyond ecology.</p>
         </a>
+      </div>
+      <div class="shot-wrap">
+        <img class="shot" src="assets/mira-multilayer-network.png"
+      alt="MiRA showing a five-layer bipartite multilayer network in Network Mode, with interlayer links connecting shared species across layers">
       </div>
     </div>
   </section>

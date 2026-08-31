@@ -495,69 +495,83 @@ export class Renderer {
     }
 
     _drawPlaceholder(ctx, w, h) {
-        const logoGap = 16;
-        const line1   = 'Welcome to MiRA (v1.1), the Multilayer Interactive Rendering App';
-        const devBy   = 'Developed by the ';
-        const labName = 'Ecological Complexity Lab';
-        const line3   = 'Load a multilayer network via the Data panel to visualize';
+        const LOGO_GAP   = 16;
+        const TITLE_OFF  = -24;   // y-offsets relative to canvas centre
+        const HINT_OFF   = 8;
+        const ACTION_OFF = 44;
+        const FONT_TITLE = 18, FONT_HINT = 15, FONT_ACTION = 14;
+        const HIT_PAD    = 11;    // half-height of a clickable text row
+        const SEPARATOR  = '   ·   ';
 
-        // Line y-offsets relative to cy (textBaseline = 'middle')
-        const L1_OFF = -24, L4_OFF = 70;
-        const FONT1 = 18, FONT4 = 14;
-        const textBlockTop    = L1_OFF - FONT1 / 2;  // top of first line
-        const textBlockBottom = L4_OFF + FONT4 / 2;  // bottom of last line
-        const logoH = textBlockBottom - textBlockTop; // matches text block height exactly
+        const title = 'Welcome to MiRA (v1.1), the Multilayer Interactive Rendering App';
+        const hint  = 'Load a multilayer network via the Data panel to visualize';
+        const actions = [
+            { label: 'MiRA at a glance', key: '_glanceBounds' },
+            { label: 'See the manual',   key: '_manualBounds' },
+            { label: 'Load example data', key: '_loadDataBounds' },
+        ];
+
+        const textBlockTop    = TITLE_OFF - FONT_TITLE / 2;
+        const textBlockBottom = ACTION_OFF + FONT_ACTION / 2;
+        const logoH = textBlockBottom - textBlockTop;
 
         const img = this._logoImage;
         const logoW = (img?.complete && img.naturalWidth > 0)
             ? Math.round(logoH * img.naturalWidth / img.naturalHeight)
             : logoH;
 
-        ctx.font = 'bold 18px Inter, system-ui, sans-serif';
-        const line1W = ctx.measureText(line1).width;
-        ctx.font = '16px Inter, system-ui, sans-serif';
-        const line2W = ctx.measureText(devBy + labName).width;
-        ctx.font = '15px Inter, system-ui, sans-serif';
-        const line3W = ctx.measureText(line3).width;
+        ctx.font = `bold ${FONT_TITLE}px Inter, system-ui, sans-serif`;
+        const titleW = ctx.measureText(title).width;
+        ctx.font = `${FONT_HINT}px Inter, system-ui, sans-serif`;
+        const hintW = ctx.measureText(hint).width;
+        ctx.font = `${FONT_ACTION}px Inter, system-ui, sans-serif`;
+        const actionsW = ctx.measureText(actions.map(a => a.label).join(SEPARATOR)).width;
 
-        const textBlockW = Math.max(line1W, line2W, line3W);
-        const totalW = logoW + logoGap + textBlockW;
-        const startX = (w - totalW) / 2;
+        const textBlockW = Math.max(titleW, hintW, actionsW);
+        const startX = (w - (logoW + LOGO_GAP + textBlockW)) / 2;
         const cy = h / 2;
 
         if (img?.complete && img.naturalWidth > 0) {
             ctx.drawImage(img, startX, cy + textBlockTop, logoW, logoH);
         }
 
-        const textX = startX + logoW + logoGap;
+        const textX = startX + logoW + LOGO_GAP;
         ctx.textAlign = 'left';
         ctx.textBaseline = 'middle';
 
         ctx.fillStyle = '#1f2937';
-        ctx.font = 'bold 18px Inter, system-ui, sans-serif';
-        ctx.fillText(line1, textX, cy - 24);
-
-        ctx.font = '16px Inter, system-ui, sans-serif';
-        const devByW = ctx.measureText(devBy).width;
-        ctx.fillText(devBy, textX, cy + 4);
-        ctx.fillStyle = '#6366f1';
-        ctx.fillText(labName, textX + devByW, cy + 4);
-        const labW = ctx.measureText(labName).width;
-        this._ecoLabBounds = { x: textX + devByW, y: cy + 4 - 12, w: labW, h: 24 };
+        ctx.font = `bold ${FONT_TITLE}px Inter, system-ui, sans-serif`;
+        ctx.fillText(title, textX, cy + TITLE_OFF);
 
         ctx.fillStyle = '#6b7280';
-        ctx.font = '15px Inter, system-ui, sans-serif';
-        ctx.fillText(line3, textX, cy + 44);
+        ctx.font = `${FONT_HINT}px Inter, system-ui, sans-serif`;
+        ctx.fillText(hint, textX, cy + HINT_OFF);
 
-        const line4 = 'See our visualization guidelines for best practices →';
-        ctx.font = '14px Inter, system-ui, sans-serif';
-        const line4W = ctx.measureText(line4).width;
-        ctx.fillStyle = '#6366f1';
-        ctx.fillText(line4, textX, cy + 70);
-        this._guidelinesBounds = { x: textX, y: cy + 70 - 11, w: line4W, h: 22 };
+        this._drawSplashActions(ctx, actions, textX, cy + ACTION_OFF, FONT_ACTION, SEPARATOR, HIT_PAD);
 
         ctx.textBaseline = 'alphabetic';
         ctx.textAlign = 'left';
+    }
+
+    /** Draw the splash action row, recording a clickable hit box for each item. */
+    _drawSplashActions(ctx, actions, x, y, fontSize, separator, hitPad) {
+        ctx.font = `${fontSize}px Inter, system-ui, sans-serif`;
+        const sepW = ctx.measureText(separator).width;
+        let cursorX = x;
+
+        actions.forEach((action, i) => {
+            const labelW = ctx.measureText(action.label).width;
+            ctx.fillStyle = '#6366f1';
+            ctx.fillText(action.label, cursorX, y);
+            this[action.key] = { x: cursorX, y: y - hitPad, w: labelW, h: hitPad * 2 };
+            cursorX += labelW;
+
+            if (i < actions.length - 1) {
+                ctx.fillStyle = '#d1d5db';
+                ctx.fillText(separator, cursorX, y);
+                cursorX += sepW;
+            }
+        });
     }
 
     _drawLayerPolygon(ctx, layerIndex, layer) {

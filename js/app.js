@@ -507,25 +507,38 @@ bgMap.on('move', () => {
     }
 });
 
-// Splash screen links — "Ecological Complexity Lab" and "visualization guidelines"
-canvas.addEventListener('click', (e) => {
-    if (model) return;
+// Splash screen actions — "MiRA at a glance", "See the manual", "Load data"
+const glanceDialog      = document.getElementById('glanceDialog');
+const glanceDialogClose = document.getElementById('glanceDialogClose');
+
+const openGlanceDialog  = () => { glanceDialog.style.display = 'flex'; };
+const closeGlanceDialog = () => { glanceDialog.style.display = 'none'; };
+
+glanceDialogClose.addEventListener('click', closeGlanceDialog);
+glanceDialog.addEventListener('click', e => { if (e.target === glanceDialog) closeGlanceDialog(); });
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && glanceDialog.style.display === 'flex') closeGlanceDialog();
+});
+
+const splashActionAt = (e) => {
     const rect = canvas.getBoundingClientRect();
     const mx = e.clientX - rect.left;
     const my = e.clientY - rect.top;
     const inBounds = b => b && mx >= b.x && mx <= b.x + b.w && my >= b.y && my <= b.y + b.h;
-    if (inBounds(renderer._ecoLabBounds))    window.open('https://ecomplab.com/', '_blank', 'noopener');
-    if (inBounds(renderer._guidelinesBounds)) window.open('docs/manual.html#guidelines', '_blank', 'noopener');
+    if (inBounds(renderer._glanceBounds))   return openGlanceDialog;
+    if (inBounds(renderer._manualBounds))   return () => window.open('docs/manual.html', '_blank', 'noopener');
+    if (inBounds(renderer._loadDataBounds)) return () => document.getElementById('openDemoDialogBtn')?.click();
+    return null;
+};
+
+canvas.addEventListener('click', (e) => {
+    if (model) return;
+    splashActionAt(e)?.();
 });
 
 canvas.addEventListener('mousemove', (e) => {
     if (model) return;
-    const rect = canvas.getBoundingClientRect();
-    const mx = e.clientX - rect.left;
-    const my = e.clientY - rect.top;
-    const inBounds = b => b && mx >= b.x && mx <= b.x + b.w && my >= b.y && my <= b.y + b.h;
-    canvas.style.cursor = (inBounds(renderer._ecoLabBounds) || inBounds(renderer._guidelinesBounds))
-        ? 'pointer' : 'default';
+    canvas.style.cursor = splashActionAt(e) ? 'pointer' : 'default';
 });
 
 // ---- Interaction ----
