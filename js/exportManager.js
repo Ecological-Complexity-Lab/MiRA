@@ -31,7 +31,7 @@ export function initExportManager({ getRenderer, getAppMode }) {
         const renderer = getRenderer();
         const appMode  = getAppMode();
 
-        // Data mode is a table, not a picture — there's nothing to rasterise.
+        // Data mode is a table, not a picture — there's nothing to rasterize.
         if (appMode === 'data') {
             alert('Data mode can’t be exported as an image.\n\n' +
                   'Use the “Export CSV” button in the Data panel to download the table as CSV.');
@@ -44,7 +44,7 @@ export function initExportManager({ getRenderer, getAppMode }) {
         exportDialog.style.display = 'flex';
 
         // Warm up the heavy libraries while the dialog is visible, so the gap
-        // between clicking a format and triggering the save is minimised.
+        // between clicking a format and triggering the save is minimized.
         _loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js').catch(() => {});
         _loadScript('https://unpkg.com/jspdf@2.5.2/dist/jspdf.umd.min.js').catch(() => {});
     });
@@ -104,7 +104,7 @@ export function initExportManager({ getRenderer, getAppMode }) {
 
     // ── Directory picker ──────────────────────────────────────────────────
     // Called ONCE before any rendering so the user gesture is still fresh.
-    // Returns a FileSystemDirectoryHandle, or null if unsupported/cancelled.
+    // Returns a FileSystemDirectoryHandle, or null if unsupported/canceled.
     async function _pickDirectory() {
         if (!window.showDirectoryPicker) return null;
         try {
@@ -336,7 +336,7 @@ export function initExportManager({ getRenderer, getAppMode }) {
         await _saveCanvas(offscreen, filename, mimeType, quality, dirHandle);
     }
 
-    // Rasterise the Dashboard DOM (KPI cards + SVG charts) to an offscreen
+    // Rasterize the Dashboard DOM (KPI cards + SVG charts) to an offscreen
     // canvas at `scale`×, capturing its full scroll height. Returns null if the
     // dashboard isn't open / has no content.
     async function _captureDashboard(scale) {
@@ -438,7 +438,7 @@ export function initExportManager({ getRenderer, getAppMode }) {
             const includeGrid   = document.getElementById('exportGridCheckbox').checked;
             const includePanels = document.getElementById('exportPanelsCheckbox').checked;
 
-            // Dashboard is DOM — rasterise it, then embed in a PDF sized to match.
+            // Dashboard is DOM — rasterize it, then embed in a PDF sized to match.
             if (appMode === 'dashboard') {
                 const dash = await _captureDashboard(scale);
                 if (!dash) { alert('Nothing to export — open the Dashboard first.'); return; }

@@ -16,9 +16,9 @@
  *   3. Link classification — intra vs. interlayer split
  *   4. Degree & strength   — per-state-node metrics computed correctly
  *   5. Directed flag       — detected from global / layer / link; propagated
- *   6. Attribute names     — extra fields surfaced for colour/size dropdowns
+ *   6. Attribute names     — extra fields surfaced for color/size dropdowns
  *   7. Bipartite explicit  — detected via layer.bipartite + node_type
- *   8. Bipartite BFS       — auto-detected via 2-colouring
+ *   8. Bipartite BFS       — auto-detected via 2-coloring
  *   9. Mixed multilayer    — per-layer independence when types differ
  */
 
@@ -119,7 +119,7 @@ function makeBipartiteExplicit() {
 
 /**
  * Single bipartite layer with NO node_type and NO layer.bipartite flag.
- * Bipartite structure must be found purely by BFS 2-colouring the edge graph.
+ * Bipartite structure must be found purely by BFS 2-coloring the edge graph.
  * Topology: A1─B1, A1─B2, A2─B1
  *   Natural sets: {A1, A2} and {B1, B2} — all edges cross between the sets.
  *
@@ -252,7 +252,7 @@ describe('Group 3 — Link classification', () => {
 // ── Group 4 — Degree and strength ───────────────────────────────────────────
 // js/calc/nodeMetrics.js computes per-state-node intra/inter degree+strength
 // in a single O(E) pass per link type and writes the fields directly onto
-// state_node objects. These drive the colour/size dropdowns in the UI.
+// state_node objects. These drive the color/size dropdowns in the UI.
 //
 // Key invariants tested here (math: Boccaletti 2014; De Domenico 2015):
 //   - Self-loops are excluded from intra_degree (j ≠ i in the math spec)
@@ -300,7 +300,7 @@ describe('Group 4 — Degree and strength', () => {
   })
 
   it('4.4 self-loop is excluded from intra_degree (j ≠ i in spec)', () => {
-    // Behaviour change vs. the legacy parser (which counted self-loops once).
+    // Behavior change vs. the legacy parser (which counted self-loops once).
     // The new math follows the multilayer-formalism convention of excluding
     // i = j from the intralayer-degree summation.
     const input = {
@@ -368,7 +368,7 @@ describe('Group 5 — Directed flag propagation', () => {
 
   it('5.4 undirected network: model.directed is false and state nodes have no in/out fields', () => {
     // in/out fields are deleted when undirected so they don't appear as
-    // spurious "zero" attributes in the colour/size dropdowns.
+    // spurious "zero" attributes in the color/size dropdowns.
     const model = parseMultilayerData(makeMinimal())
     expect(model.directed).toBe(false)
     for (const sn of model.stateNodes) {
@@ -383,7 +383,7 @@ describe('Group 5 — Directed flag propagation', () => {
 // ── Group 6 — Attribute name extraction ─────────────────────────────────────
 // Any field beyond the required structural keys is treated as a user attribute
 // and surfaced in nodeAttributeNames / linkAttributeNames / layerAttributeNames.
-// These lists populate the colour-by and size-by dropdowns in the UI.
+// These lists populate the color-by and size-by dropdowns in the UI.
 // Standard structural keys (node_id, layer_from, etc.) must not appear there.
 
 describe('Group 6 — Attribute name extraction', () => {
@@ -409,7 +409,7 @@ describe('Group 6 — Attribute name extraction', () => {
     const model = parseMultilayerData(input)
     // The fixture's interlayer link means computeMetrics writes `_by_layer`
     // Maps and a `layers_present` array onto the node objects — exactly the
-    // fields that must NOT surface as colour/size attributes.
+    // fields that must NOT surface as color/size attributes.
     expect(model.nodeAttributeNames).not.toContain('layers_present')
     expect(model.nodeAttributeNames.some(a => a.endsWith('_by_layer'))).toBe(false)
     for (const attr of model.nodeAttributeNames) {
@@ -485,8 +485,8 @@ describe('Group 7 — Bipartite detection: explicit', () => {
 })
 
 // ── Group 8 — Bipartite detection: auto-detect BFS ──────────────────────────
-// When no explicit declaration is found, the parser runs BFS 2-colouring on
-// each layer's intralayer edges. A graph is 2-colourable (bipartite) if and
+// When no explicit declaration is found, the parser runs BFS 2-coloring on
+// each layer's intralayer edges. A graph is 2-colorable (bipartite) if and
 // only if it has no odd-length cycles.
 //
 // Corner cases that must NOT be falsely detected as bipartite:
@@ -508,7 +508,7 @@ describe('Group 8 — Bipartite detection: auto-detect BFS', () => {
 
   it('8.2 triangle (odd cycle) is not bipartite', () => {
     // X─Y─Z─X: every cycle has length 3 (odd). BFS detects the conflict when
-    // it tries to colour Z's neighbour X and finds X already has Z's colour.
+    // it tries to color Z's neighbor X and finds X already has Z's color.
     const input = {
       layers: [{ layer_id: 1, layer_name: 'TL' }],
       nodes: [

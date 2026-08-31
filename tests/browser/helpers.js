@@ -1,7 +1,7 @@
 /**
  * Shared helpers for the MiRA browser smoke suite.
  *
- * Keep selectors centralised here: if a DOM id or the demo-dialog markup
+ * Keep selectors centralized here: if a DOM id or the demo-dialog markup
  * changes, this is the single place to update.
  */
 
@@ -62,7 +62,7 @@ export async function loadDemoDataset(page, file) {
     page.locator(`#demoDatasetList button[data-file="${file}"]`).click({ force: true }),
   ])
 
-  // loadData() populates the node-colour dropdown once the model is built.
+  // loadData() populates the node-color dropdown once the model is built.
   await page.waitForFunction(() => {
     const sel = document.getElementById('nodeColorSelect')
     return sel && sel.options.length > 1

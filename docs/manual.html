@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MiRA Manual — Multilayer Network Visualisation Documentation</title>
+  <title>MiRA Manual — Multilayer Network Visualization Documentation</title>
   <meta name="description"
     content="Full documentation for MiRA (Multilayer Interactive Rendering Application): all seven visualization modes, the JSON schema, CSV import, session save/restore, figure export, and emln R-package integration.">
   <link rel="canonical" href="https://mira.ecomplab.com/docs/manual.html">
@@ -11,8 +11,8 @@
 
   <!-- Open Graph -->
   <meta property="og:type" content="article">
-  <meta property="og:site_name" content="MiRA — Multilayer Network Visualisation">
-  <meta property="og:title" content="MiRA Manual — Multilayer Network Visualisation Documentation">
+  <meta property="og:site_name" content="MiRA — Multilayer Network Visualization">
+  <meta property="og:title" content="MiRA Manual — Multilayer Network Visualization Documentation">
   <meta property="og:description" content="Full documentation of MiRA's visualization modes, the JSON schema, CSV import, and emln R-package integration.">
   <meta property="og:url" content="https://mira.ecomplab.com/docs/manual.html">
   <meta property="og:image" content="https://mira.ecomplab.com/assets/social-card.png">
@@ -20,7 +20,7 @@
 
   <!-- Twitter / X card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="MiRA Manual — Multilayer Network Visualisation Documentation">
+  <meta name="twitter:title" content="MiRA Manual — Multilayer Network Visualization Documentation">
   <meta name="twitter:description" content="Documentation for MiRA: modes, data formats, and emln integration.">
   <meta name="twitter:image" content="https://mira.ecomplab.com/assets/social-card.png">
 
@@ -29,11 +29,11 @@
   {
     "@context": "https://schema.org",
     "@type": "TechArticle",
-    "headline": "MiRA Manual — Multilayer Network Visualisation Documentation",
+    "headline": "MiRA Manual — Multilayer Network Visualization Documentation",
     "description": "Full documentation for MiRA (Multilayer Interactive Rendering Application): visualization modes, the JSON schema, CSV import, session save/restore, figure export, and emln R-package integration.",
     "url": "https://mira.ecomplab.com/docs/manual.html",
     "inLanguage": "en",
-    "isPartOf": { "@type": "WebSite", "name": "MiRA — Multilayer Network Visualisation", "url": "https://mira.ecomplab.com/" },
+    "isPartOf": { "@type": "WebSite", "name": "MiRA — Multilayer Network Visualization", "url": "https://mira.ecomplab.com/" },
     "about": { "@type": "SoftwareApplication", "name": "MiRA", "alternateName": "Multilayer Interactive Rendering Application", "url": "https://mira.ecomplab.com/" },
     "author": [
       { "@type": "Person", "name": "Shir Miryam Nehoray", "identifier": "https://orcid.org/0009-0001-8453-4426" },
@@ -468,7 +468,7 @@
   <p>One row per edge — intralayer and interlayer edges both go in this single list. An edge is classified <strong>automatically</strong> as intralayer when <code>layer_from</code> equals <code>layer_to</code>, and as interlayer otherwise.</p>
   <ul>
     <li><code>layer_from</code>, <code>node_from</code>, <code>layer_to</code>, <code>node_to</code> — required.</li>
-    <li><code>weight</code> <em>(optional)</em> — sets edge line width (thicker = higher weight) and feeds the weight-threshold filter that hides links below a chosen value. Defaults to 1. <em>(Weight itself is not a selectable link-colour attribute.)</em></li>
+    <li><code>weight</code> <em>(optional)</em> — sets edge line width (thicker = higher weight) and feeds the weight-threshold filter that hides links below a chosen value. Defaults to 1. <em>(Weight itself is not a selectable link-color attribute.)</em></li>
     <li><code>directed</code> <em>(optional, per-edge Boolean)</em> — marks this individual edge as directed; if any edge sets it, the matching global flag (<code>directed</code> for intralayer, <code>directed_interlayer</code> for interlayer) is inferred as <code>true</code>.</li>
     <li>Any extra fields become selectable attributes for color/size mapping.</li>
   </ul>
@@ -803,9 +803,9 @@ Ixodes_ricinus,0.003</code></pre>
 
   <h3 id="grid-interactions">Interactions</h3>
   <ul>
-    <li><span class="key">Click node</span> — select that node; every instance of it across cells is highlighted with a yellow ring, and 1-hop neighbours stay opaque while non-neighbours fade out.</li>
+    <li><span class="key">Click node</span> — select that node; every instance of it across cells is highlighted with a yellow ring, and 1-hop neighbors stay opaque while non-neighbors fade out.</li>
     <li><span class="key">Click empty space</span> — clear the selection.</li>
-    <li><span class="key">Search</span> — typing a node name in the sidebar Search box highlights it in every grid cell, identical to the Network Mode behaviour.</li>
+    <li><span class="key">Search</span> — typing a node name in the sidebar Search box highlights it in every grid cell, identical to the Network Mode behavior.</li>
   </ul>
 
   <h3 id="grid-controls">Sidebar Controls</h3>
@@ -817,7 +817,7 @@ Ixodes_ricinus,0.003</code></pre>
   </ul>
 
   <h3 id="grid-bipartite">Bipartite Layers</h3>
-  <p>When a layer is declared bipartite (<code>layer.bipartite = true</code> with a <code>node_type</code> attribute on its nodes), Grid View positions Set A nodes on the upper row and Set B on the lower row inside each cell, just like the bipartite layout in Network Mode. If the <strong>Set Names</strong> checkbox is on (Layers panel), each cell's left margin labels the two sets with their <code>setALabel</code> and <code>setBLabel</code> values, coloured in the canonical blue/pink set palette.</p>
+  <p>When a layer is declared bipartite (<code>layer.bipartite = true</code> with a <code>node_type</code> attribute on its nodes), Grid View positions Set A nodes on the upper row and Set B on the lower row inside each cell, just like the bipartite layout in Network Mode. If the <strong>Set Names</strong> checkbox is on (Layers panel), each cell's left margin labels the two sets with their <code>setALabel</code> and <code>setBLabel</code> values, colored in the canonical blue/pink set palette.</p>
 
   <!-- Meta-Network Mode -->
   <h2 class="sec mode-meta" id="metanetwork"><span style="font-size:18px;font-weight:700;color:#d97706;line-height:1;flex-shrink:0;">Σ</span> Meta-Network Mode</h2>
@@ -833,7 +833,7 @@ Ixodes_ricinus,0.003</code></pre>
   <h3 id="mn-interactions">Interactions</h3>
   <h4>Node selection</h4>
   <ul>
-    <li><span class="key">Click a node</span> — selects it. The selected node and all its direct neighbours stay fully opaque; everything else fades. An <strong>Info panel</strong> appears showing Participation, Layers, Meta-degree, and Meta-strength.</li>
+    <li><span class="key">Click a node</span> — selects it. The selected node and all its direct neighbors stay fully opaque; everything else fades. An <strong>Info panel</strong> appears showing Participation, Layers, Meta-degree, and Meta-strength.</li>
     <li><span class="key">Click the same node again</span> — deselects and restores all opacities.</li>
     <li><span class="key">Click empty space</span> — deselects.</li>
   </ul>
@@ -845,7 +845,7 @@ Ixodes_ricinus,0.003</code></pre>
   </ul>
   <h4>Navigation</h4>
   <ul>
-    <li><span class="key">Scroll</span> — zoom centred on the cursor.</li>
+    <li><span class="key">Scroll</span> — zoom centered on the cursor.</li>
     <li><span class="key">Drag background</span> — pan the view.</li>
   </ul>
 
@@ -870,12 +870,12 @@ Ixodes_ricinus,0.003</code></pre>
 
   <h4>Appearance</h4>
   <ul>
-    <li><span class="key">Color By</span> — color nodes by <em>Participation</em> (number of layers) or <em>Meta-degree</em> (number of unique neighbours), both using the <strong>ice</strong> palette (light cyan → dark navy). <em>Uniform</em> applies a single green tint to all nodes. A gradient legend appears in the bottom-right corner.</li>
+    <li><span class="key">Color By</span> — color nodes by <em>Participation</em> (number of layers) or <em>Meta-degree</em> (number of unique neighbors), both using the <strong>ice</strong> palette (light cyan → dark navy). <em>Uniform</em> applies a single green tint to all nodes. A gradient legend appears in the bottom-right corner.</li>
     <li><span class="key">Size By</span> — scale node radius by <em>Meta-degree</em> (default) or <em>Participation</em>. <em>Uniform</em> gives all nodes the same radius. A size legend appears alongside the color legend.</li>
     <li><span class="key">Base Size</span> — global multiplier (0.5× – 3.0×) applied on top of the Size By scaling.</li>
     <li><span class="key">Min Link Weight</span> — hide edges whose weight is below this threshold. Slider maximum matches the heaviest edge in the current aggregation.</li>
     <li><span class="key">Show Labels</span> — toggle node name labels. Labels are drawn at 45° to reduce overlap; in two-row layout, Set A labels angle upward and Set B downward.</li>
-    <li><span class="key">Nested sort</span> <span class="pill pill-meta">two-row only</span> — sort each row by meta-degree so high-degree nodes cluster at the centre.</li>
+    <li><span class="key">Nested sort</span> <span class="pill pill-meta">two-row only</span> — sort each row by meta-degree so high-degree nodes cluster at the center.</li>
   </ul>
 
   <h3 id="mn-layerfilter">Layer Filter</h3>
@@ -912,7 +912,7 @@ Ixodes_ricinus,0.003</code></pre>
   <p>Two histograms showing the distribution of edge weights across the network.</p>
   <ul>
     <li><strong>Intralayer</strong> — a dropdown above the histogram lets you choose <em>All layers</em> (aggregated, default) or any specific layer.</li>
-    <li><strong>Interlayer</strong> — histogram paired with a count heatmap to its left. Heatmap cells show the raw number of interlayer links between each pair of layers (amber colour scale). Click a non-empty cell to filter the histogram to that pair; a <strong>✕ Clear</strong> button resets to all pairs. For temporal networks with <code>directed_interlayer: true</code> the heatmap is asymmetric (e.g. 1982→1983 is distinct from 1983→1982).</li>
+    <li><strong>Interlayer</strong> — histogram paired with a count heatmap to its left. Heatmap cells show the raw number of interlayer links between each pair of layers (amber color scale). Click a non-empty cell to filter the histogram to that pair; a <strong>✕ Clear</strong> button resets to all pairs. For temporal networks with <code>directed_interlayer: true</code> the heatmap is asymmetric (e.g. 1982→1983 is distinct from 1983→1982).</li>
   </ul>
   <p>Only shown when the dataset has weighted edges (all weights = 1 still displays, confirming the network is unweighted).</p>
 
@@ -1299,7 +1299,7 @@ Ixodes_ricinus,0.003</code></pre>
   <!-- ── PROPERTY CALCULATIONS ───────────────────────────────────── -->
   <h2 class="sec mode-misc" id="calculations"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#374151" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="11" x2="8.01" y2="11"/><line x1="12" y1="11" x2="12.01" y2="11"/><line x1="16" y1="11" x2="16.01" y2="11"/><line x1="8" y1="15" x2="8.01" y2="15"/><line x1="12" y1="15" x2="12.01" y2="15"/></svg> Property Calculations</h2>
 
-  <p>MiRA computes a small set of basic structural properties for the network it is rendering. These serve two purposes: they provide quantitative summaries for first exploration of a dataset (primarily through <a href="#dashboard">Dashboard Mode</a>), and they feed the visualisation itself — for example, mapping node degree or strength to node size and colour in <a href="#network">Network Mode</a>, or producing the Dashboard statistics. By design, MiRA does <strong>not</strong> implement higher-order analyses (centrality, community detection, motif analysis, null-model comparison): these are well served by dedicated multilayer-analysis packages, and users are encouraged to compute them upstream and store the results as node, link, or layer attributes in the uploaded data, where they become immediately available for colour mapping and filtering.</p>
+  <p>MiRA computes a small set of basic structural properties for the network it is rendering. These serve two purposes: they provide quantitative summaries for first exploration of a dataset (primarily through <a href="#dashboard">Dashboard Mode</a>), and they feed the visualization itself — for example, mapping node degree or strength to node size and color in <a href="#network">Network Mode</a>, or producing the Dashboard statistics. By design, MiRA does <strong>not</strong> implement higher-order analyses (centrality, community detection, motif analysis, null-model comparison): these are well served by dedicated multilayer-analysis packages, and users are encouraged to compute them upstream and store the results as node, link, or layer attributes in the uploaded data, where they become immediately available for color mapping and filtering.</p>
 
   <h3 id="calc-notation">Notation</h3>
   <p>Let <em>L</em> be the number of layers and α, β index layers. <em>X<sub>α</sub></em> is the set of physical nodes present in layer α, with <em>N<sub>α</sub></em> = |<em>X<sub>α</sub></em>|, and <em>E<sub>α</sub></em> the set of <strong>deduplicated</strong> edges in layer α (undirected edges keyed by the sorted node pair, directed edges by <code>from→to</code>, so a pair is never double-counted). <em>a<sup>α</sup><sub>ij</sub></em> ≥ 0 is the weight of the intralayer edge <em>i→j</em> in layer α (0 if absent; defaults to 1 when the data give no weight); <em>a<sup>αβ</sup><sub>ij</sub></em> is the analogous interlayer weight between layers α ≠ β, covering both diagonal (<em>j</em> = <em>i</em>, replica) and off-diagonal (<em>j</em> ≠ <em>i</em>) couplings. <strong>𝟙[·]</strong> is 1 when its argument is true, else 0. Intralayer self-loops (<em>j</em> = <em>i</em>) are excluded from degree and strength. When an edge type is directed, MiRA reports in/out variants in place of the undirected scalar.</p>
@@ -1354,11 +1354,11 @@ Ixodes_ricinus,0.003</code></pre>
       <tr style="border-bottom:1px solid #f3f4f6;vertical-align:top;"><td style="padding:6px 8px;">Meta-edge weight — union</td><td style="padding:6px 8px;"><code>w<sub>meta</sub>(u,v) = 𝟙[∃ α : (u,v)∈E<sub>α</sub>]</code></td><td style="padding:6px 8px;">Unweighted union (always 1 if the edge appears in any layer).</td></tr>
       <tr style="border-bottom:1px solid #f3f4f6;vertical-align:top;"><td style="padding:6px 8px;">Meta-edge weight — sum-occurrence</td><td style="padding:6px 8px;"><code>w<sub>meta</sub>(u,v) = Σ<sub>α</sub> 𝟙[(u,v)∈E<sub>α</sub>]</code></td><td style="padding:6px 8px;">Counts the layers in which the edge appears.</td></tr>
       <tr style="border-bottom:1px solid #f3f4f6;vertical-align:top;"><td style="padding:6px 8px;">Meta-edge weight — sum-weights</td><td style="padding:6px 8px;"><code>w<sub>meta</sub>(u,v) = Σ<sub>α</sub> a<sup>α</sup><sub>uv</sub></code></td><td style="padding:6px 8px;">Sums layer-specific weights (<em>a<sup>α</sup><sub>uv</sub></em> = 0 if absent).</td></tr>
-      <tr style="border-bottom:1px solid #f3f4f6;vertical-align:top;"><td style="padding:6px 8px;">Meta-degree</td><td style="padding:6px 8px;"><code>k<sup>meta</sup>(v) = |{u : (u,v)∈E<sub>meta</sub>}|</code></td><td style="padding:6px 8px;">Distinct neighbours in the projection — not the same as inter-layer degree.</td></tr>
+      <tr style="border-bottom:1px solid #f3f4f6;vertical-align:top;"><td style="padding:6px 8px;">Meta-degree</td><td style="padding:6px 8px;"><code>k<sup>meta</sup>(v) = |{u : (u,v)∈E<sub>meta</sub>}|</code></td><td style="padding:6px 8px;">Distinct neighbors in the projection — not the same as inter-layer degree.</td></tr>
       <tr style="border-bottom:1px solid #f3f4f6;vertical-align:top;"><td style="padding:6px 8px;">Meta-strength</td><td style="padding:6px 8px;"><code>s<sup>meta</sup>(v) = Σ<sub>u:(u,v)∈E<sub>meta</sub></sub> w<sub>meta</sub>(u,v)</code></td><td style="padding:6px 8px;">Weighted analogue of meta-degree; weights from the selected mode above.</td></tr>
     </tbody>
   </table>
-  <p style="font-size:12px;color:#6b7280;"><strong>Edge canonicalisation</strong> is applied before aggregation: directed edges keep their order <code>(u,v)</code>; undirected edges use the sorted pair as the canonical key, so <code>(u,v)</code> and <code>(v,u)</code> are not double-counted.</p>
+  <p style="font-size:12px;color:#6b7280;"><strong>Edge canonicalization</strong> is applied before aggregation: directed edges keep their order <code>(u,v)</code>; undirected edges use the sorted pair as the canonical key, so <code>(u,v)</code> and <code>(v,u)</code> are not double-counted.</p>
 
   <hr>
 
@@ -1434,6 +1434,11 @@ multilayer_to_csv(net, dir = "out/", prefix = "net60", bipartite = TRUE)</code><
   </p>
   <p style="font-size:13px;color:#6b7280;">
     When citing or redistributing MiRA, please use the citation listed under <em>Cite</em> in the app's top bar and link back to this manual.
+  </p>
+  <p style="font-size:13px;color:#6b7280;">
+    <strong>Software archive:</strong> archived releases are deposited on Zenodo with a citable DOI —
+    <a href="https://doi.org/10.5281/zenodo.22096810" target="_blank" rel="noopener">10.5281/zenodo.22096810</a>
+    (concept DOI; always resolves to the latest version).
   </p>
 
 </main>

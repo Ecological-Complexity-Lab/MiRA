@@ -939,7 +939,7 @@ export class Renderer {
      * Build the focus set for a given physical node name.
      * Returns a Set of "layerName::nodeName" state-node keys that should be
      * shown at full opacity: the node itself (in every layer) plus its direct
-     * intralayer and interlayer neighbours.
+     * intralayer and interlayer neighbors.
      */
     _computeFocusSet(nodeName) {
         const set = new Set();
@@ -947,12 +947,12 @@ export class Renderer {
         for (const layer of this.model.layers) {
             set.add(`${layer.layer_name}::${nodeName}`);
         }
-        // 1-hop intralayer neighbours
+        // 1-hop intralayer neighbors
         for (const link of this.model.intralayerLinks) {
             if (link.node_from === nodeName) set.add(`${link.layer_to}::${link.node_to}`);
             if (link.node_to   === nodeName) set.add(`${link.layer_from}::${link.node_from}`);
         }
-        // 1-hop interlayer neighbours
+        // 1-hop interlayer neighbors
         for (const link of this.model.interlayerLinks) {
             if (link.node_from === nodeName) set.add(`${link.layer_to}::${link.node_to}`);
             if (link.node_to   === nodeName) set.add(`${link.layer_from}::${link.node_from}`);
