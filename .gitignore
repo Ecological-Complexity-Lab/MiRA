@@ -9,3 +9,6 @@ data/process/Kay2024/raw/interaction_*.csv
 
 # Third-party reference clones (re-clone from upstream rather than vendor).
 data/process/Kay2024/AntSocialNetworkComparative-main/
+
+# Anonymized review build (regenerate with scripts/make_anonymous.py).
+anonymous-build/
