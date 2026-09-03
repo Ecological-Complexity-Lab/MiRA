@@ -26,8 +26,8 @@ layer placement, temporal and multiplex networks, and directed links.
 - [Temporal network visualization](https://mira.ecomplab.com/tutorial-temporal.html): visualizing change across time in a temporal multilayer network.
 - [Multilayer brain network visualization](https://mira.ecomplab.com/tutorial-brain-network.html): visualizing a multilayer human brain connectome.
 
-## Why MiRA
-- [Why MiRA](https://mira.ecomplab.com/whymira.html): why MiRA is the browser-based, no-code tool for interactive multilayer network visualization, and how it relates to muxViz, Arena3Dweb, Gephi, and Cytoscape.
+## About
+- [About MiRA](https://mira.ecomplab.com/about.html): why MiRA is the browser-based, no-code tool for interactive multilayer network visualization, and how it relates to muxViz, Arena3Dweb, Gephi, and Cytoscape.
 
 ## Source and citation
 - [GitHub repository](https://github.com/Ecological-Complexity-Lab/MiRA): source code, issue tracker, CC BY-NC-SA 4.0.
