@@ -1,7 +1,7 @@
 /**
  * tests/faqSchema.test.js — FAQ structured-data sync.
  *
- * whymira.html carries the FAQ twice: once as visible <details> markup and once
+ * about.html carries the FAQ twice: once as visible <details> markup and once
  * as a FAQPage JSON-LD block for search and answer engines. Google requires the
  * schema to reflect the visible page, so the two must not drift apart. These
  * tests fail if they do.
@@ -11,7 +11,7 @@ import { readFileSync } from 'fs'
 import { resolve, dirname } from 'path'
 import { fileURLToPath } from 'url'
 
-const PAGE_PATH = resolve(dirname(fileURLToPath(import.meta.url)), '../whymira.html')
+const PAGE_PATH = resolve(dirname(fileURLToPath(import.meta.url)), '../about.html')
 const JSON_LD_RE = /<script type="application\/ld\+json">([\s\S]*?)<\/script>/g
 const FAQ_ITEM_RE = /<summary>([\s\S]*?)<\/summary>\s*<p>([\s\S]*?)<\/p>/g
 
@@ -44,7 +44,7 @@ function readVisibleFaq() {
   }))
 }
 
-describe('whymira.html — FAQ structured data', () => {
+describe('about.html — FAQ structured data', () => {
   it('every JSON-LD block is valid JSON', () => {
     expect(() => parseJsonLdBlocks()).not.toThrow()
     expect(parseJsonLdBlocks().length).toBeGreaterThan(0)
