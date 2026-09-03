@@ -107,7 +107,7 @@ print(f"source: {SRC}\noutput: {OUT}")
 if OUT.exists(): shutil.rmtree(OUT)
 OUT.mkdir(parents=True)
 
-for f in ["index.html", "compare.html", "data-format.html"] + [p.name for p in SRC.glob("tutorial-*.html")]:
+for f in ["index.html", "about.html", "data-format.html"] + [p.name for p in SRC.glob("tutorial-*.html")]:
     shutil.copy(SRC / f, OUT / f)
 for d in ["css", "js", "assets", "data"]:
     shutil.copytree(SRC / d, OUT / d, ignore=shutil.ignore_patterns(".DS_Store"))
@@ -119,7 +119,7 @@ shutil.copy(SRC / "docs/manual.html", OUT / "docs/manual.html")
 pages = list(OUT.glob("*.html")) + [OUT / "docs/manual.html"]
 
 # structural removals first
-strip_blocks(OUT / "compare.html", [r'\s*<div class="cite">.*?</div>',
+strip_blocks(OUT / "about.html", [r'\s*<div class="cite">.*?</div>',
                                     r'\s*<details>\s*<summary>How do I cite MiRA\?.*?</details>',
                                     r'\s*<footer class="site">.*?</footer>'])
 strip_blocks(OUT / "docs/manual.html", [r'\s*<p[^>]*>\s*<strong>Software archive:</strong>.*?</p>'])
