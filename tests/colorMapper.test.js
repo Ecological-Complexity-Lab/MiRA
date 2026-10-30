@@ -288,3 +288,51 @@ describe('Group 6 — Return object shape', () => {
     expect(result.canToggle).toBe(false)
   })
 })
+
+// ── Group 7 — Shared domain (bipartite sets colored separately) ──────────────
+//
+// In separate-scheme mode each set builds its own scale, but category → color
+// must stay identical across sets. domainItems supplies the population that
+// fixes the category order and the scale type; items still drives the
+// continuous range and the legend entries.
+
+describe('Group 7 — domainItems', () => {
+  let cm
+  beforeEach(() => { cm = new ColorMapper() })
+
+  it('7.1 a category keeps its color when the other set lacks earlier categories', () => {
+    // Pollinators have modules 1,2,3; plants only 1 and 3. Without a shared
+    // domain, plants' module 3 would take module 2's palette slot.
+    const pollinators = items('module', ['m1', 'm2', 'm3'])
+    const plants = items('module', ['m1', 'm3'])
+    const all = [...pollinators, ...plants]
+    const scA = cm.buildColorScale(pollinators, 'module', null, all)
+    const scB = cm.buildColorScale(plants, 'module', null, all)
+    expect(scB.scaleFn('m3')).toBe(scA.scaleFn('m3'))
+    expect(scB.scaleFn('m1')).toBe(scA.scaleFn('m1'))
+  })
+
+  it('7.2 without domainItems the slots shift (documents the bug being fixed)', () => {
+    const scA = cm.buildColorScale(items('module', ['m1', 'm2', 'm3']), 'module')
+    const scB = cm.buildColorScale(items('module', ['m1', 'm3']), 'module')
+    expect(scB.scaleFn('m3')).not.toBe(scA.scaleFn('m3'))
+  })
+
+  it('7.3 the legend map lists only categories present in items', () => {
+    const plants = items('module', ['m1', 'm3'])
+    const all = [...items('module', ['m1', 'm2', 'm3']), ...plants]
+    const sc = cm.buildColorScale(plants, 'module', null, all)
+    expect([...sc.map.keys()]).toEqual(['m1', 'm3'])
+  })
+
+  it('7.4 the scale type comes from the domain, the range from items', () => {
+    // On its own, a set with two numeric values on a generic name would be
+    // categorical; the domain (3+ values) makes both sets continuous.
+    const setB = items('score', [1, 2])
+    const all = [...items('score', [1, 5, 9]), ...setB]
+    const sc = cm.buildColorScale(setB, 'score', null, all)
+    expect(sc.type).toBe('continuous')
+    expect(sc.min).toBe(1)
+    expect(sc.max).toBe(2)
+  })
+})

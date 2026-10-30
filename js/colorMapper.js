@@ -46,16 +46,23 @@ export class ColorMapper {
      * Build a color mapping for a given attribute across a collection of items.
      * Returns a function: value -> color
      */
-    buildColorScale(items, attrName, forceType = null) {
+    buildColorScale(items, attrName, forceType = null, domainItems = null) {
         const values = items.map(item => item[attrName]).filter(v => v !== undefined && v !== null);
-        const uniqueValues = [...new Set(values)].sort((a, b) => {
+        // domainItems: a wider population (e.g. both bipartite sets) that fixes the
+        // scale type and the category → color assignment, so the same category
+        // gets the same color wherever it appears. The continuous range still
+        // comes from `items`.
+        const domainValues = domainItems
+            ? domainItems.map(item => item[attrName]).filter(v => v !== undefined && v !== null)
+            : values;
+        const uniqueValues = [...new Set(domainValues)].sort((a, b) => {
             const na = Number(a), nb = Number(b);
             if (!isNaN(na) && !isNaN(nb)) return na - nb;
             return String(a).localeCompare(String(b));
         });
 
         // Check if numeric. We allow numbers and string-represented numbers (excluding pure whitespace).
-        const allNumeric = values.length > 0 && values.every(v =>
+        const allNumeric = domainValues.length > 0 && domainValues.every(v =>
             (typeof v === 'number' && !isNaN(v)) || (typeof v === 'string' && v.trim() !== '' && !isNaN(Number(v)))
         );
 
@@ -101,7 +108,12 @@ export class ColorMapper {
                 if (value === undefined || value === null) return '#6b7280';
                 return colorMap.get(value) || '#6b7280';
             };
-            return { type: 'categorical', map: colorMap, attrName, scaleFn, canToggle, warnings };
+            // The legend lists only the categories present in `items`.
+            const presentValues = new Set(values);
+            const legendMap = domainItems
+                ? new Map([...colorMap].filter(([val]) => presentValues.has(val)))
+                : colorMap;
+            return { type: 'categorical', map: legendMap, attrName, scaleFn, canToggle, warnings };
         }
     }
 }
