@@ -72,7 +72,7 @@ describe('Group 1 — project(): zero-skew identity', () => {
   let r
   beforeEach(() => { r = makeIdentityRenderer() })
 
-  it('1.1 centre point (halfW, halfH) at layer 0 maps to itself', () => {
+  it('1.1 center point (halfW, halfH) at layer 0 maps to itself', () => {
     const p = r.project(175, 125, 0)   // halfW=175, halfH=125
     expect(p.x).toBeCloseTo(175, 5)
     expect(p.y).toBeCloseTo(125, 5)

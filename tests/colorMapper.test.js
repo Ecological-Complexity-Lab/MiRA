@@ -19,7 +19,7 @@
  *   Group 2  Auto-detection → categorical
  *   Group 3  Auto-detection → continuous
  *   Group 4  Edge cases / suspected bugs
- *   Group 5  scaleFn behaviour
+ *   Group 5  scaleFn behavior
  *   Group 6  Return object shape
  *
  * KEY DESIGN NOTE — the "> 2 unique values" threshold
@@ -197,10 +197,10 @@ describe('Group 4 — Edge cases and suspected bugs', () => {
 })
 
 
-// ── Group 5 — scaleFn behaviour ──────────────────────────────────────────────
-// Verifies the returned scaleFn maps values to the correct colours.
+// ── Group 5 — scaleFn behavior ──────────────────────────────────────────────
+// Verifies the returned scaleFn maps values to the correct colors.
 
-describe('Group 5 — scaleFn behaviour', () => {
+describe('Group 5 — scaleFn behavior', () => {
   let cm
   beforeEach(() => { cm = new ColorMapper() })
 
@@ -236,7 +236,7 @@ describe('Group 5 — scaleFn behaviour', () => {
   })
 
   it('5.6 categorical: cycles through palette when there are more categories than palette size', () => {
-    // ColorBrewer Dark2 has 8 colours; the 9th category wraps back to colour index 0
+    // ColorBrewer Dark2 has 8 colors; the 9th category wraps back to color index 0
     const manyGroups = Array.from({ length: 9 }, (_, i) => `group_${i}`)
     const { scaleFn, map } = cm.buildColorScale(items('g', manyGroups), 'g')
     expect(scaleFn('group_0')).toBe(scaleFn('group_8'))  // wraps to same color

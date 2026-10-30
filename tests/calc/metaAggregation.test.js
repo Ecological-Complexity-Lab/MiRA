@@ -74,7 +74,7 @@ describe('Group calc/metaAggregation', () => {
     expect(ab.perLayer.find(p => p.layerName === 'L2').weight).toBe(5)
   })
 
-  it('undirected canonicalisation: A→B and B→A collapse into one meta-edge', () => {
+  it('undirected canonicalization: A→B and B→A collapse into one meta-edge', () => {
     // Even if user data lists both directions on different layers, the
     // sorted (min, max) key keeps them as one meta-edge.
     const input = makeFixture()

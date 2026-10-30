@@ -85,7 +85,7 @@ export function csvToJson(edgeListText, layersText, nodesText, stateNodesText, o
             const out = { ...row };
             if (!out.layer_id) out.layer_id = i + 1;
             else out.layer_id = isNaN(Number(out.layer_id)) ? out.layer_id : Number(out.layer_id);
-            // Normalise lat/lon capitalisation
+            // Normalize lat/lon capitalization
             for (const [k, v] of Object.entries(out)) {
                 const kl = k.toLowerCase();
                 if (kl === 'latitude'  && k !== 'latitude')  { out.latitude  = v; delete out[k]; }

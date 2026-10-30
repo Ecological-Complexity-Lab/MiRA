@@ -110,7 +110,7 @@ function svgStackedBar(items, {
 }
 
 /**
- * Histogram with integer-labelled bins.
+ * Histogram with integer-labeled bins.
  * bins: [{x0, count}]
  */
 function svgHist(bins, { width = 300, height = 160, color = BAR_FILL, xLabel = '', yLabel = 'Nodes' } = {}) {
@@ -176,7 +176,7 @@ function svgHeatmap(matrix, labels, { accentColor = ACCENT, cellSize = 36 } = {}
     const HDR_H   = Math.min(maxLen * 6.2 + 10, 120);
     const showTxt = cellSize >= 30;
 
-    // Luminance of accent at full saturation — determines text colour crossover
+    // Luminance of accent at full saturation — determines text color crossover
     const [ar, ag, ab] = _hexToRgb(accentColor);
     const accentLum = (ar * 0.299 + ag * 0.587 + ab * 0.114) / 255;
 
@@ -729,7 +729,7 @@ export class Dashboard {
         }
         const maxCount = Math.max(...countMat.flat(), 1);
 
-        // Normalised (0–1) for colour, raw count for cell text + data attrs
+        // Normalized (0–1) for color, raw count for cell text + data attrs
         const cellSize = n <= 8 ? 28 : n <= 14 ? 20 : n <= 22 ? 14 : 10;
         const maxLen   = Math.max(...layerNames.map(l => l.length));
         const LABEL_W  = Math.min(maxLen * 6.2 + 10, 130);

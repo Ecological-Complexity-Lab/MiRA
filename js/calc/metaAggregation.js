@@ -8,7 +8,7 @@
  *   - 'sumOccurrence' — w = number of layers in which the edge appears
  *   - 'sumWeights'    — w = Σ_ℓ w_ℓ(u, v) (per-layer weights summed)
  *
- * Edge canonicalisation: directed networks keep `(a, b)` as listed;
+ * Edge canonicalization: directed networks keep `(a, b)` as listed;
  * undirected networks sort `(a, b)` so that `(min, max)` is the
  * canonical key. Prevents `(A,B)` and `(B,A)` from being two edges.
  */

@@ -12,8 +12,9 @@
 [![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 [![R package: emln](https://img.shields.io/badge/R%20package-emln-blue.svg)](https://github.com/Ecological-Complexity-Lab/emln)
 [![arXiv](https://img.shields.io/badge/arXiv-2605.09597-b31b1b.svg)](https://doi.org/10.48550/arXiv.2605.09597)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22096810.svg)](https://doi.org/10.5281/zenodo.22096810)
 
-An interactive, browser-based visualization tool for multilayer networks. While developed with biology in mind, MiRA can render any multilayer network. Available as a standalone web app and also fully integrated into the [`emln`](https://github.com/Ecological-Complexity-Lab/emln) R package.
+MiRA (Multilayer Interactive Rendering Application) is a free, browser-based, installation-free tool for interactive visualization of multilayer networks in ecology and biology. While developed with biology in mind, MiRA can render any multilayer network. Available as a standalone web app and also fully integrated into the [`emln`](https://github.com/Ecological-Complexity-Lab/emln) R package.
 
 
 ## 📄 Documentation and help
@@ -65,7 +66,7 @@ multilayer_to_csv(net, path = "my_network/")
 ```
 
 ## App development process
-We developed the MiRA codebase using an AI-assisted workflow. Initial scaffolding and iterative feature implementation were carried out using Claude Code (Anthropic), an agentic AI programming tool, with Claude Sonnet~4.6 used for a few routine implementation tasks but with the bulk use of Claude Opus~4.7 and 4.8 used for complex architectural decisions and refactoring. Human oversight was applied throughout: all AI-generated code was reviewed, debugged, and revised. We paid particular attention to calculation of properties, domain-specific logic, including bipartite layout computation, geographic placement of layers, multilayer data structure validation, and EMLN integration. The codebase was audited periodically to identify inconsistencies between behavior and documentation, to enforce modularity via refactoring, and to remove redundancy introduced during iterative development.
+We developed the MiRA codebase using an AI-assisted workflow. Initial scaffolding and iterative feature implementation were carried out using Claude Code (Anthropic), an agentic AI programming tool, with Claude Sonnet~4.6 used for a few routine implementation tasks but with the bulk use of Claude Opus 4.7 and 4.8 used for complex architectural decisions and refactoring. Human oversight was applied throughout: all AI-generated code was reviewed, debugged, and revised. We paid particular attention to calculation of properties and to domain-specific logic, including bipartite layout computation, geographic placement of layers, multilayer data structure validation, and EMLN integration. The codebase was audited periodically to identify inconsistencies between behavior and documentation, to enforce modularity via refactoring, and to remove redundancy introduced during iterative development. The authors take full responsibility for the code.
 
 ## Feedback and issues
 

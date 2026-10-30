@@ -1,0 +1,46 @@
+cff-version: 1.2.0
+message: "If you use MiRA, please cite the preprint (preferred-citation) and, where relevant, the archived software release below."
+title: "MiRA — Multilayer Interactive Rendering Application"
+abstract: "MiRA (Multilayer Interactive Rendering Application) is a free, browser-based, installation-free tool for interactive visualization of multilayer networks in ecology and biology."
+type: software
+authors:
+  - family-names: Nehoray
+    given-names: Shir Miryam
+    orcid: "https://orcid.org/0009-0001-8453-4426"
+    affiliation: "Department of Life Sciences, Ben-Gurion University of the Negev, Israel"
+  - family-names: Bloch
+    given-names: Yuval
+    affiliation: "Department of Life Sciences, Ben-Gurion University of the Negev, Israel"
+  - family-names: Pilosof
+    given-names: Shai
+    orcid: "https://orcid.org/0000-0003-0430-5568"
+    affiliation: "Department of Life Sciences, Ben-Gurion University of the Negev, Israel"
+repository-code: "https://github.com/Ecological-Complexity-Lab/MiRA"
+url: "https://mira.ecomplab.com"
+license: CC-BY-NC-SA-4.0
+version: "1.1"
+date-released: "2026-08-25"
+doi: 10.5281/zenodo.22096810
+keywords:
+  - multilayer network
+  - multiplex network
+  - network visualization
+  - ecological network
+  - bipartite network
+  - temporal network
+preferred-citation:
+  type: article
+  title: "Interactively visualizing biological multilayer networks using MiRA"
+  authors:
+    - family-names: Nehoray
+      given-names: Shir Miryam
+      orcid: "https://orcid.org/0009-0001-8453-4426"
+    - family-names: Bloch
+      given-names: Yuval
+    - family-names: Pilosof
+      given-names: Shai
+      orcid: "https://orcid.org/0000-0003-0430-5568"
+  journal: "arXiv"
+  year: 2026
+  doi: 10.48550/arXiv.2605.09597
+  url: "https://doi.org/10.48550/arXiv.2605.09597"

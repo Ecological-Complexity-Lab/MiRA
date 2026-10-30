@@ -6,12 +6,12 @@
  *   parseCsv(text)
  *     Converts raw CSV/TSV text to an array of plain objects.
  *     Responsibilities: delimiter detection, quoted-field parsing, line-ending
- *     normalisation, blank-line skipping, whitespace trimming.
+ *     normalization, blank-line skipping, whitespace trimming.
  *
  *   csvToJson(edgeListText, layersText, nodesText, stateNodesText, options)
  *     Converts the four optional CSVs into the JSON shape expected by
  *     parseMultilayerData(). Responsibilities: column validation, layer/node
- *     auto-derivation, field normalisation (lat/lon casing, node_type → group),
+ *     auto-derivation, field normalization (lat/lon casing, node_type → group),
  *     weight defaulting, state_node generation, per-(layer,node) attribute merging.
  *
  * TEST STRUCTURE
@@ -36,7 +36,7 @@
  *   Escaped quotes      — Species names with quotation marks (Group 2.2)
  *   Missing weight col  — User forgets to name the column "weight" (Group 4.2)
  *   Empty weight value  — Row with no weight value (Group 6.4)
- *   Capitalised lat/lon — Some GIS exports use "Latitude" not "latitude" (Group 6.1)
+ *   Capitalized lat/lon — Some GIS exports use "Latitude" not "latitude" (Group 6.1)
  *   node_type / type    — Two common column names for bipartite node sets (Groups 6.2/6.3)
  */
 
@@ -110,7 +110,7 @@ describe('Group 2 — parseCsv: quoted fields (RFC 4180)', () => {
 
 describe('Group 3 — parseCsv: robustness to common CSV errors', () => {
   it('3.1 CRLF line endings (Windows Notepad / Excel default export)', () => {
-    // Excel on Windows saves CSV with \r\n. parseCsv must normalise these
+    // Excel on Windows saves CSV with \r\n. parseCsv must normalize these
     // before splitting on \n, otherwise each value would have a trailing \r.
     const rows = parseCsv('a,b\r\n1,2\r\n3,4')
     expect(rows).toHaveLength(2)
@@ -208,12 +208,12 @@ describe('Group 5 — csvToJson: auto-derivation of layers and nodes', () => {
 })
 
 
-// ── Group 6 — csvToJson: field normalisation ─────────────────────────────────
-// Different export tools use different capitalisation and column names.
-// csvToJson normalises these so downstream code only needs to handle one form.
+// ── Group 6 — csvToJson: field normalization ─────────────────────────────────
+// Different export tools use different capitalization and column names.
+// csvToJson normalizes these so downstream code only needs to handle one form.
 
-describe('Group 6 — csvToJson: field normalisation', () => {
-  it('6.1 "Latitude"/"Longitude" (any capitalisation) are normalised to lowercase', () => {
+describe('Group 6 — csvToJson: field normalization', () => {
+  it('6.1 "Latitude"/"Longitude" (any capitalization) are normalized to lowercase', () => {
     // Some GIS tools export with capital first letter. The renderer expects lowercase.
     const edges  = 'layer_from,node_from,layer_to,node_to\nL1,A,L1,B'
     const layers = 'layer_name,Latitude,Longitude\nL1,48.5,2.3'
@@ -346,7 +346,7 @@ describe('Group 8 — Integration: toy CSV fixtures → parseMultilayerData()', 
 
   it('8.4 extra edge columns appear in model.linkAttributeNames', () => {
     // Extra columns are forwarded through extended[] and must be discoverable
-    // by the colour/size dropdowns, which read linkAttributeNames.
+    // by the color/size dropdowns, which read linkAttributeNames.
     const { json } = csvToJson(loadFixture('edges_extra_columns.csv'))
     const model = parseMultilayerData(json)
     expect(model.linkAttributeNames).toContain('method')

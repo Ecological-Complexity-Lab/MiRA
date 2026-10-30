@@ -9,7 +9,7 @@
  *   bipartite     — deterministic: two rows (setA top, setB bottom)
  *   random        — non-deterministic: uniform random positions
  *   fruchterman   — non-deterministic: force-directed (Fruchterman-Reingold)
- *   kamada_kawai  — non-deterministic: energy-minimisation with Floyd-Warshall
+ *   kamada_kawai  — non-deterministic: energy-minimization with Floyd-Warshall
  *
  * TESTING STRATEGY
  * ─────────────────
@@ -104,7 +104,7 @@ function allInBounds(posMap, width = WIDTH, height = HEIGHT, pad = PAD) {
 
 
 // ── Group 1 — _rescaleToFit ───────────────────────────────────────────────────
-// _rescaleToFit normalises raw positions into [pad, width-pad] × [pad, height-pad].
+// _rescaleToFit normalizes raw positions into [pad, width-pad] × [pad, height-pad].
 // It is called by every algorithm except bipartite.
 
 describe('Group 1 — _rescaleToFit', () => {
@@ -128,14 +128,14 @@ describe('Group 1 — _rescaleToFit', () => {
     expect(Math.max(...ys)).toBeCloseTo(HEIGHT - PAD, 5)
   })
 
-  it('1.2 single node is placed at the centre of the layer', () => {
+  it('1.2 single node is placed at the center of the layer', () => {
     const raw = new Map([['A', { x: 99, y: 42 }]])
     const result = layout._rescaleToFit(raw)
     expect(result.get('A').x).toBeCloseTo(WIDTH / 2, 5)
     expect(result.get('A').y).toBeCloseTo(HEIGHT / 2, 5)
   })
 
-  it('1.3 all nodes at the same position are placed at the centre (no division by zero)', () => {
+  it('1.3 all nodes at the same position are placed at the center (no division by zero)', () => {
     const raw = new Map([
       ['A', { x: 50, y: 50 }],
       ['B', { x: 50, y: 50 }],
@@ -177,7 +177,7 @@ describe('Group 2 — circle layout', () => {
     expect([...layerPos.keys()]).toEqual(expect.arrayContaining(['A', 'B', 'C', 'D']))
   })
 
-  it('2.2 all nodes lie on a circle (equal distance from centre) — raw positions before rescale', () => {
+  it('2.2 all nodes lie on a circle (equal distance from center) — raw positions before rescale', () => {
     // _rescaleToFit applies independent X/Y scaling which turns a circle into an ellipse.
     // The circle property must be checked on raw positions from _layoutCircle directly.
     const raw = layout._layoutCircle(['A', 'B', 'C', 'D', 'E'])
@@ -197,11 +197,11 @@ describe('Group 2 — circle layout', () => {
     expect(dist(pB, pC)).toBeCloseTo(dist(pA, pC), 3)
   })
 
-  it('2.4 single node is placed at the centre', () => {
+  it('2.4 single node is placed at the center', () => {
     const model = makeModel(['A'])
     const positions = layout.computeLayout(model)
     const p = positions.get(LAYER).get('A')
-    // After _rescaleToFit with one node → centre
+    // After _rescaleToFit with one node → center
     expect(p.x).toBeCloseTo(WIDTH / 2, 3)
     expect(p.y).toBeCloseTo(HEIGHT / 2, 3)
   })
@@ -282,7 +282,7 @@ describe('Group 4 — bipartite layout', () => {
     expect(positions.get(LAYER).size).toBe(5)
   })
 
-  it('4.3 single node in a row is centred horizontally', () => {
+  it('4.3 single node in a row is centered horizontally', () => {
     const { model, bipartiteInfo } = makeBipartiteModel(['P1'], ['B1', 'B2'])
     layout = new ForceLayout({ layoutType: 'bipartite', layerWidth: WIDTH, layerHeight: HEIGHT })
     layout.bipartiteInfo = bipartiteInfo
@@ -290,7 +290,7 @@ describe('Group 4 — bipartite layout', () => {
     expect(positions.get(LAYER).get('P1').x).toBeCloseTo(WIDTH / 2, 3)
   })
 
-  it('4.4 fallback to single centre row when bpInfo is missing', () => {
+  it('4.4 fallback to single center row when bpInfo is missing', () => {
     // When no bipartiteInfo is set, all nodes should land on y = HEIGHT/2
     const model = makeModel(['A', 'B', 'C'])
     layout = new ForceLayout({ layoutType: 'bipartite', layerWidth: WIDTH, layerHeight: HEIGHT })
@@ -393,7 +393,7 @@ describe('Group 6 — Fruchterman-Reingold layout', () => {
     expect(allInBounds(positions.get(LAYER))).toBe(true)
   })
 
-  it('6.4 single node does not crash and is placed at centre', () => {
+  it('6.4 single node does not crash and is placed at center', () => {
     const model = makeModel(['A'])
     expect(() => layout.computeLayout(model)).not.toThrow()
     const p = layout.computeLayout(model).get(LAYER).get('A')
@@ -421,7 +421,7 @@ describe('Group 6 — Fruchterman-Reingold layout', () => {
 
 
 // ── Group 7 — Kamada-Kawai layout ────────────────────────────────────────────
-// Energy-minimisation. Uses Floyd-Warshall for shortest paths.
+// Energy-minimization. Uses Floyd-Warshall for shortest paths.
 // Only structural properties tested, plus disconnected graph robustness.
 
 describe('Group 7 — Kamada-Kawai layout', () => {
