@@ -2063,3 +2063,42 @@ body {
   object-fit: contain;
   border-radius: 8px;
 }
+
+/* ---- Node color/size channel header with the shared / per-set toggle ---- */
+.node-channel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.set-split-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 7px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.03);
+  color: #555;
+  font-family: inherit;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.set-split-toggle[hidden] { display: none; }
+.set-split-toggle:hover { border-color: rgba(139, 92, 246, 0.6); }
+.set-split-toggle .icon-split { display: none; }
+.set-split-toggle[aria-pressed="true"] {
+  background: rgba(139, 92, 246, 0.12);
+  border-color: rgba(139, 92, 246, 0.5);
+  color: #6d28d9;
+}
+.set-split-toggle[aria-pressed="true"] .icon-linked { display: none; }
+.set-split-toggle[aria-pressed="true"] .icon-split { display: inline; }
+
+.set-sublabel {
+  display: block;
+  margin-top: 4px;
+  font-size: 11px;
+  color: #666;
+}
