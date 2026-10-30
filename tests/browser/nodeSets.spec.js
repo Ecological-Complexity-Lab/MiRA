@@ -63,6 +63,7 @@ async function toggleState(page) {
     return {
       color: btn('nodeColorSplitToggle'),
       size: btn('nodeSizeSplitToggle'),
+      shape: btn('nodeShapeSplitToggle'),
       sharedColorVisible: vis('colorByContainer'),
       splitColorVisible: vis('bipartiteColorByContainer'),
       sharedSizeVisible: vis('sizeByContainer'),
@@ -149,6 +150,7 @@ test('unipartite network hides both toggles and the Set option', async ({ page }
   const s = await toggleState(page)
   expect(s.color.hidden).toBe(true)
   expect(s.size.hidden).toBe(true)
+  expect(s.shape.hidden).toBe(true)
   expect(await page.inputValue('#nodeColorSelect')).toBe('')
   expect(await page.locator('#nodeColorSelect option[value="set:membership"]').count()).toBe(0)
 })
@@ -321,6 +323,70 @@ for (const [layout, expectSplit] of [['bipartite', true], ['kamada_kawai', false
     const s = await toggleState(page)
     expect(s.color.pressed).toBe(expectSplit)
     expect(s.size.pressed).toBe(expectSplit)
-    expect(s.hasShapes).toBe(expectSplit)
+    expect(s.shape.pressed).toBe(false) // shapes did not exist in v1
+    expect(s.hasShapes).toBe(false)
   })
 }
+
+// ── Shape channel ────────────────────────────────────────────────────────────
+
+test('shared shape applies to every node, also in a unipartite network', async ({ page }) => {
+  await loadDemoDataset(page, 'keresztes2022_connectome')
+  await selectNodeOption(page, 'nodeShapeSelect', 'square')
+  const nodes = await renderedNodes(page)
+  expect(new Set(nodes.map(n => n.shape))).toEqual(new Set(['square']))
+  await selectNodeOption(page, 'nodeShapeSelect', 'circle')
+  expect((await toggleState(page)).hasShapes).toBe(false)
+})
+
+test('automatic shape split shows a shape legend and follows color', async ({ page }) => {
+  await loadDemoDataset(page, 'pilosof2017')
+  await clickToggle(page, 'nodeColorSplitToggle')
+  const s = await toggleState(page)
+  expect(s.shape.pressed).toBe(true)
+  expect(await page.inputValue('#nodeShapeSelectSetA')).toBe('circle')
+  expect(await page.inputValue('#nodeShapeSelectSetB')).toBe('square')
+  await expect(page.locator('#legendPanel')).toContainText('Node Shape')
+  await clickToggle(page, 'nodeColorSplitToggle')
+  expect((await toggleState(page)).shape.pressed).toBe(false)
+  await expect(page.locator('#legendPanel')).not.toContainText('Node Shape')
+})
+
+test('a shape edit by the user survives un-splitting color', async ({ page }) => {
+  await loadDemoDataset(page, 'pilosof2017')
+  await clickToggle(page, 'nodeColorSplitToggle')
+  await selectNodeOption(page, 'nodeShapeSelectSetA', 'square')
+  await selectNodeOption(page, 'nodeShapeSelectSetB', 'circle')
+  await clickToggle(page, 'nodeColorSplitToggle')
+  const s = await toggleState(page)
+  expect(s.shape.pressed).toBe(true)
+  const nodes = await renderedNodes(page)
+  const shapeOf = type => new Set(nodes.filter(n => n.type === type).map(n => n.shape))
+  // parasite is Set A in pilosof2017 (setA_type)
+  expect(shapeOf('parasite')).toEqual(new Set(['square']))
+  expect(shapeOf('host')).toEqual(new Set(['circle']))
+})
+
+test('shape split can be used on its own, with color and size shared', async ({ page }) => {
+  await loadDemoDataset(page, 'pilosof2017')
+  await clickToggle(page, 'nodeShapeSplitToggle')
+  const s = await toggleState(page)
+  expect(s.shape.pressed).toBe(true)
+  expect(s.color.pressed).toBe(false)
+  expect(s.hasShapes).toBe(true)
+  await clickToggle(page, 'nodeShapeSplitToggle')
+  expect((await toggleState(page)).hasShapes).toBe(false)
+})
+
+test('session round-trip restores manual shapes', async ({ page }, testInfo) => {
+  await loadDemoDataset(page, 'pilosof2017')
+  await clickToggle(page, 'nodeShapeSplitToggle')
+  await selectNodeOption(page, 'nodeShapeSelectSetA', 'square')
+  const path = await saveSessionToFile(page, testInfo)
+  await page.goto('/')
+  await waitForAppReady(page)
+  await loadSessionFile(page, path)
+  expect((await toggleState(page)).shape.pressed).toBe(true)
+  expect(await page.inputValue('#nodeShapeSelectSetA')).toBe('square')
+  expect(await page.inputValue('#nodeShapeSelectSetB')).toBe('square')
+})

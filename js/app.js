@@ -19,6 +19,7 @@ import { initFeedback } from './feedback.js';
 import { initExportManager } from './exportManager.js';
 import { GridView } from './gridView.js';
 import { buildNodeSetResolver, collectSetItems, SET_A, SET_B } from './nodeSets.js';
+import { SHAPE_CIRCLE, SHAPE_SQUARE } from './nodeShapes.js';
 
 // ---- State ----
 let model = null;
@@ -55,6 +56,10 @@ function applyCategoryOverride(attrName, value, fallback) {
 let nodeSetResolver = buildNodeSetResolver(null);
 let nodeColorSplit = false;
 let nodeSizeSplit = false;
+let nodeShapeSplit = false;
+// True while the shape split was switched on automatically (by splitting
+// color or size). Any direct shape edit makes the shape choice the user's.
+let nodeShapeAuto = false;
 
 // Shared-mode color option that colors nodes by their set.
 const SET_COLOR_VALUE = 'set:membership';
@@ -63,6 +68,7 @@ const NO_SET_COLOR = '#6b7280';
 
 function isColorSplit() { return nodeSetResolver.hasSets && nodeColorSplit; }
 function isSizeSplit()  { return nodeSetResolver.hasSets && nodeSizeSplit; }
+function isShapeSplit() { return nodeSetResolver.hasSets && nodeShapeSplit; }
 
 function setSplitToggleState(button, split) {
     button.hidden = !nodeSetResolver.hasSets;
@@ -77,8 +83,11 @@ function applyBipartiteUIVisibility() {
     bipartiteColorByContainer.style.display = isColorSplit() ? '' : 'none';
     sizeByContainer.style.display           = isSizeSplit() ? 'none' : '';
     bipartiteSizeByContainer.style.display  = isSizeSplit() ? '' : 'none';
+    shapeByContainer.style.display          = isShapeSplit() ? 'none' : '';
+    bipartiteShapeByContainer.style.display = isShapeSplit() ? '' : 'none';
     setSplitToggleState(nodeColorSplitToggle, isColorSplit());
     setSplitToggleState(nodeSizeSplitToggle, isSizeSplit());
+    setSplitToggleState(nodeShapeSplitToggle, isShapeSplit());
 }
 
 // ---- EMLN mode detection ----
@@ -128,6 +137,14 @@ const bipartiteSizeLabelB = document.getElementById('bipartiteSizeLabelB');
 const nodeSizeSelectSetA = document.getElementById('nodeSizeSelectSetA');
 const nodeColorSplitToggle = document.getElementById('nodeColorSplitToggle');
 const nodeSizeSplitToggle  = document.getElementById('nodeSizeSplitToggle');
+const nodeShapeSplitToggle = document.getElementById('nodeShapeSplitToggle');
+const shapeByContainer          = document.getElementById('shapeByContainer');
+const bipartiteShapeByContainer = document.getElementById('bipartiteShapeByContainer');
+const nodeShapeSelect     = document.getElementById('nodeShapeSelect');
+const nodeShapeSelectSetA = document.getElementById('nodeShapeSelectSetA');
+const nodeShapeSelectSetB = document.getElementById('nodeShapeSelectSetB');
+const bipartiteShapeLabelA = document.getElementById('bipartiteShapeLabelA');
+const bipartiteShapeLabelB = document.getElementById('bipartiteShapeLabelB');
 const nodeSizeSelectSetB = document.getElementById('nodeSizeSelectSetB');
 const layerColorSelect = document.getElementById('layerColorSelect');
 const layerColorSwatches = document.getElementById('layerColorSwatches');
@@ -650,6 +667,12 @@ function resetVisualizationOptions() {
     // Color dropdowns. Networks with node sets start shared, colored by set.
     nodeColorSplit = false;
     nodeSizeSplit = false;
+    nodeShapeSplit = false;
+    nodeShapeAuto = false;
+    nodeShapeSelect.value = SHAPE_CIRCLE;
+    nodeShapeSelectSetA.value = SHAPE_CIRCLE;
+    nodeShapeSelectSetB.value = SHAPE_SQUARE;
+    renderer.nodeShapeFn = null;
     applyBipartiteUIVisibility();
     nodeColorSelect.value = nodeSetResolver.hasSets ? SET_COLOR_VALUE : '';
     nodeColorSelectSetA.value = '';
@@ -3387,6 +3410,8 @@ function populateDropdowns() {
     if (hasBipartite) {
         bipartiteSizeLabelA.textContent = labelA;
         bipartiteSizeLabelB.textContent = labelB;
+        bipartiteShapeLabelA.textContent = labelA;
+        bipartiteShapeLabelB.textContent = labelB;
 
         const stateMira = splitMiraAttrs(
             (model.computedStateNodeAttributes || []).filter(a => isNumericAttr(a, model.stateNodes)),
@@ -3533,6 +3558,7 @@ function carryChoiceOnToggle(split, sharedSelect, selectA, selectB) {
 nodeColorSplitToggle.addEventListener('click', () => {
     nodeColorSplit = !nodeColorSplit;
     carryChoiceOnToggle(nodeColorSplit, nodeColorSelect, nodeColorSelectSetA, nodeColorSelectSetB);
+    syncAutoShapeSplit();
     applyBipartiteUIVisibility();
     updateNodeColors();
     renderer.render();
@@ -3541,10 +3567,30 @@ nodeColorSplitToggle.addEventListener('click', () => {
 nodeSizeSplitToggle.addEventListener('click', () => {
     nodeSizeSplit = !nodeSizeSplit;
     carryChoiceOnToggle(nodeSizeSplit, nodeSizeSelect, nodeSizeSelectSetA, nodeSizeSelectSetB);
+    syncAutoShapeSplit();
     applyBipartiteUIVisibility();
     updateNodeSizes();
     renderer.render();
 });
+
+// Any direct shape edit hands the shape choice to the user.
+nodeShapeSplitToggle.addEventListener('click', () => {
+    nodeShapeSplit = !nodeShapeSplit;
+    nodeShapeAuto = false;
+    if (!nodeShapeSplit) selectIfAvailable(nodeShapeSelect,
+        nodeShapeSelectSetA.value === nodeShapeSelectSetB.value ? nodeShapeSelectSetA.value : nodeShapeSelect.value);
+    applyBipartiteUIVisibility();
+    updateNodeShapes();
+    renderer.render();
+});
+
+for (const select of [nodeShapeSelect, nodeShapeSelectSetA, nodeShapeSelectSetB]) {
+    select.addEventListener('change', () => {
+        nodeShapeAuto = false;
+        updateNodeShapes();
+        renderer.render();
+    });
+}
 
 nodeSizeSelect.addEventListener('change', () => { updateNodeSizes(); renderer.render(); });
 nodeSizeSelectSetA.addEventListener('change', () => { updateNodeSizes(); renderer.render(); });
@@ -3788,7 +3834,6 @@ function updateNodeSizes() {
 
     if (isSizeSplit()) applySplitNodeSizes();
     else applySharedNodeSizes();
-    updateNodeShapes();
 
     if (activeNodeSizeScale)  expandedLegends.add('nodeSize');
     if (activeNodeSizeScaleA) expandedLegends.add('nodeSizeA');
@@ -3815,13 +3860,35 @@ function applySplitNodeSizes() {
         : null;
 }
 
-// Node shapes distinguish the sets whenever either channel is split, since
-// one color or size can then mean different things in each set.
+// Shape channel. Circles everywhere leave nodeShapeFn null (the fast path).
 function updateNodeShapes() {
-    const showShapes = isColorSplit() || isSizeSplit();
-    renderer.nodeShapeFn = showShapes
-        ? (layerName, nodeName) => (nodeSetResolver.getNodeSet(layerName, nodeName) === SET_B ? 'square' : 'circle')
-        : null;
+    if (isShapeSplit()) {
+        const shapeA = nodeShapeSelectSetA.value;
+        const shapeB = nodeShapeSelectSetB.value;
+        renderer.nodeShapeFn = bySet(() => shapeA, () => shapeB, () => SHAPE_CIRCLE);
+        expandedLegends.add('nodeShape');
+    } else {
+        const shape = nodeShapeSelect.value;
+        renderer.nodeShapeFn = shape === SHAPE_CIRCLE ? null : () => shape;
+    }
+    renderLegends();
+}
+
+// Splitting color or size splits shape too (circle / square), so the sets
+// stay distinguishable in any layout — unless the user has set shapes.
+// Un-splitting both undoes an automatic shape split.
+function syncAutoShapeSplit() {
+    const anySplit = nodeColorSplit || nodeSizeSplit;
+    if (anySplit && !nodeShapeSplit) {
+        nodeShapeSplit = true;
+        nodeShapeAuto = true;
+        nodeShapeSelectSetA.value = SHAPE_CIRCLE;
+        nodeShapeSelectSetB.value = SHAPE_SQUARE;
+    } else if (!anySplit && nodeShapeAuto) {
+        nodeShapeSplit = false;
+        nodeShapeAuto = false;
+    }
+    updateNodeShapes();
 }
 
 function updateNodeColors() {
@@ -3837,7 +3904,6 @@ function updateNodeColors() {
 
     if (isColorSplit()) applySplitNodeColors();
     else applySharedNodeColors();
-    updateNodeShapes();
 
     if (activeNodeColorScale)  expandedLegends.add('nodeColor');
     if (activeNodeColorScaleA) expandedLegends.add('nodeColorA');
@@ -4438,6 +4504,13 @@ function renderLegends() {
     } else {
         renderScaleLegend(activeNodeSizeScale, 'nodeSize', 'Node Size');
     }
+    if (isShapeSplit()) {
+        const shapeScale = {
+            type: 'shape', attrName: 'Set',
+            map: new Map([[labelA, nodeShapeSelectSetA.value], [labelB, nodeShapeSelectSetB.value]]),
+        };
+        renderScaleLegend(shapeScale, 'nodeShape', 'Node Shape');
+    }
     renderScaleLegend(activeIntraLinkColorScale, 'intraLinkColor', 'Intralayer Link Color');
     renderScaleLegend(activeInterLinkColorScale, 'interLinkColor', 'Interlayer Link Color');
     renderScaleLegend(activeLayerColorScale, 'layerColor', 'Layer Color');
@@ -4526,6 +4599,22 @@ function createLegendDOM(titleText, scale, id) {
             text.textContent = val;
             text.style.cssText = 'white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px;';
             row.appendChild(swatch);
+            row.appendChild(text);
+            list.appendChild(row);
+        }
+        wrapper.appendChild(list);
+    } else if (scale.type === 'shape') {
+        const list = document.createElement('div');
+        list.style.cssText = 'display: flex; flex-direction: column; gap: 4px;';
+        for (const [val, shape] of scale.map.entries()) {
+            const row = document.createElement('div');
+            row.style.cssText = 'display: flex; align-items: center; gap: 6px; font-size: 12px; color: #4b5563;';
+            const glyph = document.createElement('span');
+            glyph.style.cssText = 'width: 10px; height: 10px; margin: 0 3px; background: #6b7280;' +
+                (shape === SHAPE_SQUARE ? '' : ' border-radius: 50%;');
+            const text = document.createElement('span');
+            text.textContent = val;
+            row.appendChild(glyph);
             row.appendChild(text);
             list.appendChild(row);
         }
@@ -5070,6 +5159,11 @@ function getSessionState() {
             nodeSizeSelectSetB: nodeSizeSelectSetB.value,
             nodeColorSplit,
             nodeSizeSplit,
+            nodeShapeSplit,
+            nodeShapeAuto,
+            nodeShapeSelect: nodeShapeSelect.value,
+            nodeShapeSelectSetA: nodeShapeSelectSetA.value,
+            nodeShapeSelectSetB: nodeShapeSelectSetB.value,
             intraLinkColorSelect: intraLinkColorSelect.value,
             interLinkColorSelect: interLinkColorSelect.value,
             layerColorSelect: layerColorSelect.value,
@@ -5244,6 +5338,12 @@ function restoreSessionState(state) {
     const legacySplit = ui.layoutSelect === 'bipartite' && nodeSetResolver.hasSets;
     nodeColorSplit = ui.nodeColorSplit ?? legacySplit;
     nodeSizeSplit  = ui.nodeSizeSplit  ?? legacySplit;
+    // Shapes did not exist before version 2: older sessions stay all circles.
+    nodeShapeSplit = ui.nodeShapeSplit ?? false;
+    nodeShapeAuto  = ui.nodeShapeAuto  ?? false;
+    nodeShapeSelect.value     = ui.nodeShapeSelect     ?? SHAPE_CIRCLE;
+    nodeShapeSelectSetA.value = ui.nodeShapeSelectSetA ?? SHAPE_CIRCLE;
+    nodeShapeSelectSetB.value = ui.nodeShapeSelectSetB ?? SHAPE_SQUARE;
     applyBipartiteUIVisibility();
 
     // 9. Color/size dropdowns → rebuild render functions
@@ -5258,6 +5358,7 @@ function restoreSessionState(state) {
     layerColorSelect.value = ui.layerColorSelect;
     updateNodeColors();
     updateNodeSizes();
+    updateNodeShapes();
     updateIntraLinkColors(); updateInterLinkColors();
     updateLayerColors();
 
