@@ -336,3 +336,36 @@ describe('Group 7 — domainItems', () => {
     expect(sc.max).toBe(2)
   })
 })
+
+// ── Group 8 — Partition-label names default to categorical ───────────────────
+//
+// Module / group / cluster IDs are often stored as numbers, but they label
+// partitions, so a gradient misleads. Users can still switch to continuous
+// from the legend (canToggle stays true).
+
+describe('Group 8 — partition names', () => {
+  let cm
+  beforeEach(() => { cm = new ColorMapper() })
+
+  it.each(['module', 'group', 'cluster', 'community', 'partition', 'Module_ID', 'functional_group'])(
+    '8.1 numeric "%s" with many values is categorical', (name) => {
+      const result = cm.buildColorScale(items(name, [1, 2, 3, 4, 5, 6, 7]), name)
+      expect(result.type).toBe('categorical')
+      expect(result.canToggle).toBe(true)
+    })
+
+  it('8.2 a continuous-sounding name wins ("module_size")', () => {
+    const result = cm.buildColorScale(items('module_size', [1, 2, 3, 4]), 'module_size')
+    expect(result.type).toBe('continuous')
+  })
+
+  it('8.3 forceType continuous still overrides the name', () => {
+    const result = cm.buildColorScale(items('module', [1, 2, 3, 4]), 'module', 'continuous')
+    expect(result.type).toBe('continuous')
+  })
+
+  it('8.4 unrelated numeric names are unaffected', () => {
+    const result = cm.buildColorScale(items('score', [1, 2, 3, 4]), 'score')
+    expect(result.type).toBe('continuous')
+  })
+})

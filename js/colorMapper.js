@@ -15,6 +15,11 @@ const NODE_LAYER_COLOR_DEFAULT = '#a78bfa';
 export const BIPARTITE_SET_A_COLOR = '#0072b2'; // blue (Set A)
 export const BIPARTITE_SET_B_COLOR = '#f472b6'; // pink (pollinators)
 
+// Attribute names that decide the default scale type for numeric data.
+// A continuous-sounding name wins over a categorical one ("module_size").
+const CONTINUOUS_NAME_PATTERN  = /weight|abundance|degree|strength|mass|size|value/i;
+const CATEGORICAL_NAME_PATTERN = /module|group|cluster|community|partition/i;
+
 export class ColorMapper {
     constructor() {
         this.categoryMaps = new Map(); // attrName -> Map(value -> color)
@@ -76,10 +81,13 @@ export class ColorMapper {
         } else if (forceType === 'categorical') {
             useContinuous = false;
         } else {
-            // Treat as continuous if all values are numeric, AND (there are more than 2 unique values, 
-            // OR it matches common continuous attribute names)
-            const isContinuousName = /weight|abundance|degree|strength|mass|size|value/i.test(attrName);
-            useContinuous = allNumeric && (uniqueValues.length > 2 || isContinuousName);
+            // Numeric data is continuous when it has more than 2 unique values or
+            // a continuous-sounding name — unless the name marks it as a
+            // partition label (module 1, 2, 3 …), which stays categorical.
+            const isContinuousName  = CONTINUOUS_NAME_PATTERN.test(attrName);
+            const isCategoricalName = !isContinuousName && CATEGORICAL_NAME_PATTERN.test(attrName);
+            useContinuous = allNumeric && !isCategoricalName &&
+                (uniqueValues.length > 2 || isContinuousName);
         }
 
         const canToggle = allNumeric; // We only allow toggling if the variable could theoretically be mapped continuously
