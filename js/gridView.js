@@ -1,3 +1,4 @@
+import { traceNodeShape } from './nodeShapes.js';
 const SET_A_COLOR = '#0072b2';
 const SET_B_COLOR = '#f472b6';
 
@@ -31,6 +32,7 @@ export class GridView {
             nodeRadius = 10,
             nodeColorFn = null,
             nodeSizeFn = null,
+            nodeShapeFn = null,
             intraLinkColorFn = null,
             intraMinWeight = 0,
             layerColorFn = null,
@@ -62,7 +64,7 @@ export class GridView {
             const { x, y, cw, ch } = this._cellRect(i, nLayers, cols, w, h, marginLeft, marginTop);
             const nodePositions = this._drawCell(
                 ctx, x, y, cw, ch, layer, positions, model,
-                { nodeRadius, nodeColorFn, nodeSizeFn, intraLinkColorFn, intraMinWeight,
+                { nodeRadius, nodeColorFn, nodeSizeFn, nodeShapeFn, intraLinkColorFn, intraMinWeight,
                   layerWidth, layerHeight, selectedNodeName, layerColors, focusSet,
                   bpInfo: (bpInfo?.isBipartite ? bpInfo : null), showSetNames,
                   showLabels, labelFont, headerFontSize }
@@ -93,7 +95,7 @@ export class GridView {
 
     _drawCell(ctx, cellX, cellY, cellW, cellH, layer, positions, model, opts) {
         const {
-            nodeRadius, nodeColorFn, nodeSizeFn, intraLinkColorFn,
+            nodeRadius, nodeColorFn, nodeSizeFn, nodeShapeFn, intraLinkColorFn,
             intraMinWeight, layerWidth, layerHeight, selectedNodeName,
             layerColors, focusSet, bpInfo, showSetNames,
             showLabels, labelFont, headerFontSize
@@ -203,6 +205,7 @@ export class GridView {
             const sizeMult = nodeSizeFn ? (nodeSizeFn(layerName, nodeName) ?? 1) : 1;
             const r = Math.max(1.5, baseR * sizeMult);
             const color = nodeColorFn ? (nodeColorFn(layerName, nodeName) ?? '#8b5cf6') : '#8b5cf6';
+            const shape = nodeShapeFn ? nodeShapeFn(layerName, nodeName) : null;
             const isSelected = selectedNodeName && nodeName === selectedNodeName;
             const isFaded = focusSet && !focusSet.has(`${layerName}::${nodeName}`);
 
@@ -213,8 +216,7 @@ export class GridView {
 
             if (isFaded) {
                 ctx.globalAlpha = 0.08;
-                ctx.beginPath();
-                ctx.arc(sx, sy, r, 0, Math.PI * 2);
+                traceNodeShape(ctx, sx, sy, r, shape);
                 ctx.fillStyle = color;
                 ctx.fill();
                 ctx.globalAlpha = 1;
@@ -223,14 +225,12 @@ export class GridView {
             }
 
             if (isSelected) {
-                ctx.beginPath();
-                ctx.arc(sx, sy, r + 3, 0, Math.PI * 2);
+                traceNodeShape(ctx, sx, sy, r + 3, shape);
                 ctx.fillStyle = 'rgba(251,191,36,0.85)';
                 ctx.fill();
             }
 
-            ctx.beginPath();
-            ctx.arc(sx, sy, r, 0, Math.PI * 2);
+            traceNodeShape(ctx, sx, sy, r, shape);
             ctx.fillStyle = color;
             ctx.fill();
             if (r >= 3) {
