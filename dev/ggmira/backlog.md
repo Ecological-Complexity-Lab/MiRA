@@ -5,7 +5,7 @@ view spec, so network-mode plots can be written as code. Not everything
 ships in v1; park ideas here instead of growing the current scope.
 
 Status: **Phase 0 done** (contract: [view-spec.md](view-spec.md)).
-Next: Phase 1, seeded layouts.
+Phase 1 done on branch `feat/ggmira-view-spec` (3b85af3, local). Next: Phase 2.
 
 ## Milestones
 
@@ -63,7 +63,7 @@ existing files get only small additive changes (listed in view-spec.md §1).
 ## MiRA groundwork (before the R side)
 
 - [x] Phase 0: view-spec contract ([view-spec.md](view-spec.md)).
-- [ ] Phase 1: seeded layouts (`js/random.js`, optional `seed` in
+- [x] Phase 1: seeded layouts (`js/random.js`, optional `seed` in
       `js/layout.js`; unseeded behavior identical).
 - [ ] Phase 2: `js/viewSpec.js` + unit tests; `js/rBridge.js`; ≈5-line hook
       in `autoloadFromR`; Playwright test with `page.route` fakes.
