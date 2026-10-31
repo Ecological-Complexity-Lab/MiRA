@@ -1,0 +1,146 @@
+/**
+ * rBridge.js — MiRA opened from R (emln plot_multilayer() / ggmira mira()).
+ *
+ * The R server serves the network at /api/network.json and, for ggmira
+ * plots, a view spec at /api/view.json. Without a view spec (404, e.g.
+ * plot_multilayer()), MiRA loads exactly as before.
+ *
+ * With a view spec:
+ *   1. loadData(network)                  — default view
+ *   2. getSessionState()                  — complete default session
+ *   3. applyViewSpec(state, spec, ctx)    — patched session + warnings
+ *   4. positions recomputed when the spec sets the layout (seeded if given)
+ *   5. restoreSessionState(state)         — existing session restore
+ * If anything throws, the network is reloaded with the default view, so a
+ * bad spec never leaves MiRA half-configured.
+ *
+ * App functions are passed in (`deps`), the same way other modules are wired.
+ */
+
+import { applyViewSpec } from './viewSpec.js';
+import { ForceLayout } from './layout.js';
+import { buildNodeSetResolver } from './nodeSets.js';
+
+const VIEW_SPEC_URL = '/api/view.json';
+const NOTICE_ID = 'viewSpecNotice';
+
+// Dropdowns whose options decide which attributes a view spec may use
+const SPEC_SELECT_IDS = [
+    'nodeColorSelect', 'nodeColorSelectSetA', 'nodeColorSelectSetB',
+    'nodeSizeSelect', 'nodeSizeSelectSetA', 'nodeSizeSelectSetB',
+    'intraLinkColorSelect', 'interLinkColorSelect', 'layerColorSelect',
+];
+
+/**
+ * @param {object} networkJson  Network fetched from /api/network.json
+ * @param {{ loadData, getSessionState, restoreSessionState, renderer }} deps
+ */
+export async function loadFromR(networkJson, deps) {
+    deps.loadData(networkJson);
+    if (!deps.renderer.model) return; // loadData already reported the error
+
+    const fetched = await fetchViewSpec();
+    if (fetched.error) {
+        showSpecNotice('The plot settings from R were ignored', [fetched.error]);
+        return;
+    }
+    if (fetched.spec !== null) applySpecSafely(networkJson, fetched.spec, deps);
+}
+
+/** @returns {Promise<{ spec: object|null, error?: string }>} */
+async function fetchViewSpec() {
+    let resp;
+    try {
+        resp = await fetch(VIEW_SPEC_URL, { cache: 'no-store' });
+    } catch {
+        return { spec: null };
+    }
+    if (!resp.ok) return { spec: null }; // no view spec served
+    try {
+        return { spec: await resp.json() };
+    } catch {
+        return { spec: null, error: 'view spec: not valid JSON' };
+    }
+}
+
+function applySpecSafely(networkJson, spec, deps) {
+    try {
+        const warnings = applySpec(spec, deps);
+        if (warnings.length) showSpecNotice('Some plot settings from R were ignored', warnings);
+    } catch (err) {
+        console.error('[MiRA] View spec could not be applied:', err);
+        deps.loadData(networkJson);
+        showSpecNotice('The plot settings from R could not be applied',
+            [`${err.message}. Showing the default view.`]);
+    }
+}
+
+/** @returns {string[]} warnings */
+function applySpec(spec, deps) {
+    const model = deps.renderer.model;
+    const result = applyViewSpec(deps.getSessionState(), spec, buildContext(model));
+    if (result.layout) result.state.positions = computePositions(model, result.layout);
+
+    deps.restoreSessionState(result.state);
+    // restoreSessionState does not set the renderer's layout type, which
+    // decides bipartite-only drawing (set names, diagonal placement).
+    deps.renderer.layoutType = result.state.ui.layoutSelect;
+    deps.renderer.render();
+
+    if (result.warnings.length) console.warn('[MiRA] View spec warnings:\n' + result.warnings.join('\n'));
+    return result.warnings;
+}
+
+function buildContext(model) {
+    const resolver = buildNodeSetResolver(model);
+    return {
+        options: readOptionSets(),
+        sets: { hasSets: resolver.hasSets, labelA: resolver.labelA, labelB: resolver.labelB },
+        hasBipartite: [...model.bipartiteInfo.values()].some(info => info.isBipartite),
+    };
+}
+
+function readOptionSets() {
+    const options = {};
+    for (const id of SPEC_SELECT_IDS) {
+        const select = document.getElementById(id);
+        options[id] = new Set(select ? [...select.options].map(o => o.value) : []);
+    }
+    return options;
+}
+
+/** Positions in session format: [[layerName, [[nodeName, {x, y}], ...]], ...] */
+function computePositions(model, { type, seed, nested }) {
+    const layout = new ForceLayout({ layoutType: type, seed, bipartiteNested: nested });
+    layout.bipartiteInfo = model.bipartiteInfo;
+    const positions = layout.computeLayout(model);
+    return [...positions.entries()].map(([layerName, nodeMap]) => [layerName, [...nodeMap.entries()]]);
+}
+
+function showSpecNotice(title, messages) {
+    document.getElementById(NOTICE_ID)?.remove();
+
+    const box = document.createElement('div');
+    box.id = NOTICE_ID;
+    box.className = 'view-spec-notice';
+    box.setAttribute('role', 'status');
+
+    const close = document.createElement('button');
+    close.className = 'view-spec-notice-close';
+    close.setAttribute('aria-label', 'Close');
+    close.textContent = '×';
+    close.addEventListener('click', () => box.remove());
+
+    const heading = document.createElement('strong');
+    heading.textContent = title;
+
+    const list = document.createElement('ul');
+    for (const message of messages) {
+        const item = document.createElement('li');
+        item.textContent = message; // messages contain user input: never innerHTML
+        list.appendChild(item);
+    }
+
+    box.append(close, heading, list);
+    document.body.appendChild(box);
+}
