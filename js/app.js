@@ -20,6 +20,7 @@ import { initExportManager } from './exportManager.js';
 import { GridView } from './gridView.js';
 import { buildNodeSetResolver, collectSetItems, SET_A, SET_B } from './nodeSets.js';
 import { SHAPE_CIRCLE, SHAPE_SQUARE } from './nodeShapes.js';
+import { loadFromR } from './rBridge.js';
 
 // ---- State ----
 let model = null;
@@ -4434,7 +4435,8 @@ function hideTooltip() {
                 return resp.json();
             })
             .then(json => {
-                loadData(json);
+                // Also applies a ggmira view spec (/api/view.json) when R serves one
+                return loadFromR(json, { loadData, getSessionState, restoreSessionState, renderer });
             })
             .catch(err => {
                 console.error('Autoload failed:', err);
