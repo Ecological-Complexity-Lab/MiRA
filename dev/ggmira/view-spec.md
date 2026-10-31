@@ -133,7 +133,7 @@ All top-level sections and all fields are optional. Missing = MiRA default.
 | `layout.nested` | `ui.bipartiteNestedCheckbox` |
 | `node.color_by` shared | `ui.nodeColorSelect`, `ui.nodeColorSplit = false` |
 | `node.color_by` per set | `ui.nodeColorSelectSetA/B`, `ui.nodeColorSplit = true` |
-| `node.color` | `ui.nodeColorPicker` |
+| `node.color` | `ui.nodeColorPicker`; also sets `ui.nodeColorSelect = ''` (Default) and `ui.nodeColorSplit = false`, so the constant shows on bipartite data. An explicit `color_by` in the same section wins. |
 | `node.size_by` | `ui.nodeSizeSelect` / `ui.nodeSizeSelectSetA/B`, `ui.nodeSizeSplit` |
 | `node.size` | `renderer.nodeRadius` |
 | `node.shape` shared | `ui.nodeShapeSelect`, `ui.nodeShapeSplit = false`, `ui.nodeShapeAuto = false` |
@@ -146,6 +146,9 @@ All top-level sections and all fields are optional. Missing = MiRA default.
 | `scales.<attr>.values` | `ui.categoryColorOverrides` |
 
 Set names → A/B come from `buildNodeSetResolver` (`labelA`, `labelB`).
+
+After `restoreSessionState`, `rBridge` also sets `renderer.layoutType` to the
+chosen layout (restore does not set it; see backlog).
 
 ---
 

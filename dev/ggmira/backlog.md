@@ -5,7 +5,7 @@ view spec, so network-mode plots can be written as code. Not everything
 ships in v1; park ideas here instead of growing the current scope.
 
 Status: **Phase 0 done** (contract: [view-spec.md](view-spec.md)).
-Phase 1 done on branch `feat/ggmira-view-spec` (3b85af3, local). Next: Phase 2.
+Phases 1–2 done on branch `feat/ggmira-view-spec` (local, last a709730). Next: Phase 3 (R side, emln).
 
 ## Milestones
 
@@ -65,8 +65,8 @@ existing files get only small additive changes (listed in view-spec.md §1).
 - [x] Phase 0: view-spec contract ([view-spec.md](view-spec.md)).
 - [x] Phase 1: seeded layouts (`js/random.js`, optional `seed` in
       `js/layout.js`; unseeded behavior identical).
-- [ ] Phase 2: `js/viewSpec.js` + unit tests; `js/rBridge.js`; ≈5-line hook
-      in `autoloadFromR`; Playwright test with `page.route` fakes.
+- [x] Phase 2: `js/viewSpec.js` + unit tests; `js/rBridge.js`; 3-line hook
+      in `autoloadFromR`; Playwright tests with `page.route` fakes.
 
 ## R side (emln)
 
@@ -107,5 +107,10 @@ Each needs MiRA work first; the R side is cheap once MiRA supports it.
 - **Move session save/restore out of `app.js`** into its own module.
   Worth doing, but it touches dozens of DOM elements and globals — a
   project of its own, not part of ggmira.
+- **Bug (existing, to fix later):** `restoreSessionState` never sets
+  `renderer.layoutType`. Save a session of a bipartite network in
+  Kamada-Kawai and load it: positions are Kamada-Kawai but the renderer still
+  draws bipartite details (set names, diagonal placement). One-line fix in
+  restore step 6. The R path already works around it in `rBridge`.
 - Fix the double "Data warnings" alert when a session (or view spec) is
   restored (`restoreSessionState` calls `loadData` again).
