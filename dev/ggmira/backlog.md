@@ -4,44 +4,42 @@ Running tracker for ggmira: a gg-like R API (in emln) that builds a MiRA
 view spec, so network-mode plots can be written as code. Not everything
 ships in v1; park ideas here instead of growing the current scope.
 
-Status: **design phase. No code yet.** Next step is a design doc, then a
-token estimate and plan for approval (CLAUDE.md rules).
+Status: **Phase 0 done** (contract: [view-spec.md](view-spec.md)).
+Next: Phase 1, seeded layouts.
+
+**Ground rule (2026-10-31): do not break anything.** No refactoring of
+existing code that spans multiple blocks. New behavior goes in new modules;
+existing files get only small additive changes (listed in view-spec.md §1).
 
 ---
 
 ## Decided
 
-- **Grammar shape:** `mira(net) + geom_node(...) + geom_layer(...) +
-  geom_intralayer(...) + geom_interlayer(...)`. Each geom corresponds to
-  one MiRA sidebar panel.
-- **Mappings are strings, not `aes()`.** Example: `color_by = "module"` maps
-  an attribute and `color = "#333"` sets a constant. These are two separate
-  arguments.
-- **Scales are separate `scale_*()` pieces**, the same split as ggplot
-  (mapping = which variable, scale = how values become colors or sizes).
-- **Per-set styling uses named vectors**:
-  `color_by = c(parasite = "module", host = "degree")`. Mirrors the
-  Shared / Per set toggles in the Nodes panel.
-- **Architecture:** R emits a *partial* view spec (JSON) → served at
-  `/api/view.json` → MiRA `applyViewSpec()` merges it onto defaults.
-  Validate in both R and MiRA, and version the schema.
-
-## Proposed, not yet confirmed
-
-- Scale names carry the channel: `scale_node_color_discrete()`,
-  `scale_node_color_continuous()`, `scale_node_size()`,
-  `scale_node_shape()`, `scale_intralayer_color_*()`,
-  `scale_interlayer_color_*()`, `scale_layer_color_*()`.
-- A scale applies to an attribute, not a set. MiRA stores color mode and
-  category colors per attribute name (`colorScaleOverrides`,
-  `categoryColorOverrides`), so R should **reject** per-set scales.
+- **Names:** everything is `mira_*`: `mira()`, `mira_layout()`,
+  `mira_node()`, `mira_intralayer()`, `mira_interlayer()`, `mira_layer()`,
+  `mira_scale_color()`. Avoids clashes with ggplot2 / ggraph.
+- **Layout is plot-level:** `mira_layout(type, seed, nested)`.
+- **Mappings are strings, not `aes()`.** `color_by = "module"` maps an
+  attribute; `color = "#333"` sets a constant. Both in one piece → error.
+- **Scales are per attribute:** `mira_scale_color("module", type, palette,
+  values)`, matching how MiRA stores scales (`colorScaleOverrides`,
+  `categoryColorOverrides`). Per-set scales are rejected.
+- **Per set = vector named by `node_type`:**
+  `color_by = c(pollinator = "module", plant = NA)`. One value = Shared.
+  Shape auto-splits like the UI unless `shape` is given.
+- **Invalid spec fields: warn and fall back** to the default; the plot
+  always opens.
+- **MiRA modules:** `js/rBridge.js` (fetch, orchestration, notice) and
+  `js/viewSpec.js` (pure translation). The spec is applied by patching a
+  default session and calling the existing `restoreSessionState` — no
+  refactor of session code.
+- **v1 output:** browser only. `mira_save()` is the next dev session.
 
 ## Open decisions
 
-- [ ] **Layout location:** `geom_layer(layout = ...)` or `mira(net, layout = ...)`?
-- [ ] **Naming:** `geom_*` (familiar, but clashes with ggplot2 if both are
-      loaded) or `mira_*`?
-- [ ] **v1 output:** open in browser only, or also export (PNG/SVG) from R?
+- [ ] R server for `/api/view.json`: add one optional argument to
+      `plot_multilayer()` (additive, no refactor) vs. a separate copy of
+      the server code in `print.mira_plot()`. Leaning: optional argument.
 
 ## Prerequisites
 
@@ -51,24 +49,21 @@ token estimate and plan for approval (CLAUDE.md rules).
 
 ## MiRA groundwork (before the R side)
 
-- [ ] Seeded layouts. `js/layout.js` uses `Math.random`, so the same code
-      gives a different plot on each run.
-- [ ] Refactor `restoreSessionState` into reusable apply steps (shared by
-      session load and view-spec apply).
-- [ ] `applyViewSpec(spec)`: merge a partial spec onto defaults and report
-      invalid fields.
-- [ ] Autoload `/api/view.json` alongside `/api/network.json`.
-- [ ] View-spec schema with a version field. Keep it close to the session
-      JSON (v2).
+- [x] Phase 0: view-spec contract ([view-spec.md](view-spec.md)).
+- [ ] Phase 1: seeded layouts (`js/random.js`, optional `seed` in
+      `js/layout.js`; unseeded behavior identical).
+- [ ] Phase 2: `js/viewSpec.js` + unit tests; `js/rBridge.js`; ≈5-line hook
+      in `autoloadFromR`; Playwright test with `page.route` fakes.
 
 ## R side (emln)
 
-- [ ] `mira()`, `geom_*()`, `scale_*()` objects + `+` method that
-      accumulates a spec.
+- [ ] `mira()`, `mira_*()` pieces + `+` method that accumulates a spec.
+- [ ] Discrete palettes expanded in R into `values` (base R
+      `palette.colors()` / `hcl.colors()`), no MiRA change.
 - [ ] Validation in R: attribute exists, numeric for continuous, set names
       match `node_type` values.
-- [ ] `print()` method serves network + view spec and opens MiRA (reuse
-      `plot_multilayer()` server).
+- [ ] `print()` method serves network + view spec and opens MiRA;
+      `mira_spec()` returns the spec.
 - [ ] Tests (testthat) for spec building and validation.
 - [ ] `npm run sync:emln` as its own emln commit after MiRA changes land.
 
@@ -78,7 +73,11 @@ token estimate and plan for approval (CLAUDE.md rules).
 
 Each needs MiRA work first; the R side is cheap once MiRA supports it.
 
-- **Continuous color palettes** (`option = "magma"`). MiRA is Viridis-only.
+- **`mira_save()`** — next dev session (headless render to file; needs
+  chromote or similar, and MiRA signaling "rendered" back to R).
+- **Continuous color palettes** (`palette = "magma"`) and palettes for
+  MiRA-computed attributes. MiRA is Dark2 / Viridis only; needs a palette
+  argument in `colorMapper.js` and a new session field.
 - **Size range** (`range = c(1, 6)`). MiRA uses a fixed 0.3–2.0× of base size.
 - **Legend titles / `labs()`.** MiRA titles are fixed ("Node Color: module").
 - **More node shapes** beyond circle and square (triangle, diamond).
@@ -87,7 +86,12 @@ Each needs MiRA work first; the R side is cheap once MiRA supports it.
   breaking the string API.
 - **"Copy as R code"** button in MiRA that generates ggmira code from the
   current view.
-- **Headless `mira_save()`** for rendering to file without a browser window
-  (needs chromote or similar).
 - **Per-set scales**, only if MiRA ever stores scales per set.
 - Map mode and meta-network views. v1 covers network mode only.
+- Camera and stacking from R (`mira_view()`: rotation, layer spacing,
+  stack mode, labels).
+- **Move session save/restore out of `app.js`** into its own module.
+  Worth doing, but it touches dozens of DOM elements and globals — a
+  project of its own, not part of ggmira.
+- Fix the double "Data warnings" alert when a session (or view spec) is
+  restored (`restoreSessionState` calls `loadData` again).
