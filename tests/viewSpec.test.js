@@ -1,0 +1,373 @@
+/**
+ * viewSpec.test.js — Unit tests for applyViewSpec()
+ *
+ * applyViewSpec translates a ggmira view spec (sent from R) into a patched
+ * copy of a session state. The tests use a minimal default state with the
+ * fields applyViewSpec touches, and a ctx describing the dropdown options.
+ *
+ * TEST GROUPS:
+ *   1. Envelope       — version, non-object spec, unknown sections / fields
+ *   2. Layout         — type, seed, nested
+ *   3. Node color     — shared, .set, per set, constant color
+ *   4. Node size      — shared, per set, base size
+ *   5. Node shape     — shared, per set, automatic split
+ *   6. Links / layers — color_by, color, min_weight, show
+ *   7. Purity         — input state is never modified
+ */
+
+import { describe, it, expect } from 'vitest'
+import { applyViewSpec } from '../js/viewSpec.js'
+
+const defaultState = () => ({
+  version: 2,
+  positions: [['L1', [['P1', { x: 1, y: 2 }]]]],
+  renderer: {
+    nodeRadius: 10,
+    showInterlayerLinks: false,
+    intraMinWeight: 0,
+    interlayerMinWeight: 0,
+    defaultIntraColor: '#cccccc',
+    defaultInterColor: '#dddddd',
+  },
+  ui: {
+    nodeColorSelect: 'set:membership',
+    nodeColorSelectSetA: '',
+    nodeColorSelectSetB: '',
+    nodeSizeSelect: '',
+    nodeSizeSelectSetA: '',
+    nodeSizeSelectSetB: '',
+    nodeColorSplit: false,
+    nodeSizeSplit: false,
+    nodeShapeSplit: false,
+    nodeShapeAuto: false,
+    nodeShapeSelect: 'circle',
+    nodeShapeSelectSetA: 'circle',
+    nodeShapeSelectSetB: 'square',
+    intraLinkColorSelect: '',
+    interLinkColorSelect: '',
+    layerColorSelect: '',
+    layerColorPicker: '#8b5cf6',
+    nodeColorPicker: '#a78bfa',
+    intraLinkColorPicker: '#cccccc',
+    interLinkColorPicker: '#dddddd',
+    layoutSelect: 'bipartite',
+    bipartiteNestedCheckbox: false,
+  },
+})
+
+const nodeOptions = ['', 'node:module', 'node:abundance', 'state:intra_degree', 'state:module']
+const ctxWithSets = () => ({
+  options: {
+    nodeColorSelect: new Set(['', 'set:membership', ...nodeOptions]),
+    nodeColorSelectSetA: new Set(nodeOptions),
+    nodeColorSelectSetB: new Set(['', 'node:abundance', 'state:intra_degree']),
+    nodeSizeSelect: new Set(['', 'node:abundance', 'state:intra_degree']),
+    nodeSizeSelectSetA: new Set(['', 'node:abundance', 'state:intra_degree']),
+    nodeSizeSelectSetB: new Set(['', 'state:intra_degree']),
+    intraLinkColorSelect: new Set(['', 'weight']),
+    interLinkColorSelect: new Set(['', 'weight']),
+    layerColorSelect: new Set(['', '__individual__', 'habitat']),
+  },
+  sets: { hasSets: true, labelA: 'pollinator', labelB: 'plant' },
+  hasBipartite: true,
+})
+const ctxWithoutSets = () => ({
+  ...ctxWithSets(),
+  sets: { hasSets: false, labelA: null, labelB: null },
+  hasBipartite: false,
+})
+
+const apply = (body, ctx = ctxWithSets()) =>
+  applyViewSpec(defaultState(), { version: 1, ...body }, ctx)
+
+describe('Group 1 — Envelope', () => {
+  it('1.1 an empty spec changes nothing and warns nothing', () => {
+    const r = apply({})
+    expect(r.state).toEqual(defaultState())
+    expect(r.layout).toBeNull()
+    expect(r.warnings).toEqual([])
+  })
+
+  it('1.2 a wrong version ignores the whole spec', () => {
+    const r = applyViewSpec(defaultState(), { version: 2, node: { size: 20 } }, ctxWithSets())
+    expect(r.state).toEqual(defaultState())
+    expect(r.warnings).toHaveLength(1)
+    expect(r.warnings[0]).toMatch(/^version:/)
+  })
+
+  it('1.3 a missing version ignores the whole spec', () => {
+    const r = applyViewSpec(defaultState(), { node: { size: 20 } }, ctxWithSets())
+    expect(r.state.renderer.nodeRadius).toBe(10)
+    expect(r.warnings[0]).toMatch(/^version:/)
+  })
+
+  it('1.4 a non-object spec is ignored', () => {
+    const r = applyViewSpec(defaultState(), [1, 2], ctxWithSets())
+    expect(r.state).toEqual(defaultState())
+    expect(r.warnings[0]).toMatch(/^spec:/)
+  })
+
+  it('1.5 unknown sections (e.g. scales before milestone 2) are ignored with a warning', () => {
+    const r = apply({ scales: { module: { type: 'discrete' } }, node: { size: 20 } })
+    expect(r.state.renderer.nodeRadius).toBe(20)
+    expect(r.warnings).toEqual(['scales: not a known section; ignored'])
+  })
+
+  it('1.6 unknown fields are ignored with a warning, known ones still apply', () => {
+    const r = apply({ node: { colour_by: 'module', size: 12 } })
+    expect(r.state.renderer.nodeRadius).toBe(12)
+    expect(r.warnings).toEqual(['node.colour_by: not a known field; ignored'])
+  })
+
+  it('1.7 a section that is not an object is ignored', () => {
+    const r = apply({ node: 'module' })
+    expect(r.warnings).toEqual(['node: must be an object; ignored'])
+  })
+})
+
+describe('Group 2 — Layout', () => {
+  it('2.1 type and seed are applied and reported for recomputation', () => {
+    const r = apply({ layout: { type: 'kamada_kawai', seed: 42 } })
+    expect(r.state.ui.layoutSelect).toBe('kamada_kawai')
+    expect(r.layout).toEqual({ type: 'kamada_kawai', seed: 42, nested: false })
+  })
+
+  it('2.2 a seed alone keeps the default type', () => {
+    const r = apply({ layout: { seed: 7 } })
+    expect(r.layout).toEqual({ type: 'bipartite', seed: 7, nested: false })
+  })
+
+  it('2.3 a type alone has no seed', () => {
+    expect(apply({ layout: { type: 'circle' } }).layout.seed).toBeNull()
+  })
+
+  it('2.4 nested is applied', () => {
+    const r = apply({ layout: { nested: true } })
+    expect(r.state.ui.bipartiteNestedCheckbox).toBe(true)
+    expect(r.layout.nested).toBe(true)
+  })
+
+  it('2.5 an unknown type is skipped with a warning', () => {
+    const r = apply({ layout: { type: 'spring' } })
+    expect(r.state.ui.layoutSelect).toBe('bipartite')
+    expect(r.layout).toBeNull()
+    expect(r.warnings[0]).toMatch(/^layout.type: "spring" is not a layout/)
+  })
+
+  it('2.6 bipartite on a network without a bipartite layer is skipped', () => {
+    const state = defaultState()
+    state.ui.layoutSelect = 'kamada_kawai'
+    const r = applyViewSpec(state, { version: 1, layout: { type: 'bipartite' } }, ctxWithoutSets())
+    expect(r.state.ui.layoutSelect).toBe('kamada_kawai')
+    expect(r.warnings[0]).toMatch(/needs a bipartite layer/)
+  })
+
+  it('2.7 a non-integer seed is skipped; a valid type still applies', () => {
+    const r = apply({ layout: { type: 'random', seed: 1.5 } })
+    expect(r.layout).toEqual({ type: 'random', seed: null, nested: false })
+    expect(r.warnings[0]).toMatch(/^layout.seed:/)
+  })
+})
+
+describe('Group 3 — Node color', () => {
+  it('3.1 shared attribute resolves to the node attribute first', () => {
+    const r = apply({ node: { color_by: 'module' } })
+    expect(r.state.ui.nodeColorSelect).toBe('node:module')
+    expect(r.state.ui.nodeColorSplit).toBe(false)
+  })
+
+  it('3.2 a state-node attribute resolves with the state: prefix', () => {
+    expect(apply({ node: { color_by: 'intra_degree' } }).state.ui.nodeColorSelect).toBe('state:intra_degree')
+  })
+
+  it('3.3 null means Default', () => {
+    expect(apply({ node: { color_by: null } }).state.ui.nodeColorSelect).toBe('')
+  })
+
+  it('3.4 ".set" colors by set membership', () => {
+    expect(apply({ node: { color_by: '.set' } }).state.ui.nodeColorSelect).toBe('set:membership')
+  })
+
+  it('3.5 ".set" without node sets is skipped', () => {
+    const ctx = ctxWithoutSets()
+    ctx.options.nodeColorSelect.delete('set:membership')
+    const r = apply({ node: { color_by: '.set' } }, ctx)
+    expect(r.warnings[0]).toMatch(/only available for node color on a network with two node sets/)
+  })
+
+  it('3.6 an unknown attribute is skipped with a warning', () => {
+    const r = apply({ node: { color_by: 'modul' } })
+    expect(r.state.ui.nodeColorSelect).toBe('set:membership')
+    expect(r.warnings).toEqual(['node.color_by: "modul" is not an available attribute'])
+  })
+
+  it('3.7 per set: names map to sets A / B and the split turns on', () => {
+    const r = apply({ node: { color_by: { pollinator: 'module', plant: 'abundance' } } })
+    expect(r.state.ui.nodeColorSelectSetA).toBe('node:module')
+    expect(r.state.ui.nodeColorSelectSetB).toBe('node:abundance')
+    expect(r.state.ui.nodeColorSplit).toBe(true)
+  })
+
+  it('3.8 per set: null and missing sets are Default', () => {
+    const r = apply({ node: { color_by: { pollinator: null } } })
+    expect(r.state.ui.nodeColorSelectSetA).toBe('')
+    expect(r.state.ui.nodeColorSelectSetB).toBe('')
+    expect(r.state.ui.nodeColorSplit).toBe(true)
+  })
+
+  it('3.9 per set: attributes are checked against that set\'s options', () => {
+    const r = apply({ node: { color_by: { pollinator: 'module', plant: 'module' } } })
+    expect(r.state.ui.nodeColorSelectSetA).toBe('node:module')
+    expect(r.state.ui.nodeColorSelectSetB).toBe('')
+    expect(r.warnings).toEqual(['node.color_by.plant: "module" is not an available attribute'])
+  })
+
+  it('3.10 per set: a wrong set name warns and names the valid ones', () => {
+    const r = apply({ node: { color_by: { pollinatr: 'module' } } })
+    expect(r.warnings[0]).toBe('node.color_by.pollinatr: not a node set; expected "pollinator" or "plant"')
+  })
+
+  it('3.11 per set on a network without sets is skipped', () => {
+    const r = apply({ node: { color_by: { a: 'module' } } }, ctxWithoutSets())
+    expect(r.state.ui.nodeColorSplit).toBe(false)
+    expect(r.warnings[0]).toMatch(/per-set values need two node sets/)
+  })
+
+  it('3.12 a constant color switches color to Default so it shows', () => {
+    const r = apply({ node: { color: '#123456' } })
+    expect(r.state.ui.nodeColorPicker).toBe('#123456')
+    expect(r.state.ui.nodeColorSelect).toBe('')
+  })
+
+  it('3.13 an invalid color is skipped', () => {
+    const r = apply({ node: { color: 'red' } })
+    expect(r.state.ui.nodeColorPicker).toBe('#a78bfa')
+    expect(r.state.ui.nodeColorSelect).toBe('set:membership')
+    expect(r.warnings[0]).toMatch(/is not a #rrggbb color/)
+  })
+})
+
+describe('Group 4 — Node size', () => {
+  it('4.1 shared numeric attribute', () => {
+    expect(apply({ node: { size_by: 'abundance' } }).state.ui.nodeSizeSelect).toBe('node:abundance')
+  })
+
+  it('4.2 a non-numeric attribute is not offered and is skipped', () => {
+    const r = apply({ node: { size_by: 'module' } })
+    expect(r.state.ui.nodeSizeSelect).toBe('')
+    expect(r.warnings).toEqual(['node.size_by: "module" is not an available numeric attribute'])
+  })
+
+  it('4.3 ".set" is not allowed for size', () => {
+    expect(apply({ node: { size_by: '.set' } }).warnings[0]).toMatch(/only available for node color/)
+  })
+
+  it('4.4 per set', () => {
+    const r = apply({ node: { size_by: { pollinator: 'abundance', plant: 'intra_degree' } } })
+    expect(r.state.ui.nodeSizeSelectSetA).toBe('node:abundance')
+    expect(r.state.ui.nodeSizeSelectSetB).toBe('state:intra_degree')
+    expect(r.state.ui.nodeSizeSplit).toBe(true)
+  })
+
+  it('4.5 base size within range', () => {
+    expect(apply({ node: { size: 15 } }).state.renderer.nodeRadius).toBe(15)
+  })
+
+  it('4.6 base size out of range is skipped', () => {
+    const r = apply({ node: { size: 40 } })
+    expect(r.state.renderer.nodeRadius).toBe(10)
+    expect(r.warnings[0]).toMatch(/between 3 and 25/)
+  })
+})
+
+describe('Group 5 — Node shape', () => {
+  it('5.1 shared shape', () => {
+    const r = apply({ node: { shape: 'square' } })
+    expect(r.state.ui.nodeShapeSelect).toBe('square')
+    expect(r.state.ui.nodeShapeSplit).toBe(false)
+  })
+
+  it('5.2 per-set shape', () => {
+    const r = apply({ node: { shape: { pollinator: 'square', plant: 'circle' } } })
+    expect(r.state.ui.nodeShapeSelectSetA).toBe('square')
+    expect(r.state.ui.nodeShapeSelectSetB).toBe('circle')
+    expect(r.state.ui.nodeShapeSplit).toBe(true)
+    expect(r.state.ui.nodeShapeAuto).toBe(false)
+  })
+
+  it('5.3 per-set color without shape splits shapes automatically', () => {
+    const r = apply({ node: { color_by: { pollinator: 'module', plant: 'abundance' } } })
+    expect(r.state.ui.nodeShapeSplit).toBe(true)
+    expect(r.state.ui.nodeShapeAuto).toBe(true)
+    expect(r.state.ui.nodeShapeSelectSetA).toBe('circle')
+    expect(r.state.ui.nodeShapeSelectSetB).toBe('square')
+  })
+
+  it('5.4 an explicit shared shape wins over the automatic split', () => {
+    const r = apply({ node: { size_by: { pollinator: 'abundance' }, shape: 'circle' } })
+    expect(r.state.ui.nodeSizeSplit).toBe(true)
+    expect(r.state.ui.nodeShapeSplit).toBe(false)
+  })
+
+  it('5.5 an invalid shape is skipped and the automatic split still applies', () => {
+    const r = apply({ node: { color_by: { pollinator: 'module' }, shape: 'triangle' } })
+    expect(r.warnings[0]).toMatch(/"triangle" is not a shape/)
+    expect(r.state.ui.nodeShapeAuto).toBe(true)
+  })
+
+  it('5.6 shared color and size leave shapes alone', () => {
+    const r = apply({ node: { color_by: 'module', size_by: 'abundance' } })
+    expect(r.state.ui.nodeShapeSplit).toBe(false)
+  })
+})
+
+describe('Group 6 — Links and layers', () => {
+  it('6.1 intralayer color_by, color and min_weight', () => {
+    const r = apply({ intralayer: { color_by: 'weight', color: '#111111', min_weight: 0.2 } })
+    expect(r.state.ui.intraLinkColorSelect).toBe('weight')
+    expect(r.state.ui.intraLinkColorPicker).toBe('#111111')
+    expect(r.state.renderer.defaultIntraColor).toBe('#111111')
+    expect(r.state.renderer.intraMinWeight).toBe(0.2)
+  })
+
+  it('6.2 interlayer show, color_by, color and min_weight', () => {
+    const r = apply({ interlayer: { show: true, color_by: 'weight', color: '#222222', min_weight: 0.5 } })
+    expect(r.state.renderer.showInterlayerLinks).toBe(true)
+    expect(r.state.ui.interLinkColorSelect).toBe('weight')
+    expect(r.state.ui.interLinkColorPicker).toBe('#222222')
+    expect(r.state.renderer.defaultInterColor).toBe('#222222')
+    expect(r.state.renderer.interlayerMinWeight).toBe(0.5)
+  })
+
+  it('6.3 invalid link fields are skipped', () => {
+    const r = apply({ interlayer: { show: 'yes', color_by: 'flux', min_weight: 2 } })
+    expect(r.state.renderer.showInterlayerLinks).toBe(false)
+    expect(r.state.ui.interLinkColorSelect).toBe('')
+    expect(r.state.renderer.interlayerMinWeight).toBe(0)
+    expect(r.warnings).toHaveLength(3)
+  })
+
+  it('6.4 layer color_by attribute and constant color', () => {
+    const r = apply({ layer: { color_by: 'habitat', color: '#333333' } })
+    expect(r.state.ui.layerColorSelect).toBe('habitat')
+    expect(r.state.ui.layerColorPicker).toBe('#333333')
+  })
+
+  it('6.5 layer ".individual"', () => {
+    expect(apply({ layer: { color_by: '.individual' } }).state.ui.layerColorSelect).toBe('__individual__')
+  })
+})
+
+describe('Group 7 — Purity', () => {
+  it('7.1 the input state is not modified', () => {
+    const state = defaultState()
+    applyViewSpec(state, { version: 1, node: { color_by: 'module', size: 20 }, layout: { type: 'circle' } }, ctxWithSets())
+    expect(state).toEqual(defaultState())
+  })
+
+  it('7.2 fields the spec does not mention keep their values', () => {
+    const r = apply({ node: { size: 20 } })
+    expect(r.state.positions).toEqual(defaultState().positions)
+    expect(r.state.ui).toEqual(defaultState().ui)
+  })
+})
