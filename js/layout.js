@@ -10,7 +10,13 @@
  *   - circle        (nodes on a circle)
  *   - grid          (nodes on a regular grid)
  *   - random        (uniform random)
+ *
+ * Optional `seed` (constructor option or property): the random-based layouts
+ * (fruchterman, kamada_kawai, random) then give the same positions for the
+ * same data on every run. Without a seed they use Math.random as before.
  */
+
+import { createSeededRandom } from './random.js';
 
 /**
  * Look up a state node's intralayer degree, transparently summing in/out
@@ -41,6 +47,10 @@ export class ForceLayout {
         // Bipartite info from data model (set by app.js)
         this.bipartiteInfo = null; // Map<layerName, { isBipartite, setA, setB, ... }>
         this.bipartiteNested = options.bipartiteNested || false; // toggle for nested sorting by degree
+
+        // Reproducible layouts: null = Math.random (default), number = seeded
+        this.seed = options.seed ?? null;
+        this.random = Math.random;
     }
 
     /**
@@ -49,6 +59,9 @@ export class ForceLayout {
      * @returns {Map} layerName -> Map(nodeName -> {x, y})
      */
     computeLayout(model) {
+        // Restart the sequence on every call so a seeded result never depends
+        // on how many layouts were computed before it.
+        this.random = this.seed === null ? Math.random : createSeededRandom(this.seed);
         const positions = new Map();
 
         // Consistent initial positions for cross-layer nodes
@@ -171,8 +184,8 @@ export class ForceLayout {
         for (const nodeName of nodeArray) {
             const gp = globalPositions.get(nodeName);
             positions.set(nodeName, {
-                x: gp ? gp.x + (Math.random() - 0.5) * 20 : Math.random() * this.layerWidth,
-                y: gp ? gp.y + (Math.random() - 0.5) * 20 : Math.random() * this.layerHeight,
+                x: gp ? gp.x + (this.random() - 0.5) * 20 : this.random() * this.layerWidth,
+                y: gp ? gp.y + (this.random() - 0.5) * 20 : this.random() * this.layerHeight,
                 vx: 0,
                 vy: 0,
             });
@@ -304,7 +317,7 @@ export class ForceLayout {
         // Initialize positions (circle with jitter)
         const pos = nodeArray.map((name, i) => {
             const gp = globalPositions.get(name);
-            if (gp) return { x: gp.x + (Math.random() - 0.5) * 30, y: gp.y + (Math.random() - 0.5) * 30 };
+            if (gp) return { x: gp.x + (this.random() - 0.5) * 30, y: gp.y + (this.random() - 0.5) * 30 };
             const angle = (2 * Math.PI * i) / n;
             const r = Math.min(this.layerWidth, this.layerHeight) * 0.3;
             return { x: this.layerWidth / 2 + r * Math.cos(angle), y: this.layerHeight / 2 + r * Math.sin(angle) };
@@ -420,8 +433,8 @@ export class ForceLayout {
         const result = new Map();
         for (const name of nodeArray) {
             result.set(name, {
-                x: Math.random() * this.layerWidth,
-                y: Math.random() * this.layerHeight,
+                x: this.random() * this.layerWidth,
+                y: this.random() * this.layerHeight,
             });
         }
         return result;
