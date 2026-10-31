@@ -5,7 +5,9 @@ view spec, so network-mode plots can be written as code. Not everything
 ships in v1; park ideas here instead of growing the current scope.
 
 Status: **Phase 0 done** (contract: [view-spec.md](view-spec.md)).
-Phases 1–2 done on branch `feat/ggmira-view-spec` (local, last a709730). Next: Phase 3 (R side, emln).
+Phases 1–2 done on branch `feat/ggmira-view-spec` (local, last a709730).
+Phase 3a done: ggmira package at `~/GitHub/ecomplab/ggmira` (local git, 74a3938):
+converter, server, `plot_multilayer()`. Next: Phase 3b (`mira()` grammar).
 
 ## Milestones
 
@@ -88,6 +90,13 @@ existing files get only small additive changes (listed in view-spec.md §1).
 - [ ] Tests (testthat) for spec building and validation.
 - [ ] `scripts/sync-ggmira.sh` + `npm run sync:ggmira` (copy of
       sync-emln.sh with `DEST=../ggmira/inst/MiRA`) — when shipping.
+- [ ] **emln bug:** `emln::load_emln()` fails with "object 'descriptions'
+      not found" unless emln is attached (`library(emln)`): it reads its
+      lazy-loaded datasets without the `emln::` prefix.
+- [ ] **emln bug (minor, localhost only):** `plot_multilayer()`'s path
+      check `startsWith(file_path, mira_path)` also accepts sibling
+      directories sharing the prefix (e.g. `.../MiRA-dev` when serving
+      `.../MiRA`). Fixed in ggmira's copy (compares with `mira_path/`).
 - [ ] Later emln release: deprecate `emln::plot_multilayer()` in favor of
       `ggmira::plot_multilayer()` (agree with Geut).
 
