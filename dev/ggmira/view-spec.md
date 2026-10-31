@@ -78,7 +78,7 @@ All top-level sections and all fields are optional. Missing = MiRA default.
     "size": 10,
     "shape": { "pollinator": "circle", "plant": "square" }
   },
-  "intralayer": { "color_by": "weight", "color": "#94a3b8", "min_weight": 0.1 },
+  "intralayer": { "color_by": "type", "color": "#94a3b8", "min_weight": 0.1 },
   "interlayer": { "show": true, "color_by": null, "color": "#999999", "min_weight": 0 },
   "layer": { "color_by": "habitat", "color": "#8b5cf6" },
   "scales": {
@@ -166,6 +166,8 @@ chosen layout (restore does not set it; see backlog).
 | R | Spec section |
 |---|---|
 | `mira(net, bipartite, setA_type, directed, directed_interlayer)` | (network JSON, not the spec) |
+
+These functions live in the separate R package **ggmira** (not emln).
 | `mira_layout(type, seed, nested)` | `layout` |
 | `mira_node(color_by, color, size_by, size, shape)` | `node` |
 | `mira_intralayer(color_by, color, min_weight)` | `intralayer` |

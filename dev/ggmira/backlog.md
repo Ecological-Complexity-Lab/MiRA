@@ -47,10 +47,15 @@ existing files get only small additive changes (listed in view-spec.md §1).
   default session and calling the existing `restoreSessionState` — no
   refactor of session code.
 - **v1 output:** browser only. `mira_save()` is the next dev session.
-- **R server for `/api/view.json`:** one optional, additive argument on
-  `plot_multilayer()` (e.g. `view = NULL`, a JSON string); existing calls
-  unaffected, no refactor. `print.mira_plot()` calls `plot_multilayer()`
-  with it.
+- **Separate R package `ggmira` (2026-10-31),** not part of emln. Users
+  load both (`library(emln); library(ggmira)`), like ggplot2 with data
+  packages. Local only for now: `~/GitHub/ecomplab/ggmira`, no remote.
+  - emln is **not changed**. ggmira has its own copy of the JSON converter
+    (tested to give identical output to `emln::multilayer_to_json()`) and
+    of the httpuv server (which also serves `/api/view.json`).
+  - `plot_multilayer()` moves to ggmira (same arguments and behavior).
+    emln keeps its copy until a later emln release deprecates it.
+  - emln is only a test dependency (Suggests) of ggmira.
 
 ## Open decisions
 
@@ -81,7 +86,10 @@ existing files get only small additive changes (listed in view-spec.md §1).
 - [ ] `print()` method serves network + view spec and opens MiRA;
       `mira_spec()` returns the spec.
 - [ ] Tests (testthat) for spec building and validation.
-- [ ] `npm run sync:emln` as its own emln commit after MiRA changes land.
+- [ ] `scripts/sync-ggmira.sh` + `npm run sync:ggmira` (copy of
+      sync-emln.sh with `DEST=../ggmira/inst/MiRA`) — when shipping.
+- [ ] Later emln release: deprecate `emln::plot_multilayer()` in favor of
+      `ggmira::plot_multilayer()` (agree with Geut).
 
 ---
 
@@ -96,10 +104,12 @@ Start here. Read [view-spec.md](view-spec.md) §3, §6 and this file.
   `~/GitHub/ecomplab/MiRA-dev` (local, not pushed; built on
   `feat/node-set-channels`). R talks to it only through
   `/api/network.json` + `/api/view.json`.
-- **emln:** sibling repo `~/GitHub/ecomplab/emln` (clean `main`). Create
-  branch `feat/ggmira`. Server code: `R/plot_multilayer.R`; JSON:
-  `R/multilayer_to_json.R`. `jsonlite`, `httpuv` (Suggests), testthat 3e.
-- **Dev loop:** temporary Rscript with `devtools::load_all("../emln")`
+- **R package:** new `~/GitHub/ecomplab/ggmira` (see Decided). Server and
+  converter copied from emln `R/plot_multilayer.R` and
+  `R/multilayer_to_json.R` (emln has no jsonlite; it uses an internal
+  `.to_json`). Phase 3a = skeleton + converter + server + `plot_multilayer()`;
+  3b = `mira()` grammar.
+- **Dev loop:** temporary Rscript with `devtools::load_all("../ggmira")`
   and `mira_path = "../MiRA-dev"` (worktree must be on
   `feat/ggmira-view-spec`). No need to sync emln/inst/MiRA until shipping.
 - **Phase 3 scope (milestone 1, no scales):** `mira()`, `mira_layout()`,
@@ -109,7 +119,10 @@ Start here. Read [view-spec.md](view-spec.md) §3, §6 and this file.
   `grDevices::col2rgb`, set names vs `node_type`; unknown attribute only
   warns); `NA` in per-set vectors → JSON `null`; `color_by` + `color` in
   one piece → error; later pieces override field by field;
-  `view` argument on `plot_multilayer()`; testthat tests; roxygen docs.
+  testthat tests; roxygen docs.
+- **MiRA link colors:** MiRA's link dropdown excludes `weight`, so
+  `color_by = "weight"` on links is not available (R should warn). Making
+  it available is MiRA work (see Later).
 - **Spec gotchas:** spec `version` must be 1 or MiRA ignores everything;
   `.set` (node color by set) and `.individual` (layer colors) keywords;
   a constant `node.color` switches node color mapping to Default in MiRA.
@@ -129,6 +142,10 @@ Each needs MiRA work first; the R side is cheap once MiRA supports it.
   argument in `colorMapper.js` and a new session field.
 - **Size range** (`range = c(1, 6)`). MiRA uses a fixed 0.3–2.0× of base size.
 - **Legend titles / `labs()`.** MiRA titles are fixed ("Node Color: module").
+- **Link color by `weight`.** MiRA's link color dropdown excludes `weight`
+  (dataParser `linkAttributeNames`). Needs a MiRA change.
+- **Plain data frames as input** to `mira()` / `plot_multilayer()` (not
+  only emln `multilayer` objects), for non-emln users.
 - **More node shapes** beyond circle and square (triangle, diamond).
 - **`aes()` as an alternative mapping syntax.** Its real gain is derived
   variables (`aes(size = log(abundance))`). Could be added later without
