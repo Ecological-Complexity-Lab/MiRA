@@ -47,12 +47,14 @@ existing files get only small additive changes (listed in view-spec.md §1).
   default session and calling the existing `restoreSessionState` — no
   refactor of session code.
 - **v1 output:** browser only. `mira_save()` is the next dev session.
+- **R server for `/api/view.json`:** one optional, additive argument on
+  `plot_multilayer()` (e.g. `view = NULL`, a JSON string); existing calls
+  unaffected, no refactor. `print.mira_plot()` calls `plot_multilayer()`
+  with it.
 
 ## Open decisions
 
-- [ ] R server for `/api/view.json`: add one optional argument to
-      `plot_multilayer()` (additive, no refactor) vs. a separate copy of
-      the server code in `print.mira_plot()`. Leaning: optional argument.
+(none)
 
 ## Prerequisites
 
@@ -80,6 +82,39 @@ existing files get only small additive changes (listed in view-spec.md §1).
       `mira_spec()` returns the spec.
 - [ ] Tests (testthat) for spec building and validation.
 - [ ] `npm run sync:emln` as its own emln commit after MiRA changes land.
+
+---
+
+## Handoff for Phase 3 (fresh session, 2026-10-31)
+
+Start here. Read [view-spec.md](view-spec.md) §3, §6 and this file.
+
+- **Working rules from the user:** describe the code plan and wait for
+  approval before writing code; no refactoring of existing code that spans
+  multiple blocks; commit each step; American spelling.
+- **MiRA side is done** on branch `feat/ggmira-view-spec` in
+  `~/GitHub/ecomplab/MiRA-dev` (local, not pushed; built on
+  `feat/node-set-channels`). R talks to it only through
+  `/api/network.json` + `/api/view.json`.
+- **emln:** sibling repo `~/GitHub/ecomplab/emln` (clean `main`). Create
+  branch `feat/ggmira`. Server code: `R/plot_multilayer.R`; JSON:
+  `R/multilayer_to_json.R`. `jsonlite`, `httpuv` (Suggests), testthat 3e.
+- **Dev loop:** temporary Rscript with `devtools::load_all("../emln")`
+  and `mira_path = "../MiRA-dev"` (worktree must be on
+  `feat/ggmira-view-spec`). No need to sync emln/inst/MiRA until shipping.
+- **Phase 3 scope (milestone 1, no scales):** `mira()`, `mira_layout()`,
+  `mira_node()`, `mira_intralayer()`, `mira_interlayer()`, `mira_layer()`,
+  `+.mira_plot`, `print.mira_plot()`, `mira_spec()`; validation in R
+  (types, layout names, shapes, hex colors — convert color names with
+  `grDevices::col2rgb`, set names vs `node_type`; unknown attribute only
+  warns); `NA` in per-set vectors → JSON `null`; `color_by` + `color` in
+  one piece → error; later pieces override field by field;
+  `view` argument on `plot_multilayer()`; testthat tests; roxygen docs.
+- **Spec gotchas:** spec `version` must be 1 or MiRA ignores everything;
+  `.set` (node color by set) and `.individual` (layer colors) keywords;
+  a constant `node.color` switches node color mapping to Default in MiRA.
+- **Phase 4 after that:** end-to-end check on 2–3 emln datasets with
+  screenshots; short manual paragraph.
 
 ---
 
