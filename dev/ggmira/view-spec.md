@@ -6,6 +6,10 @@ this file. Change it here first.
 
 Status: **draft for v1**, network mode only.
 
+Milestones: the `scales` section and `mira_scale_color()` are
+**milestone 2**. Milestone 1 implements everything else; until milestone 2,
+MiRA reports a `scales` section as an ignored field (warn and fall back).
+
 ---
 
 ## 1. Ground rule: no refactoring of existing MiRA code
@@ -164,13 +168,13 @@ Set names → A/B come from `buildNodeSetResolver` (`labelA`, `labelB`).
 | `mira_intralayer(color_by, color, min_weight)` | `intralayer` |
 | `mira_interlayer(show, color_by, color, min_weight)` | `interlayer` |
 | `mira_layer(color_by, color)` | `layer` |
-| `mira_scale_color(attr, type, palette, values)` | `scales.<attr>` |
+| `mira_scale_color(attr, type, palette, values)` (milestone 2) | `scales.<attr>` |
 
 - Per set in R = a vector named by `node_type`:
   `color_by = c(pollinator = "module", plant = NA)` (`NA` → `null`).
 - `color_by` and `color` together in one piece → R error.
 - Later pieces override earlier ones field by field.
-- **Palettes in v1 (R-only, no MiRA change):** for a discrete scale on a
+- **Palettes in milestone 2 (R-only, no MiRA change):** for a discrete scale on a
   data attribute, R expands `palette` (base R `palette.colors()` /
   `hcl.colors()` names, or a color vector) into explicit `values` using the
   category values in the data. `values` given by the user override single

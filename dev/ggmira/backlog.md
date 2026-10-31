@@ -7,6 +7,19 @@ ships in v1; park ideas here instead of growing the current scope.
 Status: **Phase 0 done** (contract: [view-spec.md](view-spec.md)).
 Next: Phase 1, seeded layouts.
 
+## Milestones
+
+1. **Basics** (Phases 1–4): `mira()`, `mira_layout()`, `mira_node()`,
+   `mira_intralayer()`, `mira_interlayer()`, `mira_layer()`. Colors use
+   MiRA's defaults (Dark2 / Viridis, auto type). Test with users first.
+2. **Easy scales** (new code only): `mira_scale_color()` with `type`,
+   manual `values`, discrete palettes on data attributes (expanded in R).
+3. **MiRA-side features**, one feature branch each: continuous palettes and
+   palettes on computed attributes, size range, legend titles,
+   `mira_save()`.
+
+Rule: a milestone starts only after the previous one is tested.
+
 **Ground rule (2026-10-31): do not break anything.** No refactoring of
 existing code that spans multiple blocks. New behavior goes in new modules;
 existing files get only small additive changes (listed in view-spec.md §1).
@@ -17,7 +30,7 @@ existing files get only small additive changes (listed in view-spec.md §1).
 
 - **Names:** everything is `mira_*`: `mira()`, `mira_layout()`,
   `mira_node()`, `mira_intralayer()`, `mira_interlayer()`, `mira_layer()`,
-  `mira_scale_color()`. Avoids clashes with ggplot2 / ggraph.
+  `mira_scale_color()` (milestone 2). Avoids clashes with ggplot2 / ggraph.
 - **Layout is plot-level:** `mira_layout(type, seed, nested)`.
 - **Mappings are strings, not `aes()`.** `color_by = "module"` maps an
   attribute; `color = "#333"` sets a constant. Both in one piece → error.
@@ -58,8 +71,9 @@ existing files get only small additive changes (listed in view-spec.md §1).
 ## R side (emln)
 
 - [ ] `mira()`, `mira_*()` pieces + `+` method that accumulates a spec.
-- [ ] Discrete palettes expanded in R into `values` (base R
-      `palette.colors()` / `hcl.colors()`), no MiRA change.
+- [ ] (Milestone 2) `mira_scale_color()`; discrete palettes expanded in R
+      into `values` (base R `palette.colors()` / `hcl.colors()`), no MiRA
+      change.
 - [ ] Validation in R: attribute exists, numeric for continuous, set names
       match `node_type` values.
 - [ ] `print()` method serves network + view spec and opens MiRA;
