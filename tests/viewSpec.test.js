@@ -13,6 +13,10 @@
  *   5. Node shape     — shared, per set, automatic split
  *   6. Links / layers — color_by, color, min_weight, show
  *   7. Purity         — input state is never modified
+ *   8. Labels and display — node / layer labels, perspective, stacking,
+ *                        spacing, arrowheads, curvature
+ *   9. Layer colors and pairs — per-layer colors, interlayer layer pairs
+ *  10. Scales         — scale type and colors per value, by attribute
  */
 
 import { describe, it, expect } from 'vitest'
@@ -28,6 +32,16 @@ const defaultState = () => ({
     interlayerMinWeight: 0,
     defaultIntraColor: '#cccccc',
     defaultInterColor: '#dddddd',
+    showLabels: false,
+    labelSizePx: 12,
+    transformNodes: true,
+    showLayerNames: false,
+    layerNameFontSize: 14,
+    showSetNames: false,
+    stackMode: 'horizontal',
+    layerSpacing: 300,
+    arrowheadSize: 1,
+    interlayerCurvature: 0.35,
   },
   ui: {
     nodeColorSelect: 'set:membership',
@@ -52,7 +66,11 @@ const defaultState = () => ({
     interLinkColorPicker: '#dddddd',
     layoutSelect: 'bipartite',
     bipartiteNestedCheckbox: false,
+    colorScaleOverrides: [],
+    categoryColorOverrides: [],
+    layerColors: [['L1', '#8b5cf6'], ['L2', '#8b5cf6']],
   },
+  filter: { interPairFilter: [] },
 })
 
 const nodeOptions = ['', 'node:module', 'node:abundance', 'state:intra_degree', 'state:module']
@@ -70,6 +88,14 @@ const ctxWithSets = () => ({
   },
   sets: { hasSets: true, labelA: 'pollinator', labelB: 'plant' },
   hasBipartite: true,
+  layerNames: ['L1', 'L2', 'L3'],
+  values: {
+    module: new Set([1, 2, 3]),
+    abundance: new Set([0.5, 2]),
+    guild: new Set(['bee', 'fly']),
+    habitat: new Set(['forest', 'meadow']),
+    intra_degree: new Set([1, 2, 6]),
+  },
 })
 const ctxWithoutSets = () => ({
   ...ctxWithSets(),
@@ -107,10 +133,10 @@ describe('Group 1 — Envelope', () => {
     expect(r.warnings[0]).toMatch(/^spec:/)
   })
 
-  it('1.5 unknown sections (e.g. scales before milestone 2) are ignored with a warning', () => {
-    const r = apply({ scales: { module: { type: 'discrete' } }, node: { size: 20 } })
+  it('1.5 unknown sections are ignored with a warning', () => {
+    const r = apply({ legend: { show: true }, node: { size: 20 } })
     expect(r.state.renderer.nodeRadius).toBe(20)
-    expect(r.warnings).toEqual(['scales: not a known section; ignored'])
+    expect(r.warnings).toEqual(['legend: not a known section; ignored'])
   })
 
   it('1.6 unknown fields are ignored with a warning, known ones still apply', () => {
@@ -382,5 +408,161 @@ describe('Group 7 — Purity', () => {
     const r = apply({ node: { size: 20 } })
     expect(r.state.positions).toEqual(defaultState().positions)
     expect(r.state.ui).toEqual(defaultState().ui)
+  })
+})
+
+
+describe('Group 8 — Labels and display', () => {
+  it('8.1 node labels, label size and perspective', () => {
+    const r = apply({ node: { labels: true, label_size: 16, perspective: false } })
+    expect(r.state.renderer.showLabels).toBe(true)
+    expect(r.state.renderer.labelSizePx).toBe(16)
+    expect(r.state.renderer.transformNodes).toBe(false)
+    expect(r.warnings).toEqual([])
+  })
+
+  it('8.2 layer names, name size, set names, stacking and spacing', () => {
+    const r = apply({ layer: { labels: true, label_size: 20, set_labels: true, stack: 'vertical', spacing: 450 } })
+    expect(r.state.renderer.showLayerNames).toBe(true)
+    expect(r.state.renderer.layerNameFontSize).toBe(20)
+    expect(r.state.renderer.showSetNames).toBe(true)
+    expect(r.state.renderer.stackMode).toBe('vertical')
+    expect(r.state.renderer.layerSpacing).toBe(450)
+    expect(r.warnings).toEqual([])
+  })
+
+  it('8.3 arrowhead size and curvature', () => {
+    const r = apply({ intralayer: { arrow_size: 2.5 }, interlayer: { curvature: 0 } })
+    expect(r.state.renderer.arrowheadSize).toBe(2.5)
+    expect(r.state.renderer.interlayerCurvature).toBe(0)
+    expect(r.warnings).toEqual([])
+  })
+
+  it('8.4 out-of-range sizes are skipped with the slider range', () => {
+    const r = apply({
+      node: { label_size: 30 },
+      layer: { label_size: 4, spacing: 50 },
+      intralayer: { arrow_size: 5 },
+      interlayer: { curvature: 1.5 },
+    })
+    expect(r.state.renderer.labelSizePx).toBe(12)
+    expect(r.state.renderer.layerNameFontSize).toBe(14)
+    expect(r.state.renderer.layerSpacing).toBe(300)
+    expect(r.state.renderer.arrowheadSize).toBe(1)
+    expect(r.state.renderer.interlayerCurvature).toBe(0.35)
+    expect(r.warnings).toEqual([
+      'node.label_size: 30 must be a number between 8 and 24',
+      'layer.label_size: 4 must be a number between 8 and 32',
+      'layer.spacing: 50 must be a number between 100 and 600',
+      'intralayer.arrow_size: 5 must be a number between 0 and 3',
+      'interlayer.curvature: 1.5 must be a number between 0 and 1',
+    ])
+  })
+
+  it('8.5 an unknown stacking mode and non-boolean flags are skipped', () => {
+    const r = apply({ layer: { stack: 'diagonal', labels: 'yes' }, node: { perspective: 1 } })
+    expect(r.state.renderer.stackMode).toBe('horizontal')
+    expect(r.state.renderer.showLayerNames).toBe(false)
+    expect(r.state.renderer.transformNodes).toBe(true)
+    expect(r.warnings).toHaveLength(3)
+    expect(r.warnings[1]).toBe('layer.stack: "diagonal" must be one of horizontal, vertical')
+  })
+
+  it('8.6 set names on a network without a bipartite layer are skipped', () => {
+    const r = apply({ layer: { set_labels: true } }, ctxWithoutSets())
+    expect(r.state.renderer.showSetNames).toBe(false)
+    expect(r.warnings).toEqual(['layer.set_labels: set names need a bipartite layer; ignored'])
+  })
+})
+
+describe('Group 9 — Layer colors and pairs', () => {
+  it('9.1 per-layer colors replace the named layers and keep the others', () => {
+    const r = apply({ layer: { color_by: '.individual', colors: { L2: '#ff0000', L3: '#00ff00' } } })
+    expect(r.state.ui.layerColorSelect).toBe('__individual__')
+    expect(r.state.ui.layerColors).toEqual([['L1', '#8b5cf6'], ['L2', '#ff0000'], ['L3', '#00ff00']])
+  })
+
+  it('9.2 unknown layers and invalid colors are skipped', () => {
+    const r = apply({ layer: { colors: { L9: '#ff0000', L1: 'red' } } })
+    expect(r.state.ui.layerColors).toEqual(defaultState().ui.layerColors)
+    expect(r.warnings).toEqual([
+      'layer.colors.L9: "L9" is not a layer name',
+      'layer.colors.L1: "red" is not a #rrggbb color',
+    ])
+  })
+
+  it('9.3 layer pairs become the interlayer pair filter', () => {
+    const r = apply({ interlayer: { pairs: [['L1', 'L2'], ['L3', 'L1']] } })
+    expect(r.state.filter.interPairFilter).toEqual(['L1::L2', 'L3::L1'])
+    expect(r.warnings).toEqual([])
+  })
+
+  it('9.4 pairs with an unknown layer or the wrong length are skipped', () => {
+    const r = apply({ interlayer: { pairs: [['L1', 'L9'], ['L1'], ['L2', 'L3']] } })
+    expect(r.state.filter.interPairFilter).toEqual(['L2::L3'])
+    expect(r.warnings).toEqual([
+      'interlayer.pairs[0]: "L9" is not a layer name',
+      'interlayer.pairs[1]: ["L1"] must be two layer names',
+    ])
+  })
+
+  it('9.5 pairs that are not a list are skipped', () => {
+    const r = apply({ interlayer: { pairs: 'L1::L2' } })
+    expect(r.state.filter.interPairFilter).toEqual([])
+    expect(r.warnings).toEqual(['interlayer.pairs: must be a list of [layer, layer] pairs; ignored'])
+  })
+})
+
+describe('Group 10 — Scales', () => {
+  it('10.1 scale type per attribute', () => {
+    const r = apply({ scales: { module: { type: 'categorical' }, abundance: { type: 'continuous' } } })
+    expect(r.state.ui.colorScaleOverrides).toEqual([['module', 'categorical'], ['abundance', 'continuous']])
+    expect(r.warnings).toEqual([])
+  })
+
+  it('10.2 colors per value are keyed by the value as stored in the data', () => {
+    const r = apply({ scales: { module: { type: 'categorical', values: { 1: '#ff0000', 3: '#0000ff' } } } })
+    const [[attr, entries]] = r.state.ui.categoryColorOverrides
+    expect(attr).toBe('module')
+    expect(entries).toEqual([[1, '#ff0000'], [3, '#0000ff']]) // numbers, not "1" / "3"
+  })
+
+  it('10.3 string values and computed attributes', () => {
+    const r = apply({ scales: { guild: { values: { bee: '#111111' } }, intra_degree: { values: { 6: '#222222' } } } })
+    expect(r.state.ui.categoryColorOverrides).toEqual([
+      ['guild', [['bee', '#111111']]],
+      ['intra_degree', [[6, '#222222']]],
+    ])
+  })
+
+  it('10.4 a value that is not in the data and an invalid color are skipped', () => {
+    const r = apply({ scales: { module: { values: { 7: '#ff0000', 2: 'blue', 1: '#00ff00' } } } })
+    expect(r.state.ui.categoryColorOverrides).toEqual([['module', [[1, '#00ff00']]]])
+    expect(r.warnings).toEqual([
+      'scales.module.values.2: "blue" is not a #rrggbb color',
+      'scales.module.values.7: not a value of "module"',
+    ])
+  })
+
+  it('10.5 an unknown attribute, type or field is skipped', () => {
+    const r = apply({ scales: { modul: { type: 'categorical' }, module: { type: 'discrete', palette: 'magma' } } })
+    expect(r.state.ui.colorScaleOverrides).toEqual([])
+    expect(r.warnings).toEqual([
+      'scales.modul: "modul" is not an attribute of this network; ignored',
+      'scales.module.palette: not a known field; ignored',
+      'scales.module.type: "discrete" must be one of categorical, continuous',
+    ])
+  })
+
+  it('10.6 existing overrides for other attributes are kept', () => {
+    const state = defaultState()
+    state.ui.colorScaleOverrides = [['habitat', 'categorical']]
+    state.ui.categoryColorOverrides = [['habitat', [['forest', '#00aa00']]]]
+    const r = applyViewSpec(state, { version: 1, scales: { module: { type: 'categorical', values: { 2: '#ff0000' } } } }, ctxWithSets())
+    expect(r.state.ui.colorScaleOverrides).toEqual([['habitat', 'categorical'], ['module', 'categorical']])
+    expect(r.state.ui.categoryColorOverrides).toEqual([
+      ['habitat', [['forest', '#00aa00']]],
+      ['module', [[2, '#ff0000']]],
+    ])
   })
 })

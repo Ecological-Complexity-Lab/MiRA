@@ -173,12 +173,12 @@ test('a constant node color replaces the default set coloring', async ({ page })
 test('invalid fields are listed in a notice; valid fields still apply', async ({ page }) => {
   await openFromR(page, view({
     node: { color_by: 'modul', size: 14 },
-    scales: { module: { type: 'discrete' } },
+    legend: { show: true },
   }))
   expect((await appState(page)).nodeRadius).toBe(14)
   expect(await noticeMessages(page)).toEqual([
     'node.color_by: "modul" is not an available attribute',
-    'scales: not a known section; ignored',
+    'legend: not a known section; ignored',
   ])
   await page.click('.view-spec-notice-close')
   expect(await noticeMessages(page)).toBeNull()
@@ -188,4 +188,56 @@ test('a view spec that is not valid JSON leaves the default view', async ({ page
   await openFromR(page, '{ not json')
   expect((await appState(page)).layoutSelect).toBe('bipartite')
   expect(await noticeMessages(page)).toEqual(['view spec: not valid JSON'])
+})
+
+test('stage 1: labels, layer display, layer colors, pairs and scales are applied', async ({ page }) => {
+  await openFromR(page, NOT_SERVED)
+  const defaultScale = await page.evaluate(() => window._renderer.scale)
+
+  const again = await page.context().newPage()
+  again.on('pageerror', e => errors.push(e.message))
+  await openFromR(again, view({
+    node: { color_by: 'module', labels: true, label_size: 16, perspective: false },
+    layer: {
+      color_by: '.individual', colors: { 1983: '#ff0000' },
+      labels: true, label_size: 20, set_labels: true, stack: 'vertical', spacing: 450,
+    },
+    intralayer: { arrow_size: 2 },
+    interlayer: { show: true, curvature: 0.8, pairs: [['1982', '1983']] },
+    scales: { module: { type: 'categorical', values: { 3: '#00ff00' } } },
+  }))
+  expect(await noticeMessages(again)).toBeNull()
+
+  const s = await again.evaluate(() => {
+    const r = window._renderer
+    const val = id => document.getElementById(id).value
+    const checked = id => document.getElementById(id).checked
+    const layerIndex = r.model.layers.findIndex(l => l.layer_name === '1983')
+    const sn = r.model.stateNodes.find(n => n.module === 3)
+    return {
+      showLabels: r.showLabels, labelsChecked: checked('showLabelsCheckbox'),
+      labelFont: r.labelFont, labelSize: val('labelSizeSlider'),
+      transformNodes: r.transformNodes, transformChecked: checked('transformNodesCheckbox'),
+      showLayerNames: r.showLayerNames, layerNameFontSize: r.layerNameFontSize,
+      showSetNames: r.showSetNames, stackMode: r.stackMode, layerSpacing: r.layerSpacing,
+      verticalActive: document.getElementById('stackVerticalBtn').classList.contains('active'),
+      arrowheadSize: r.arrowheadSize, interArrowSlider: val('interArrowheadSizeSlider'),
+      curvature: r.interlayerCurvature, curvatureSlider: val('interlayerCurvatureSlider'),
+      pairs: r.interlayerLayerPairs ? [...r.interlayerLayerPairs].sort() : null,
+      layerColorSelect: val('layerColorSelect'),
+      layer1983: r.layerColorFn(layerIndex, r.model.layers[layerIndex]).text,
+      module3: r.nodeColorFn(sn.layer_name, sn.node_name).toLowerCase(),
+      scale: r.scale,
+    }
+  })
+  expect(s).toMatchObject({
+    showLabels: true, labelsChecked: true, labelFont: '16px Inter, system-ui, sans-serif', labelSize: '16',
+    transformNodes: false, transformChecked: false,
+    showLayerNames: true, layerNameFontSize: 20, showSetNames: true,
+    stackMode: 'vertical', layerSpacing: 450, verticalActive: true,
+    arrowheadSize: 2, interArrowSlider: '2', curvature: 0.8, curvatureSlider: '0.8',
+    pairs: ['1982::1983', '1983::1982'],
+    layerColorSelect: '__individual__', layer1983: '#ff0000', module3: '#00ff00',
+  })
+  expect(s.scale).not.toBe(defaultScale) // recentered for the new stacking and spacing
 })

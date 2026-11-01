@@ -30,6 +30,8 @@ const SPEC_SELECT_IDS = [
     'nodeSizeSelect', 'nodeSizeSelectSetA', 'nodeSizeSelectSetB',
     'intraLinkColorSelect', 'interLinkColorSelect', 'layerColorSelect',
 ];
+// Second arrowhead slider (interlayer panel); restoreSessionState sets only the first
+const INTER_ARROWHEAD_SLIDER_ID = 'interArrowheadSizeSlider';
 
 /**
  * @param {object} networkJson  Network fetched from /api/network.json
@@ -78,13 +80,22 @@ function applySpecSafely(networkJson, spec, deps) {
 /** @returns {string[]} warnings */
 function applySpec(spec, deps) {
     const model = deps.renderer.model;
-    const result = applyViewSpec(deps.getSessionState(), spec, buildContext(model));
+    const defaults = deps.getSessionState();
+    const result = applyViewSpec(defaults, spec, buildContext(model));
     if (result.layout) result.state.positions = computePositions(model, result.layout);
 
     deps.restoreSessionState(result.state);
     // restoreSessionState does not set the renderer's layout type, which
     // decides bipartite-only drawing (set names, diagonal placement).
     deps.renderer.layoutType = result.state.ui.layoutSelect;
+    // The restored view (scale, offset) was centered for the default
+    // stacking and spacing
+    const rv = result.state.renderer;
+    if (rv.stackMode !== defaults.renderer.stackMode || rv.layerSpacing !== defaults.renderer.layerSpacing) {
+        deps.renderer.centerView();
+    }
+    const interArrowSlider = document.getElementById(INTER_ARROWHEAD_SLIDER_ID);
+    if (interArrowSlider) interArrowSlider.value = rv.arrowheadSize;
     deps.renderer.render();
 
     if (result.warnings.length) console.warn('[MiRA] View spec warnings:\n' + result.warnings.join('\n'));
@@ -97,7 +108,23 @@ function buildContext(model) {
         options: readOptionSets(),
         sets: { hasSets: resolver.hasSets, labelA: resolver.labelA, labelB: resolver.labelB },
         hasBipartite: [...model.bipartiteInfo.values()].some(info => info.isBipartite),
+        layerNames: model.layers.map(layer => layer.layer_name),
+        values: collectAttributeValues(model),
     };
+}
+
+/** { [attrName]: Set<value> } over nodes, state nodes, links and layers. */
+function collectAttributeValues(model) {
+    const values = {};
+    for (const items of [model.nodes, model.stateNodes, model.extended, model.layers]) {
+        for (const item of items) {
+            for (const [attr, value] of Object.entries(item)) {
+                if (value === null || value === undefined || typeof value === 'object') continue;
+                (values[attr] ??= new Set()).add(value);
+            }
+        }
+    }
+    return values;
 }
 
 function readOptionSets() {

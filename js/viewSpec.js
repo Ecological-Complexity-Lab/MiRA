@@ -13,6 +13,10 @@
  *                     for which attributes are valid where)
  *   ctx.sets          { hasSets, labelA, labelB } — from buildNodeSetResolver
  *   ctx.hasBipartite  true when the network has a bipartite layer
+ *   ctx.layerNames    layer_name of every layer
+ *   ctx.values        { [attrName]: Set<value> } — the distinct values of every
+ *                     node, state-node, link and layer attribute (data and
+ *                     computed), as stored in the model
  *
  * Invalid fields are skipped with a warning; the setting keeps its default.
  * Contract: dev/ggmira/view-spec.md (development branch).
@@ -28,6 +32,22 @@ const WEIGHT_MIN = 0;      // link weight filter; no upper bound (the
                            // sliders run to the largest weight in the data)
 const HEX_COLOR = /^#[0-9a-fA-F]{6}$/;
 
+// Slider ranges (index.html)
+const LAYER_NAME_SIZE_MIN = 8;
+const LAYER_NAME_SIZE_MAX = 32;
+const LABEL_SIZE_MIN = 8;
+const LABEL_SIZE_MAX = 24;
+const LAYER_SPACING_MIN = 100;
+const LAYER_SPACING_MAX = 600;
+const ARROW_SIZE_MIN = 0;
+const ARROW_SIZE_MAX = 3;
+const CURVATURE_MIN = 0;
+const CURVATURE_MAX = 1;
+
+const STACK_MODES = new Set(['horizontal', 'vertical']);
+const SCALE_TYPES = new Set(['categorical', 'continuous']);
+const PAIR_SEPARATOR = '::'; // layer pair key in the interlayer pair filter
+
 // Spec keywords → dropdown option values
 const SET_COLOR_KEYWORD = '.set';
 const SET_COLOR_VALUE = 'set:membership';
@@ -41,11 +61,13 @@ const AUTO_SHAPE_B = 'square';
 
 const SECTION_FIELDS = {
     layout:     ['type', 'seed', 'nested'],
-    node:       ['color_by', 'color', 'size_by', 'size', 'shape'],
-    intralayer: ['color_by', 'color', 'min_weight'],
-    interlayer: ['show', 'color_by', 'color', 'min_weight'],
-    layer:      ['color_by', 'color'],
+    node:       ['color_by', 'color', 'size_by', 'size', 'shape', 'labels', 'label_size', 'perspective'],
+    intralayer: ['color_by', 'color', 'min_weight', 'arrow_size'],
+    interlayer: ['show', 'color_by', 'color', 'min_weight', 'curvature', 'pairs'],
+    layer:      ['color_by', 'color', 'colors', 'labels', 'label_size', 'set_labels', 'stack', 'spacing'],
+    scales:     null, // keyed by attribute name; each scale has SCALE_FIELDS
 };
+const SCALE_FIELDS = ['type', 'values'];
 
 const isPlainObject = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
 const show = (v) => JSON.stringify(v);
@@ -87,6 +109,7 @@ const SECTION_APPLIERS = {
     intralayer: applyIntralayer,
     interlayer: applyInterlayer,
     layer: applyLayer,
+    scales: applyScales,
 };
 
 function applySection(state, key, section, ctx, warn) {
@@ -99,14 +122,13 @@ function applySection(state, key, section, ctx, warn) {
         warn(key, 'must be an object; ignored');
         return null;
     }
-    warnUnknownFields(key, section, warn);
+    if (SECTION_FIELDS[key]) warnUnknownFields(key, section, SECTION_FIELDS[key], warn);
     return applier(state, section, ctx, warn);
 }
 
-function warnUnknownFields(key, section, warn) {
-    const known = SECTION_FIELDS[key];
-    for (const field of Object.keys(section)) {
-        if (!known.includes(field)) warn(`${key}.${field}`, 'not a known field; ignored');
+function warnUnknownFields(path, object, known, warn) {
+    for (const field of Object.keys(object)) {
+        if (!known.includes(field)) warn(`${path}.${field}`, 'not a known field; ignored');
     }
 }
 
@@ -134,6 +156,25 @@ function checkMinWeight(value, path, warn) {
 function checkBoolean(value, path, warn) {
     if (typeof value === 'boolean') return value;
     warn(path, `${show(value)} must be true or false`);
+    return undefined;
+}
+
+function checkChoice(value, choices, path, warn) {
+    if (choices.has(value)) return value;
+    warn(path, `${show(value)} must be one of ${[...choices].join(', ')}`);
+    return undefined;
+}
+
+/** Copy `section[field]`, if valid, to `target[key]`. `check(value, path)` validates. */
+function setChecked(section, field, path, target, key, check) {
+    if (!(field in section)) return;
+    const value = check(section[field], path);
+    if (value !== undefined) target[key] = value;
+}
+
+function checkLayerName(value, ctx, path, warn) {
+    if (ctx.layerNames.includes(value)) return value;
+    warn(path, `${show(value)} is not a layer name`);
     return undefined;
 }
 
@@ -239,7 +280,16 @@ function applyNode(state, section, ctx, warn) {
     }
     const shapeApplied = 'shape' in section && applyNodeShape(state.ui, section.shape, ctx, warn);
     if (!shapeApplied) applyAutoShapeSplit(state.ui);
+    applyNodeLabels(state.renderer, section, warn);
     return null;
+}
+
+function applyNodeLabels(renderer, section, warn) {
+    const flag = (v, path) => checkBoolean(v, path, warn);
+    setChecked(section, 'labels', 'node.labels', renderer, 'showLabels', flag);
+    setChecked(section, 'label_size', 'node.label_size', renderer, 'labelSizePx',
+        (v, path) => checkNumber(v, LABEL_SIZE_MIN, LABEL_SIZE_MAX, path, warn));
+    setChecked(section, 'perspective', 'node.perspective', renderer, 'transformNodes', flag);
 }
 
 // A constant node color means "no mapping": switch color to Default so the
@@ -339,6 +389,9 @@ function applyIntralayer(state, section, ctx, warn) {
         picker: 'intraLinkColorPicker', rendererColor: 'defaultIntraColor',
     });
     applyMinWeight(state, section, 'intralayer.min_weight', 'intraMinWeight', warn);
+    // One arrowhead size for intralayer and interlayer arrows
+    setChecked(section, 'arrow_size', 'intralayer.arrow_size', state.renderer, 'arrowheadSize',
+        (v, path) => checkNumber(v, ARROW_SIZE_MIN, ARROW_SIZE_MAX, path, warn));
     return null;
 }
 
@@ -352,7 +405,29 @@ function applyInterlayer(state, section, ctx, warn) {
         picker: 'interLinkColorPicker', rendererColor: 'defaultInterColor',
     });
     applyMinWeight(state, section, 'interlayer.min_weight', 'interlayerMinWeight', warn);
+    setChecked(section, 'curvature', 'interlayer.curvature', state.renderer, 'interlayerCurvature',
+        (v, path) => checkNumber(v, CURVATURE_MIN, CURVATURE_MAX, path, warn));
+    if ('pairs' in section) applyLayerPairs(state, section.pairs, ctx, warn);
     return null;
+}
+
+/** pairs: [[from, to], ...] layer names; the order within a pair does not matter. */
+function applyLayerPairs(state, pairs, ctx, warn) {
+    if (!Array.isArray(pairs)) {
+        warn('interlayer.pairs', 'must be a list of [layer, layer] pairs; ignored');
+        return;
+    }
+    const keys = [];
+    pairs.forEach((pair, i) => {
+        const path = `interlayer.pairs[${i}]`;
+        if (!Array.isArray(pair) || pair.length !== 2) {
+            warn(path, `${show(pair)} must be two layer names`);
+            return;
+        }
+        const names = pair.map(name => checkLayerName(name, ctx, path, warn));
+        if (names.every(name => name !== undefined)) keys.push(names.join(PAIR_SEPARATOR));
+    });
+    if (keys.length) state.filter.interPairFilter = keys;
 }
 
 function applyLinkColor(state, section, ctx, warn, fields) {
@@ -385,5 +460,99 @@ function applyLayer(state, section, ctx, warn) {
         const color = checkColor(section.color, 'layer.color', warn);
         if (color !== undefined) state.ui.layerColorPicker = color;
     }
+    if ('colors' in section) applyLayerColors(state.ui, section.colors, ctx, warn);
+    applyLayerDisplay(state.renderer, section, ctx, warn);
     return null;
+}
+
+/** colors: { <layer_name>: "#rrggbb" } — used with color_by ".individual". */
+function applyLayerColors(ui, colors, ctx, warn) {
+    if (!isPlainObject(colors)) {
+        warn('layer.colors', 'must be an object of layer name: color; ignored');
+        return;
+    }
+    const byLayer = new Map(ui.layerColors);
+    for (const [name, value] of Object.entries(colors)) {
+        const path = `layer.colors.${name}`;
+        if (checkLayerName(name, ctx, path, warn) === undefined) continue;
+        const color = checkColor(value, path, warn);
+        if (color !== undefined) byLayer.set(name, color);
+    }
+    ui.layerColors = [...byLayer];
+}
+
+function applyLayerDisplay(renderer, section, ctx, warn) {
+    const flag = (v, path) => checkBoolean(v, path, warn);
+    setChecked(section, 'labels', 'layer.labels', renderer, 'showLayerNames', flag);
+    setChecked(section, 'label_size', 'layer.label_size', renderer, 'layerNameFontSize',
+        (v, path) => checkNumber(v, LAYER_NAME_SIZE_MIN, LAYER_NAME_SIZE_MAX, path, warn));
+    setChecked(section, 'set_labels', 'layer.set_labels', renderer, 'showSetNames', (v, path) => {
+        if (ctx.hasBipartite) return flag(v, path);
+        warn(path, 'set names need a bipartite layer; ignored');
+        return undefined;
+    });
+    setChecked(section, 'stack', 'layer.stack', renderer, 'stackMode',
+        (v, path) => checkChoice(v, STACK_MODES, path, warn));
+    setChecked(section, 'spacing', 'layer.spacing', renderer, 'layerSpacing',
+        (v, path) => checkNumber(v, LAYER_SPACING_MIN, LAYER_SPACING_MAX, path, warn));
+}
+
+// ---- scales -------------------------------------------------------------------
+// MiRA keeps one color scale per attribute name, used wherever the attribute
+// colors nodes, links or layers: { <attr>: { type, values } }.
+
+function applyScales(state, section, ctx, warn) {
+    for (const [attr, scale] of Object.entries(section)) {
+        const path = `scales.${attr}`;
+        if (!isPlainObject(scale)) {
+            warn(path, 'must be an object; ignored');
+            continue;
+        }
+        if (!ctx.values[attr]) {
+            warn(path, `${show(attr)} is not an attribute of this network; ignored`);
+            continue;
+        }
+        warnUnknownFields(path, scale, SCALE_FIELDS, warn);
+        if ('type' in scale) applyScaleType(state.ui, attr, scale.type, path, warn);
+        if ('values' in scale) applyScaleValues(state.ui, attr, scale.values, ctx, path, warn);
+    }
+    return null;
+}
+
+function applyScaleType(ui, attr, value, path, warn) {
+    const type = checkChoice(value, SCALE_TYPES, `${path}.type`, warn);
+    if (type === undefined) return;
+    const overrides = new Map(ui.colorScaleOverrides);
+    overrides.set(attr, type);
+    ui.colorScaleOverrides = [...overrides];
+}
+
+/**
+ * values: { <value>: "#rrggbb" }. JSON keys are strings; MiRA matches the
+ * value as stored in the data, so "6" is matched to the number 6.
+ */
+function applyScaleValues(ui, attr, values, ctx, path, warn) {
+    if (!isPlainObject(values)) {
+        warn(`${path}.values`, 'must be an object of value: color; ignored');
+        return;
+    }
+    const overrides = new Map(ui.categoryColorOverrides.map(([k, entries]) => [k, new Map(entries)]));
+    const colors = overrides.get(attr) ?? new Map();
+    for (const [key, value] of Object.entries(values)) {
+        const valuePath = `${path}.values.${key}`;
+        const dataValue = matchDataValue(key, ctx.values[attr]);
+        if (dataValue === undefined) {
+            warn(valuePath, `not a value of ${show(attr)}`);
+            continue;
+        }
+        const color = checkColor(value, valuePath, warn);
+        if (color !== undefined) colors.set(dataValue, color);
+    }
+    if (colors.size) overrides.set(attr, colors);
+    ui.categoryColorOverrides = [...overrides].map(([k, m]) => [k, [...m]]);
+}
+
+function matchDataValue(key, values) {
+    if (values.has(key)) return key;
+    return [...values].find(v => String(v) === key);
 }
