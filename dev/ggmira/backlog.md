@@ -59,6 +59,12 @@ existing files get only small additive changes (listed in view-spec.md §1).
   - `plot_multilayer()` moves to ggmira (same arguments and behavior).
     emln keeps its copy until a later emln release deprecates it.
   - emln is only a test dependency (Suggests) of ggmira.
+- **`mira(bipartite = TRUE)` is undirected unless `directed` is given
+  (2026-11-01).** Bipartite edge lists store each link once (e.g. bird →
+  plant), which emln's auto-detection reads as directed: arrows and only
+  `in`/`out` degree. `plot_multilayer()` keeps emln's behavior.
+- **`min_weight` is any number ≥ 0 (2026-11-01),** not 0–1: MiRA's sliders
+  run to the largest weight in the data (e.g. emln 23: up to 83.3).
 
 ## Open decisions
 
@@ -95,6 +101,8 @@ existing files get only small additive changes (listed in view-spec.md §1).
       `in`/`out` variants (no `intra_degree_sum`), and no `inter_*` without
       interlayer links. MiRA catches it (notice, default kept). Could warn
       in R if `.network_json()` returned the detected `directed` flag.
+- [x] "did you mean" hint for a keyword without its dot (`"individual"`
+      → `".individual"`, `"set"` → `".set"`), where the keyword works.
 - [ ] `print.mira_piece()` / `format` so a piece typed at the console reads
       nicely (now it prints the raw list). Small, R only.
 - [ ] `scripts/sync-ggmira.sh` + `npm run sync:ggmira` (copy of
@@ -118,7 +126,8 @@ emln datasets (bipartite and not, directed and not) with screenshots, and
 a short manual paragraph. Checked so far: emln 23 (directed, bipartite),
 Kamada-Kawai seed 42, per-set color and size, interlayer color, layer
 color by `location`; the MiRA notice shows for an attribute MiRA does not
-compute. Dev loop scripts: `devtools::load_all("ggmira")`, `print(p,
+compute. emln 17 (the only emln dataset with interlayer links): show,
+hide, color, min_weight. emln 23 again: undirected default, min_weight 50. Dev loop scripts: `devtools::load_all("ggmira")`, `print(p,
 mira_path = "MiRA-dev", browser = function(url) cat(url))`, then
 `httpuv::service()` in a loop and a Playwright screenshot.
 
@@ -195,5 +204,15 @@ Each needs MiRA work first; the R side is cheap once MiRA supports it.
   Kamada-Kawai and load it: positions are Kamada-Kawai but the renderer still
   draws bipartite details (set names, diagonal placement). One-line fix in
   restore step 6. The R path already works around it in `rBridge`.
+- **Link width with large weights:** links look width-scaled by raw
+  weight, so weights like 80 (emln 23, prevalence in %) draw very thick
+  bars. Check how MiRA maps weight to width; maybe normalize to the max.
+- **Weight slider snapping:** a `min_weight` from R that is not on the
+  slider's step (max weight / 100) shows a snapped knob (0.5 → 0.4984);
+  the filter itself uses the exact value. Cosmetic; same for sessions.
+- **Test server:** `/usr/local/bin/python3` on Shai's Mac is an Intel
+  binary ("Bad CPU type"), so Playwright cannot start its webServer; run
+  `/usr/bin/python3 -m http.server 8001` from MiRA-dev by hand. A server
+  left running for days made browser tests time out at random.
 - Fix the double "Data warnings" alert when a session (or view spec) is
   restored (`restoreSessionState` calls `loadData` again).

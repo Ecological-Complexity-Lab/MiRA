@@ -99,7 +99,7 @@ All top-level sections and all fields are optional. Missing = MiRA default.
 | `node.color`, `*.color` | string | `#rrggbb` (R converts color names). Used when the matching `color_by` is Default. |
 | `node.size` | number | Base node radius, 3–25 (the size slider). |
 | `node.shape` | string or per-set object | `circle`, `square`. |
-| `*.min_weight` | number | 0–1. |
+| `*.min_weight` | number | 0 or more, in the units of the data's `weight` (MiRA's sliders run to the largest weight; weights are often above 1). |
 | `interlayer.show` | boolean | |
 | `layer.color_by` | string or null | Layer attribute, or `.individual` for per-layer colors. |
 | `scales.<attr>.type` | string | `discrete` or `continuous` (continuous needs numeric data). |
