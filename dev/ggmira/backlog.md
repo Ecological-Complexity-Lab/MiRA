@@ -5,10 +5,12 @@ view spec, so network-mode plots can be written as code. Not everything
 ships in v1; park ideas here instead of growing the current scope.
 
 Status: **Phase 0 done** (contract: [view-spec.md](view-spec.md)).
-Phases 1–2 done on branch `feat/ggmira-view-spec` (local, last a709730).
+Phases 1–2 done on branch `feat/ggmira-view-spec` (local, last 683c07c).
 Phase 3 done: ggmira package at `~/GitHub/ecomplab/ggmira` (local git):
 3a (74a3938) converter, server, `plot_multilayer()`; 3b (63b6c2c) the
-`mira()` grammar. Next: Phase 4 (end-to-end on emln datasets, manual).
+`mira()` grammar. Phase 4 done (2026-11-01): end-to-end on emln 13, 14,
+17, 23, 63; manual paragraph in the ggmira README (5dc0894).
+**Milestone 1 is complete.** Next: test with users before milestone 2.
 
 ## Milestones
 
@@ -118,6 +120,28 @@ existing files get only small additive changes (listed in view-spec.md §1).
       `ggmira::plot_multilayer()` (agree with Geut).
 
 ---
+
+## Phase 4 results (2026-11-01)
+
+End-to-end runs from R (dev loop below), checked with screenshots and
+MiRA's control values; no browser errors, no MiRA notice:
+
+- **emln 13** (Kefi multiplex; not bipartite, 12 node types, directed
+  auto-detected): Fruchterman seed 7, node color by `node_type`, size by
+  `body_mass`, link color by `type`, layer color by `description`. In R:
+  bipartite layout, `.set` and per-set `shape` are errors; an unknown
+  column (`phylum`) is a warning.
+- **emln 63** (temporal food web; not bipartite, `directed = FALSE`):
+  circle layout, constant node color and square shape, size by
+  `intra_degree_sum`, intralayer color and `min_weight = 10`, layer color
+  by `date` (a Date column). No arrows.
+- **emln 14** (the README example; bipartite, undirected default):
+  Kamada-Kawai seed 42, per-set color (`intra_degree_sum` / default),
+  intralayer color, `.individual` layers.
+- Earlier: emln 23 and 17 (see the handoff below).
+
+Seen again: very thick links when weights are large (emln 63, up to 98) —
+already under Later.
 
 ## Handoff for Phase 4 (2026-11-01)
 
