@@ -6,8 +6,9 @@ ships in v1; park ideas here instead of growing the current scope.
 
 Status: **Phase 0 done** (contract: [view-spec.md](view-spec.md)).
 Phases 1–2 done on branch `feat/ggmira-view-spec` (local, last a709730).
-Phase 3a done: ggmira package at `~/GitHub/ecomplab/ggmira` (local git, 74a3938):
-converter, server, `plot_multilayer()`. Next: Phase 3b (`mira()` grammar).
+Phase 3 done: ggmira package at `~/GitHub/ecomplab/ggmira` (local git):
+3a (74a3938) converter, server, `plot_multilayer()`; 3b (63b6c2c) the
+`mira()` grammar. Next: Phase 4 (end-to-end on emln datasets, manual).
 
 ## Milestones
 
@@ -77,17 +78,25 @@ existing files get only small additive changes (listed in view-spec.md §1).
 - [x] Phase 2: `js/viewSpec.js` + unit tests; `js/rBridge.js`; 3-line hook
       in `autoloadFromR`; Playwright tests with `page.route` fakes.
 
-## R side (emln)
+## R side (ggmira)
 
-- [ ] `mira()`, `mira_*()` pieces + `+` method that accumulates a spec.
+- [x] `mira()`, `mira_*()` pieces + `+` method that accumulates a spec.
 - [ ] (Milestone 2) `mira_scale_color()`; discrete palettes expanded in R
       into `values` (base R `palette.colors()` / `hcl.colors()`), no MiRA
       change.
-- [ ] Validation in R: attribute exists, numeric for continuous, set names
-      match `node_type` values.
-- [ ] `print()` method serves network + view spec and opens MiRA;
+- [x] Validation in R: attribute exists (warning), numeric for `size_by`
+      (warning; numbers stored as text count, as in MiRA), set names match
+      `node_type` values (error).
+- [x] `print()` method serves network + view spec and opens MiRA;
       `mira_spec()` returns the spec.
-- [ ] Tests (testthat) for spec building and validation.
+- [x] Tests (testthat) for spec building and validation.
+- [ ] R accepts any name matching MiRA's computed-attribute pattern, but
+      MiRA computes only some of them: on a directed network only the
+      `in`/`out` variants (no `intra_degree_sum`), and no `inter_*` without
+      interlayer links. MiRA catches it (notice, default kept). Could warn
+      in R if `.network_json()` returned the detected `directed` flag.
+- [ ] `print.mira_piece()` / `format` so a piece typed at the console reads
+      nicely (now it prints the raw list). Small, R only.
 - [ ] `scripts/sync-ggmira.sh` + `npm run sync:ggmira` (copy of
       sync-emln.sh with `DEST=../ggmira/inst/MiRA`) — when shipping.
 - [ ] **emln bug:** `emln::load_emln()` fails with "object 'descriptions'
@@ -101,6 +110,19 @@ existing files get only small additive changes (listed in view-spec.md §1).
       `ggmira::plot_multilayer()` (agree with Geut).
 
 ---
+
+## Handoff for Phase 4 (2026-11-01)
+
+Phase 3b is done; Phase 4 is next: end-to-end check of `mira()` on 2–3
+emln datasets (bipartite and not, directed and not) with screenshots, and
+a short manual paragraph. Checked so far: emln 23 (directed, bipartite),
+Kamada-Kawai seed 42, per-set color and size, interlayer color, layer
+color by `location`; the MiRA notice shows for an attribute MiRA does not
+compute. Dev loop scripts: `devtools::load_all("ggmira")`, `print(p,
+mira_path = "MiRA-dev", browser = function(url) cat(url))`, then
+`httpuv::service()` in a loop and a Playwright screenshot.
+
+The Phase 3 handoff below is kept for reference.
 
 ## Handoff for Phase 3 (fresh session, 2026-10-31)
 

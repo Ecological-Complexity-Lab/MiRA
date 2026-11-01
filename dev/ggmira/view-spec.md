@@ -178,7 +178,10 @@ These functions live in the separate R package **ggmira** (not emln).
 - Per set in R = a vector named by `node_type`:
   `color_by = c(pollinator = "module", plant = NA)` (`NA` → `null`).
 - `color_by` and `color` together in one piece → R error.
-- Later pieces override earlier ones field by field.
+- Later pieces override earlier ones field by field. `color` and
+  `color_by` are one channel: a later `color` removes an earlier
+  `color_by` in the same section, and the other way round.
+- Per-set names may cover one set only; the other set keeps its default.
 - **Palettes in milestone 2 (R-only, no MiRA change):** for a discrete scale on a
   data attribute, R expands `palette` (base R `palette.colors()` /
   `hcl.colors()` names, or a color vector) into explicit `values` using the
