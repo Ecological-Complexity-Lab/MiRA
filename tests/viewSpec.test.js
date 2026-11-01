@@ -340,7 +340,7 @@ describe('Group 6 — Links and layers', () => {
   })
 
   it('6.3 invalid link fields are skipped', () => {
-    const r = apply({ interlayer: { show: 'yes', color_by: 'flux', min_weight: 2 } })
+    const r = apply({ interlayer: { show: 'yes', color_by: 'flux', min_weight: -1 } })
     expect(r.state.renderer.showInterlayerLinks).toBe(false)
     expect(r.state.ui.interLinkColorSelect).toBe('')
     expect(r.state.renderer.interlayerMinWeight).toBe(0)
@@ -355,6 +355,19 @@ describe('Group 6 — Links and layers', () => {
 
   it('6.5 layer ".individual"', () => {
     expect(apply({ layer: { color_by: '.individual' } }).state.ui.layerColorSelect).toBe('__individual__')
+  })
+
+  it('6.6 min_weight above 1 is accepted (weights are not limited to 0-1)', () => {
+    const r = apply({ intralayer: { min_weight: 50 }, interlayer: { min_weight: 83.3 } })
+    expect(r.state.renderer.intraMinWeight).toBe(50)
+    expect(r.state.renderer.interlayerMinWeight).toBe(83.3)
+    expect(r.warnings).toEqual([])
+  })
+
+  it('6.7 a negative or non-numeric min_weight is skipped', () => {
+    const r = apply({ intralayer: { min_weight: 'high' } })
+    expect(r.state.renderer.intraMinWeight).toBe(0)
+    expect(r.warnings).toEqual(['intralayer.min_weight: "high" must be a number of 0 or more'])
   })
 })
 
