@@ -65,6 +65,13 @@ existing files get only small additive changes (listed in view-spec.md §1).
   interlayer links on unless `show` is given. `arrow_size` is in
   `mira_intralayer()` and also sizes interlayer arrowheads (MiRA has one
   size).
+- **Manual = pkgdown site (2026-11-01),** like tidyverse packages (not
+  bookdown). Skeleton done in ggmira 2c09aaa: grouped reference, "Getting
+  started" article with screenshots (code from
+  `inst/examples/mira_examples.R`). Built locally (`docs/` not committed;
+  GitHub Pages for a private repo needs a paid plan). Full articles after
+  stage 4 (views change the package's shape); site ready before students
+  test. Shai tested stage 1 on 2026-11-01.
 - **Palettes wait for item 17 (2026-11-01),** so categorical and
   continuous palettes arrive together.
 - **Per set = vector named by `node_type`:**
