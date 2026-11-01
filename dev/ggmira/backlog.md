@@ -5,7 +5,7 @@ view spec, so network-mode plots can be written as code. Not everything
 ships in v1; park ideas here instead of growing the current scope.
 
 Status: **Phase 0 done** (contract: [view-spec.md](view-spec.md)).
-Phases 1–2 done on branch `feat/ggmira-view-spec` (pushed 2026-11-01, last 683c07c).
+Phases 1–2 done; now on branch `feat/ggmira` (from `main`, pushed 2026-11-01).
 Phase 3 done: ggmira package at `~/GitHub/ecomplab/ggmira`
 (private repo: https://github.com/Ecological-Complexity-Lab/ggmira):
 3a (74a3938) converter, server, `plot_multilayer()`; 3b (63b6c2c) the
@@ -139,13 +139,14 @@ Next actions, in order:
    were cherry-picked onto a fresh branch from `main`
    (`release/node-set-channels`). The PR also pinned CI runners to
    `ubuntu-24.04` (Playwright 1.58 cannot install browsers on 26.04).
-2. **Move `feat/ggmira-view-spec` onto `main` the same way:** it is built
-   on `feat/node-set-channels`, so it carries dev-only files too. New
-   branch from `main`, cherry-pick only its own commits
-   (`git log feat/node-set-channels..feat/ggmira-view-spec`, 5 commits:
-   seeded layouts, viewSpec + rBridge, browser tests, min_weight). Re-run
-   `npm test` and all browser tests: start `/usr/bin/python3 -m
-   http.server 8001` by hand from the worktree under test first.
+2. ~~Move the view-spec branch onto `main`~~ **Done 2026-11-01:** branch
+   `feat/ggmira` (pushed) = `main` + the 5 ggmira commits, cherry-picked
+   without conflicts. Tests: `npm test` 317; browser 30/30 with
+   `--workers=1`. With the configured 3 workers, one node-sets test
+   (`bipartite network loads shared…`) sometimes times out loading its demo
+   dataset (python server under load); it passes 5/5 alone. The old
+   branches `feat/ggmira-view-spec` and `feat/node-set-channels` are kept
+   until `feat/ggmira` is confirmed, then can be deleted.
 3. **Bundle MiRA in ggmira** (plan proposed, waiting for Shai's approval):
    `scripts/sync-ggmira.sh`, a copy of `sync-emln.sh` with
    `DEST=../ggmira/inst/MiRA`, plus `npm run sync:ggmira` (one new line in
