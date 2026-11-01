@@ -26,6 +26,10 @@ tested and merged; then start from the handoff right below.
    `mira_save()`.
 
 Rule: a milestone starts only after the previous one is tested.
+**Changed 2026-11-01:** for now only Shai (with Claude) tests; development
+continues into the next milestones, and students test later, once there is
+more to try. A ready-to-paste test script for milestone 1 is in the
+conversation of 2026-11-01 (emln 14, 17, 63; mistakes on purpose).
 
 **Ground rule (2026-10-31): do not break anything.** No refactoring of
 existing code that spans multiple blocks. New behavior goes in new modules;
@@ -153,7 +157,7 @@ Next actions, in order:
    a fresh library, then `print(p)` with no `mira_path` on emln 17 serves
    the bundled MiRA and applies the spec. R CMD check clean. After any MiRA
    change: `npm run sync:ggmira` in MiRA-dev, commit `inst/MiRA` in ggmira.
-4. **User testing of milestone 1:** a short task sheet (plot your own
+4. **(Deferred: students test later; Shai tests now.)** **User testing of milestone 1:** a short task sheet (plot your own
    network with `mira()`, change settings, report what was confusing);
    collect feedback in this file.
 5. **PR `feat/ggmira-view-spec` → `main`** when ggmira ships to testers
