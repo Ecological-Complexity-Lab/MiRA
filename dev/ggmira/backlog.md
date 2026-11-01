@@ -5,14 +5,14 @@ view spec, so network-mode plots can be written as code. Not everything
 ships in v1; park ideas here instead of growing the current scope.
 
 Status: **Phase 0 done** (contract: [view-spec.md](view-spec.md)).
-Phases 1–2 done on branch `feat/ggmira-view-spec` (local, last 683c07c).
+Phases 1–2 done on branch `feat/ggmira-view-spec` (pushed 2026-11-01, last 683c07c).
 Phase 3 done: ggmira package at `~/GitHub/ecomplab/ggmira`
 (private repo: https://github.com/Ecological-Complexity-Lab/ggmira):
 3a (74a3938) converter, server, `plot_multilayer()`; 3b (63b6c2c) the
 `mira()` grammar. Phase 4 done (2026-11-01): end-to-end on emln 13, 14,
 17, 23, 63; manual paragraph in the ggmira README (5dc0894).
-**Milestone 1 is complete.** Next: bundle MiRA in ggmira (`sync-ggmira`),
-then test with users before milestone 2.
+**Milestone 1 is complete.** Paused until `feat/node-set-channels` is
+tested and merged; then start from the handoff right below.
 
 ## Milestones
 
@@ -121,6 +121,41 @@ existing files get only small additive changes (listed in view-spec.md §1).
       `ggmira::plot_multilayer()` (agree with Geut).
 
 ---
+
+## Handoff: resume after `feat/node-set-channels` is merged (2026-11-01)
+
+Paused on purpose: a student is testing `feat/node-set-channels`, which
+`feat/ggmira-view-spec` is built on. Everything is committed and pushed
+(MiRA `feat/ggmira-view-spec` 683c07c; ggmira `main` on
+Ecological-Complexity-Lab/ggmira; this file on `development`).
+Working rules as before: describe code and wait for approval, no
+multi-block refactors, commit each step, American spelling.
+
+Next actions, in order:
+
+1. **Merge `feat/node-set-channels`** to `main` (PR) after the student's
+   testing.
+2. **Bring `feat/ggmira-view-spec` up to date with `main`** (it is pushed:
+   merge `main` in, or rebase and force-push; decide then). Re-run
+   `npm test` (317) and the view-spec browser tests (8): start
+   `/usr/bin/python3 -m http.server 8001` from MiRA-dev by hand first.
+3. **Bundle MiRA in ggmira** (plan proposed, waiting for Shai's approval):
+   `scripts/sync-ggmira.sh`, a copy of `sync-emln.sh` with
+   `DEST=../ggmira/inst/MiRA`, plus `npm run sync:ggmira` (one new line in
+   `package.json`). Run it, commit `inst/MiRA` in ggmira, drop the status
+   note in ggmira's README, and check `remotes::install_github()` +
+   `print(p)` with no `mira_path` (a temporary library worked for the
+   install on 2026-11-01).
+4. **User testing of milestone 1:** a short task sheet (plot your own
+   network with `mira()`, change settings, report what was confusing);
+   collect feedback in this file.
+5. **PR `feat/ggmira-view-spec` → `main`** when ggmira ships to testers
+   beyond the lab machines (timing to decide).
+6. **Small MiRA bugs,** one branch each (see Later): `renderer.layoutType`
+   not restored; double "Data warnings" alert; very thick links with large
+   weights.
+7. **Milestone 2:** `mira_scale_color()` (R only).
+8. **With Geut:** the two emln bugs; deprecate `emln::plot_multilayer()`.
 
 ## Phase 4 results (2026-11-01)
 
