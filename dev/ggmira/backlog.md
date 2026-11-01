@@ -133,12 +133,19 @@ multi-block refactors, commit each step, American spelling.
 
 Next actions, in order:
 
-1. **Merge `feat/node-set-channels`** to `main` (PR) after the student's
-   testing.
-2. **Bring `feat/ggmira-view-spec` up to date with `main`** (it is pushed:
-   merge `main` in, or rebase and force-push; decide then). Re-run
-   `npm test` (317) and the view-spec browser tests (8): start
-   `/usr/bin/python3 -m http.server 8001` from MiRA-dev by hand first.
+1. ~~Merge `feat/node-set-channels`~~ **Done 2026-11-01: PR #93**
+   (squash, c75ddfe), live on mira.ecomplab.com. That branch was started
+   from `development` and carried dev-only files, so its 7 feature commits
+   were cherry-picked onto a fresh branch from `main`
+   (`release/node-set-channels`). The PR also pinned CI runners to
+   `ubuntu-24.04` (Playwright 1.58 cannot install browsers on 26.04).
+2. **Move `feat/ggmira-view-spec` onto `main` the same way:** it is built
+   on `feat/node-set-channels`, so it carries dev-only files too. New
+   branch from `main`, cherry-pick only its own commits
+   (`git log feat/node-set-channels..feat/ggmira-view-spec`, 5 commits:
+   seeded layouts, viewSpec + rBridge, browser tests, min_weight). Re-run
+   `npm test` and all browser tests: start `/usr/bin/python3 -m
+   http.server 8001` by hand from the worktree under test first.
 3. **Bundle MiRA in ggmira** (plan proposed, waiting for Shai's approval):
    `scripts/sync-ggmira.sh`, a copy of `sync-emln.sh` with
    `DEST=../ggmira/inst/MiRA`, plus `npm run sync:ggmira` (one new line in
