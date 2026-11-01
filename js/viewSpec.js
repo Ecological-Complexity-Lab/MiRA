@@ -24,8 +24,8 @@ const LAYOUT_TYPES = new Set(['fruchterman', 'kamada_kawai', 'bipartite', 'circl
 const SHAPES = new Set(['circle', 'square']);
 const NODE_SIZE_MIN = 3;   // node size slider range
 const NODE_SIZE_MAX = 25;
-const WEIGHT_MIN = 0;      // link weight filter range
-const WEIGHT_MAX = 1;
+const WEIGHT_MIN = 0;      // link weight filter; no upper bound (the
+                           // sliders run to the largest weight in the data)
 const HEX_COLOR = /^#[0-9a-fA-F]{6}$/;
 
 // Spec keywords → dropdown option values
@@ -122,6 +122,12 @@ function checkColor(value, path, warn) {
 function checkNumber(value, min, max, path, warn) {
     if (typeof value === 'number' && Number.isFinite(value) && value >= min && value <= max) return value;
     warn(path, `${show(value)} must be a number between ${min} and ${max}`);
+    return undefined;
+}
+
+function checkMinWeight(value, path, warn) {
+    if (typeof value === 'number' && Number.isFinite(value) && value >= WEIGHT_MIN) return value;
+    warn(path, `${show(value)} must be a number of ${WEIGHT_MIN} or more`);
     return undefined;
 }
 
@@ -364,7 +370,7 @@ function applyLinkColor(state, section, ctx, warn, fields) {
 
 function applyMinWeight(state, section, path, rendererField, warn) {
     if (!('min_weight' in section)) return;
-    const weight = checkNumber(section.min_weight, WEIGHT_MIN, WEIGHT_MAX, path, warn);
+    const weight = checkMinWeight(section.min_weight, path, warn);
     if (weight !== undefined) state.renderer[rendererField] = weight;
 }
 
