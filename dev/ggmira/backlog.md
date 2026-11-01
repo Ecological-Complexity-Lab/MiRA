@@ -6,11 +6,13 @@ ships in v1; park ideas here instead of growing the current scope.
 
 Status: **Phase 0 done** (contract: [view-spec.md](view-spec.md)).
 Phases 1–2 done on branch `feat/ggmira-view-spec` (local, last 683c07c).
-Phase 3 done: ggmira package at `~/GitHub/ecomplab/ggmira` (local git):
+Phase 3 done: ggmira package at `~/GitHub/ecomplab/ggmira`
+(private repo: https://github.com/Ecological-Complexity-Lab/ggmira):
 3a (74a3938) converter, server, `plot_multilayer()`; 3b (63b6c2c) the
 `mira()` grammar. Phase 4 done (2026-11-01): end-to-end on emln 13, 14,
 17, 23, 63; manual paragraph in the ggmira README (5dc0894).
-**Milestone 1 is complete.** Next: test with users before milestone 2.
+**Milestone 1 is complete.** Next: bundle MiRA in ggmira (`sync-ggmira`),
+then test with users before milestone 2.
 
 ## Milestones
 
@@ -54,7 +56,7 @@ existing files get only small additive changes (listed in view-spec.md §1).
 - **v1 output:** browser only. `mira_save()` is the next dev session.
 - **Separate R package `ggmira` (2026-10-31),** not part of emln. Users
   load both (`library(emln); library(ggmira)`), like ggplot2 with data
-  packages. Local only for now: `~/GitHub/ecomplab/ggmira`, no remote.
+  packages. Private repo Ecological-Complexity-Lab/ggmira (2026-11-01).
   - emln is **not changed**. ggmira has its own copy of the JSON converter
     (tested to give identical output to `emln::multilayer_to_json()`) and
     of the httpuv server (which also serves `/api/view.json`).
@@ -98,15 +100,14 @@ existing files get only small additive changes (listed in view-spec.md §1).
 - [x] `print()` method serves network + view spec and opens MiRA;
       `mira_spec()` returns the spec.
 - [x] Tests (testthat) for spec building and validation.
-- [ ] R accepts any name matching MiRA's computed-attribute pattern, but
-      MiRA computes only some of them: on a directed network only the
-      `in`/`out` variants (no `intra_degree_sum`), and no `inter_*` without
-      interlayer links. MiRA catches it (notice, default kept). Could warn
-      in R if `.network_json()` returned the detected `directed` flag.
+- [x] Warning for a computed name MiRA will not have (`in`/`out` only on
+      a directed side, no `inter_*` without interlayer links), with the
+      variants it has as a hint. `mira()` builds the list like MiRA's parser
+      (R/mira_computed.R); matches MiRA's menus on emln 13 and 17.
 - [x] "did you mean" hint for a keyword without its dot (`"individual"`
       → `".individual"`, `"set"` → `".set"`), where the keyword works.
-- [ ] `print.mira_piece()` / `format` so a piece typed at the console reads
-      nicely (now it prints the raw list). Small, R only.
+- [x] `print.mira_piece()` / `format`: a piece prints as the call that
+      makes it (`mira_node(size = 8)`).
 - [ ] `scripts/sync-ggmira.sh` + `npm run sync:ggmira` (copy of
       sync-emln.sh with `DEST=../ggmira/inst/MiRA`) — when shipping.
 - [ ] **emln bug:** `emln::load_emln()` fails with "object 'descriptions'
