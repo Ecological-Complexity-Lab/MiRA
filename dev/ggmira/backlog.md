@@ -108,7 +108,7 @@ existing files get only small additive changes (listed in view-spec.md §1).
       → `".individual"`, `"set"` → `".set"`), where the keyword works.
 - [x] `print.mira_piece()` / `format`: a piece prints as the call that
       makes it (`mira_node(size = 8)`).
-- [ ] `scripts/sync-ggmira.sh` + `npm run sync:ggmira` (copy of
+- [x] `scripts/sync-ggmira.sh` + `npm run sync:ggmira` (copy of
       sync-emln.sh with `DEST=../ggmira/inst/MiRA`) — when shipping.
 - [ ] **emln bug:** `emln::load_emln()` fails with "object 'descriptions'
       not found" unless emln is attached (`library(emln)`): it reads its
@@ -147,13 +147,12 @@ Next actions, in order:
    dataset (python server under load); it passes 5/5 alone. The old
    branches `feat/ggmira-view-spec` and `feat/node-set-channels` are kept
    until `feat/ggmira` is confirmed, then can be deleted.
-3. **Bundle MiRA in ggmira** (plan proposed, waiting for Shai's approval):
-   `scripts/sync-ggmira.sh`, a copy of `sync-emln.sh` with
-   `DEST=../ggmira/inst/MiRA`, plus `npm run sync:ggmira` (one new line in
-   `package.json`). Run it, commit `inst/MiRA` in ggmira, drop the status
-   note in ggmira's README, and check `remotes::install_github()` +
-   `print(p)` with no `mira_path` (a temporary library worked for the
-   install on 2026-11-01).
+3. ~~Bundle MiRA in ggmira~~ **Done 2026-11-01:** `scripts/sync-ggmira.sh`
+   + `npm run sync:ggmira` on `feat/ggmira` (c630203); ggmira bedb743
+   bundles `inst/MiRA` (38 files, 2.5 MB). Checked: `install_github()` into
+   a fresh library, then `print(p)` with no `mira_path` on emln 17 serves
+   the bundled MiRA and applies the spec. R CMD check clean. After any MiRA
+   change: `npm run sync:ggmira` in MiRA-dev, commit `inst/MiRA` in ggmira.
 4. **User testing of milestone 1:** a short task sheet (plot your own
    network with `mira()`, change settings, report what was confusing);
    collect feedback in this file.
