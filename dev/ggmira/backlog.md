@@ -74,6 +74,79 @@ existing files get only small additive changes (listed in view-spec.md §1).
 - **`min_weight` is any number ≥ 0 (2026-11-01),** not 0–1: MiRA's sliders
   run to the largest weight in the data (e.g. emln 23: up to 83.3).
 
+## Development plan (agreed 2026-11-01)
+
+Order: S stages first (MiRA already saves the setting in its session, so
+only the R piece + `viewSpec.js` are needed), then R-only, then M (needs
+new MiRA code). Each stage: design approved first → MiRA view-spec
+additions on `feat/ggmira` + R pieces, tests on both sides → real run with
+screenshots → `view-spec.md` update → `npm run sync:ggmira`. New fields
+are optional, so the spec stays version 1. R names below are sketches.
+
+**Stage 1 — network-mode panels + color scales (S)**
+
+| # | Feature | R sketch |
+|---|---|---|
+| 1 | Layer names: show, font size | `mira_layer(names = TRUE, name_size = 14)` |
+| 2 | Set names (bipartite) | `mira_layer(set_names = TRUE)` |
+| 3 | Stacking (horizontal / vertical), layer spacing | `mira_layer(stack = "vertical", spacing = 1.5)` |
+| 4 | Manual color per layer | `mira_layer(color = c(layer_1 = "red", layer_2 = "blue"))` |
+| 5 | Node labels: show, size | `mira_node(labels = TRUE, label_size = 10)` |
+| 6 | Nodes in 3D perspective | `mira_node(perspective = TRUE)` |
+| 7 | Intralayer arrowhead size | `mira_intralayer(arrow_size = 8)` |
+| 8 | Interlayer curvature | `mira_interlayer(curvature = 0.3)` |
+| 9 | Interlayer links only between some layer pairs | `mira_interlayer(pairs = list(c("L1", "L2")))` |
+| 15 | Color scale type for an attribute | `mira_scale_color("modules", type = "categorical")` |
+| 16 | Manual color per value | `mira_scale_color("type", values = c(plant = "darkgreen", bird = "orange"))` |
+
+**Stage 2 — filters (S)**
+
+| # | Feature | R sketch |
+|---|---|---|
+| 14 | Show only some layers, nodes or links (Data mode filter; restorable in MiRA) | `mira_filter(layers = c("L1", "L3"))` |
+
+**Stage 3 — network-mode view (S)**
+
+| # | Feature | R sketch |
+|---|---|---|
+| 11 | Camera: rotation, zoom, pan (network mode) | syntax with stage 4 (camera is per view) |
+| 12 | Which legends are open | `mira_view(legends = c("node_color"))` |
+| 13 | Highlight a node (like search) | `mira_view(highlight = "Apis mellifera")` |
+
+**Stage 4 — other views (S).** One family, `mira_mode_*()`; each view has
+its own camera settings. Syntax to be discussed before any code.
+
+| # | Feature | R sketch |
+|---|---|---|
+| 21 | Grid view: layers side by side, columns | `mira_mode_grid(columns = 3)` |
+| 22 | Layer mode: bubble size/color, edge metric, edge min weight, labels, geographic placement | `mira_mode_layer(...)` |
+| 23 | Map mode: which layers, opacity, street map, center/zoom | `mira_mode_map(...)` |
+| 24 | Meta-network: aggregation, layout, color/size, min weight, nested sort, labels | `mira_mode_meta(...)` |
+| 25 | Open in Dashboard or Data mode | `mira_mode_dashboard()`, `mira_mode_data()` |
+
+**Stage 5 — R only**
+
+| # | Feature | Notes |
+|---|---|---|
+| 27 | Save a MiRA session file from R, to open on the website | Check MiRA accepts a session without positions |
+| 28 | Derived mappings, `color_by = ~log10(weight)` | R adds the column |
+| 29 | Plain data frames as input, not only emln objects | |
+| 30 | Presets, e.g. `mira_theme_paper()` | Bundles of settings above |
+
+**Then M (needs MiRA code) — 33 first, order of the rest to discuss**
+
+| # | Feature | R sketch / notes |
+|---|---|---|
+| 33 | Bugs: `renderer.layoutType` not restored; double "Data warnings" alert | Small fixes, PR to main (live site) |
+| 10 | Interlayer arrowhead size (not saved in sessions) | `mira_interlayer(arrow_size = 8)` |
+| 17 | Named palettes (viridis, magma, …) and palettes on computed attributes | `mira_scale_color(..., palette = "magma")` |
+| 18 | Node size range | `mira_scale_size(range = c(1, 6))` |
+| 19 | Legend titles | `mira_labs(node_color = "Module")` |
+| 20 | Link color by `weight`; link width scaling | `mira_intralayer(color_by = "weight", width = "scaled")` |
+| 26 | `mira_save()`: image file from R | Headless browser; MiRA signals "rendered" |
+| 31 | "Copy as R code" button in MiRA | |
+| 32 | More node shapes (triangle, diamond) | |
+
 ## Open decisions
 
 (none)
