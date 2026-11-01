@@ -5,6 +5,7 @@
  * using an oblique projection to create a 3D stacking effect.
  */
 
+import { traceNodeShape } from './nodeShapes.js';
 import { defaultColorMapper, BIPARTITE_SET_A_COLOR, BIPARTITE_SET_B_COLOR } from './colorMapper.js';
 import { dataMode } from './dataMode.js';
 
@@ -57,6 +58,7 @@ export class Renderer {
         // Color-by functions
         this.nodeColorFn = null;
         this.nodeSizeFn = null;
+        this.nodeShapeFn = null;          // (layerName, nodeName) => 'circle' | 'square'
         this.linkColorFn = null;          // global fallback; overrides defaults below
         this.intraLinkColorFn = null;     // per-type override for intralayer links
         this.interLinkColorFn = null;     // per-type override for interlayer links
@@ -389,6 +391,7 @@ export class Renderer {
                 nodeRadius:       this.nodeRadius,
                 nodeColorFn:      this.nodeColorFn,
                 nodeSizeFn:       this.nodeSizeFn,
+                nodeShapeFn:      this.nodeShapeFn,
                 intraLinkColorFn: this.intraLinkColorFn ?? this.linkColorFn,
                 intraMinWeight:   this.intraMinWeight,
                 layerColorFn:     this.layerColorFn,
@@ -826,6 +829,8 @@ export class Renderer {
                 fillColor = this.colorMapper.getBipartiteNodeColor(bpInfo.setA.has(nodeName));
             }
 
+            const shape = this.nodeShapeFn ? this.nodeShapeFn(layer.layer_name, nodeName) : null;
+
             const isHovered = this.hoveredNode &&
                 this.hoveredNode.layerName === layer.layer_name &&
                 this.hoveredNode.nodeName === nodeName;
@@ -842,8 +847,7 @@ export class Renderer {
                 ctx.globalAlpha = 0.08;
                 ctx.translate(sp.x, sp.y);
                 if (this.transformNodes) ctx.transform(ta, tb, tc, td, 0, 0);
-                ctx.beginPath();
-                ctx.arc(0, 0, r, 0, Math.PI * 2);
+                traceNodeShape(ctx, 0, 0, r, shape);
                 ctx.fillStyle = fillColor;
                 ctx.fill();
                 ctx.restore();
@@ -856,8 +860,7 @@ export class Renderer {
                 ctx.translate(sp.x, sp.y);
                 if (this.transformNodes) ctx.transform(ta, tb, tc, td, 0, 0);
 
-                ctx.beginPath();
-                ctx.arc(0, 0, r + 6, 0, Math.PI * 2);
+                traceNodeShape(ctx, 0, 0, r + 6, shape);
                 ctx.fillStyle = (isSelected || isSearched)
                     ? 'rgba(250, 204, 21, 0.25)'
                     : 'rgba(0,0,0,0.08)';
@@ -865,13 +868,12 @@ export class Renderer {
                 ctx.restore();
             }
 
-            // Node circle
+            // Node marker
             ctx.save();
             ctx.translate(sp.x, sp.y);
             if (this.transformNodes) ctx.transform(ta, tb, tc, td, 0, 0);
 
-            ctx.beginPath();
-            ctx.arc(0, 0, r, 0, Math.PI * 2);
+            traceNodeShape(ctx, 0, 0, r, shape);
             ctx.fillStyle = fillColor;
             ctx.fill();
 

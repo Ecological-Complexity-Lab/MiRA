@@ -281,6 +281,7 @@
         <a href="#network" class="l2 toc-toggle" data-group="g-network">Network Mode <span class="toc-chevron">▾</span></a>
         <div class="toc-children" id="g-network">
           <a href="#network-controls" class="l3">Sidebar Controls</a>
+          <a href="#node-sets" class="l3">Bipartite Node Sets</a>
         </div>
       </div>
       <div class="toc-group">
@@ -460,7 +461,7 @@
   <ul>
     <li><code>node_id</code> — unique identifier.</li>
     <li><code>node_name</code> — display label.</li>
-    <li><code>node_type</code> <em>(required for bipartite layers)</em> — each bipartite layer must have exactly two distinct values among its own nodes; determines Set A vs. Set B. Globally more than two values are allowed (diagonal-coupling networks).</li>
+    <li><code>node_type</code> <em>(required for bipartite layers)</em> — each bipartite layer must have exactly two distinct values among its own nodes; determines Set A vs. Set B. Globally more than two values are allowed (diagonal-coupling networks), but the <a href="#node-sets">Shared / Per set</a> node toggles appear only when there are exactly two. Nodes in unipartite layers are styled like their <code>node_type</code>'s set.</li>
     <li>Any extra fields become selectable attributes for color/size mapping.</li>
   </ul>
 
@@ -513,7 +514,7 @@ Ixodes_ricinus,0.003</code></pre>
 1982,Apodemus_peninsulae,14,3
 1983,Apodemus_agrarius,61,2
 1983,Apodemus_peninsulae,19,1</code></pre>
-  <p style="font-size:12px;color:#6b7280;">After loading, <code>abundance</code> and <code>module</code> appear in the Color By and Size By dropdowns as <em>State</em> attributes, and their values reflect the specific layer each node is in.</p>
+  <p style="font-size:12px;color:#6b7280;">After loading, <code>abundance</code> and <code>module</code> appear in the Color and Size dropdowns as <em>State</em> attributes, and their values reflect the specific layer each node is in.</p>
 
   <hr>
 
@@ -695,18 +696,31 @@ Ixodes_ricinus,0.003</code></pre>
     <li><span class="key">Stacking Mode</span> — <em>Horizontal</em> (layers recede into Z-axis, default) or <em>Vertical</em> (layers drop along Y-axis).</li>
     <li><span class="key">Layer Spacing</span> — simulated distance between planes.</li>
     <li><span class="key">Layout Algorithm</span> — Fruchterman-Reingold, Kamada-Kawai, Bipartite (two-row, optional nested sorting), Circle, Grid, or Random.</li>
-    <li><span class="key">Color By (layers)</span> — color layer planes by a numeric attribute (e.g. area, elevation). Produces a continuous Viridis legend.</li>
+    <li><span class="key">Color (layers)</span> — color layer planes by a numeric attribute (e.g. area, elevation). Produces a continuous Viridis legend.</li>
   </ul>
   <h4>Nodes</h4>
   <ul>
     <li><span class="key">Node Labels</span> — show names on hover or permanently.</li>
     <li><span class="key">Transform Nodes</span> — skew nodes to match the isometric perspective. Disable for large networks.</li>
-    <li><span class="key">Color By</span> — Layer, Group, or Uniform. Bipartite networks show independent color pickers for Set A and Set B.</li>
-    <li><span class="key">Size By</span> — uniform Base Size slider, or scale by Node Degree. Bipartite networks show independent Size By dropdowns for Set A and Set B.</li>
+    <li><span class="key">Color</span> — color nodes by any node or state attribute, by a MiRA-computed metric (degree, strength), or leave on <em>Default</em> for a single color picker. Bipartite networks also offer <em>Set</em>, which colors each node set in its own color (the default for bipartite data).</li>
+    <li><span class="key">Size</span> — scale nodes by a numeric attribute or metric, or keep them uniform (set by the Base Size slider).</li>
+    <li><span class="key">Shape</span> — <em>Circle</em> or <em>Square</em>. Squares have the same area as the circles they replace, so sizes stay comparable.</li>
   </ul>
+  <h4 id="node-sets">Bipartite node sets: Shared or Per set</h4>
+  <p>When the network has at least one bipartite layer and exactly two <code>node_type</code> values, each of the three channels (Color, Size, Shape) gets a small <strong>Shared / Per set</strong> toggle next to its name. The choice is yours and holds in every layout and in Grid View.</p>
+  <ul>
+    <li><span class="key">Shared</span> (default) — one scheme for both sets. A pollinator and a plant with the same degree get the same color and size, so values are comparable across sets.</li>
+    <li><span class="key">Per set</span> — one dropdown per set, labeled with the set's <code>node_type</code> (e.g. <em>pollinator</em>, <em>plant</em>). Each set can use a different attribute, and continuous colors and sizes are scaled within the set's own range.</li>
+    <li><span class="key">Shapes follow automatically</span> — when Color or Size is switched to Per set, Shape switches too (Set A circles, Set B squares), so the two sets stay distinguishable in layouts that don't separate them into rows. Switching both back to Shared undoes this. Once you change Shape yourself, it keeps your choice.</li>
+    <li><span class="key">Consistent categories</span> — a category (e.g. module 3) always has the same color in both sets, even when colored per set.</li>
+    <li><span class="key">Unipartite layers</span> — in networks that mix bipartite and unipartite layers (e.g. a plant–pollinator layer and a plant competition layer), nodes in the unipartite layers take the scheme of their <code>node_type</code>'s set. Nodes without a <code>node_type</code> are drawn in neutral gray when a channel is per set.</li>
+  </ul>
+  <div class="tip-box">
+    <strong>Tip:</strong> Numeric attributes named like <code>module</code>, <code>group</code>, <code>cluster</code>, <code>community</code> or <code>partition</code> are treated as categories by default. Use the legend's Continuous / Discrete pill to change this.
+  </div>
   <h4>Intralayer Links</h4>
   <ul>
-    <li><span class="key">Color By</span> — color intralayer links by any link attribute, or leave blank for the uniform color picker.</li>
+    <li><span class="key">Color</span> — color intralayer links by any link attribute, or leave blank for the uniform color picker.</li>
     <li><span class="key">Min Weight</span> — hide intralayer links whose weight falls below the threshold.</li>
     <li><span class="key">Arrowhead Size</span> — visible only when the network has directed intralayer edges.</li>
   </ul>
@@ -715,7 +729,7 @@ Ixodes_ricinus,0.003</code></pre>
     <li><span class="key">Show interlayer links</span> — toggle cross-layer edges on/off (off by default).</li>
     <li><span class="key">Min Weight</span> — hide interlayer links whose weight falls below the threshold.</li>
     <li><span class="key">Filter by layer pair</span> — opens a draggable floating panel with an amber heatmap of all layer pairs. Each cell shows the number of interlayer links between that pair of layers. Click a cell to show only that pair's links; <kbd>Cmd</kbd>/<kbd>Ctrl</kbd>+click to add further pairs to the selection. Click a selected cell alone to deselect it. <strong>✕ Show all pairs</strong> resets the filter.</li>
-    <li><span class="key">Color By</span> — color interlayer links independently of intralayer links, by any link attribute or uniform color.</li>
+    <li><span class="key">Color</span> — color interlayer links independently of intralayer links, by any link attribute or uniform color.</li>
     <li><span class="key">Curvature</span> — arc curvature of cross-layer edges.</li>
     <li><span class="key">Arrowhead Size</span> — visible only when the network has directed interlayer edges.</li>
   </ul>
@@ -809,7 +823,7 @@ Ixodes_ricinus,0.003</code></pre>
   </ul>
 
   <h3 id="grid-controls">Sidebar Controls</h3>
-  <p>The sidebar mirrors Network Mode minus controls that don't apply to a 2D grid. The <strong>Layers</strong> panel hides Stacking, Layer Spacing, and Layer Color By; the <strong>Nodes</strong> panel hides Transform Nodes; the <strong>Intralayer Links</strong> panel hides the manual color picker; and the <strong>Interlayer Links</strong> panel is hidden entirely. The following grid-specific control is added:</p>
+  <p>The sidebar mirrors Network Mode minus controls that don't apply to a 2D grid. The <strong>Layers</strong> panel hides Stacking, Layer Spacing, and Layer Color; the <strong>Nodes</strong> panel hides Transform Nodes; the <strong>Intralayer Links</strong> panel hides the manual color picker; and the <strong>Interlayer Links</strong> panel is hidden entirely. The following grid-specific control is added:</p>
   <ul>
     <li><span class="key">Columns slider</span> (in the Layers panel, 1–8) — controls how many grid columns the cells are arranged into. Default is <code>ceil(√L)</code> for L layers, rounded up to the next square-ish layout.</li>
     <li><span class="key">Layer Name Size slider</span> (in the Layers panel, 8–32 px) — adjusts the cell-header font size. The header strip auto-scales with the font so the layer name always fits.</li>
@@ -870,9 +884,9 @@ Ixodes_ricinus,0.003</code></pre>
 
   <h4>Appearance</h4>
   <ul>
-    <li><span class="key">Color By</span> — color nodes by <em>Participation</em> (number of layers) or <em>Meta-degree</em> (number of unique neighbors), both using the <strong>ice</strong> palette (light cyan → dark navy). <em>Uniform</em> applies a single green tint to all nodes. A gradient legend appears in the bottom-right corner.</li>
-    <li><span class="key">Size By</span> — scale node radius by <em>Meta-degree</em> (default) or <em>Participation</em>. <em>Uniform</em> gives all nodes the same radius. A size legend appears alongside the color legend.</li>
-    <li><span class="key">Base Size</span> — global multiplier (0.5× – 3.0×) applied on top of the Size By scaling.</li>
+    <li><span class="key">Color</span> — color nodes by <em>Participation</em> (number of layers) or <em>Meta-degree</em> (number of unique neighbors), both using the <strong>ice</strong> palette (light cyan → dark navy). <em>Uniform</em> applies a single green tint to all nodes. A gradient legend appears in the bottom-right corner.</li>
+    <li><span class="key">Size</span> — scale node radius by <em>Meta-degree</em> (default) or <em>Participation</em>. <em>Uniform</em> gives all nodes the same radius. A size legend appears alongside the color legend.</li>
+    <li><span class="key">Base Size</span> — global multiplier (0.5× – 3.0×) applied on top of the Size scaling.</li>
     <li><span class="key">Min Link Weight</span> — hide edges whose weight is below this threshold. Slider maximum matches the heaviest edge in the current aggregation.</li>
     <li><span class="key">Show Labels</span> — toggle node name labels. Labels are drawn at 45° to reduce overlap; in two-row layout, Set A labels angle upward and Set B downward.</li>
     <li><span class="key">Nested sort</span> <span class="pill pill-meta">two-row only</span> — sort each row by meta-degree so high-degree nodes cluster at the center.</li>
@@ -978,7 +992,7 @@ Ixodes_ricinus,0.003</code></pre>
   <p>The <em>Layers</em> tab includes a <strong>color picker</strong> in each row. Changing a layer's color here updates it everywhere:</p>
   <ul>
     <li>The color persists when switching back to Network or Map mode.</li>
-    <li>In the Network Mode sidebar, set <strong>Layer Color By</strong> to <em>Individual</em> to use these per-layer colors for the layer planes.</li>
+    <li>In the Network Mode sidebar, set <strong>Layer Color</strong> to <em>Individual</em> to use these per-layer colors for the layer planes.</li>
   </ul>
   <p>Default colors are assigned from a built-in palette and can be customized at any time.</p>
 
@@ -1289,9 +1303,9 @@ Ixodes_ricinus,0.003</code></pre>
   <ul>
     <li><span class="key">Draggable</span> — drag the legend box to reposition it anywhere on screen.</li>
     <li><span class="key">Collapsible</span> — click <strong>✕</strong> on a legend box to collapse it to a small expand button; click the button to restore it.</li>
-    <li><span class="key">Per-set legends</span> — bipartite networks show separate color and size legends for Set A and Set B (e.g. "Node Color (bird)" / "Node Color (plant)").</li>
+    <li><span class="key">Per-set legends</span> — when Color or Size is set to <a href="#node-sets">Per set</a>, each set gets its own legend (e.g. "Node Color (bird)" / "Node Color (plant)"). A <em>Node Shape</em> legend shows which shape belongs to which set.</li>
     <li><span class="key">Categorical color pickers</span> — for any categorical attribute (e.g. <code>node_type</code>, <code>module</code>), each legend entry shows a circular color swatch. Click a swatch to open the OS color picker and assign a custom color to that value. Changes apply instantly. Overrides persist for the session and are cleared by <em>Reset Visualization Options</em>.</li>
-    <li><span class="key">Continuous/Discrete toggle</span> — for numeric attributes, a pill button in the legend header switches between a continuous gradient and a discrete categorical palette.</li>
+    <li><span class="key">Continuous/Discrete toggle</span> — for numeric attributes, a pill button in the legend header switches between a continuous gradient and a discrete categorical palette. Partition labels (<code>module</code>, <code>group</code>, <code>cluster</code>, …) start as discrete.</li>
   </ul>
 
   <hr>

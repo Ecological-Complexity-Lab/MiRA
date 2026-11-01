@@ -18,6 +18,8 @@ import { initDemoDatasets } from './demoDatasets.js';
 import { initFeedback } from './feedback.js';
 import { initExportManager } from './exportManager.js';
 import { GridView } from './gridView.js';
+import { buildNodeSetResolver, collectSetItems, SET_A, SET_B } from './nodeSets.js';
+import { SHAPE_CIRCLE, SHAPE_SQUARE } from './nodeShapes.js';
 
 // ---- State ----
 let model = null;
@@ -48,24 +50,44 @@ function applyCategoryOverride(attrName, value, fallback) {
     return fallback;
 }
 
-function isClassicBipartiteUI() {
-    if (!model || layout?.layoutType !== 'bipartite') return false;
-    const types = new Set();
-    for (const n of model.nodes) {
-        const t = n.node_type ?? n.type;
-        if (t !== undefined && t !== null) types.add(t);
-    }
-    return types.size === 2;
+// ---- Bipartite node sets: shared vs per-set color/size schemes ----
+// Each channel (color, size) is either shared by both node sets or split into
+// one scheme per set. The choice is the user's and holds in every layout.
+let nodeSetResolver = buildNodeSetResolver(null);
+let nodeColorSplit = false;
+let nodeSizeSplit = false;
+let nodeShapeSplit = false;
+// True while the shape split was switched on automatically (by splitting
+// color or size). Any direct shape edit makes the shape choice the user's.
+let nodeShapeAuto = false;
+
+// Shared-mode color option that colors nodes by their set.
+const SET_COLOR_VALUE = 'set:membership';
+const SET_COLOR_ATTR = '__mira_set__'; // key for legend category overrides
+const NO_SET_COLOR = '#6b7280';
+
+function isColorSplit() { return nodeSetResolver.hasSets && nodeColorSplit; }
+function isSizeSplit()  { return nodeSetResolver.hasSets && nodeSizeSplit; }
+function isShapeSplit() { return nodeSetResolver.hasSets && nodeShapeSplit; }
+
+function setSplitToggleState(button, split) {
+    button.hidden = !nodeSetResolver.hasSets;
+    button.setAttribute('aria-pressed', String(split));
+    button.querySelector('.set-split-text').textContent = split ? 'Per set' : 'Shared';
 }
 
 function applyBipartiteUIVisibility() {
-    const classic = isClassicBipartiteUI();
-    const isBip   = layout?.layoutType === 'bipartite';
+    const isBip = layout?.layoutType === 'bipartite';
     document.getElementById('setNamesContainer').style.display = isBip ? '' : 'none';
-    colorByContainer.style.display          = classic ? 'none' : '';
-    bipartiteColorByContainer.style.display = classic ? '' : 'none';
-    sizeByContainer.style.display           = classic ? 'none' : '';
-    bipartiteSizeByContainer.style.display  = classic ? '' : 'none';
+    colorByContainer.style.display          = isColorSplit() ? 'none' : '';
+    bipartiteColorByContainer.style.display = isColorSplit() ? '' : 'none';
+    sizeByContainer.style.display           = isSizeSplit() ? 'none' : '';
+    bipartiteSizeByContainer.style.display  = isSizeSplit() ? '' : 'none';
+    shapeByContainer.style.display          = isShapeSplit() ? 'none' : '';
+    bipartiteShapeByContainer.style.display = isShapeSplit() ? '' : 'none';
+    setSplitToggleState(nodeColorSplitToggle, isColorSplit());
+    setSplitToggleState(nodeSizeSplitToggle, isSizeSplit());
+    setSplitToggleState(nodeShapeSplitToggle, isShapeSplit());
 }
 
 // ---- EMLN mode detection ----
@@ -113,6 +135,16 @@ const bipartiteSizeByContainer = document.getElementById('bipartiteSizeByContain
 const bipartiteSizeLabelA = document.getElementById('bipartiteSizeLabelA');
 const bipartiteSizeLabelB = document.getElementById('bipartiteSizeLabelB');
 const nodeSizeSelectSetA = document.getElementById('nodeSizeSelectSetA');
+const nodeColorSplitToggle = document.getElementById('nodeColorSplitToggle');
+const nodeSizeSplitToggle  = document.getElementById('nodeSizeSplitToggle');
+const nodeShapeSplitToggle = document.getElementById('nodeShapeSplitToggle');
+const shapeByContainer          = document.getElementById('shapeByContainer');
+const bipartiteShapeByContainer = document.getElementById('bipartiteShapeByContainer');
+const nodeShapeSelect     = document.getElementById('nodeShapeSelect');
+const nodeShapeSelectSetA = document.getElementById('nodeShapeSelectSetA');
+const nodeShapeSelectSetB = document.getElementById('nodeShapeSelectSetB');
+const bipartiteShapeLabelA = document.getElementById('bipartiteShapeLabelA');
+const bipartiteShapeLabelB = document.getElementById('bipartiteShapeLabelB');
 const nodeSizeSelectSetB = document.getElementById('nodeSizeSelectSetB');
 const layerColorSelect = document.getElementById('layerColorSelect');
 const layerColorSwatches = document.getElementById('layerColorSwatches');
@@ -488,6 +520,7 @@ resizeCanvas();
 
 // ---- Init Renderer ----
 renderer = new Renderer(canvas);
+window._renderer = renderer; // debugging / browser tests
 renderer.showLabels = false;
 renderer.transformNodes = transformNodesCheckbox.checked;
 renderer.bgMap = bgMap;
@@ -631,8 +664,17 @@ function resetVisualizationOptions() {
     // Node size slider — reset to HTML default; actual radius set by auto-scale in loadData
     nodeSizeSlider.value = 10;
 
-    // Color dropdowns
-    nodeColorSelect.value = '';
+    // Color dropdowns. Networks with node sets start shared, colored by set.
+    nodeColorSplit = false;
+    nodeSizeSplit = false;
+    nodeShapeSplit = false;
+    nodeShapeAuto = false;
+    nodeShapeSelect.value = SHAPE_CIRCLE;
+    nodeShapeSelectSetA.value = SHAPE_CIRCLE;
+    nodeShapeSelectSetB.value = SHAPE_SQUARE;
+    renderer.nodeShapeFn = null;
+    applyBipartiteUIVisibility();
+    nodeColorSelect.value = nodeSetResolver.hasSets ? SET_COLOR_VALUE : '';
     nodeColorSelectSetA.value = '';
     nodeColorSelectSetB.value = '';
     nodeSizeSelect.value = '';
@@ -642,7 +684,6 @@ function resetVisualizationOptions() {
     interLinkColorSelect.value = '';
     layerColorSelect.value = '';
     layerColorPicker.value = LAYER_DEFAULT_HEX;
-    nodeColorSelect.value = '';
     nodeColorPicker.value = NODE_DEFAULT_HEX;
     intraLinkColorPicker.value = '#000000';
     interLinkColorPicker.value = '#1e64dc';
@@ -816,8 +857,7 @@ function loadData(json) {
         renderer.bipartiteInfo = model.bipartiteInfo;
         renderer.layoutType = layout.layoutType;
 
-        applyBipartiteUIVisibility();
-
+        nodeSetResolver = buildNodeSetResolver(model);
         populateDropdowns();
         resetVisualizationOptions();
         updateLayerColors();
@@ -3243,6 +3283,12 @@ function populateDropdowns() {
     //   "MiRA — interlayer"    (inter_* fields, only emitted when inter
     //                           links exist)
     nodeColorSelect.innerHTML = '<option value="">Default</option>';
+    if (nodeSetResolver.hasSets) {
+        const opt = document.createElement('option');
+        opt.value = SET_COLOR_VALUE;
+        opt.textContent = `Set (${nodeSetResolver.labelA} / ${nodeSetResolver.labelB})`;
+        nodeColorSelect.appendChild(opt);
+    }
     {
         const node  = splitMiraAttrs(model.nodeAttributeNames, computedNode);
         const state = splitMiraAttrs(model.stateNodeAttributeNames, computedState);
@@ -3265,12 +3311,9 @@ function populateDropdowns() {
     nodeColorSelectSetA.innerHTML = '<option value="">Set Default</option>';
     nodeColorSelectSetB.innerHTML = '<option value="">Set Default</option>';
 
-    const setA_nodeAttrs = new Set();
-    const setA_stateAttrs = new Set();
-    const setB_nodeAttrs = new Set();
-    const setB_stateAttrs = new Set();
-    let hasBipartite = false;
-    let labelA = "Set A", labelB = "Set B";
+    const hasBipartite = nodeSetResolver.hasSets;
+    const labelA = nodeSetResolver.labelA ?? 'Set A';
+    const labelB = nodeSetResolver.labelB ?? 'Set B';
 
     // Per-set walks collect every attribute exposed on a node belonging to
     // that set, intersected with the canonical scalar allowlists. Node attrs
@@ -3284,28 +3327,23 @@ function populateDropdowns() {
     const STRUCTURAL_STATE_KEYS = new Set(['layer_id', 'node_id', 'layer_name', 'node_name']);
     const computedStateSet = new Set(model.computedStateNodeAttributes || []);
 
-    for (const [layerName, info] of model.bipartiteInfo) {
-        if (!info.isBipartite) continue;
-        hasBipartite = true;
-        labelA = info.setALabel || labelA;
-        labelB = info.setBLabel || labelB;
-        for (const nodeName of info.setA) {
-            const pn = model.nodesByName.get(nodeName);
-            if (pn) Object.keys(pn).forEach(k => { if (nodeAttrAllowed.has(k)) setA_nodeAttrs.add(k); });
-            const sn = model.stateNodeMap.get(`${layerName}::${nodeName}`);
-            if (sn) Object.keys(sn).forEach(k => { if (!STRUCTURAL_STATE_KEYS.has(k) && !computedStateSet.has(k)) setA_stateAttrs.add(k); });
-        }
-        for (const nodeName of info.setB) {
-            const pn = model.nodesByName.get(nodeName);
-            if (pn) Object.keys(pn).forEach(k => { if (nodeAttrAllowed.has(k)) setB_nodeAttrs.add(k); });
-            const sn = model.stateNodeMap.get(`${layerName}::${nodeName}`);
-            if (sn) Object.keys(sn).forEach(k => { if (!STRUCTURAL_STATE_KEYS.has(k) && !computedStateSet.has(k)) setB_stateAttrs.add(k); });
-        }
-    }
+    const collectKeys = (items, keep) => {
+        const keys = new Set();
+        for (const item of items) Object.keys(item).forEach(k => { if (keep(k)) keys.add(k); });
+        return keys;
+    };
+    const isNodeAttr  = k => nodeAttrAllowed.has(k);
+    const isStateAttr = k => !STRUCTURAL_STATE_KEYS.has(k) && !computedStateSet.has(k);
+    const nodeGroups  = hasBipartite ? collectSetItems(model, nodeSetResolver, 'node')  : { [SET_A]: [], [SET_B]: [] };
+    const stateGroups = hasBipartite ? collectSetItems(model, nodeSetResolver, 'state') : { [SET_A]: [], [SET_B]: [] };
+    const setA_nodeAttrs  = collectKeys(nodeGroups[SET_A], isNodeAttr);
+    const setB_nodeAttrs  = collectKeys(nodeGroups[SET_B], isNodeAttr);
+    const setA_stateAttrs = collectKeys(stateGroups[SET_A], isStateAttr);
+    const setB_stateAttrs = collectKeys(stateGroups[SET_B], isStateAttr);
 
     if (hasBipartite) {
-        bipartiteColorLabelA.textContent = `Color by ${labelA}`;
-        bipartiteColorLabelB.textContent = `Color by ${labelB}`;
+        bipartiteColorLabelA.textContent = labelA;
+        bipartiteColorLabelB.textContent = labelB;
 
         const toItem = (prefix, src) => a => ({ value: `${src}:${a}`, text: `${prefix}: ${a}` });
         const stateMira = splitMiraAttrs(model.computedStateNodeAttributes || [], computedState);
@@ -3370,8 +3408,10 @@ function populateDropdowns() {
 
     // Bipartite size selects — only numeric attrs per set
     if (hasBipartite) {
-        bipartiteSizeLabelA.textContent = `Size by ${labelA}`;
-        bipartiteSizeLabelB.textContent = `Size by ${labelB}`;
+        bipartiteSizeLabelA.textContent = labelA;
+        bipartiteSizeLabelB.textContent = labelB;
+        bipartiteShapeLabelA.textContent = labelA;
+        bipartiteShapeLabelB.textContent = labelB;
 
         const stateMira = splitMiraAttrs(
             (model.computedStateNodeAttributes || []).filter(a => isNumericAttr(a, model.stateNodes)),
@@ -3496,6 +3536,61 @@ nodeColorSelectSetB.addEventListener('change', () => {
     updateNodeColors();
     renderer.render();
 });
+
+
+// Shared / per-set toggles. Switching carries the current choice over where
+// the target dropdown offers it, so the view doesn't jump to defaults.
+function selectIfAvailable(select, value) {
+    if (value && [...select.options].some(o => o.value === value)) select.value = value;
+}
+
+function carryChoiceOnToggle(split, sharedSelect, selectA, selectB) {
+    if (split) {
+        if (!selectA.value && !selectB.value) {
+            selectIfAvailable(selectA, sharedSelect.value);
+            selectIfAvailable(selectB, sharedSelect.value);
+        }
+    } else if (selectA.value && selectA.value === selectB.value) {
+        selectIfAvailable(sharedSelect, selectA.value);
+    }
+}
+
+nodeColorSplitToggle.addEventListener('click', () => {
+    nodeColorSplit = !nodeColorSplit;
+    carryChoiceOnToggle(nodeColorSplit, nodeColorSelect, nodeColorSelectSetA, nodeColorSelectSetB);
+    syncAutoShapeSplit();
+    applyBipartiteUIVisibility();
+    updateNodeColors();
+    renderer.render();
+});
+
+nodeSizeSplitToggle.addEventListener('click', () => {
+    nodeSizeSplit = !nodeSizeSplit;
+    carryChoiceOnToggle(nodeSizeSplit, nodeSizeSelect, nodeSizeSelectSetA, nodeSizeSelectSetB);
+    syncAutoShapeSplit();
+    applyBipartiteUIVisibility();
+    updateNodeSizes();
+    renderer.render();
+});
+
+// Any direct shape edit hands the shape choice to the user.
+nodeShapeSplitToggle.addEventListener('click', () => {
+    nodeShapeSplit = !nodeShapeSplit;
+    nodeShapeAuto = false;
+    if (!nodeShapeSplit) selectIfAvailable(nodeShapeSelect,
+        nodeShapeSelectSetA.value === nodeShapeSelectSetB.value ? nodeShapeSelectSetA.value : nodeShapeSelect.value);
+    applyBipartiteUIVisibility();
+    updateNodeShapes();
+    renderer.render();
+});
+
+for (const select of [nodeShapeSelect, nodeShapeSelectSetA, nodeShapeSelectSetB]) {
+    select.addEventListener('change', () => {
+        nodeShapeAuto = false;
+        updateNodeShapes();
+        renderer.render();
+    });
+}
 
 nodeSizeSelect.addEventListener('change', () => { updateNodeSizes(); renderer.render(); });
 nodeSizeSelectSetA.addEventListener('change', () => { updateNodeSizes(); renderer.render(); });
@@ -3712,6 +3807,24 @@ function _buildSizeScaleFn(val, entities, stateEntities) {
     return { scale, fn };
 }
 
+// Route each node to its set's function; nodes outside both sets use `fallback`.
+function bySet(fnA, fnB, fallback) {
+    return (layerName, nodeName) => {
+        const set = nodeSetResolver.getNodeSet(layerName, nodeName);
+        const fn = set === SET_A ? fnA : set === SET_B ? fnB : fallback;
+        return fn(layerName, nodeName);
+    };
+}
+
+// The object an attribute is read from: physical node or state node.
+function attrSource(source, layerName, nodeName) {
+    return source === 'node'
+        ? model.nodesByName.get(nodeName)
+        : model.stateNodeMap.get(`${layerName}::${nodeName}`);
+}
+
+const UNIFORM_SIZE = () => 1.0;
+
 function updateNodeSizes() {
     activeNodeSizeScale = null;
     activeNodeSizeScaleA = null;
@@ -3719,37 +3832,8 @@ function updateNodeSizes() {
 
     if (!model) { renderer.nodeSizeFn = null; renderLegends(); return; }
 
-    const isBipartiteLayout = layout.layoutType === 'bipartite';
-
-    if (isClassicBipartiteUI()) {
-        const resA = _buildSizeScaleFn(nodeSizeSelectSetA.value, model.nodes, model.stateNodes);
-        const resB = _buildSizeScaleFn(nodeSizeSelectSetB.value, model.nodes, model.stateNodes);
-
-        activeNodeSizeScaleA = resA?.scale || null;
-        activeNodeSizeScaleB = resB?.scale || null;
-
-        if (!resA && !resB) {
-            renderer.nodeSizeFn = null;
-        } else {
-            // Determine which set each node belongs to (use first bipartite layer found)
-            const setANodes = new Set();
-            const setBNodes = new Set();
-            for (const [, info] of model.bipartiteInfo) {
-                if (!info.isBipartite) continue;
-                info.setA.forEach(n => setANodes.add(n));
-                info.setB.forEach(n => setBNodes.add(n));
-            }
-            renderer.nodeSizeFn = (layerName, nodeName) => {
-                if (setANodes.has(nodeName)) return resA ? resA.fn(layerName, nodeName) : 1.0;
-                if (setBNodes.has(nodeName)) return resB ? resB.fn(layerName, nodeName) : 1.0;
-                return 1.0;
-            };
-        }
-    } else {
-        const res = _buildSizeScaleFn(nodeSizeSelect.value, model.nodes, model.stateNodes);
-        activeNodeSizeScale = res?.scale || null;
-        renderer.nodeSizeFn = res?.fn || null;
-    }
+    if (isSizeSplit()) applySplitNodeSizes();
+    else applySharedNodeSizes();
 
     if (activeNodeSizeScale)  expandedLegends.add('nodeSize');
     if (activeNodeSizeScaleA) expandedLegends.add('nodeSizeA');
@@ -3757,6 +3841,55 @@ function updateNodeSizes() {
     renderLegends();
 }
 
+function applySharedNodeSizes() {
+    const res = _buildSizeScaleFn(nodeSizeSelect.value, model.nodes, model.stateNodes);
+    activeNodeSizeScale = res?.scale || null;
+    renderer.nodeSizeFn = res?.fn || null;
+}
+
+// Each set's size range comes from its own nodes only.
+function applySplitNodeSizes() {
+    const nodes  = collectSetItems(model, nodeSetResolver, 'node');
+    const states = collectSetItems(model, nodeSetResolver, 'state');
+    const resA = _buildSizeScaleFn(nodeSizeSelectSetA.value, nodes[SET_A], states[SET_A]);
+    const resB = _buildSizeScaleFn(nodeSizeSelectSetB.value, nodes[SET_B], states[SET_B]);
+    activeNodeSizeScaleA = resA?.scale || null;
+    activeNodeSizeScaleB = resB?.scale || null;
+    renderer.nodeSizeFn = (resA || resB)
+        ? bySet(resA?.fn ?? UNIFORM_SIZE, resB?.fn ?? UNIFORM_SIZE, UNIFORM_SIZE)
+        : null;
+}
+
+// Shape channel. Circles everywhere leave nodeShapeFn null (the fast path).
+function updateNodeShapes() {
+    if (isShapeSplit()) {
+        const shapeA = nodeShapeSelectSetA.value;
+        const shapeB = nodeShapeSelectSetB.value;
+        renderer.nodeShapeFn = bySet(() => shapeA, () => shapeB, () => SHAPE_CIRCLE);
+        expandedLegends.add('nodeShape');
+    } else {
+        const shape = nodeShapeSelect.value;
+        renderer.nodeShapeFn = shape === SHAPE_CIRCLE ? null : () => shape;
+    }
+    renderLegends();
+}
+
+// Splitting color or size splits shape too (circle / square), so the sets
+// stay distinguishable in any layout — unless the user has set shapes.
+// Un-splitting both undoes an automatic shape split.
+function syncAutoShapeSplit() {
+    const anySplit = nodeColorSplit || nodeSizeSplit;
+    if (anySplit && !nodeShapeSplit) {
+        nodeShapeSplit = true;
+        nodeShapeAuto = true;
+        nodeShapeSelectSetA.value = SHAPE_CIRCLE;
+        nodeShapeSelectSetB.value = SHAPE_SQUARE;
+    } else if (!anySplit && nodeShapeAuto) {
+        nodeShapeSplit = false;
+        nodeShapeAuto = false;
+    }
+    updateNodeShapes();
+}
 
 function updateNodeColors() {
     activeNodeColorScale = null;
@@ -3769,101 +3902,84 @@ function updateNodeColors() {
         return;
     }
 
-    if (isClassicBipartiteUI()) {
-        const valA = nodeColorSelectSetA.value;
-        const valB = nodeColorSelectSetB.value;
+    if (isColorSplit()) applySplitNodeColors();
+    else applySharedNodeColors();
 
-        const getScaleObj = (val, isSetA) => {
-            if (!val) return null;
-            const [source, attrName] = val.split(':');
-            let items = [];
-            for (const [layerName, info] of model.bipartiteInfo) {
-                if (!info.isBipartite) continue;
-                const set = isSetA ? info.setA : info.setB;
-                for (const nodeName of set) {
-                    if (source === 'node') {
-                        const n = model.nodesByName.get(nodeName);
-                        if (n) items.push(n);
-                    } else {
-                        const sn = model.stateNodeMap.get(`${layerName}::${nodeName}`);
-                        if (sn) items.push(sn);
-                    }
-                }
-            }
-            const override = colorScaleOverrides.get(attrName);
-            return colorMapper.buildColorScale(items, attrName, override);
-        };
+    if (activeNodeColorScale)  expandedLegends.add('nodeColor');
+    if (activeNodeColorScaleA) expandedLegends.add('nodeColorA');
+    if (activeNodeColorScaleB) expandedLegends.add('nodeColorB');
+    renderLegends();
+}
 
-        const scA = getScaleObj(valA, true);
-        const scB = getScaleObj(valB, false);
+/**
+ * One set's color function. `items` / `domainItems` are { node, state } item
+ * lists; the domain (both sets) fixes category colors so a category looks the
+ * same in either set.
+ */
+function buildSetColorFn(val, items, domainItems, defaultColor) {
+    if (!val) return { scale: null, fn: () => defaultColor };
+    const [source, attrName] = val.split(':');
+    const scale = colorMapper.buildColorScale(
+        items[source], attrName, colorScaleOverrides.get(attrName), domainItems[source]);
+    const fn = (layerName, nodeName) => {
+        const obj = attrSource(source, layerName, nodeName);
+        return obj ? applyCategoryOverride(attrName, obj[attrName], scale.scaleFn(obj[attrName])) : NO_SET_COLOR;
+    };
+    return { scale, fn };
+}
 
-        activeNodeColorScaleA = scA;
-        activeNodeColorScaleB = scB;
+function applySplitNodeColors() {
+    nodeColorSwatches.style.display = 'none';
+    const groups = {
+        node:  collectSetItems(model, nodeSetResolver, 'node'),
+        state: collectSetItems(model, nodeSetResolver, 'state'),
+    };
+    const itemsOf = set => ({ node: groups.node[set], state: groups.state[set] });
+    const domain = {
+        node:  [...groups.node[SET_A], ...groups.node[SET_B]],
+        state: [...groups.state[SET_A], ...groups.state[SET_B]],
+    };
+    const a = buildSetColorFn(nodeColorSelectSetA.value, itemsOf(SET_A), domain, colorMapper.getBipartiteNodeColor(true));
+    const b = buildSetColorFn(nodeColorSelectSetB.value, itemsOf(SET_B), domain, colorMapper.getBipartiteNodeColor(false));
+    activeNodeColorScaleA = a.scale;
+    activeNodeColorScaleB = b.scale;
+    renderer.nodeColorFn = bySet(a.fn, b.fn, () => NO_SET_COLOR);
+}
 
-        renderer.nodeColorFn = (layerName, nodeName) => {
-            const info = model.bipartiteInfo.get(layerName);
-            const isSetA = info?.isBipartite && info.setA.has(nodeName);
-            const isSetB = info?.isBipartite && info.setB.has(nodeName);
-
-            if (isSetA) {
-                if (scA) {
-                    const [source, attrName] = valA.split(':');
-                    const obj = source === 'node' ? model.nodesByName.get(nodeName) : model.stateNodeMap.get(`${layerName}::${nodeName}`);
-                    return obj ? applyCategoryOverride(attrName, obj[attrName], scA.scaleFn(obj[attrName])) : '#6b7280';
-                } else {
-                    return colorMapper.getBipartiteNodeColor(true);
-                }
-            } else if (isSetB) {
-                if (scB) {
-                    const [source, attrName] = valB.split(':');
-                    const obj = source === 'node' ? model.nodesByName.get(nodeName) : model.stateNodeMap.get(`${layerName}::${nodeName}`);
-                    return obj ? applyCategoryOverride(attrName, obj[attrName], scB.scaleFn(obj[attrName])) : '#6b7280';
-                } else {
-                    return colorMapper.getBipartiteNodeColor(false);
-                }
-            }
-            return '#6b7280'; // fallback
-        };
-        if (activeNodeColorScaleA) expandedLegends.add('nodeColorA');
-        if (activeNodeColorScaleB) expandedLegends.add('nodeColorB');
-        renderLegends();
-        return;
-    }
-
+function applySharedNodeColors() {
     const val = nodeColorSelect.value;
     nodeColorSwatches.style.display = val ? 'none' : 'flex';
     if (!val) {
         const hex = nodeColorPicker.value;
         renderer.nodeColorFn = () => hex;
-        renderLegends();
+        return;
+    }
+    if (val === SET_COLOR_VALUE) {
+        applySetMembershipColors();
         return;
     }
 
     const [source, attrName] = val.split(':');
+    const items = source === 'node' ? model.nodes : model.stateNodes;
+    const sc = colorMapper.buildColorScale(items, attrName, colorScaleOverrides.get(attrName));
+    activeNodeColorScale = sc;
+    renderer.nodeColorFn = (layerName, nodeName) => {
+        const obj = attrSource(source, layerName, nodeName);
+        return obj ? applyCategoryOverride(attrName, obj[attrName], sc.scaleFn(obj[attrName])) : NO_SET_COLOR;
+    };
+}
 
-    if (source === 'node') {
-        // Color by physical node attribute
-        const override = colorScaleOverrides.get(attrName);
-        const sc = colorMapper.buildColorScale(model.nodes, attrName, override);
-        activeNodeColorScale = sc;
-        renderer.nodeColorFn = (layerName, nodeName) => {
-            const node = model.nodesByName.get(nodeName);
-            return node ? applyCategoryOverride(attrName, node[attrName], sc.scaleFn(node[attrName])) : '#6b7280';
-        };
-    } else if (source === 'state') {
-        // Color by state node attribute
-        const override = colorScaleOverrides.get(attrName);
-        const sc = colorMapper.buildColorScale(model.stateNodes, attrName, override);
-        activeNodeColorScale = sc;
-        renderer.nodeColorFn = (layerName, nodeName) => {
-            const key = `${layerName}::${nodeName}`;
-            const sn = model.stateNodeMap.get(key);
-            return sn ? applyCategoryOverride(attrName, sn[attrName], sc.scaleFn(sn[attrName])) : '#6b7280';
-        };
-    }
-
-    if (activeNodeColorScale) expandedLegends.add('nodeColor');
-    renderLegends();
+// "Set" color option: one color per set, editable from the legend.
+function applySetMembershipColors() {
+    const { labelA, labelB } = nodeSetResolver;
+    const colorA = applyCategoryOverride(SET_COLOR_ATTR, labelA, colorMapper.getBipartiteNodeColor(true));
+    const colorB = applyCategoryOverride(SET_COLOR_ATTR, labelB, colorMapper.getBipartiteNodeColor(false));
+    const map = new Map([[labelA, colorA], [labelB, colorB]]);
+    activeNodeColorScale = {
+        type: 'categorical', map, attrName: SET_COLOR_ATTR, displayName: 'Set',
+        scaleFn: v => map.get(v) ?? NO_SET_COLOR, canToggle: false, warnings: [],
+    };
+    renderer.nodeColorFn = bySet(() => colorA, () => colorB, () => NO_SET_COLOR);
 }
 
 function updateIntraLinkColors() {
@@ -4375,23 +4491,25 @@ function renderLegends() {
 
     legendPanel.innerHTML = '';
 
-    const stripPrefix = (text, prefix) => text.replace(new RegExp('^' + prefix + '\\s*', 'i'), '').trim();
-
-    if (!isClassicBipartiteUI()) {
-        renderScaleLegend(activeNodeColorScale, 'nodeColor', 'Node Color');
-        renderScaleLegend(activeNodeSizeScale, 'nodeSize', 'Node Size');
+    const { labelA, labelB } = nodeSetResolver;
+    if (isColorSplit()) {
+        renderScaleLegend(activeNodeColorScaleA, 'nodeColorA', `Node Color (${labelA})`);
+        renderScaleLegend(activeNodeColorScaleB, 'nodeColorB', `Node Color (${labelB})`);
     } else {
-        const colorTitleA = stripPrefix(bipartiteColorLabelA.textContent, 'Color By');
-        renderScaleLegend(activeNodeColorScaleA, 'nodeColorA', 'Node Color (' + colorTitleA + ')');
-
-        const colorTitleB = stripPrefix(bipartiteColorLabelB.textContent, 'Color By');
-        renderScaleLegend(activeNodeColorScaleB, 'nodeColorB', 'Node Color (' + colorTitleB + ')');
-
-        const sizeTitleA = stripPrefix(bipartiteSizeLabelA.textContent, 'Size By');
-        renderScaleLegend(activeNodeSizeScaleA, 'nodeSizeA', 'Node Size (' + sizeTitleA + ')');
-
-        const sizeTitleB = stripPrefix(bipartiteSizeLabelB.textContent, 'Size By');
-        renderScaleLegend(activeNodeSizeScaleB, 'nodeSizeB', 'Node Size (' + sizeTitleB + ')');
+        renderScaleLegend(activeNodeColorScale, 'nodeColor', 'Node Color');
+    }
+    if (isSizeSplit()) {
+        renderScaleLegend(activeNodeSizeScaleA, 'nodeSizeA', `Node Size (${labelA})`);
+        renderScaleLegend(activeNodeSizeScaleB, 'nodeSizeB', `Node Size (${labelB})`);
+    } else {
+        renderScaleLegend(activeNodeSizeScale, 'nodeSize', 'Node Size');
+    }
+    if (isShapeSplit()) {
+        const shapeScale = {
+            type: 'shape', attrName: 'Set',
+            map: new Map([[labelA, nodeShapeSelectSetA.value], [labelB, nodeShapeSelectSetB.value]]),
+        };
+        renderScaleLegend(shapeScale, 'nodeShape', 'Node Shape');
     }
     renderScaleLegend(activeIntraLinkColorScale, 'intraLinkColor', 'Intralayer Link Color');
     renderScaleLegend(activeInterLinkColorScale, 'interLinkColor', 'Interlayer Link Color');
@@ -4410,7 +4528,7 @@ function createLegendDOM(titleText, scale, id) {
     header.style.cssText = 'display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; gap: 12px; min-height: 16px;';
 
     const title = document.createElement('div');
-    title.textContent = titleText + ': ' + scale.attrName;
+    title.textContent = titleText + ': ' + (scale.displayName ?? scale.attrName);
     title.style.cssText = 'font-size: 11px; font-weight: 600; color: #1a1a2e; text-transform: uppercase; letter-spacing: 0.5px; flex-grow: 1;';
 
     const controls = document.createElement('div');
@@ -4481,6 +4599,22 @@ function createLegendDOM(titleText, scale, id) {
             text.textContent = val;
             text.style.cssText = 'white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px;';
             row.appendChild(swatch);
+            row.appendChild(text);
+            list.appendChild(row);
+        }
+        wrapper.appendChild(list);
+    } else if (scale.type === 'shape') {
+        const list = document.createElement('div');
+        list.style.cssText = 'display: flex; flex-direction: column; gap: 4px;';
+        for (const [val, shape] of scale.map.entries()) {
+            const row = document.createElement('div');
+            row.style.cssText = 'display: flex; align-items: center; gap: 6px; font-size: 12px; color: #4b5563;';
+            const glyph = document.createElement('span');
+            glyph.style.cssText = 'width: 10px; height: 10px; margin: 0 3px; background: #6b7280;' +
+                (shape === SHAPE_SQUARE ? '' : ' border-radius: 50%;');
+            const text = document.createElement('span');
+            text.textContent = val;
+            row.appendChild(glyph);
             row.appendChild(text);
             list.appendChild(row);
         }
@@ -4986,7 +5120,7 @@ function getSessionState() {
         : null;
 
     return {
-        version: 1,
+        version: 2,
         appMode,
         selectedNode: crossModeSelectedNode,
         rawData,
@@ -5023,6 +5157,13 @@ function getSessionState() {
             nodeSizeSelect: nodeSizeSelect.value,
             nodeSizeSelectSetA: nodeSizeSelectSetA.value,
             nodeSizeSelectSetB: nodeSizeSelectSetB.value,
+            nodeColorSplit,
+            nodeSizeSplit,
+            nodeShapeSplit,
+            nodeShapeAuto,
+            nodeShapeSelect: nodeShapeSelect.value,
+            nodeShapeSelectSetA: nodeShapeSelectSetA.value,
+            nodeShapeSelectSetB: nodeShapeSelectSetB.value,
             intraLinkColorSelect: intraLinkColorSelect.value,
             interLinkColorSelect: interLinkColorSelect.value,
             layerColorSelect: layerColorSelect.value,
@@ -5192,7 +5333,20 @@ function restoreSessionState(state) {
         for (const [name, hex] of ui.layerColors) layerColors.set(name, hex);
     }
 
-    // 8. Color/size dropdowns → rebuild render functions
+    // 8. Shared / per-set modes. Sessions saved before version 2 have no
+    //    flags: back then the bipartite layout always meant per-set schemes.
+    const legacySplit = ui.layoutSelect === 'bipartite' && nodeSetResolver.hasSets;
+    nodeColorSplit = ui.nodeColorSplit ?? legacySplit;
+    nodeSizeSplit  = ui.nodeSizeSplit  ?? legacySplit;
+    // Shapes did not exist before version 2: older sessions stay all circles.
+    nodeShapeSplit = ui.nodeShapeSplit ?? false;
+    nodeShapeAuto  = ui.nodeShapeAuto  ?? false;
+    nodeShapeSelect.value     = ui.nodeShapeSelect     ?? SHAPE_CIRCLE;
+    nodeShapeSelectSetA.value = ui.nodeShapeSelectSetA ?? SHAPE_CIRCLE;
+    nodeShapeSelectSetB.value = ui.nodeShapeSelectSetB ?? SHAPE_SQUARE;
+    applyBipartiteUIVisibility();
+
+    // 9. Color/size dropdowns → rebuild render functions
     nodeColorSelect.value = ui.nodeColorSelect;
     nodeColorSelectSetA.value = ui.nodeColorSelectSetA;
     nodeColorSelectSetB.value = ui.nodeColorSelectSetB;
@@ -5204,20 +5358,21 @@ function restoreSessionState(state) {
     layerColorSelect.value = ui.layerColorSelect;
     updateNodeColors();
     updateNodeSizes();
+    updateNodeShapes();
     updateIntraLinkColors(); updateInterLinkColors();
     updateLayerColors();
 
-    // 9. Restore cross-mode selected node
+    // 10. Restore cross-mode selected node
     crossModeSelectedNode = state.selectedNode ?? null;
 
-    // 10. Legend
+    // 11. Legend
     expandedLegends.clear();
     for (const k of state.legend.expandedLegends) expandedLegends.add(k);
     lvExpandedLegends.clear();
     for (const k of state.legend.lvExpandedLegends) lvExpandedLegends.add(k);
     renderLegends();
 
-    // 11. Meta-network DOM (takes effect next time it's opened)
+    // 12. Meta-network DOM (takes effect next time it's opened)
     const mn = state.meta;
     mnAggregationSelect.value = mn.aggregation;
     mnLayoutSelect.value = mn.layout;
@@ -5235,7 +5390,7 @@ function restoreSessionState(state) {
     mnColorSetA.value = mn.colorSetA;
     mnColorSetB.value = mn.colorSetB;
 
-    // 12. Map DOM
+    // 13. Map DOM
     const mp = state.map;
     mapOpacitySlider.value = mp.mapOpacity;
     showMapImageCheckbox.checked = mp.showMapImage;
@@ -5245,7 +5400,7 @@ function restoreSessionState(state) {
     lvShowMapImageCheckbox.checked = mp.lvShowMapImage;
     lvStreetMapCheckbox.checked = mp.lvStreetMap;
 
-    // 13. Restore visualization mode
+    // 14. Restore visualization mode
     if (state.appMode === 'map' && mapModeBtn.style.display !== 'none') {
         toggleMapMode();
         activeMapLayers.clear();
@@ -5308,7 +5463,7 @@ function restoreSessionState(state) {
         }
     }
 
-    // 14. Restore data filter
+    // 15. Restore data filter
     if (state.filter) {
         dataMode.filteredNodeNames  = state.filter.nodeNames  ? new Set(state.filter.nodeNames)  : null;
         dataMode.filteredLayerNames = state.filter.layerNames ? new Set(state.filter.layerNames) : null;

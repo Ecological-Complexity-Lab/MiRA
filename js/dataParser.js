@@ -146,17 +146,16 @@ export function parseMultilayerData(json) {
     json.layers, json.nodes, intralayerLinks, nodesPerLayer, nodesByName
   );
 
-  // Mixed bipartite/unipartite networks are an edge case — the data loads and
-  // renders, but bipartite color/size coding only applies to nodes in the
-  // bipartite layers. Full mixed-network UX is tracked for future development.
+  // Mixed bipartite/unipartite networks load and render. For styling, nodes
+  // in unipartite layers follow their node_type's set (see nodeSets.js).
   const bipartiteLayerCount = [...bipartiteInfo.values()].filter(b => b.isBipartite).length;
   const totalLayers = json.layers.length;
   if (bipartiteLayerCount > 0 && bipartiteLayerCount < totalLayers) {
     warnings.push(
       `This network mixes bipartite and unipartite layers (${bipartiteLayerCount} of ` +
-      `${totalLayers} layers are bipartite). The visualization is supported, but ` +
-      `bipartite color/size coding only applies to nodes in the bipartite layer(s). ` +
-      `Full mixed-network UX is planned for a future release.`
+      `${totalLayers} layers are bipartite). Nodes in the unipartite layer(s) are styled ` +
+      `like their node_type's set; nodes without a node_type stay neutral gray when ` +
+      `color or size is set per set.`
     );
   }
 
