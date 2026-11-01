@@ -11,16 +11,18 @@ Phase 3 done: ggmira package at `~/GitHub/ecomplab/ggmira`
 3a (74a3938) converter, server, `plot_multilayer()`; 3b (63b6c2c) the
 `mira()` grammar. Phase 4 done (2026-11-01): end-to-end on emln 13, 14,
 17, 23, 63; manual paragraph in the ggmira README (5dc0894).
-**Milestone 1 is complete.** Paused until `feat/node-set-channels` is
-tested and merged; then start from the handoff right below.
+**Milestone 1 is complete.** **Stage 1 of the development plan is done
+(2026-11-01):** MiRA feat/ggmira ed29cbc, ggmira 21316e6 + bundled MiRA
+322b587. Next: stage 2 (`mira_filter`), design first.
 
 ## Milestones
 
 1. **Basics** (Phases 1–4): `mira()`, `mira_layout()`, `mira_node()`,
    `mira_intralayer()`, `mira_interlayer()`, `mira_layer()`. Colors use
    MiRA's defaults (Dark2 / Viridis, auto type). Test with users first.
-2. **Easy scales** (new code only): `mira_scale_color()` with `type`,
-   manual `values`, discrete palettes on data attributes (expanded in R).
+2. **Easy scales** (new code only): scale type and manual colors per
+   value — done in stage 1 as `color_scale` / `color_values` in each piece;
+   palettes moved to item 17.
 3. **MiRA-side features**, one feature branch each: continuous palettes and
    palettes on computed attributes, size range, legend titles,
    `mira_save()`.
@@ -40,14 +42,31 @@ existing files get only small additive changes (listed in view-spec.md §1).
 ## Decided
 
 - **Names:** everything is `mira_*`: `mira()`, `mira_layout()`,
-  `mira_node()`, `mira_intralayer()`, `mira_interlayer()`, `mira_layer()`,
-  `mira_scale_color()` (milestone 2). Avoids clashes with ggplot2 / ggraph.
+  `mira_node()`, `mira_intralayer()`, `mira_interlayer()`, `mira_layer()`.
+  Avoids clashes with ggplot2 / ggraph.
 - **Layout is plot-level:** `mira_layout(type, seed, nested)`.
 - **Mappings are strings, not `aes()`.** `color_by = "module"` maps an
   attribute; `color = "#333"` sets a constant. Both in one piece → error.
-- **Scales are per attribute:** `mira_scale_color("module", type, palette,
-  values)`, matching how MiRA stores scales (`colorScaleOverrides`,
-  `categoryColorOverrides`). Per-set scales are rejected.
+- **Color scales live in each piece (2026-11-01),** not in a separate
+  `mira_scale_color()`: `color_by` chooses what is colored,
+  `color_values` (colors named by value, e.g. `c("1" = "red")`) and
+  `color_scale` (`"categorical"` / `"continuous"`) choose the colors, in
+  `mira_node()`, `mira_intralayer()`, `mira_interlayer()`,
+  `mira_layer()`. Like ggraph's per-element scales, without a second
+  piece per color. `color_values` imply categorical; with
+  `"continuous"` → error. R sends them as MiRA's per-attribute scales
+  (`scales.<attr>`). The same attribute in two pieces shares one scale:
+  settings merge; only disagreements warn (later piece wins). On nodes
+  they may be per set.
+- **One color per layer = `mira_layer(color_by = "layer_name")`**
+  (`".individual"` still works), with `color_values` named by layer.
+- **Stage 1 names (2026-11-01):** `labels` / `label_size` in both
+  `mira_node()` and `mira_layer()`, plus `set_labels`. `pairs` turns
+  interlayer links on unless `show` is given. `arrow_size` is in
+  `mira_intralayer()` and also sizes interlayer arrowheads (MiRA has one
+  size).
+- **Palettes wait for item 17 (2026-11-01),** so categorical and
+  continuous palettes arrive together.
 - **Per set = vector named by `node_type`:**
   `color_by = c(pollinator = "module", plant = NA)`. One value = Shared.
   Shape auto-splits like the UI unless `shape` is given.
@@ -83,21 +102,24 @@ additions on `feat/ggmira` + R pieces, tests on both sides → real run with
 screenshots → `view-spec.md` update → `npm run sync:ggmira`. New fields
 are optional, so the spec stays version 1. R names below are sketches.
 
-**Stage 1 — network-mode panels + color scales (S)**
+**Stage 1 — network-mode panels + color scales (S) — done 2026-11-01**
 
-| # | Feature | R sketch |
+| # | Feature | R (as built) |
 |---|---|---|
-| 1 | Layer names: show, font size | `mira_layer(names = TRUE, name_size = 14)` |
-| 2 | Set names (bipartite) | `mira_layer(set_names = TRUE)` |
-| 3 | Stacking (horizontal / vertical), layer spacing | `mira_layer(stack = "vertical", spacing = 1.5)` |
-| 4 | Manual color per layer | `mira_layer(color = c(layer_1 = "red", layer_2 = "blue"))` |
+| 1 | Layer names: show, font size | `mira_layer(labels = TRUE, label_size = 14)` |
+| 2 | Set names (bipartite) | `mira_layer(set_labels = TRUE)` |
+| 3 | Stacking (horizontal / vertical), layer spacing | `mira_layer(stack = "vertical", spacing = 450)` (100–600) |
+| 4 | Manual color per layer | `mira_layer(color_by = "layer_name", color_values = c(layer_1 = "red"))` |
 | 5 | Node labels: show, size | `mira_node(labels = TRUE, label_size = 10)` |
-| 6 | Nodes in 3D perspective | `mira_node(perspective = TRUE)` |
-| 7 | Intralayer arrowhead size | `mira_intralayer(arrow_size = 8)` |
+| 6 | Nodes in 3D perspective | `mira_node(perspective = FALSE)` |
+| 7 | Arrowhead size (intra and inter) | `mira_intralayer(arrow_size = 2)` (0–3) |
 | 8 | Interlayer curvature | `mira_interlayer(curvature = 0.3)` |
 | 9 | Interlayer links only between some layer pairs | `mira_interlayer(pairs = list(c("L1", "L2")))` |
-| 15 | Color scale type for an attribute | `mira_scale_color("modules", type = "categorical")` |
-| 16 | Manual color per value | `mira_scale_color("type", values = c(plant = "darkgreen", bird = "orange"))` |
+| 15 | Color scale type for an attribute | `mira_node(color_by = "module", color_scale = "categorical")` |
+| 16 | Manual color per value | `mira_node(color_by = "module", color_values = c("1" = "red"))` |
+
+Checked end to end on emln 17 (bipartite and Kamada-Kawai, all stage 1
+fields; screenshots). Tests: MiRA 334 unit + 31 browser; ggmira 222.
 
 **Stage 2 — filters (S)**
 
@@ -138,8 +160,8 @@ its own camera settings. Syntax to be discussed before any code.
 | # | Feature | R sketch / notes |
 |---|---|---|
 | 33 | Bugs: `renderer.layoutType` not restored; double "Data warnings" alert | Small fixes, PR to main (live site) |
-| 10 | Interlayer arrowhead size (not saved in sessions) | `mira_interlayer(arrow_size = 8)` |
-| 17 | Named palettes (viridis, magma, …) and palettes on computed attributes | `mira_scale_color(..., palette = "magma")` |
+| 10 | ~~Interlayer arrowhead size~~ | Done in stage 1: MiRA has one arrowhead size (`renderer.arrowheadSize`, saved); `mira_intralayer(arrow_size)` sets it |
+| 17 | Named palettes (categorical and continuous), gradient limits, palettes on computed attributes | `mira_node(color_by = "body_mass", color_palette = "magma", color_limits = c(0, 100))` |
 | 18 | Node size range | `mira_scale_size(range = c(1, 6))` |
 | 19 | Legend titles | `mira_labs(node_color = "Module")` |
 | 20 | Link color by `weight`; link width scaling | `mira_intralayer(color_by = "weight", width = "scaled")` |
@@ -168,9 +190,8 @@ its own camera settings. Syntax to be discussed before any code.
 ## R side (ggmira)
 
 - [x] `mira()`, `mira_*()` pieces + `+` method that accumulates a spec.
-- [ ] (Milestone 2) `mira_scale_color()`; discrete palettes expanded in R
-      into `values` (base R `palette.colors()` / `hcl.colors()`), no MiRA
-      change.
+- [x] Color scales: `color_values` / `color_scale` in each piece (stage 1).
+- [ ] Palettes (`color_palette`, `color_limits`): item 17.
 - [x] Validation in R: attribute exists (warning), numeric for `size_by`
       (warning; numbers stored as text count, as in MiRA), set names match
       `node_type` values (error).
@@ -238,7 +259,7 @@ Next actions, in order:
 6. **Small MiRA bugs,** one branch each (see Later): `renderer.layoutType`
    not restored; double "Data warnings" alert; very thick links with large
    weights.
-7. **Milestone 2:** `mira_scale_color()` (R only).
+7. **Development plan stages** (see above): stage 1 done; next stage 2.
 8. **With Geut:** the two emln bugs; deprecate `emln::plot_multilayer()`.
 
 ## Phase 4 results (2026-11-01)

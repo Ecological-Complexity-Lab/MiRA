@@ -6,9 +6,12 @@ this file. Change it here first.
 
 Status: **draft for v1**, network mode only.
 
-Milestones: the `scales` section and `mira_scale_color()` are
-**milestone 2**. Milestone 1 implements everything else; until milestone 2,
-MiRA reports a `scales` section as an ignored field (warn and fall back).
+Milestones: milestone 1 = layout, node, links, layers. Stage 1 of the
+development plan (2026-11-01) added labels, layer display, layer pairs,
+per-layer colors and the `scales` section. New optional fields keep
+`version: 1`. In R, scales are set per piece (`color_values`,
+`color_scale`), not with a separate `mira_scale_color()` (decision
+2026-11-01).
 
 ---
 
@@ -38,7 +41,7 @@ range, legend titles) are out of v1 — see `backlog.md`.
 | `js/app.js` | 1 import line; in `autoloadFromR`, hand the fetched network to `rBridge` instead of calling `loadData` directly (≈5 lines). Nothing else. |
 | `js/layout.js` | Optional `seed`. Replace the `Math.random()` calls (Fruchterman-Reingold, Kamada-Kawai, random; 6 calls on 5 lines) with `this.random()`; without a seed `this.random` *is* `Math.random`, so unseeded behavior is identical. |
 | `js/random.js` | New: seeded generator (mulberry32). |
-| `js/rBridge.js` | New: fetch, orchestration (steps 1–6), warning notice. |
+| `js/rBridge.js` | New: fetch, orchestration (steps 1–6), warning notice. After restore: recenters the view when stacking or spacing changed (the restored scale/offset were centered for the defaults), and syncs the interlayer arrowhead slider. |
 | `js/viewSpec.js` | New, pure (no DOM, no fetch): validate + translate. |
 
 The `IS_EMLN` UI block and `autoloadFromR` stay where they are in `app.js`.
@@ -76,13 +79,17 @@ All top-level sections and all fields are optional. Missing = MiRA default.
     "color": "#a78bfa",
     "size_by": { "pollinator": "abundance", "plant": null },
     "size": 10,
-    "shape": { "pollinator": "circle", "plant": "square" }
+    "shape": { "pollinator": "circle", "plant": "square" },
+    "labels": true, "label_size": 12, "perspective": true
   },
-  "intralayer": { "color_by": "type", "color": "#94a3b8", "min_weight": 0.1 },
-  "interlayer": { "show": true, "color_by": null, "color": "#999999", "min_weight": 0 },
-  "layer": { "color_by": "habitat", "color": "#8b5cf6" },
+  "intralayer": { "color_by": "type", "color": "#94a3b8", "min_weight": 0.1, "arrow_size": 1 },
+  "interlayer": { "show": true, "color_by": null, "color": "#999999", "min_weight": 0,
+                  "curvature": 0.35, "pairs": [["L1", "L2"]] },
+  "layer": { "color_by": ".individual", "color": "#8b5cf6", "colors": { "L1": "#ff0000" },
+             "labels": true, "label_size": 14, "set_labels": false,
+             "stack": "horizontal", "spacing": 300 },
   "scales": {
-    "module": { "type": "discrete", "values": { "1": "#1b9e77", "2": "#d95f02" } }
+    "module": { "type": "categorical", "values": { "1": "#1b9e77", "2": "#d95f02" } }
   }
 }
 ```
@@ -102,8 +109,19 @@ All top-level sections and all fields are optional. Missing = MiRA default.
 | `*.min_weight` | number | 0 or more, in the units of the data's `weight` (MiRA's sliders run to the largest weight; weights are often above 1). |
 | `interlayer.show` | boolean | |
 | `layer.color_by` | string or null | Layer attribute, or `.individual` for per-layer colors. |
-| `scales.<attr>.type` | string | `discrete` or `continuous` (continuous needs numeric data). |
-| `scales.<attr>.values` | object | Category value → `#rrggbb`. Keys are strings; MiRA matches them to the data values (`"1"` matches number `1`). |
+| `node.labels`, `layer.labels` | boolean | Node names / layer names. |
+| `node.label_size` | number | 8–24 (label size slider). |
+| `layer.label_size` | number | 8–32 (layer name size slider). |
+| `node.perspective` | boolean | "Transform nodes": nodes follow the layers' 3D perspective (default true). |
+| `layer.set_labels` | boolean | Node set names; needs a bipartite layer (drawn in the bipartite layout only). |
+| `layer.stack` | string | `horizontal`, `vertical`. |
+| `layer.spacing` | number | 100–600 (layer spacing slider). |
+| `layer.colors` | object | `layer_name` → `#rrggbb`. Used with `color_by: ".individual"`; layers not listed keep MiRA's per-layer palette. |
+| `intralayer.arrow_size` | number | 0–3. One size for intralayer and interlayer arrowheads (MiRA has one). |
+| `interlayer.curvature` | number | 0–1. |
+| `interlayer.pairs` | array | `[[layer_name, layer_name], ...]`; only interlayer links between these pairs are shown; order within a pair does not matter. |
+| `scales.<attr>.type` | string | `categorical` or `continuous` (continuous needs numeric data). |
+| `scales.<attr>.values` | object | Category value → `#rrggbb`. Keys are strings; MiRA matches them to the data values (`"1"` matches number `1`). An attribute is any node, state-node, link or layer attribute, data or computed. |
 
 ### Mappings (`color_by`, `size_by`)
 
@@ -142,8 +160,18 @@ All top-level sections and all fields are optional. Missing = MiRA default.
 | `intralayer.color_by` / `.color` / `.min_weight` | `ui.intraLinkColorSelect` / `ui.intraLinkColorPicker` + `renderer.defaultIntraColor` / `renderer.intraMinWeight` |
 | `interlayer.show` / `.color_by` / `.color` / `.min_weight` | `renderer.showInterlayerLinks` / `ui.interLinkColorSelect` / `ui.interLinkColorPicker` + `renderer.defaultInterColor` / `renderer.interlayerMinWeight` |
 | `layer.color_by` / `.color` | `ui.layerColorSelect` (`.individual` → `__individual__`) / `ui.layerColorPicker` |
-| `scales.<attr>.type` | `ui.colorScaleOverrides` (`discrete` → `categorical`) |
-| `scales.<attr>.values` | `ui.categoryColorOverrides` |
+| `node.labels` / `.label_size` / `.perspective` | `renderer.showLabels` / `renderer.labelSizePx` / `renderer.transformNodes` |
+| `layer.labels` / `.label_size` / `.set_labels` | `renderer.showLayerNames` / `renderer.layerNameFontSize` / `renderer.showSetNames` |
+| `layer.stack` / `.spacing` | `renderer.stackMode` / `renderer.layerSpacing` |
+| `layer.colors` | `ui.layerColors` (merged: listed layers replaced) |
+| `intralayer.arrow_size` | `renderer.arrowheadSize` |
+| `interlayer.curvature` | `renderer.interlayerCurvature` |
+| `interlayer.pairs` | `filter.interPairFilter` (`"from::to"`) |
+| `scales.<attr>.type` | `ui.colorScaleOverrides` |
+| `scales.<attr>.values` | `ui.categoryColorOverrides` (keys converted to the data's values) |
+
+The translation context from `rBridge` also carries the layer names and the
+distinct values of every attribute (`ctx.layerNames`, `ctx.values`).
 
 Set names → A/B come from `buildNodeSetResolver` (`labelA`, `labelB`).
 
@@ -169,11 +197,24 @@ chosen layout (restore does not set it; see backlog).
 
 These functions live in the separate R package **ggmira** (not emln).
 | `mira_layout(type, seed, nested)` | `layout` |
-| `mira_node(color_by, color, size_by, size, shape)` | `node` |
-| `mira_intralayer(color_by, color, min_weight)` | `intralayer` |
-| `mira_interlayer(show, color_by, color, min_weight)` | `interlayer` |
-| `mira_layer(color_by, color)` | `layer` |
-| `mira_scale_color(attr, type, palette, values)` (milestone 2) | `scales.<attr>` |
+| `mira_node(color_by, color, size_by, size, shape, labels, label_size, perspective, color_values, color_scale)` | `node` (+ `scales`) |
+| `mira_intralayer(color_by, color, min_weight, arrow_size, color_values, color_scale)` | `intralayer` (+ `scales`) |
+| `mira_interlayer(show, color_by, color, min_weight, curvature, pairs, color_values, color_scale)` | `interlayer` (+ `scales`) |
+| `mira_layer(color_by, color, color_values, color_scale, labels, label_size, set_labels, stack, spacing)` | `layer` (+ `scales`, or `layer.colors`) |
+
+**Color scales in R.** `color_values` (colors named by value) and
+`color_scale` (`"categorical"` / `"continuous"`) sit in the piece whose
+`color_by` they belong to. R sends them as `scales.<attr>` for that
+attribute (`color_values` imply `categorical`; with `"continuous"` → R
+error). `mira_layer(color_by = "layer_name")` = `.individual`; its
+`color_values` (named by layer) go to `layer.colors`. Settings for the same
+attribute from different pieces are merged; a value given two colors, or
+two scale types → R warning, the later piece wins. A new `color_by` /
+`color` drops that section's earlier `color_values` / `color_scale`.
+On nodes, both may be per set (`list(<set> = c(...))`), following each
+set's `color_by`.
+
+- `pairs` turns interlayer links on unless the same piece gives `show`.
 
 - Per set in R = a vector named by `node_type`:
   `color_by = c(pollinator = "module", plant = NA)` (`NA` → `null`).
@@ -182,11 +223,10 @@ These functions live in the separate R package **ggmira** (not emln).
   `color_by` are one channel: a later `color` removes an earlier
   `color_by` in the same section, and the other way round.
 - Per-set names may cover one set only; the other set keeps its default.
-- **Palettes in milestone 2 (R-only, no MiRA change):** for a discrete scale on a
-  data attribute, R expands `palette` (base R `palette.colors()` /
-  `hcl.colors()` names, or a color vector) into explicit `values` using the
-  category values in the data. `values` given by the user override single
-  categories. A palette on a MiRA-computed attribute or a continuous scale
-  → R warning, ignored (needs MiRA work; backlog).
+- **Palettes: item 17** (decision 2026-11-01: wait, so categorical and
+  continuous palettes arrive together): `color_palette` and
+  `color_limits` in the same pieces. Categorical palettes on data columns
+  could be expanded in R into `values`; continuous palettes, limits and
+  palettes on computed attributes need MiRA work.
 - R validates types, names and set names; an unknown attribute name only
   warns in R, MiRA has the final say.
