@@ -176,7 +176,7 @@ fields; screenshots). Tests: MiRA 334 unit + 31 browser; ggmira 222.
 |---|---|---|
 | 14 | Show only some nodes or links (Data mode filter; restorable in MiRA) | `mira_filter(nodes = type == "bird", links = weight > 0.05)` |
 
-**Stage 3 — network-mode view (S) — done 2026-11-02** (ggmira `feat/view`, MiRA `feat/ggmira` 14f1f99): `mira_camera(rotate, tilt, zoom, pan)`, `mira_legends(show = "all", position)` (legends start minimized; Shai prefers that to auto-opening), `mira_node(highlight)` (banner Clear only; search box and info panel not filled).
+**Stage 3 — network-mode view (S) — done 2026-11-02** (ggmira `feat/view`, MiRA `feat/ggmira` 14f1f99): `mira_camera(rotate, tilt, zoom, pan)`, `mira_legends(show = "all", position)` (legends start minimized; Shai prefers that to auto-opening), `mira_node(highlight)` (banner Clear only; search box and info panel not filled). Camera readout (2026-11-02): when MiRA is opened from R, the current camera in `mira_camera()` units shows under the zoom buttons, with *Copy for R* (js/cameraReadout.js; never on the website). **Merged to ggmira main 2026-11-02.**
 
 | # | Feature | R sketch |
 |---|---|---|
@@ -215,7 +215,7 @@ its own camera settings. Syntax to be discussed before any code.
 | 19 | Legend titles | `mira_labs(node_color = "Module")` |
 | 20 | Link color by `weight`; link width scaling | `mira_intralayer(color_by = "weight", width = "scaled")` |
 | 26 | `mira_save()`: image file from R | Headless browser; MiRA signals "rendered" |
-| 31 | "Copy as R code" button in MiRA | |
+| 31 | "Copy as R code" button in MiRA | Camera part done (stage 3 readout, *Copy for R*). |
 | 32 | More node shapes (triangle, diamond) | |
 | 35 | Filter layers, closing the gap in the stack | MiRA's layer filter keeps each layer's slot (renderer positions layers by index among all layers), so a hidden layer leaves a gap. Needs renderer code to stack only the visible layers; then `mira_filter(layers = )`. |
 | 36 | Filter nodes per layer (state-node columns, e.g. `abundance > 10`) | MiRA's node filter is by node name across all layers (renderer.js); a per-(node, layer) condition has no faithful mapping. Needs a per-layer node filter in MiRA. |
