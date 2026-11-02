@@ -358,6 +358,17 @@ the arguments go.**
   `plot_mira()` and `plot_multilayer()` warn in R about links with weight 0,
   which MiRA does not draw (ggmira f41caac; emln 7: 152 of 247).
 - ggmira `feat/modes` merged to main (PR #2, ed13436), after item 38.
+- MiRA `feat/ggmira` squash-merged to main (PR #94, 89915d6), live, after
+  the website-path check (demo datasets without R, against main: no
+  regressions; grid filter, map fit, meta-network shapes as intended).
+  Manual updated (f9d4735). Branches cleaned 2026-11-02: MiRA keeps
+  `main` and `development`; `feat/ggmira`, `feat/ggmira-view-spec` and
+  `feat/node-set-channels` deleted, kept as tags `archive/ggmira`,
+  `archive/ggmira-view-spec`, `archive/node-set-channels` (the commit
+  hashes cited in this backlog stay reachable). ggmira keeps only `main`.
+  MiRA-dev worktree is detached at main: start each next item on a new
+  branch from main (`git -C MiRA-dev switch -c feat/<item> origin/main`),
+  one PR to main per item; re-bundle into ggmira from that branch.
   MiRA `feat/ggmira` to main (live site) only after a website-path check:
   demo datasets without R, grid filter, map, layer view, Reset,
   meta-network. Then items 23 and 22 (map and layer view settings).
