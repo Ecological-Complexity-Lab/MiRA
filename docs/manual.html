@@ -707,7 +707,7 @@ Ixodes_ricinus,0.003</code></pre>
     <li><span class="key">Shape</span> — <em>Circle</em> or <em>Square</em>. Squares have the same area as the circles they replace, so sizes stay comparable.</li>
   </ul>
   <h4 id="node-sets">Bipartite node sets: Shared or Per set</h4>
-  <p>When the network has at least one bipartite layer and exactly two <code>node_type</code> values, each of the three channels (Color, Size, Shape) gets a small <strong>Shared / Per set</strong> toggle next to its name. The choice is yours and holds in every layout and in Grid View.</p>
+  <p>When the network has at least one bipartite layer and exactly two <code>node_type</code> values, each of the three channels (Color, Size, Shape) gets a small <strong>Shared / Per set</strong> toggle next to its name. The choice is yours and holds in every layout, in Grid View and, for Shape, in Meta-Network Mode.</p>
   <ul>
     <li><span class="key">Shared</span> (default) — one scheme for both sets. A pollinator and a plant with the same degree get the same color and size, so values are comparable across sets.</li>
     <li><span class="key">Per set</span> — one dropdown per set, labeled with the set's <code>node_type</code> (e.g. <em>pollinator</em>, <em>plant</em>). Each set can use a different attribute, and continuous colors and sizes are scaled within the set's own range.</li>
@@ -810,8 +810,9 @@ Ixodes_ricinus,0.003</code></pre>
   <p>Each layer is rendered in its own mini panel arranged in a responsive grid (a small-multiples or matrix view). All cells share the same axes and node identities, making it easy to compare intralayer structure across layers side-by-side without the visual clutter of the 3D stack.</p>
   <ul>
     <li><span class="key">Always-on layer headers</span> — every cell shows the layer name in a header strip; no checkbox needed.</li>
-    <li><span class="key">No 3D perspective</span> — nodes are always plain circles; the Transform Nodes option does not apply.</li>
+    <li><span class="key">No 3D perspective</span> — nodes are drawn flat, in their Network Mode shapes; the Transform Nodes option does not apply.</li>
     <li><span class="key">Intralayer only</span> — interlayer links are not rendered (use Network or Meta-Network Mode for cross-layer connections).</li>
+    <li><span class="key">Data Mode filter</span> — layers, nodes and links filtered out in Data Mode are not drawn; the remaining layers fill the grid.</li>
     <li><span class="key">Cross-mode selection</span> — clicking a node selects it across all cells and persists when you switch back to Network or Meta-Network Mode.</li>
   </ul>
 
@@ -841,6 +842,7 @@ Ixodes_ricinus,0.003</code></pre>
     <li><strong>Edges</strong> — one edge per unique node pair that shares an intralayer link in any layer. Edge weight depends on the aggregation mode.</li>
     <li><strong>Bipartite networks</strong> — when the dataset contains bipartite layers, the mode defaults to the <em>Two-row</em> layout with Set A above and Set B below, separated by dashed guide lines.</li>
     <li><strong>Directed networks</strong> — direction is preserved; arrowheads are drawn on each edge.</li>
+    <li><strong>Node shapes</strong> — nodes keep the shapes set in Network Mode; with one shape per set, a <em>Node Shape</em> legend shows them.</li>
   </ul>
   <div class="info-box">Activate via the <strong>Σ</strong> button in the top toolbar strip. Clicking it again returns to Network Mode.</div>
 
@@ -979,11 +981,11 @@ Ixodes_ricinus,0.003</code></pre>
   <p>When rows are selected, a purple action bar appears at the top showing the count. Click <strong>Filter to selection</strong> to subset the network to only the selected rows. Click <strong>Clear</strong> to deselect all.</p>
 
   <h3 id="dm-subsetting">Subsetting</h3>
-  <p>Filters and selections in Data Mode propagate to <span class="pill pill-network">Network</span> and <span class="pill pill-map">Map</span> modes. When a subset is active:</p>
+  <p>Filters and selections in Data Mode propagate to <span class="pill pill-network">Network</span>, <span class="pill pill-map">Map</span> and Grid modes. When a subset is active:</p>
   <ul>
     <li>Only matching nodes, links, and layers are rendered on the canvas.</li>
     <li>A compact <strong>amber filter banner</strong> appears in the bottom-right corner (above the branding panel) showing how many items are filtered and a <em>Clear</em> button.</li>
-    <li>The banner is visible only in Network and Map modes — it hides in other modes.</li>
+    <li>The banner is visible only in Network, Map and Grid modes — it hides in other modes.</li>
   </ul>
   <p>Subsets are derived from the active tab: filtering the <em>Nodes</em> tab subsets by node names; filtering <em>Layers</em> subsets by layer names; filtering <em>Links</em> subsets by individual link keys.</p>
   <div class="tip-box"><strong>Tip:</strong> Use column filters to narrow the table first, then use row multi-select + <em>Filter to selection</em> for precise control over which items appear in the visualization.</div>
