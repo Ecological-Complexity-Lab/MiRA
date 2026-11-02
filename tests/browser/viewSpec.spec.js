@@ -374,6 +374,20 @@ test('stage 4: grid columns, given or MiRA\'s own', async ({ page }) => {
   expect(await own.evaluate(() => window._renderer._gridColumns)).toBe(3) // 6 layers: ceil(sqrt(6))
 })
 
+test('the data filter applies in grid mode, with the banner', async ({ page }) => {
+  await page.setViewportSize({ width: 1400, height: 900 }) // see stage 2: the banner's Clear button
+  await openFromR(page, view({ filter: { nodes: [PARASITE, HOST] }, mode: { view: 'grid' } }))
+  expect(await activeView(page)).toBe('grid')
+  await expect(page.locator('#dataFilterBanner')).toBeVisible()
+  const gridNodes = () => page.evaluate(() =>
+    [...new Set(window._renderer._gridView._lastCells.flatMap(c => [...c.nodePositions.keys()]))].sort())
+  expect(await gridNodes()).toEqual([HOST, PARASITE].sort())
+
+  await page.locator('#dataFilterClear').click()
+  await expect(page.locator('#dataFilterBanner')).toBeHidden()
+  expect((await gridNodes()).length).toBeGreaterThan(2)
+})
+
 test('stage 4: the meta-network from R looks as when its button is clicked', async ({ page }) => {
   await openFromR(page, NOT_SERVED)
   await page.click('#metaNetworkBtn')

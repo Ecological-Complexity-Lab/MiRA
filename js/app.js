@@ -1289,7 +1289,7 @@ function _exitDataMode() {
 }
 
 function _updateFilterBanner() {
-    const show = dataMode.isSubsetActive() && (appMode === 'network' || appMode === 'map');
+    const show = dataMode.isSubsetActive() && (appMode === 'network' || appMode === 'map' || appMode === 'grid');
     if (!show) {
         dataFilterBanner.style.display = 'none';
     } else {
