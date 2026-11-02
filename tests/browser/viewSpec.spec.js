@@ -333,3 +333,78 @@ test('camera readout: the values R sent, live, with Copy for R; only when opened
   await site.waitForTimeout(1500)
   expect(await site.locator('#cameraReadout').count()).toBe(0)
 })
+
+// ── stage 4: the view MiRA opens in ──────────────────────────────────────────
+
+const activeView = (page) => page.evaluate(() =>
+  document.querySelector('.mode-btn.active')?.dataset.mode ?? null)
+
+test('stage 4: every view opens from R; the map needs coordinates', async ({ page }) => {
+  for (const [view, button] of [['grid', 'grid'], ['layer', 'layer'], ['meta', 'meta'],
+    ['dashboard', 'dashboard'], ['data', 'data']]) {
+    const p = await page.context().newPage()
+    p.on('pageerror', e => errors.push(`${view}: ${e.message}`))
+    await openFromR(p, { version: 1, mode: { view } })
+    expect(await activeView(p), view).toBe(button)
+    expect(await noticeMessages(p), view).toBeNull()
+    await p.close()
+  }
+  await openFromR(page, view({ mode: { view: 'map' } }))
+  expect(await activeView(page)).toBe('network')
+  expect((await noticeMessages(page))[0]).toMatch(/could not open this view \(the map needs latitude and longitude/)
+})
+
+test('stage 4: the map opens when the layers have coordinates', async ({ page }) => {
+  const network = readFileSync(new URL('../../data/magrach2020.json', import.meta.url), 'utf8')
+  await page.route('**/api/network.json', route => route.fulfill({ contentType: 'application/json', body: network }))
+  await page.route('**/api/view.json', route =>
+    route.fulfill({ contentType: 'application/json', body: JSON.stringify(view({ mode: { view: 'map' } })) }))
+  await page.goto('/?autoload=true')
+  await page.waitForFunction(() => window._renderer?.model?.layers?.length > 0)
+  await page.waitForLoadState('networkidle')
+  expect(await activeView(page)).toBe('map')
+  expect(await noticeMessages(page)).toBeNull()
+})
+
+test('stage 4: grid columns, given or MiRA\'s own', async ({ page }) => {
+  await openFromR(page, view({ mode: { view: 'grid', columns: 2 } }))
+  expect(await page.evaluate(() => window._renderer._gridColumns)).toBe(2)
+  const own = await page.context().newPage()
+  await openFromR(own, view({ mode: { view: 'grid' } }))
+  expect(await own.evaluate(() => window._renderer._gridColumns)).toBe(3) // 6 layers: ceil(sqrt(6))
+})
+
+test('stage 4: the meta-network from R looks as when its button is clicked', async ({ page }) => {
+  await openFromR(page, NOT_SERVED)
+  await page.click('#metaNetworkBtn')
+  await page.waitForTimeout(1500) // let the layout settle
+  const controls = (p) => p.evaluate(() => ['mnAggregationSelect', 'mnLayoutSelect', 'mnColorBySelect',
+    'mnSizeBySelect', 'mnBaseSizeSlider', 'mnMinWeightSlider', 'mnLabelSizeSlider']
+    .map(id => document.getElementById(id).value)
+    .concat([document.getElementById('mnNestedSortCheckbox').checked,
+      document.getElementById('mnShowLabelsCheckbox').checked]))
+  const clicked = await controls(page)
+  const pixels = (p) => p.evaluate(() => {
+    const c = document.getElementById('networkCanvas')
+    return Array.from(c.getContext('2d').getImageData(0, 0, c.width, c.height).data)
+  })
+  const clickedPixels = await pixels(page)
+
+  const fromR = await page.context().newPage()
+  fromR.on('pageerror', e => errors.push(e.message))
+  await openFromR(fromR, view({ mode: { view: 'meta' } }))
+  await fromR.waitForTimeout(1500)
+  expect(await controls(fromR)).toEqual(clicked)
+  const rPixels = await pixels(fromR)
+  expect(rPixels.length).toBe(clickedPixels.length)
+  expect(rPixels.filter((v, i) => v !== clickedPixels[i]).length).toBe(0)
+
+  const set = await page.context().newPage()
+  await openFromR(set, view({ mode: { view: 'meta', aggregation: 'weights', size_by: 'participation',
+    labels: true, label_size: 16, min_weight: 0.5 } }))
+  const shown = await controls(set)
+  expect(shown.filter((_, i) => i !== 5)).toEqual(['sumWeights', 'bipartite', 'uniform', 'participation', '1', '16',
+    true, true])
+  // the slider steps by 1% of the largest weight; the threshold and its label are 0.5
+  expect(await set.evaluate(() => document.getElementById('mnMinWeightLabel').textContent)).toBe('0.50')
+})

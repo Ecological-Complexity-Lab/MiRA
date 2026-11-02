@@ -17,6 +17,8 @@
  *                        spacing, arrowheads, curvature
  *   9. Layer colors and pairs — per-layer colors, interlayer layer pairs
  *  10. Scales         — scale type and colors per value, by attribute
+ *  11-14. Filter, camera, legends, highlight
+ *  15. Mode           — the view MiRA opens in; grid columns; meta-network settings
  */
 
 import { describe, it, expect } from 'vitest'
@@ -71,6 +73,10 @@ const defaultState = () => ({
     layerColors: [['L1', '#8b5cf6'], ['L2', '#8b5cf6']],
   },
   filter: { nodeNames: null, layerNames: null, linkKeys: null, interPairFilter: [] },
+  appMode: 'network',
+  meta: { aggregation: 'sumOccurrence', layout: 'circular', colorBy: 'uniform', sizeBy: 'participation',
+    baseSize: 1, minWeight: 0, nestedSort: false, showLabels: false, labelSize: 12, uniformColor: '#000000',
+    colorSetA: '#000000', colorSetB: '#000000', viewScale: 1, viewOffsetX: 0, viewOffsetY: 0 },
 })
 
 const nodeOptions = ['', 'node:module', 'node:abundance', 'state:intra_degree', 'state:module']
@@ -687,5 +693,64 @@ describe('Group 14 — Highlight', () => {
     const r = apply({ node: { highlight: 'wasp' } })
     expect(r.state.selectedNode).toBeUndefined()
     expect(r.warnings).toEqual(['node.highlight: "wasp" is not a node name'])
+  })
+})
+
+describe('Group 15 — Mode', () => {
+  it('15.1 the view becomes the app mode; meta is "metanetwork"', () => {
+    for (const [view, appMode] of [['network', 'network'], ['grid', 'grid'], ['map', 'map'], ['layer', 'layer'],
+      ['meta', 'metanetwork'], ['dashboard', 'dashboard'], ['data', 'data']]) {
+      const r = apply({ mode: { view } })
+      expect(r.state.appMode).toBe(appMode)
+      expect(r.mode).toEqual({ view: appMode })
+    }
+    const r = apply({ mode: { view: 'globe' } })
+    expect(r.state.appMode).toBe('network')
+    expect(r.mode).toBeNull()
+    expect(r.warnings[0]).toMatch(/^mode.view: "globe" must be one of network, grid, map, layer, meta, dashboard, data/)
+  })
+
+  it('15.2 grid columns: given, or MiRA\'s own (null)', () => {
+    expect(apply({ mode: { view: 'grid', columns: 3 } }).state.renderer.gridColumns).toBe(3)
+    expect(apply({ mode: { view: 'grid' } }).state.renderer.gridColumns).toBeNull()
+    const r = apply({ mode: { view: 'grid', columns: 9 } })
+    expect(r.state.renderer.gridColumns).toBeNull()
+    expect(r.warnings).toEqual(['mode.columns: 9 must be a whole number between 1 and 8'])
+  })
+
+  it('15.3 the meta-network starts from MiRA\'s entry settings: two-row layout on bipartite data, fitted', () => {
+    const m = apply({ mode: { view: 'meta' } }).state.meta
+    expect(m).toMatchObject({ aggregation: 'sumOccurrence', layout: 'bipartite', colorBy: 'uniform',
+      sizeBy: 'metaDegree', baseSize: 1, minWeight: 0, nestedSort: true, showLabels: false, labelSize: 12,
+      viewScale: null })
+    expect(apply({ mode: { view: 'meta' } }, ctxWithoutSets()).state.meta.layout).toBe('circular')
+  })
+
+  it('15.4 meta-network settings, in R\'s names', () => {
+    const m = apply({ mode: { view: 'meta', aggregation: 'weights', layout: 'force', color_by: 'participation',
+      size_by: 'degree', size: 1.5, min_weight: 2, nested: false, labels: true, label_size: 16 } }).state.meta
+    expect(m).toMatchObject({ aggregation: 'sumWeights', layout: 'force', colorBy: 'participation',
+      sizeBy: 'metaDegree', baseSize: 1.5, minWeight: 2, nestedSort: false, showLabels: true, labelSize: 16 })
+  })
+
+  it('15.5 meta-network colors: one for all, or one per set', () => {
+    let m = apply({ mode: { view: 'meta', color: '#ff0000' } }).state.meta
+    expect([m.uniformColor, m.colorSetA, m.colorSetB]).toEqual(['#ff0000', '#ff0000', '#ff0000'])
+    m = apply({ mode: { view: 'meta', color: { plant: '#00ff00' } } }).state.meta
+    expect(m.colorSetB).toBe('#00ff00')
+    expect(m.colorSetA).not.toBe('#00ff00')
+  })
+
+  it('15.6 invalid values and fields of another view are skipped', () => {
+    const r = apply({ mode: { view: 'meta', layout: 'bipartite', aggregation: 'sum', size: 9, columns: 2 } },
+      ctxWithoutSets())
+    expect(r.state.meta.layout).toBe('circular')
+    expect(r.state.meta.aggregation).toBe('sumOccurrence')
+    expect(r.warnings).toEqual([
+      'mode.columns: only for view "grid"; ignored',
+      'mode.aggregation: "sum" must be one of occurrence, weights, union',
+      'mode.layout: "bipartite" needs a bipartite layer; ignored',
+      'mode.size: 9 must be a number between 0.2 and 3',
+    ])
   })
 })

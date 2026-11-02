@@ -26,6 +26,8 @@
  * Contract: dev/ggmira/view-spec.md (development branch).
  */
 
+import { META_NETWORK_DEFAULTS } from './metaNetwork.js';
+
 export const VIEW_SPEC_VERSION = 1;
 
 const LAYOUT_TYPES = new Set(['fruchterman', 'kamada_kawai', 'bipartite', 'circle', 'grid', 'random']);
@@ -68,6 +70,24 @@ const LEGEND_IDS = {
 const LEGEND_ALL = 'all';
 const LEGEND_POSITIONS = new Set(['bottom-right', 'top-right', 'bottom-left']);
 
+// Views (spec mode.view) → MiRA's appMode. Only one view opens.
+const VIEWS = {
+    network: 'network', grid: 'grid', map: 'map', layer: 'layer',
+    meta: 'metanetwork', dashboard: 'dashboard', data: 'data',
+};
+const GRID_FIELDS = ['columns'];
+const META_FIELDS = ['aggregation', 'layout', 'color_by', 'size_by', 'size', 'min_weight', 'nested',
+    'labels', 'label_size', 'color'];
+const GRID_COLUMNS_MIN = 1; // grid columns slider (index.html)
+const GRID_COLUMNS_MAX = 8;
+const META_AGGREGATIONS = { occurrence: 'sumOccurrence', weights: 'sumWeights', union: 'union' };
+const META_LAYOUTS = new Set(['circular', 'force', 'bipartite']);
+const META_MEASURES = { participation: 'participation', degree: 'metaDegree', uniform: 'uniform' };
+const META_SIZE_MIN = 0.2; // meta-network base size slider (index.html)
+const META_SIZE_MAX = 3;
+const META_LABEL_SIZE_MIN = 8;
+const META_LABEL_SIZE_MAX = 24;
+
 const STACK_MODES = new Set(['horizontal', 'vertical']);
 const SCALE_TYPES = new Set(['categorical', 'continuous']);
 const PAIR_SEPARATOR = '::'; // layer pair key in the interlayer pair filter
@@ -94,6 +114,7 @@ const SECTION_FIELDS = {
     filter:     ['nodes', 'links'],
     camera:     ['rotate', 'tilt', 'zoom', 'pan'],
     legend:     ['show', 'position'],
+    mode:       ['view', ...GRID_FIELDS, ...META_FIELDS],
 };
 const SCALE_FIELDS = ['type', 'values'];
 
@@ -118,24 +139,26 @@ export function applyViewSpec(state, spec, ctx) {
 
     if (!isPlainObject(spec)) {
         warn('spec', 'not a JSON object; ignored');
-        return { state: out, layout: null, camera: null, legendPanel: null, warnings };
+        return { state: out, layout: null, camera: null, legendPanel: null, mode: null, warnings };
     }
     if (spec.version !== VIEW_SPEC_VERSION) {
         warn('version', `expected ${VIEW_SPEC_VERSION}, got ${show(spec.version)}; whole spec ignored`);
-        return { state: out, layout: null, camera: null, legendPanel: null, warnings };
+        return { state: out, layout: null, camera: null, legendPanel: null, mode: null, warnings };
     }
 
     let layout = null;
     let camera = null;
     let legendPanel = null;
+    let mode = null;
     for (const [key, section] of Object.entries(spec)) {
         if (key === 'version') continue;
         const result = applySection(out, key, section, ctx, warn);
         if (key === 'layout') layout = result;
         if (key === 'camera') camera = result;
         if (key === 'legend') legendPanel = result;
+        if (key === 'mode') mode = result;
     }
-    return { state: out, layout, camera, legendPanel, warnings };
+    return { state: out, layout, camera, legendPanel, mode, warnings };
 }
 
 const SECTION_APPLIERS = {
@@ -148,6 +171,7 @@ const SECTION_APPLIERS = {
     filter: applyFilter,
     camera: applyCamera,
     legend: applyLegend,
+    mode: applyMode,
 };
 
 function applySection(state, key, section, ctx, warn) {
@@ -746,4 +770,97 @@ function applyScaleValues(ui, attr, values, dataValues, label, path, warn) {
 function matchDataValue(key, values) {
     if (values.has(key)) return key;
     return [...values].find(v => String(v) === key);
+}
+
+// ---- mode -----------------------------------------------------------------------
+
+/**
+ * The view MiRA opens in (state.appMode; restoreSessionState enters it, except
+ * Data mode, which rBridge enters). Grid takes `columns`; the meta-network
+ * starts from the settings MiRA uses when its button is clicked, then takes
+ * the spec's fields. Returns { view: appMode } for the caller, or null.
+ */
+function applyMode(state, section, ctx, warn) {
+    if (!Object.hasOwn(VIEWS, section.view)) {
+        warn('mode.view', `${show(section.view)} must be one of ${Object.keys(VIEWS).join(', ')}; the plot opens in network mode`);
+        return null;
+    }
+    const view = section.view;
+    for (const field of [...GRID_FIELDS, ...META_FIELDS]) {
+        const owner = GRID_FIELDS.includes(field) ? 'grid' : 'meta';
+        if (field in section && owner !== view) warn(`mode.${field}`, `only for view "${owner}"; ignored`);
+    }
+    state.appMode = VIEWS[view];
+    if (view === 'grid') applyGridMode(state, section, warn);
+    if (view === 'meta') applyMetaMode(state, section, ctx, warn);
+    return { view: VIEWS[view] };
+}
+
+function applyGridMode(state, section, warn) {
+    // null: MiRA's own number of columns (restore keeps it when not 1-8)
+    state.renderer.gridColumns = null;
+    setChecked(section, 'columns', 'mode.columns', state.renderer, 'gridColumns', (v, path) => {
+        if (Number.isInteger(v) && v >= GRID_COLUMNS_MIN && v <= GRID_COLUMNS_MAX) return v;
+        warn(path, `${show(v)} must be a whole number between ${GRID_COLUMNS_MIN} and ${GRID_COLUMNS_MAX}`);
+        return undefined;
+    });
+}
+
+function applyMetaMode(state, section, ctx, warn) {
+    const d = META_NETWORK_DEFAULTS;
+    const meta = {
+        ...state.meta,
+        aggregation: d.aggregation,
+        layout: ctx.hasBipartite ? 'bipartite' : d.layout,
+        colorBy: d.colorBy,
+        sizeBy: d.sizeBy,
+        baseSize: d.baseSize,
+        minWeight: d.minWeight,
+        nestedSort: d.nestedSort,
+        showLabels: d.showLabels,
+        labelSize: d.labelFontSize,
+        uniformColor: d.uniformColor,
+        colorSetA: d.uniformColorA,
+        colorSetB: d.uniformColorB,
+        viewScale: null, // keep the fit computed on entry
+    };
+    const mapped = (choices) => (v, path) => {
+        if (Object.hasOwn(choices, v)) return choices[v];
+        warn(path, `${show(v)} must be one of ${Object.keys(choices).join(', ')}`);
+        return undefined;
+    };
+    setChecked(section, 'aggregation', 'mode.aggregation', meta, 'aggregation', mapped(META_AGGREGATIONS));
+    setChecked(section, 'layout', 'mode.layout', meta, 'layout', (v, path) => {
+        const layout = checkChoice(v, META_LAYOUTS, path, warn);
+        if (layout === 'bipartite' && !ctx.hasBipartite) {
+            warn(path, '"bipartite" needs a bipartite layer; ignored');
+            return undefined;
+        }
+        return layout;
+    });
+    setChecked(section, 'color_by', 'mode.color_by', meta, 'colorBy', mapped(META_MEASURES));
+    setChecked(section, 'size_by', 'mode.size_by', meta, 'sizeBy', mapped(META_MEASURES));
+    setChecked(section, 'size', 'mode.size', meta, 'baseSize',
+        (v, path) => checkNumber(v, META_SIZE_MIN, META_SIZE_MAX, path, warn));
+    setChecked(section, 'min_weight', 'mode.min_weight', meta, 'minWeight', (v, path) => checkMinWeight(v, path, warn));
+    setChecked(section, 'nested', 'mode.nested', meta, 'nestedSort', (v, path) => checkBoolean(v, path, warn));
+    setChecked(section, 'labels', 'mode.labels', meta, 'showLabels', (v, path) => checkBoolean(v, path, warn));
+    setChecked(section, 'label_size', 'mode.label_size', meta, 'labelSize', (v, path) => {
+        if (Number.isInteger(v) && v >= META_LABEL_SIZE_MIN && v <= META_LABEL_SIZE_MAX) return v;
+        warn(path, `${show(v)} must be a whole number between ${META_LABEL_SIZE_MIN} and ${META_LABEL_SIZE_MAX}`);
+        return undefined;
+    });
+    if ('color' in section) {
+        const value = section.color;
+        if (isPlainObject(value)) {
+            const colors = resolvePerSet(value, 'mode.color', ctx, warn,
+                { A: meta.colorSetA, B: meta.colorSetB }, (v, set, path) => checkColor(v, path, warn));
+            if (colors) { meta.colorSetA = colors.A; meta.colorSetB = colors.B; }
+        } else {
+            // One color: every node (and both sets on bipartite data)
+            const color = checkColor(value, 'mode.color', warn);
+            if (color !== undefined) Object.assign(meta, { uniformColor: color, colorSetA: color, colorSetB: color });
+        }
+    }
+    state.meta = meta;
 }

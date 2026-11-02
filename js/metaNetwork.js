@@ -25,6 +25,24 @@ const MN_UNIFORM_COLOR = '#374151';
 const MN_ARROW_SIZE    = 8;     // px in sim coords
 const MN_HIT_THRESHOLD = 6;     // px in sim coords for edge hit
 
+// Settings on entering the meta-network (the layout becomes 'bipartite' when
+// the network has a bipartite layer). Exported for viewSpec.js, which opens
+// the meta-network from R with the same starting values.
+export const META_NETWORK_DEFAULTS = Object.freeze({
+    aggregation:   'sumOccurrence', // 'union' | 'sumWeights' | 'sumOccurrence'
+    colorBy:       'uniform',       // 'participation' | 'metaDegree' | 'uniform'
+    sizeBy:        'metaDegree',    // 'participation' | 'metaDegree' | 'uniform'
+    layout:        'circular',      // 'circular' | 'force' | 'bipartite'
+    minWeight:     0,
+    showLabels:    false,
+    labelFontSize: 12,
+    nestedSort:    true,
+    baseSize:      1.0,            // multiplier applied to all node radii
+    uniformColor:  MN_UNIFORM_COLOR,      // uniform color for unipartite
+    uniformColorA: BIPARTITE_SET_A_COLOR, // uniform color for bipartite Set A
+    uniformColorB: BIPARTITE_SET_B_COLOR, // uniform color for bipartite Set B
+});
+
 // cmocean 'ice' palette — reversed so low = light cyan, high = dark navy
 const MN_ICE_COLORS = [
     '#cde9f0', '#9dd1e5', '#6cb8d8', '#3f9ec8', '#1e84b5',
@@ -60,20 +78,7 @@ export class MetaNetwork {
         this.viewOffsetX = 0;
         this.viewOffsetY = 0;
 
-        this.settings = {
-            aggregation:   'sumOccurrence', // 'union' | 'sumWeights' | 'sumOccurrence'
-            colorBy:       'uniform',       // 'participation' | 'metaDegree' | 'uniform'
-            sizeBy:        'metaDegree',    // 'participation' | 'metaDegree' | 'uniform'
-            layout:        'circular',      // 'circular' | 'force' | 'bipartite'
-            minWeight:     0,
-            showLabels:    false,
-            labelFontSize: 12,
-            nestedSort:    true,
-            baseSize:      1.0,            // multiplier applied to all node radii
-            uniformColor:  MN_UNIFORM_COLOR,      // uniform color for unipartite
-            uniformColorA: BIPARTITE_SET_A_COLOR, // uniform color for bipartite Set A
-            uniformColorB: BIPARTITE_SET_B_COLOR, // uniform color for bipartite Set B
-        };
+        this.settings = { ...META_NETWORK_DEFAULTS };
 
         this.state = {
             selectedNode:   null,       // nodeName | null

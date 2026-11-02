@@ -35,6 +35,10 @@ const SPEC_SELECT_IDS = [
 const INTER_ARROWHEAD_SLIDER_ID = 'interArrowheadSizeSlider';
 const LEGEND_PANEL_ID = 'legendPanel';
 const LEGEND_TOGGLE_ID = 'toggleLegendBtn';
+// Views (app.js appMode values) that need the bridge after restore
+const DATA_VIEW = 'data';
+const MAP_VIEW = 'map';
+const DATA_MODE_BUTTON_ID = 'dataModeBtn';
 // Legend panel corners (index.html: bottom 50px, right 20px by default)
 const LEGEND_CORNERS = {
     'bottom-right': { top: '', bottom: '50px', left: '', right: '20px', alignItems: 'flex-end' },
@@ -114,9 +118,23 @@ function applySpec(spec, deps) {
     const interArrowSlider = document.getElementById(INTER_ARROWHEAD_SLIDER_ID);
     if (interArrowSlider) interArrowSlider.value = rv.arrowheadSize;
     deps.renderer.render();
+    if (result.mode) enterView(result.mode.view, deps, result.warnings);
 
     if (result.warnings.length) console.warn('[MiRA] View spec warnings:\n' + result.warnings.join('\n'));
     return result.warnings;
+}
+
+/**
+ * restoreSessionState enters every view except Data mode: click its button.
+ * A view MiRA cannot open (the map without layer coordinates) leaves the plot
+ * in network mode, with a warning.
+ */
+function enterView(view, deps, warnings) {
+    if (view === DATA_VIEW && deps.getAppMode?.() !== DATA_VIEW) document.getElementById(DATA_MODE_BUTTON_ID)?.click();
+    const current = deps.getAppMode?.();
+    if (current !== undefined && current !== view) {
+        warnings.push(`mode.view: MiRA could not open this view${view === MAP_VIEW ? ' (the map needs latitude and longitude for the layers)' : ''}; showing ${current} mode`);
+    }
 }
 
 /** Zoom about the canvas center (as MiRA's zoom buttons), then pan by a fraction of the canvas. */
