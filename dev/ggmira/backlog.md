@@ -101,6 +101,11 @@ existing files get only small additive changes (listed in view-spec.md §1).
   shows 0.4984 for 0.5 (slider step; the threshold is 0.5); `c("TRUE" =
   ...)` does not match a logical column (JSON `true`); prototype-named JSON
   keys throw in viewSpec (R never sends them).
+- **A later `color_values` replaces the earlier vector (2026-11-02),** it
+  does not merge by value: `p + mira_node(color_values = c(genus = "green"))`
+  sends only genus (species goes back to the palette). Same "later
+  component wins" rule as every argument; a merge-by-value variant was
+  proposed and declined.
 - **Palettes wait for item 17 (2026-11-01),** so categorical and
   continuous palettes arrive together.
 - **Per set = vector named by `node_type`:**
