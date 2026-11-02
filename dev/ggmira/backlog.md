@@ -269,7 +269,7 @@ the arguments go.**
 |---|---|---|
 | 27 | Save a MiRA session file from R, to open on the website | Check MiRA accepts a session without positions |
 | 28 | Derived mappings, `color_by = ~log10(weight)` | R adds the column |
-| 29 | Plain data frames as input, not only emln objects | |
+| 29 | ~~Plain data frames as input~~ | Dropped 2026-11-02: emln exists because turning raw data into a multilayer object is an essential, validating step. ggmira takes only emln objects. |
 | 30 | Presets, e.g. `mira_theme_paper()` | Bundles of settings above |
 
 **Then M (needs MiRA code) — 33 first, order of the rest to discuss**
@@ -504,8 +504,6 @@ Each needs MiRA work first; the R side is cheap once MiRA supports it.
 - **Legend titles / `labs()`.** MiRA titles are fixed ("Node Color: module").
 - **Link color by `weight`.** MiRA's link color dropdown excludes `weight`
   (dataParser `linkAttributeNames`). Needs a MiRA change.
-- **Plain data frames as input** to `mira()` / `plot_multilayer()` (not
-  only emln `multilayer` objects), for non-emln users.
 - **More node shapes** beyond circle and square (triangle, diamond).
 - **`aes()` as an alternative mapping syntax.** Its real gain is derived
   variables (`aes(size = log(abundance))`). Could be added later without
