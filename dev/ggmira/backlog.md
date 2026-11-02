@@ -233,7 +233,7 @@ fields; screenshots). Tests: MiRA 334 unit + 31 browser; ggmira 222.
 | 12 | Which legends are open | `mira_view(legends = c("node_color"))` |
 | 13 | Highlight a node (like search) | `mira_view(highlight = "Apis mellifera")` |
 
-**Stage 4 — other views (S) — built 2026-11-02, not merged** (ggmira
+**Stage 4 — other views (S) — built 2026-11-02; merged to ggmira main 2026-11-02 (PR #2, ed13436)** (ggmira
 `feat/modes` 44dcf3d..882819f, MiRA `feat/ggmira` 288d15f). Grid and
 meta-network with settings; map, layer, dashboard and data open with
 MiRA's defaults; `plot_mira(mode = )`. Pending: node shapes in the
@@ -357,7 +357,7 @@ the arguments go.**
 - Item 38 done the same evening (see the table). Also: `mira()`,
   `plot_mira()` and `plot_multilayer()` warn in R about links with weight 0,
   which MiRA does not draw (ggmira f41caac; emln 7: 152 of 247).
-- Next: merge ggmira `feat/modes` to main (Shai decided: after item 38).
+- ggmira `feat/modes` merged to main (PR #2, ed13436), after item 38.
   MiRA `feat/ggmira` to main (live site) only after a website-path check:
   demo datasets without R, grid filter, map, layer view, Reset,
   meta-network. Then items 23 and 22 (map and layer view settings).
