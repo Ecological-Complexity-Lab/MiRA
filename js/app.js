@@ -4436,7 +4436,8 @@ function hideTooltip() {
             })
             .then(json => {
                 // Also applies a ggmira view spec (/api/view.json) when R serves one
-                return loadFromR(json, { loadData, getSessionState, restoreSessionState, renderer });
+                return loadFromR(json, { loadData, getSessionState, restoreSessionState, renderer,
+                    getAppMode: () => appMode });
             })
             .catch(err => {
                 console.error('Autoload failed:', err);

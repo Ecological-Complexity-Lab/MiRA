@@ -20,6 +20,7 @@
 import { applyViewSpec } from './viewSpec.js';
 import { ForceLayout } from './layout.js';
 import { buildNodeSetResolver } from './nodeSets.js';
+import { startCameraReadout } from './cameraReadout.js';
 
 const VIEW_SPEC_URL = '/api/view.json';
 const NOTICE_ID = 'viewSpecNotice';
@@ -43,11 +44,13 @@ const LEGEND_CORNERS = {
 
 /**
  * @param {object} networkJson  Network fetched from /api/network.json
- * @param {{ loadData, getSessionState, restoreSessionState, renderer }} deps
+ * @param {{ loadData, getSessionState, restoreSessionState, renderer, getAppMode }} deps
  */
 export async function loadFromR(networkJson, deps) {
     deps.loadData(networkJson);
     if (!deps.renderer.model) return; // loadData already reported the error
+    // Camera values in mira_camera() terms, with "Copy for R" (network mode only)
+    startCameraReadout(deps.renderer, deps.getAppMode ?? (() => 'network'));
 
     const fetched = await fetchViewSpec();
     if (fetched.error) {

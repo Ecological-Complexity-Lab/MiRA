@@ -310,3 +310,26 @@ test('stage 3: legends start minimized; show = false hides the panel', async ({ 
   await again.locator('#toggleLegendBtn').click() // MiRA's own toggle brings it back
   await expect(again.locator('#legendPanel')).toBeVisible()
 })
+
+test('camera readout: the values R sent, live, with Copy for R; only when opened from R', async ({ page, context }) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+  await openFromR(page, view({ camera: { rotate: 70, tilt: 15, zoom: 1.5, pan: [0.1, -0.05] } }))
+  const readout = page.locator('#cameraReadout')
+  await expect(readout).toBeVisible()
+  await expect(readout).toContainText('rotate 70°  tilt 15°  zoom 1.50  pan 0.10, -0.05')
+
+  // Zooming about the center also scales the earlier pan; the readout gives
+  // the call that reproduces the view
+  await page.locator('#zoomInBtn').click() // ×1.2
+  await expect(readout).toContainText('zoom 1.80  pan 0.12, -0.06')
+
+  await readout.locator('button').click()
+  await expect(readout.locator('button')).toHaveText('Copied')
+  expect(await page.evaluate(() => navigator.clipboard.readText()))
+    .toBe('mira_camera(rotate = 70, tilt = 15, zoom = 1.8, pan = c(0.12, -0.06))')
+
+  const site = await context.newPage()
+  await site.goto('/')
+  await site.waitForTimeout(1500)
+  expect(await site.locator('#cameraReadout').count()).toBe(0)
+})
