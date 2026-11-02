@@ -1552,6 +1552,8 @@ function toggleMetaNetwork() {
     canvas.style.cursor  = 'grab';
 
     metaNetwork = new MetaNetwork(model, cssW, cssH);
+    metaNetwork.nodeShapeFn = renderer.nodeShapeFn; // shapes as in network mode
+    window._metaNetwork = metaNetwork;
     _showMetaNetworkSidebar();
     _syncMetaNetworkControls();
     _buildMnLayerPanel();
@@ -4682,6 +4684,17 @@ function renderMetaNetworkLegend() {
             min, max, canToggle: false,
         };
         renderScaleLegend(sizeScale, 'mnSize', 'Node Size');
+    }
+
+    // ── Shape legend: one shape per node set, as in network mode
+    if (isShapeSplit()) {
+        expandedLegends.add('mnShape');
+        const { labelA, labelB } = nodeSetResolver;
+        const shapeScale = {
+            type: 'shape', attrName: 'Set',
+            map: new Map([[labelA, nodeShapeSelectSetA.value], [labelB, nodeShapeSelectSetB.value]]),
+        };
+        renderScaleLegend(shapeScale, 'mnShape', 'Node Shape');
     }
 }
 

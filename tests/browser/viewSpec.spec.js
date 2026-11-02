@@ -493,3 +493,14 @@ test('the layer view from R fits the bubbles clear of the panels', async ({ page
   await page.waitForTimeout(1500)
   expect(await hiddenBoxes(page, await bubbles())).toEqual([])
 })
+
+test('meta-network from R: nodes take mira_node(shape = ) shapes', async ({ page }) => {
+  await openFromR(page, view({ node: { shape: { parasite: 'square', host: 'circle' } }, mode: { view: 'meta' } }))
+  expect(await activeView(page)).toBe('meta')
+  const shapes = await page.evaluate(([parasite, host]) => {
+    const meta = window._metaNetwork
+    return [meta.nodeShapeFn(null, parasite), meta.nodeShapeFn(null, host)]
+  }, [PARASITE, HOST])
+  expect(shapes).toEqual(['square', 'circle'])
+  await expect(page.locator('#legendPanel')).toContainText('Node Shape')
+})

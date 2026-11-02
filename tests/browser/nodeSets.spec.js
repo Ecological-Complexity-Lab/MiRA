@@ -390,3 +390,35 @@ test('session round-trip restores manual shapes', async ({ page }, testInfo) => 
   expect(await page.inputValue('#nodeShapeSelectSetA')).toBe('square')
   expect(await page.inputValue('#nodeShapeSelectSetB')).toBe('square')
 })
+
+// ── Shapes in the meta-network (follow network mode) ─────────────────────────
+
+/** Shape of each meta-network node by node type, and the legend titles. */
+const metaShapes = (page) => page.evaluate(() => {
+  const meta = window._metaNetwork
+  const types = new Map(window._renderer.model.nodes.map(n => [n.node_name, n.node_type]))
+  const byType = {}
+  for (const node of meta._mnNodes) {
+    const shape = meta.nodeShapeFn ? meta.nodeShapeFn(null, node.name) : 'circle'
+    ;(byType[types.get(node.name)] ??= new Set()).add(shape)
+  }
+  return Object.fromEntries(Object.entries(byType).map(([t, s]) => [t, [...s]]))
+})
+
+test('meta-network nodes take the shapes set in network mode, with a shape legend', async ({ page }) => {
+  await loadDemoDataset(page, 'pilosof2017')
+  await clickToggle(page, 'nodeShapeSplitToggle')
+  await selectNodeOption(page, 'nodeShapeSelectSetA', 'square') // parasite is Set A
+  await selectNodeOption(page, 'nodeShapeSelectSetB', 'circle')
+  await page.click('#metaNetworkBtn')
+  expect(await metaShapes(page)).toEqual({ parasite: ['square'], host: ['circle'] })
+  await expect(page.locator('#legendPanel')).toContainText('Node Shape')
+
+  // Back in network mode, one shape for all; the meta-network follows, no shape legend
+  await page.click('#metaNetworkBtn')
+  await clickToggle(page, 'nodeShapeSplitToggle')
+  await selectNodeOption(page, 'nodeShapeSelect', 'square')
+  await page.click('#metaNetworkBtn')
+  expect(await metaShapes(page)).toEqual({ parasite: ['square'], host: ['square'] })
+  await expect(page.locator('#legendPanel')).not.toContainText('Node Shape')
+})

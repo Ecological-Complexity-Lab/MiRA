@@ -10,6 +10,7 @@
 
 import { BIPARTITE_SET_A_COLOR, BIPARTITE_SET_B_COLOR } from './colorMapper.js';
 import { aggregateMetaNetwork } from './calc/metaAggregation.js';
+import { traceNodeShape, SHAPE_CIRCLE } from './nodeShapes.js';
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -73,6 +74,7 @@ export class MetaNetwork {
         this._nodeMap     = new Map(); // nodeName → node object
         this._maxWeight   = 1;
         this._focusSet    = null;      // Set<nodeName> | null — ego network of selected node
+        this.nodeShapeFn  = null;      // (layerName, nodeName) => shape, network mode's (app.js); null = circles
 
         this.viewScale   = 1;
         this.viewOffsetX = 0;
@@ -424,19 +426,19 @@ export class MetaNetwork {
             const selEdge = this.state.selectedEdge;
             const isRinged = node.name === this.state.selectedNode
                 || (selEdge && (node.name === selEdge.source || node.name === selEdge.target));
+            // No layer here: the shape follows the node's set, from its type
+            const shape = this.nodeShapeFn ? this.nodeShapeFn(null, node.name) : SHAPE_CIRCLE;
             if (isRinged) {
                 ctx.strokeStyle = '#1d4ed8';
                 ctx.lineWidth   = 2.5;
-                ctx.beginPath();
-                ctx.arc(node.x, node.y, node.r + 3, 0, Math.PI * 2);
+                traceNodeShape(ctx, node.x, node.y, node.r + 3, shape);
                 ctx.stroke();
             }
 
             ctx.fillStyle   = node.color;
             ctx.strokeStyle = 'rgba(0,0,0,0.12)';
             ctx.lineWidth   = 0.8;
-            ctx.beginPath();
-            ctx.arc(node.x, node.y, node.r, 0, Math.PI * 2);
+            traceNodeShape(ctx, node.x, node.y, node.r, shape);
             ctx.fill();
             ctx.stroke();
             ctx.restore();
