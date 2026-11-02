@@ -77,7 +77,7 @@ const VIEWS = {
 };
 const GRID_FIELDS = ['columns'];
 const META_FIELDS = ['aggregation', 'layout', 'color_by', 'size_by', 'size', 'min_weight', 'nested',
-    'labels', 'label_size', 'color'];
+    'labels', 'label_size', 'color', 'layers'];
 const GRID_COLUMNS_MIN = 1; // grid columns slider (index.html)
 const GRID_COLUMNS_MAX = 8;
 const META_AGGREGATIONS = { occurrence: 'sumOccurrence', weights: 'sumWeights', union: 'union' };
@@ -778,7 +778,8 @@ function matchDataValue(key, values) {
  * The view MiRA opens in (state.appMode; restoreSessionState enters it, except
  * Data mode, which rBridge enters). Grid takes `columns`; the meta-network
  * starts from the settings MiRA uses when its button is clicked, then takes
- * the spec's fields. Returns { view: appMode } for the caller, or null.
+ * the spec's fields. Returns { view: appMode } for the caller, with `layers`
+ * (meta-network layers to select in its layer panel) when given, or null.
  */
 function applyMode(state, section, ctx, warn) {
     if (!Object.hasOwn(VIEWS, section.view)) {
@@ -792,8 +793,31 @@ function applyMode(state, section, ctx, warn) {
     }
     state.appMode = VIEWS[view];
     if (view === 'grid') applyGridMode(state, section, warn);
-    if (view === 'meta') applyMetaMode(state, section, ctx, warn);
-    return { view: VIEWS[view] };
+    const result = { view: VIEWS[view] };
+    if (view === 'meta') {
+        applyMetaMode(state, section, ctx, warn);
+        // The meta-network's "Filter Layers" panel is not a session field:
+        // rBridge selects these layers after the view opens
+        if ('layers' in section) {
+            const layers = checkMetaLayers(section.layers, ctx, warn);
+            if (layers) result.layers = layers;
+        }
+    }
+    return result;
+}
+
+/** mode.layers: layer names (unknown names warned and dropped), without repeats; or null. */
+function checkMetaLayers(value, ctx, warn) {
+    if (!Array.isArray(value)) {
+        warn('mode.layers', 'must be a list of layer names; ignored');
+        return null;
+    }
+    const layers = [];
+    value.forEach((name, i) => {
+        const layer = checkLayerName(name, ctx, `mode.layers[${i}]`, warn);
+        if (layer !== undefined && !layers.includes(layer)) layers.push(layer);
+    });
+    return layers;
 }
 
 function applyGridMode(state, section, warn) {

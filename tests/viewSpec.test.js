@@ -753,4 +753,18 @@ describe('Group 15 — Mode', () => {
       'mode.size: 9 must be a number between 0.2 and 3',
     ])
   })
+
+  it('15.7 meta-network layers: returned for the layer panel; unknown names and repeats dropped', () => {
+    expect(apply({ mode: { view: 'meta', layers: ['L3', 'L1'] } }).mode).toEqual({ view: 'metanetwork', layers: ['L3', 'L1'] })
+    expect(apply({ mode: { view: 'meta', layers: [] } }).mode).toEqual({ view: 'metanetwork', layers: [] })
+    let r = apply({ mode: { view: 'meta', layers: ['L1', 'L9', 'L1'] } })
+    expect(r.mode.layers).toEqual(['L1'])
+    expect(r.warnings).toEqual(['mode.layers[1]: "L9" is not a layer name'])
+    r = apply({ mode: { view: 'meta', layers: 'L1' } })
+    expect(r.mode).toEqual({ view: 'metanetwork' })
+    expect(r.warnings).toEqual(['mode.layers: must be a list of layer names; ignored'])
+    r = apply({ mode: { view: 'grid', layers: ['L1'] } })
+    expect(r.mode).toEqual({ view: 'grid' })
+    expect(r.warnings).toEqual(['mode.layers: only for view "meta"; ignored'])
+  })
 })

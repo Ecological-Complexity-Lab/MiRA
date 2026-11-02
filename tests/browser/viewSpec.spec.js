@@ -388,6 +388,15 @@ test('the data filter applies in grid mode, with the banner', async ({ page }) =
   expect((await gridNodes()).length).toBeGreaterThan(2)
 })
 
+test('meta-network layers from R are selected in its Filter Layers panel', async ({ page }) => {
+  await openFromR(page, view({ mode: { view: 'meta', layers: ['1982', '1984', 'not_a_layer'] } }))
+  expect(await activeView(page)).toBe('meta')
+  expect(await noticeMessages(page)).toEqual(['mode.layers[2]: "not_a_layer" is not a layer name'])
+  const selected = await page.evaluate(() =>
+    [...document.querySelectorAll('#mnLayerList li.active')].map(li => li.dataset.layerName))
+  expect(selected).toEqual(['1982', '1984'])
+})
+
 test('stage 4: the meta-network from R looks as when its button is clicked', async ({ page }) => {
   await openFromR(page, NOT_SERVED)
   await page.click('#metaNetworkBtn')

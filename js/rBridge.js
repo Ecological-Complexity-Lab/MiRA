@@ -38,6 +38,8 @@ const LEGEND_TOGGLE_ID = 'toggleLegendBtn';
 // Views (app.js appMode values) that need the bridge after restore
 const DATA_VIEW = 'data';
 const MAP_VIEW = 'map';
+const META_VIEW = 'metanetwork';
+const META_LAYER_LIST_ID = 'mnLayerList'; // the meta-network's "Filter Layers" panel
 const DATA_MODE_BUTTON_ID = 'dataModeBtn';
 // Legend panel corners (index.html: bottom 50px, right 20px by default)
 const LEGEND_CORNERS = {
@@ -119,6 +121,7 @@ function applySpec(spec, deps) {
     if (interArrowSlider) interArrowSlider.value = rv.arrowheadSize;
     deps.renderer.render();
     if (result.mode) enterView(result.mode.view, deps, result.warnings);
+    if (result.mode?.layers && deps.getAppMode?.() === META_VIEW) selectMetaLayers(result.mode.layers);
 
     if (result.warnings.length) console.warn('[MiRA] View spec warnings:\n' + result.warnings.join('\n'));
     return result.warnings;
@@ -134,6 +137,16 @@ function enterView(view, deps, warnings) {
     const current = deps.getAppMode?.();
     if (current !== undefined && current !== view) {
         warnings.push(`mode.view: MiRA could not open this view${view === MAP_VIEW ? ' (the map needs latitude and longitude for the layers)' : ''}; showing ${current} mode`);
+    }
+}
+
+/**
+ * Select layers in the meta-network's "Filter Layers" panel, with its own
+ * items (the other layers are dimmed). The panel starts with none selected.
+ */
+function selectMetaLayers(layers) {
+    for (const item of document.querySelectorAll(`#${META_LAYER_LIST_ID} li`)) {
+        if (layers.includes(item.dataset.layerName) && !item.classList.contains('active')) item.click();
     }
 }
 
