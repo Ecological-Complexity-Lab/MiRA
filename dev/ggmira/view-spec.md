@@ -125,6 +125,12 @@ All top-level sections and all fields are optional. Missing = MiRA default.
 | `scales[".set"].values` | object | Node set label → `#rrggbb`: the colors of the two node sets (with `node.color_by: ".set"`). Stored under MiRA's set-color key in the category overrides, where the legend edits them. No `type`. R: `mira_node(color_by = ".set", color_values = c(bird = "red"))`. |
 | `filter.nodes` | array or null | Node names: only these nodes are drawn (MiRA's Data mode filter, network and map modes; the "Data filter active" banner clears it). Matched to the data as stored (`"7"` matches `7`). Unknown names skipped with a warning; a list with no valid name is ignored; `[]` hides every node; `null` = no node filter. |
 | `filter.links` | array or null | Links as `[layer_from, node_from, layer_to, node_to]` (intra- or interlayer): only these are drawn. Same rules as `filter.nodes`. A link is drawn only if both its nodes pass `filter.nodes`. |
+| `node.highlight` | string | A node name → `state.selectedNode` (as Search Node: the node and its neighbors stand out, the rest dimmed; the "Selected node" banner clears it). Matched to the data as stored. |
+| `camera.rotate` / `camera.tilt` | number | Degrees → `renderer.skewX` / `renderer.skewY` (radians). Tilt within ±45 (mouse tilting stops at ±0.8 rad). |
+| `camera.zoom` | number | 0.2–5, relative to MiRA's fitted view. Not a session field: rBridge applies it after restore (fit, then zoom about the canvas center, as the zoom buttons). |
+| `camera.pan` | [x, y] | Fractions of the window, each −1 to 1 (positive y = up). Applied by rBridge after the zoom. |
+| `legend.show` | `"all"`, array, or `false` | Legends opened (`state.legend.expandedLegends`): names `node_color` (nodeColor, A, B), `node_size` (nodeSize, A, B), `node_shape`, `intralayer_color`, `interlayer_color`, `layer_color`. `false` hides the panel (rBridge clicks MiRA's legend toggle). Plots from R start with every legend minimized. |
+| `legend.position` | string | `bottom-right` (default), `top-right`, `bottom-left`: rBridge moves the legend panel after restore (it stays draggable). |
 
 ### Mappings (`color_by`, `size_by`)
 
@@ -205,6 +211,9 @@ These functions live in the separate R package **ggmira** (not emln).
 | `mira_interlayer(show, color_by, color, min_weight, curvature, pairs, color_values, color_scale)` | `interlayer` (+ `scales`) |
 | `mira_layer(color_by, color, color_values, color_scale, labels, label_size, set_labels, stack, spacing)` | `layer` (+ `scales`, or `layer.colors`) |
 | `mira_filter(nodes, links)` | `filter` (conditions evaluated in R, sent as names / links) |
+| `mira_camera(rotate, tilt, zoom, pan)` | `camera` |
+| `mira_legends(show = "all", position)` | `legend` |
+| `mira_node(highlight)` | `node.highlight` |
 
 **Color scales in R.** `color_values` (colors named by value) and
 `color_scale` (`"categorical"` / `"continuous"`) sit in the piece whose

@@ -176,7 +176,7 @@ fields; screenshots). Tests: MiRA 334 unit + 31 browser; ggmira 222.
 |---|---|---|
 | 14 | Show only some nodes or links (Data mode filter; restorable in MiRA) | `mira_filter(nodes = type == "bird", links = weight > 0.05)` |
 
-**Stage 3 — network-mode view (S)**
+**Stage 3 — network-mode view (S) — done 2026-11-02** (ggmira `feat/view`, MiRA `feat/ggmira` 14f1f99): `mira_camera(rotate, tilt, zoom, pan)`, `mira_legends(show = "all", position)` (legends start minimized; Shai prefers that to auto-opening), `mira_node(highlight)` (banner Clear only; search box and info panel not filled).
 
 | # | Feature | R sketch |
 |---|---|---|
