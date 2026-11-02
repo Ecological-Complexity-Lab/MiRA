@@ -261,7 +261,7 @@ the arguments go.**
 | 24 | ~~Meta-network: aggregation, layout, color/size, min weight, nested sort, labels~~ | Done: `mira_mode_meta(...)` |
 | 25 | ~~Open in Dashboard or Data mode~~ | Done: `mira_mode_dashboard()`, `mira_mode_data()` (settings not saved in sessions) |
 | 39 | Data mode: which table opens (nodes, state nodes, links, layers) | `mira_mode_data(table = "links")`; check MiRA can open a tab other than Nodes. Arguments go on `?mira_mode_data`. |
-| 38 | Node shapes in the meta-network follow network mode (circle / square per node set) | Asked 2026-11-02; R inherits it. MiRA: `metaNetwork.js` draws with `traceNodeShape` from a shape function app.js sets from `renderer.nodeShapeFn` on entering the meta-network and when shapes change. |
+| 38 | ~~Node shapes in the meta-network follow network mode (circle / square per node set)~~ | **Done 2026-11-02** (MiRA 345792d, ggmira 9f53b69 + d8da2c1): shapes from `renderer.nodeShapeFn`, set on entering the meta-network; a "Node Shape" legend when the sets differ, as in network mode; also in the two-row layout (consistent with network mode). Asked 2026-11-02; R inherits it. MiRA: `metaNetwork.js` draws with `traceNodeShape` from a shape function app.js sets from `renderer.nodeShapeFn` on entering the meta-network and when shapes change. |
 
 **Stage 5 — R only**
 
@@ -354,8 +354,13 @@ the arguments go.**
   single-threaded test server under load, not a regression.
 - Pre-existing roxygen warning: `R/mira_filter.R:78`, `[layer_from, ...]`
   read as a link in an internal doc; escape the brackets.
-- Next: item 38 (design first), then items 23 and 22 (map and layer view
-  settings).
+- Item 38 done the same evening (see the table). Also: `mira()`,
+  `plot_mira()` and `plot_multilayer()` warn in R about links with weight 0,
+  which MiRA does not draw (ggmira f41caac; emln 7: 152 of 247).
+- Next: merge ggmira `feat/modes` to main (Shai decided: after item 38).
+  MiRA `feat/ggmira` to main (live site) only after a website-path check:
+  demo datasets without R, grid filter, map, layer view, Reset,
+  meta-network. Then items 23 and 22 (map and layer view settings).
 
 ## Handoff: resume after `feat/node-set-channels` is merged (2026-11-01)
 
