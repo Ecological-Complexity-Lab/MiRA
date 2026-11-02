@@ -101,6 +101,30 @@ existing files get only small additive changes (listed in view-spec.md §1).
   shows 0.4984 for 0.5 (slider step; the threshold is 0.5); `c("TRUE" =
   ...)` does not match a logical column (JSON `true`); prototype-named JSON
   keys throw in viewSpec (R never sends them).
+- **QA 2026-11-02 (stages 2 and 3, both sides):** fixed in ggmira —
+  numeric node names are written out (`100000`, not `"1e+05"`) in
+  `mira_filter()` and `highlight`, names may be given as numbers when
+  `node_name` is numeric, NA is rejected as a name; a highlighted node
+  hidden by `mira_filter(nodes)` warns (MiRA dims everything and highlights
+  nothing); a later `mira_legends()` sends only the arguments it gives
+  (`position` alone no longer resets `show`); `show = TRUE` = `"all"`;
+  `tilt` reports its limits in degrees; one unknown-name message for
+  `nodes` and `highlight`; long conditions print on one line; docs
+  (conditions through a `...` wrapper, README highlight example, `?ggmira`
+  section "Networks"). Fixed in MiRA — the copied `tilt` is clamped to 45
+  (the mouse goes to 45.8, which `mira_camera()` rejects); the copied call
+  is recomputed every tick (it was stale when the rounded line on screen
+  had not changed); no "-0.00" on screen. **Dropped, by decision:**
+  clearing a filter or a highlight programmatically (`x <- NULL;
+  mira_filter(nodes = x)`, `highlight = NULL`): no use case; only a literal
+  `NULL`/`NA` clears a filter. **Backlogged:** link filter direction on
+  undirected networks (item 37). **Known, not fixed:** both banners (filter
+  and highlight) plus the Feedback button overlap at 1400 px (item 33); a
+  standalone `mira_filter()` component holds the caller's environment
+  until added to a plot; per-layer drags shift the readout's zoom/pan
+  (documented); a node name containing `::` is ambiguous in MiRA's link
+  keys (pre-existing); the readout's `setInterval` is never cleared (one
+  per page).
 - **A later `color_values` replaces the earlier vector (2026-11-02),** it
   does not merge by value: `p + mira_node(color_values = c(genus = "green"))`
   sends only genus (species goes back to the palette). Same "later
@@ -208,7 +232,7 @@ its own camera settings. Syntax to be discussed before any code.
 
 | # | Feature | R sketch / notes |
 |---|---|---|
-| 33 | Bugs: `renderer.layoutType` not restored; double "Data warnings" alert; at 1280 px the top bar's Feedback button covers the Data filter banner's Clear button | Small fixes, PR to main (live site) |
+| 33 | Bugs: `renderer.layoutType` not restored; double "Data warnings" alert; at 1280 px the top bar's Feedback button covers the Data filter banner's Clear button; at 1400 px with both the filter and the "Selected node" banners, the second runs under the Feedback button (banners need their own row, or the Feedback button moves) | Small fixes, PR to main (live site) |
 | 10 | ~~Interlayer arrowhead size~~ | Done in stage 1: MiRA has one arrowhead size (`renderer.arrowheadSize`, saved); `mira_intralayer(arrow_size)` sets it |
 | 17 | Named palettes (categorical and continuous), gradient limits, palettes on computed attributes | `mira_node(color_by = "body_mass", color_palette = "magma", color_limits = c(0, 100))` |
 | 18 | Node size range | `mira_scale_size(range = c(1, 6))` |
@@ -220,6 +244,7 @@ its own camera settings. Syntax to be discussed before any code.
 | 35 | Filter layers, closing the gap in the stack | MiRA's layer filter keeps each layer's slot (renderer positions layers by index among all layers), so a hidden layer leaves a gap. Needs renderer code to stack only the visible layers; then `mira_filter(layers = )`. |
 | 36 | Filter nodes per layer (state-node columns, e.g. `abundance > 10`) | MiRA's node filter is by node name across all layers (renderer.js); a per-(node, layer) condition has no faithful mapping. Needs a per-layer node filter in MiRA. |
 | 34 | Color scales per element (node / intralayer / interlayer / layer), not per attribute name. Decided 2026-11-02 to keep MiRA's rule for now: one `value -> color` map per attribute name (`categoryColorOverrides`, app.js), shared by every element colored by that attribute. Two tables with the same column name and the same value (node `module` 1, link `module` 1) share a color, in the UI and from R (R warns which piece replaces which). | Key the overrides by `element:attr`; touches the three color functions, the legend editor and session save/restore (fallback for old keys); then `scales` in the view spec and `.combine_scales` in R. |
+| 37 | Link filter on undirected networks whose link table lists both directions (A→B and B→A). MiRA keeps the first row and drops the reverse as a duplicate (`dataParser.js`), but `filter.links` is checked against the raw table, so R accepts the reverse row, the banner counts it, and the drawn line (the first row) is not in the kept list: nothing is drawn, depending on row order. emln lists each link once, so networks from emln are not affected. | In `viewSpec.js` `applyFilterList`, accept a key or its reverse when the network is undirected and match against the drawn links (`model.intralayerLinks` / `interlayerLinks`), not `model.extended`. ~5 lines + a unit test. |
 
 ## Open decisions
 
