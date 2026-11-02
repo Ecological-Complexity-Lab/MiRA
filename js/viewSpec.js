@@ -17,6 +17,10 @@
  *   ctx.values        { [attrName]: Set<value> } — the distinct values of every
  *                     node, state-node, link and layer attribute (data and
  *                     computed), as stored in the model
+ *   ctx.nodeNames     Map<String(node_name), node_name> — every node, keyed by
+ *                     its name as JSON sends it
+ *   ctx.linkKeys      Set of "layer_from::node_from::layer_to::node_to" — every
+ *                     link (intra- and interlayer), as dataMode keys them
  *
  * Invalid fields are skipped with a warning; the setting keeps its default.
  * Contract: dev/ggmira/view-spec.md (development branch).
@@ -67,6 +71,7 @@ const SECTION_FIELDS = {
     interlayer: ['show', 'color_by', 'color', 'min_weight', 'curvature', 'pairs'],
     layer:      ['color_by', 'color', 'colors', 'labels', 'label_size', 'set_labels', 'stack', 'spacing'],
     scales:     null, // keyed by attribute name; each scale has SCALE_FIELDS
+    filter:     ['nodes', 'links'],
 };
 const SCALE_FIELDS = ['type', 'values'];
 
@@ -111,6 +116,7 @@ const SECTION_APPLIERS = {
     interlayer: applyInterlayer,
     layer: applyLayer,
     scales: applyScales,
+    filter: applyFilter,
 };
 
 function applySection(state, key, section, ctx, warn) {
@@ -496,6 +502,53 @@ function applyLayerDisplay(renderer, section, ctx, warn) {
         (v, path) => checkChoice(v, STACK_MODES, path, warn));
     setChecked(section, 'spacing', 'layer.spacing', renderer, 'layerSpacing',
         (v, path) => checkNumber(v, LAYER_SPACING_MIN, LAYER_SPACING_MAX, path, warn));
+}
+
+// ---- filter -------------------------------------------------------------------
+// The Data mode filter: only the listed nodes / links are drawn (network and
+// map modes), with the "Data filter active" banner to clear it. null = no
+// filter. An empty list is kept (it hides everything; R warns before sending
+// one); a list whose entries are all invalid is ignored rather than hiding
+// everything.
+
+const LINK_KEY_SEPARATOR = '::'; // dataMode.js linkKey
+
+function applyFilter(state, section, ctx, warn) {
+    if ('nodes' in section) {
+        applyFilterList(state, 'nodeNames', section.nodes, 'filter.nodes', warn, (name, path) => {
+            const node = typeof name === 'string' ? ctx.nodeNames.get(name) : undefined;
+            if (node === undefined) warn(path, `${show(name)} is not a node name`);
+            return node;
+        });
+    }
+    if ('links' in section) {
+        applyFilterList(state, 'linkKeys', section.links, 'filter.links', warn, (link, path) => {
+            const ok = Array.isArray(link) && link.length === 4 && link.every(v => typeof v === 'string');
+            const key = ok ? link.join(LINK_KEY_SEPARATOR) : undefined;
+            if (key !== undefined && ctx.linkKeys.has(key)) return key;
+            warn(path, ok ? `${show(link)} is not a link of this network`
+                : `${show(link)} must be [layer_from, node_from, layer_to, node_to]`);
+            return undefined;
+        });
+    }
+    return null;
+}
+
+function applyFilterList(state, key, value, path, warn, resolve) {
+    if (value === null) {
+        state.filter[key] = null;
+        return;
+    }
+    if (!Array.isArray(value)) {
+        warn(path, 'must be a list or null; ignored');
+        return;
+    }
+    const kept = value.map((item, i) => resolve(item, `${path}[${i}]`)).filter(v => v !== undefined);
+    if (value.length > 0 && kept.length === 0) {
+        warn(path, 'no valid entries; ignored');
+        return;
+    }
+    state.filter[key] = [...new Set(kept)];
 }
 
 // ---- scales -------------------------------------------------------------------

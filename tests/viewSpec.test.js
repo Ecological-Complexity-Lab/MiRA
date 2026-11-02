@@ -70,7 +70,7 @@ const defaultState = () => ({
     categoryColorOverrides: [],
     layerColors: [['L1', '#8b5cf6'], ['L2', '#8b5cf6']],
   },
-  filter: { interPairFilter: [] },
+  filter: { nodeNames: null, layerNames: null, linkKeys: null, interPairFilter: [] },
 })
 
 const nodeOptions = ['', 'node:module', 'node:abundance', 'state:intra_degree', 'state:module']
@@ -89,6 +89,8 @@ const ctxWithSets = () => ({
   sets: { hasSets: true, labelA: 'pollinator', labelB: 'plant' },
   hasBipartite: true,
   layerNames: ['L1', 'L2', 'L3'],
+  nodeNames: new Map([['bee', 'bee'], ['fly', 'fly'], ['rose', 'rose'], ['7', 7]]),
+  linkKeys: new Set(['L1::bee::L1::rose', 'L1::fly::L1::rose', 'L1::bee::L2::bee']),
   values: {
     module: new Set([1, 2, 3]),
     abundance: new Set([0.5, 2]),
@@ -584,6 +586,46 @@ describe('Group 10 — Scales', () => {
     expect(r.state.ui.categoryColorOverrides).toEqual([
       ['habitat', [['forest', '#00aa00']]],
       ['module', [[2, '#ff0000']]],
+    ])
+  })
+})
+
+describe('Group 11 — Filter', () => {
+  it('11.1 nodes and links become the Data mode filter', () => {
+    const r = apply({ filter: { nodes: ['bee', 'rose'], links: [['L1', 'bee', 'L1', 'rose'], ['L1', 'bee', 'L2', 'bee']] } })
+    expect(r.state.filter.nodeNames).toEqual(['bee', 'rose'])
+    expect(r.state.filter.linkKeys).toEqual(['L1::bee::L1::rose', 'L1::bee::L2::bee'])
+    expect(r.state.filter.layerNames).toBeNull()
+    expect(r.warnings).toEqual([])
+  })
+
+  it('11.2 node names are matched to the data as stored ("7" -> 7); duplicates kept once', () => {
+    const r = apply({ filter: { nodes: ['7', 'bee', 'bee'] } })
+    expect(r.state.filter.nodeNames).toEqual([7, 'bee'])
+  })
+
+  it('11.3 unknown entries are skipped; a list with no valid entry is ignored', () => {
+    const r = apply({ filter: { nodes: ['bee', 'wasp'], links: [['L1', 'wasp', 'L1', 'rose'], 'L1::bee::L1::rose'] } })
+    expect(r.state.filter.nodeNames).toEqual(['bee'])
+    expect(r.state.filter.linkKeys).toBeNull()
+    expect(r.warnings).toEqual([
+      'filter.nodes[1]: "wasp" is not a node name',
+      'filter.links[0]: ["L1","wasp","L1","rose"] is not a link of this network',
+      'filter.links[1]: "L1::bee::L1::rose" must be [layer_from, node_from, layer_to, node_to]',
+      'filter.links: no valid entries; ignored',
+    ])
+  })
+
+  it('11.4 an empty list hides everything; null clears; other values are ignored', () => {
+    expect(apply({ filter: { nodes: [] } }).state.filter.nodeNames).toEqual([])
+    const state = defaultState()
+    state.filter.nodeNames = ['bee']
+    expect(applyViewSpec(state, { version: 1, filter: { nodes: null } }, ctxWithSets()).state.filter.nodeNames).toBeNull()
+    const r = apply({ filter: { nodes: 'bee', layers: ['L1'] } })
+    expect(r.state.filter.nodeNames).toBeNull()
+    expect(r.warnings).toEqual([
+      'filter.layers: not a known field; ignored',
+      'filter.nodes: must be a list or null; ignored',
     ])
   })
 })

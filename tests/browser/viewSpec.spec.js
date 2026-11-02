@@ -241,3 +241,23 @@ test('stage 1: labels, layer display, layer colors, pairs and scales are applied
   })
   expect(s.scale).not.toBe(defaultScale) // recentered for the new stacking and spacing
 })
+
+test('stage 2: the filter keeps only the listed nodes and links, with the banner', async ({ page }) => {
+  // At 1280 px the Feedback button covers the banner's Clear button (a MiRA
+  // layout bug, backlog item 33), so use a wider window
+  await page.setViewportSize({ width: 1400, height: 900 })
+  await openFromR(page, view({
+    filter: {
+      nodes: [PARASITE, HOST, 'Not_a_node'],
+      links: [['1982', HOST, '1982', PARASITE]],
+    },
+  }))
+  expect(await noticeMessages(page)).toEqual(['filter.nodes[2]: "Not_a_node" is not a node name'])
+  const banner = page.locator('#dataFilterBanner')
+  await expect(banner).toBeVisible()
+  await expect(page.locator('#dataFilterText')).toContainText('2 nodes, 1 links visible')
+
+  // Clearing from the banner restores the full network
+  await page.locator('#dataFilterClear').click()
+  await expect(banner).toBeHidden()
+})

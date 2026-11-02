@@ -110,6 +110,9 @@ function buildContext(model) {
         hasBipartite: [...model.bipartiteInfo.values()].some(info => info.isBipartite),
         layerNames: model.layers.map(layer => layer.layer_name),
         values: collectAttributeValues(model),
+        nodeNames: new Map(model.nodes.map(node => [String(node.node_name), node.node_name])),
+        linkKeys: new Set(model.extended.map(link =>
+            `${link.layer_from}::${link.node_from}::${link.layer_to}::${link.node_to}`)), // dataMode.js linkKey
     };
 }
 
