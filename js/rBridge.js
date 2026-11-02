@@ -98,6 +98,9 @@ function applySpecSafely(networkJson, spec, deps) {
 function applySpec(spec, deps) {
     const model = deps.renderer.model;
     const defaults = deps.getSessionState();
+    // Plots from R open the maps fitted to the layers, not where MiRA's maps were
+    defaults.map.mapZoom = null;
+    defaults.map.lvMapZoom = null;
     // Plots from R start with every legend minimized; mira_legends() opens them
     defaults.legend.expandedLegends = [];
     const result = applyViewSpec(defaults, spec, buildContext(model));
