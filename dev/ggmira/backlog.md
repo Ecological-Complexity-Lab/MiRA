@@ -283,18 +283,19 @@ MiRA. While developing, the R branch may bundle the unmerged MiRA branch to
 test; the final sync goes to main only after the MiRA merge. Item 33 (bugs)
 can be its own small PR first.
 
-**Priorities (Shai, 2026-11-02): 32, 17, 20, 31**, in an order to be set.
-32 done 2026-11-02. Suggested next: 20, 17 (touches colorMapper and session
-fields), then 31 last so "Copy as R code" also covers the new arguments.
+**Priorities (Shai, 2026-11-02): 32, 17, 31** (20 dropped, see its row).
+32 done 2026-11-02. Next: 33 as a small PR, then 17 (touches colorMapper
+and session fields), then 31 last so "Copy as R code" also covers the new
+arguments.
 
 | # | Feature | R sketch / notes |
 |---|---|---|
-| 33 | Bugs: `renderer.layoutType` not restored; double "Data warnings" alert; at 1280 px the top bar's Feedback button covers the Data filter banner's Clear button; at 1400 px with both the filter and the "Selected node" banners, the second runs under the Feedback button (banners need their own row, or the Feedback button moves); ~~the layer view of a network with coordinates (emln 17) opens off-center, part of it outside the window~~ (fixed 2026-11-02, 9c560db) | Small fixes, PR to main (live site) |
+| 33 | Bugs: interlayer link width is `min(weight × 2, 8)` px on the raw weight (renderer.js ~692; weights ≥ 4 all 8 px, < 0.5 under 1 px; emln 23 and 63): normalize as intralayer links do; `renderer.layoutType` not restored; double "Data warnings" alert; at 1280 px the top bar's Feedback button covers the Data filter banner's Clear button; at 1400 px with both the filter and the "Selected node" banners, the second runs under the Feedback button (banners need their own row, or the Feedback button moves); ~~the layer view of a network with coordinates (emln 17) opens off-center, part of it outside the window~~ (fixed 2026-11-02, 9c560db) | Small fixes, PR to main (live site) |
 | 10 | ~~Interlayer arrowhead size~~ | Done in stage 1: MiRA has one arrowhead size (`renderer.arrowheadSize`, saved); `mira_intralayer(arrow_size)` sets it |
 | 17 | Named palettes (categorical and continuous), gradient limits, palettes on computed attributes | `mira_node(color_by = "body_mass", color_palette = "magma", color_limits = c(0, 100))` |
 | 18 | Node size range | `mira_scale_size(range = c(1, 6))` |
 | 19 | Legend titles | `mira_labs(node_color = "Module")` |
-| 20 | Link color by `weight`; link width scaling | `mira_intralayer(color_by = "weight", width = "scaled")` |
+| 20 | ~~Link color by `weight`; link width scaling~~ | Dropped 2026-11-02. Intralayer widths already scale with weight (normalized to 0.8–5 px, renderer.js); color by weight would show weight twice (in Later). The real problem, interlayer widths from raw weight, moved to 33. |
 | 26 | `mira_save()`: image file from R | Headless browser; MiRA signals "rendered" |
 | 31 | "Copy as R code" button in MiRA | Camera part done (stage 3 readout, *Copy for R*). |
 | 32 | ~~More node shapes (triangle, diamond)~~ | **Done 2026-11-02**: MiRA #95 (1af87ef), ggmira #3 (6eab3b3). Equal area to the circle; legend glyphs drawn with `traceNodeShape`. First feature on the per-feature branch workflow. |
@@ -518,8 +519,9 @@ Each needs MiRA work first; the R side is cheap once MiRA supports it.
   argument in `colorMapper.js` and a new session field.
 - **Size range** (`range = c(1, 6)`). MiRA uses a fixed 0.3–2.0× of base size.
 - **Legend titles / `labs()`.** MiRA titles are fixed ("Node Color: module").
-- **Link color by `weight`.** MiRA's link color dropdown excludes `weight`
-  (dataParser `linkAttributeNames`). Needs a MiRA change.
+- **Link color by `weight`** (was part of item 20), only if someone asks:
+  width already shows weight. MiRA's link color dropdown excludes `weight`
+  (dataParser `linkAttributeNames`).
 - **`aes()` as an alternative mapping syntax.** Its real gain is derived
   variables (`aes(size = log(abundance))`). Could be added later without
   breaking the string API.
@@ -537,9 +539,9 @@ Each needs MiRA work first; the R side is cheap once MiRA supports it.
   Kamada-Kawai and load it: positions are Kamada-Kawai but the renderer still
   draws bipartite details (set names, diagonal placement). One-line fix in
   restore step 6. The R path already works around it in `rBridge`.
-- **Link width with large weights:** links look width-scaled by raw
-  weight, so weights like 80 (emln 23, prevalence in %) draw very thick
-  bars. Check how MiRA maps weight to width; maybe normalize to the max.
+- **Link width with large weights:** checked 2026-11-02: intralayer
+  widths are normalized; interlayer widths use the raw weight. Fix is in
+  item 33.
 - **Weight slider snapping:** a `min_weight` from R that is not on the
   slider's step (max weight / 100) shows a snapped knob (0.5 → 0.4984);
   the filter itself uses the exact value. Cosmetic; same for sessions.
