@@ -554,6 +554,27 @@ describe('Group 10 — Scales', () => {
     ])
   })
 
+  it('10.7 a continuous scale on non-numeric data is skipped', () => {
+    const r = apply({ scales: { guild: { type: 'continuous' }, intra_degree: { type: 'continuous' } } })
+    expect(r.state.ui.colorScaleOverrides).toEqual([['intra_degree', 'continuous']])
+    expect(r.warnings).toEqual([
+      'scales.guild.type: "continuous" needs numeric data, and "guild" is not numeric; ignored',
+    ])
+  })
+
+  it('10.8 ".set" colors the two node sets', () => {
+    const r = apply({ scales: { '.set': { values: { pollinator: '#ff0000', bee: '#0000ff' }, type: 'categorical' } } })
+    expect(r.state.ui.categoryColorOverrides).toEqual([['__mira_set__', [['pollinator', '#ff0000']]]])
+    expect(r.state.ui.colorScaleOverrides).toEqual([])
+    expect(r.warnings).toEqual([
+      'scales..set.type: not a known field; ignored',
+      'scales..set.values.bee: not a value of ".set"',
+    ])
+    const noSets = applyViewSpec(defaultState(), { version: 1, scales: { '.set': { values: { pollinator: '#ff0000' } } } }, ctxWithoutSets())
+    expect(noSets.state.ui.categoryColorOverrides).toEqual([])
+    expect(noSets.warnings).toEqual(['scales..set: ".set" colors need two node sets; ignored'])
+  })
+
   it('10.6 existing overrides for other attributes are kept', () => {
     const state = defaultState()
     state.ui.colorScaleOverrides = [['habitat', 'categorical']]

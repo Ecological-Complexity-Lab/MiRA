@@ -51,6 +51,7 @@ const PAIR_SEPARATOR = '::'; // layer pair key in the interlayer pair filter
 // Spec keywords → dropdown option values
 const SET_COLOR_KEYWORD = '.set';
 const SET_COLOR_VALUE = 'set:membership';
+const SET_COLOR_ATTR = '__mira_set__'; // app.js: the set colors' key in the category overrides
 const INDIVIDUAL_KEYWORD = '.individual';
 const INDIVIDUAL_VALUE = '__individual__';
 const DEFAULT_OPTION = '';
@@ -508,30 +509,68 @@ function applyScales(state, section, ctx, warn) {
             warn(path, 'must be an object; ignored');
             continue;
         }
+        if (attr === SET_COLOR_KEYWORD) {
+            applySetColors(state.ui, scale, ctx, path, warn);
+            continue;
+        }
         if (!ctx.values[attr]) {
             warn(path, `${show(attr)} is not an attribute of this network; ignored`);
             continue;
         }
         warnUnknownFields(path, scale, SCALE_FIELDS, warn);
-        if ('type' in scale) applyScaleType(state.ui, attr, scale.type, path, warn);
-        if ('values' in scale) applyScaleValues(state.ui, attr, scale.values, ctx, path, warn);
+        if ('type' in scale) applyScaleType(state.ui, attr, scale.type, ctx.values[attr], path, warn);
+        if ('values' in scale) applyScaleValues(state.ui, attr, scale.values, ctx.values[attr], attr, path, warn);
     }
     return null;
 }
 
-function applyScaleType(ui, attr, value, path, warn) {
+function applyScaleType(ui, attr, value, dataValues, path, warn) {
     const type = checkChoice(value, SCALE_TYPES, `${path}.type`, warn);
     if (type === undefined) return;
+    if (type === 'continuous' && !looksNumeric(dataValues)) {
+        warn(`${path}.type`, `"continuous" needs numeric data, and ${show(attr)} is not numeric; ignored`);
+        return;
+    }
     const overrides = new Map(ui.colorScaleOverrides);
     overrides.set(attr, type);
     ui.colorScaleOverrides = [...overrides];
 }
 
+// MiRA's rule (isNumericAttr in app.js): the first non-empty value is a
+// number or a numeric string
+function looksNumeric(dataValues) {
+    for (const v of dataValues) {
+        if (v === '') continue;
+        return typeof v === 'number' || (typeof v === 'string' && !isNaN(Number(v)));
+    }
+    return false;
+}
+
+/**
+ * scales[".set"]: { values: { <set label>: "#rrggbb" } } — the colors of
+ * the two node sets (node color by set membership). MiRA keeps them in the
+ * category overrides under SET_COLOR_ATTR, where the legend edits them.
+ */
+function applySetColors(ui, scale, ctx, path, warn) {
+    const { hasSets, labelA, labelB } = ctx.sets;
+    if (!hasSets) {
+        warn(path, `${show(SET_COLOR_KEYWORD)} colors need two node sets; ignored`);
+        return;
+    }
+    warnUnknownFields(path, scale, ['values'], warn);
+    if ('values' in scale) {
+        applyScaleValues(ui, SET_COLOR_ATTR, scale.values, new Set([labelA, labelB]), SET_COLOR_KEYWORD, path, warn);
+    }
+}
+
 /**
  * values: { <value>: "#rrggbb" }. JSON keys are strings; MiRA matches the
  * value as stored in the data, so "6" is matched to the number 6.
+ * @param {string} attr   Key in the category overrides
+ * @param {Set} dataValues  Values of the attribute in the data
+ * @param {string} label  The attribute's name in messages
  */
-function applyScaleValues(ui, attr, values, ctx, path, warn) {
+function applyScaleValues(ui, attr, values, dataValues, label, path, warn) {
     if (!isPlainObject(values)) {
         warn(`${path}.values`, 'must be an object of value: color; ignored');
         return;
@@ -540,9 +579,9 @@ function applyScaleValues(ui, attr, values, ctx, path, warn) {
     const colors = overrides.get(attr) ?? new Map();
     for (const [key, value] of Object.entries(values)) {
         const valuePath = `${path}.values.${key}`;
-        const dataValue = matchDataValue(key, ctx.values[attr]);
+        const dataValue = matchDataValue(key, dataValues);
         if (dataValue === undefined) {
-            warn(valuePath, `not a value of ${show(attr)}`);
+            warn(valuePath, `not a value of ${show(label)}`);
             continue;
         }
         const color = checkColor(value, valuePath, warn);
