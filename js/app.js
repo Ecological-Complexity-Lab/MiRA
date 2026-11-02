@@ -19,7 +19,7 @@ import { initFeedback } from './feedback.js';
 import { initExportManager } from './exportManager.js';
 import { GridView } from './gridView.js';
 import { buildNodeSetResolver, collectSetItems, SET_A, SET_B } from './nodeSets.js';
-import { SHAPE_CIRCLE, SHAPE_SQUARE } from './nodeShapes.js';
+import { SHAPE_CIRCLE, SHAPE_SQUARE, SHAPE_TRIANGLE, traceNodeShape } from './nodeShapes.js';
 import { loadFromR } from './rBridge.js';
 import { fitMapToCoords } from './mapFit.js';
 
@@ -4451,6 +4451,23 @@ if (IS_EMLN) {
 
 }
 
+// A node shape for the legend, drawn with the same path as the nodes
+const SHAPE_GLYPH_PX = 12;
+function shapeGlyph(shape) {
+    const dpr = window.devicePixelRatio || 1;
+    const canvas = document.createElement('canvas');
+    canvas.width = canvas.height = SHAPE_GLYPH_PX * dpr;
+    canvas.style.cssText = `width: ${SHAPE_GLYPH_PX}px; height: ${SHAPE_GLYPH_PX}px; margin: 0 2px; flex: none;`;
+    canvas.dataset.shape = shape;
+    const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+    const y = SHAPE_GLYPH_PX / 2 + (shape === SHAPE_TRIANGLE ? 1.5 : 0); // center the triangle's box, not its centroid
+    traceNodeShape(ctx, SHAPE_GLYPH_PX / 2, y, 4, shape);
+    ctx.fillStyle = '#6b7280';
+    ctx.fill();
+    return canvas;
+}
+
 function renderScaleLegend(scale, id, titleText) {
     if (!scale) return;
     if (expandedLegends.has(id)) {
@@ -4598,9 +4615,7 @@ function createLegendDOM(titleText, scale, id) {
         for (const [val, shape] of scale.map.entries()) {
             const row = document.createElement('div');
             row.style.cssText = 'display: flex; align-items: center; gap: 6px; font-size: 12px; color: #4b5563;';
-            const glyph = document.createElement('span');
-            glyph.style.cssText = 'width: 10px; height: 10px; margin: 0 3px; background: #6b7280;' +
-                (shape === SHAPE_SQUARE ? '' : ' border-radius: 50%;');
+            const glyph = shapeGlyph(shape);
             const text = document.createElement('span');
             text.textContent = val;
             row.appendChild(glyph);

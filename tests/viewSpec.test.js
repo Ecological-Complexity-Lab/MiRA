@@ -344,9 +344,17 @@ describe('Group 5 — Node shape', () => {
   })
 
   it('5.5 an invalid shape is skipped and the automatic split still applies', () => {
-    const r = apply({ node: { color_by: { pollinator: 'module' }, shape: 'triangle' } })
-    expect(r.warnings[0]).toMatch(/"triangle" is not a shape/)
+    const r = apply({ node: { color_by: { pollinator: 'module' }, shape: 'hexagon' } })
+    expect(r.warnings[0]).toMatch(/"hexagon" is not a shape; expected one of circle, square, triangle, diamond/)
     expect(r.state.ui.nodeShapeAuto).toBe(true)
+  })
+
+  it('5.5b triangles and diamonds, shared or per set', () => {
+    expect(apply({ node: { shape: 'triangle' } }).state.ui.nodeShapeSelect).toBe('triangle')
+    const r = apply({ node: { shape: { pollinator: 'diamond', plant: 'triangle' } } })
+    expect(r.warnings).toEqual([])
+    expect(r.state.ui.nodeShapeSelectSetA).toBe('diamond')
+    expect(r.state.ui.nodeShapeSelectSetB).toBe('triangle')
   })
 
   it('5.6 shared color and size leave shapes alone', () => {
