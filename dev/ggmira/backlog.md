@@ -267,12 +267,16 @@ the arguments go.**
 
 | # | Feature | Notes |
 |---|---|---|
-| 27 | Save a MiRA session file from R, to open on the website | Check MiRA accepts a session without positions |
+| 27 | ~~Save a MiRA session file from R~~ | Moved to Later 2026-11-02: MiRA's own save-session button already writes the file (with the R settings and the layout); a file written from R would have no positions. Only gain is saving without a browser. |
 | 28 | Derived mappings, `color_by = ~log10(weight)` | R adds the column |
 | 29 | ~~Plain data frames as input~~ | Dropped 2026-11-02: emln exists because turning raw data into a multilayer object is an essential, validating step. ggmira takes only emln objects. |
 | 30 | Presets, e.g. `mira_theme_paper()` | Bundles of settings above |
 
 **Then M (needs MiRA code) — 33 first, order of the rest to discuss**
+
+**Priorities (Shai, 2026-11-02): 32, 17, 20, 31**, in an order to be set.
+Suggested: 32 (self-contained), 20, 17 (touches colorMapper and session
+fields), then 31 last so "Copy as R code" also covers the new arguments.
 
 | # | Feature | R sketch / notes |
 |---|---|---|
@@ -494,6 +498,9 @@ Start here. Read [view-spec.md](view-spec.md) §3, §6 and this file.
 ## Later (ideas, not v1)
 
 Each needs MiRA work first; the R side is cheap once MiRA supports it.
+
+- **Save a session file from R** (was item 27), only if someone needs to
+  save without a browser. Check MiRA accepts a session without positions.
 
 - **`mira_save()`** — next dev session (headless render to file; needs
   chromote or similar, and MiRA signaling "rendered" back to R).
