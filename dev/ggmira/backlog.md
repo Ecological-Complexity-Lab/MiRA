@@ -11,7 +11,7 @@ Phase 3 done: ggmira package at `~/GitHub/ecomplab/ggmira`
 3a (74a3938) converter, server, `plot_multilayer()`; 3b (63b6c2c) the
 `mira()` grammar. Phase 4 done (2026-11-01): end-to-end on emln 13, 14,
 17, 23, 63; manual paragraph in the ggmira README (5dc0894).
-**Milestone 1 is complete.** **Stage 1 of the development plan is done
+**QA of stage 1 done 2026-11-02** (see Decided: QA 2026-11-02). **Milestone 1 is complete.** **Stage 1 of the development plan is done
 (2026-11-01):** MiRA feat/ggmira ed29cbc, ggmira 21316e6 + bundled MiRA
 322b587. Next: stage 2 (`mira_filter`), design first.
 
@@ -72,6 +72,35 @@ existing files get only small additive changes (listed in view-spec.md §1).
   GitHub Pages for a private repo needs a paid plan). Full articles after
   stage 4 (views change the package's shape); site ready before students
   test. Shai tested stage 1 on 2026-11-01.
+- **Terminology (2026-11-02), ggplot2's:** what `+` adds is a *component*;
+  `mira_node()`, `mira_intralayer()`, `mira_interlayer()`, `mira_layer()` are
+  the *element* components (MiRA always draws nodes, links and layers; they
+  set the elements' aesthetics: `color_by`/`size_by` map, `color`/`size`/
+  `shape` set constants); `color_values`/`color_scale` are the *scale*
+  (`?mira_scales`, color and size); `mira_layout()` is the layout
+  (ggplot2's coordinate system); `mira_filter()` (stage 2) is data. "Layer"
+  is never used the ggplot2 way. Reference index groups (pkgdown, with an
+  icon per function like ggplot2): Plot basics; Elements: nodes, links,
+  layers; Scales; Layout; Opening a network with MiRA's defaults. Class
+  `mira_piece` stays internal.
+- **QA 2026-11-02 (stage 1, both sides):** fixed in ggmira — scale merging
+  (continuous + color_values across components is an error; per-set
+  conflicts warn; warnings run only for the settings a component gives and
+  the order is tracked per section/attribute/part so a later unrelated
+  component neither re-warns nor flips the winner; a repeated identical
+  `color_by` keeps `color_values`; `node_type` values checked under the
+  data's column name; `weight` link color sends no mapping or scale);
+  `size`, `label_size`, `spacing` whole numbers (sliders step by 1); same-
+  layer pairs are an error, duplicates deduped; clearer `color_values`
+  messages; `.individual` prints as `layer_name`; **print.mira_plot()
+  served the plot lazily** (a server started for `p` served whatever `p`
+  held when the browser asked) — forced. Fixed in MiRA — `continuous` on
+  non-numeric data warns and is ignored; `scales[".set"]` colors the node
+  sets. Example 2 was wrong for emln 17 (links run plant → bird, so plant
+  in-degree was all zero). Known, not fixed: the interlayer weight slider
+  shows 0.4984 for 0.5 (slider step; the threshold is 0.5); `c("TRUE" =
+  ...)` does not match a logical column (JSON `true`); prototype-named JSON
+  keys throw in viewSpec (R never sends them).
 - **Palettes wait for item 17 (2026-11-01),** so categorical and
   continuous palettes arrive together.
 - **Per set = vector named by `node_type`:**

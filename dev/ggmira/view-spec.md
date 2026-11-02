@@ -104,24 +104,25 @@ All top-level sections and all fields are optional. Missing = MiRA default.
 | `layout.nested` | boolean | Bipartite layout only (nested sorting by degree). |
 | `node.color_by`, `node.size_by` | string, null, or per-set object | See "Mappings" below. |
 | `node.color`, `*.color` | string | `#rrggbb` (R converts color names). Used when the matching `color_by` is Default. |
-| `node.size` | number | Base node radius, 3–25 (the size slider). |
+| `node.size` | number | Base node radius, 3–25 (the size slider; R sends whole numbers, the slider steps by 1). |
 | `node.shape` | string or per-set object | `circle`, `square`. |
 | `*.min_weight` | number | 0 or more, in the units of the data's `weight` (MiRA's sliders run to the largest weight; weights are often above 1). |
 | `interlayer.show` | boolean | |
 | `layer.color_by` | string or null | Layer attribute, or `.individual` for per-layer colors. |
 | `node.labels`, `layer.labels` | boolean | Node names / layer names. |
-| `node.label_size` | number | 8–24 (label size slider). |
-| `layer.label_size` | number | 8–32 (layer name size slider). |
+| `node.label_size` | number | 8–24 (label size slider; whole numbers from R). |
+| `layer.label_size` | number | 8–32 (layer name size slider; whole numbers from R). |
 | `node.perspective` | boolean | "Transform nodes": nodes follow the layers' 3D perspective (default true). |
 | `layer.set_labels` | boolean | Node set names; needs a bipartite layer (drawn in the bipartite layout only). |
 | `layer.stack` | string | `horizontal`, `vertical`. |
-| `layer.spacing` | number | 100–600 (layer spacing slider). |
+| `layer.spacing` | number | 100–600 (layer spacing slider; whole numbers from R). |
 | `layer.colors` | object | `layer_name` → `#rrggbb`. Used with `color_by: ".individual"`; layers not listed keep MiRA's per-layer palette. |
 | `intralayer.arrow_size` | number | 0–3. One size for intralayer and interlayer arrowheads (MiRA has one). |
 | `interlayer.curvature` | number | 0–1. |
 | `interlayer.pairs` | array | `[[layer_name, layer_name], ...]`; only interlayer links between these pairs are shown; order within a pair does not matter. |
-| `scales.<attr>.type` | string | `categorical` or `continuous` (continuous needs numeric data). |
+| `scales.<attr>.type` | string | `categorical` or `continuous` (continuous needs numeric data: MiRA warns and ignores it otherwise; R does not send it for a non-numeric column). |
 | `scales.<attr>.values` | object | Category value → `#rrggbb`. Keys are strings; MiRA matches them to the data values (`"1"` matches number `1`). An attribute is any node, state-node, link or layer attribute, data or computed. |
+| `scales[".set"].values` | object | Node set label → `#rrggbb`: the colors of the two node sets (with `node.color_by: ".set"`). Stored under MiRA's set-color key in the category overrides, where the legend edits them. No `type`. R: `mira_node(color_by = ".set", color_values = c(bird = "red"))`. |
 
 ### Mappings (`color_by`, `size_by`)
 
