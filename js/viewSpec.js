@@ -27,11 +27,12 @@
  */
 
 import { META_NETWORK_DEFAULTS } from './metaNetwork.js';
+import { NODE_SHAPES } from './nodeShapes.js';
 
 export const VIEW_SPEC_VERSION = 1;
 
 const LAYOUT_TYPES = new Set(['fruchterman', 'kamada_kawai', 'bipartite', 'circle', 'grid', 'random']);
-const SHAPES = new Set(['circle', 'square']);
+const SHAPES = new Set(NODE_SHAPES);
 const NODE_SIZE_MIN = 3;   // node size slider range
 const NODE_SIZE_MAX = 25;
 const WEIGHT_MIN = 0;      // link weight filter; no upper bound (the

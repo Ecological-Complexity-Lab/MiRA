@@ -422,3 +422,38 @@ test('meta-network nodes take the shapes set in network mode, with a shape legen
   expect(await metaShapes(page)).toEqual({ parasite: ['square'], host: ['square'] })
   await expect(page.locator('#legendPanel')).not.toContainText('Node Shape')
 })
+
+// ── Triangles and diamonds ───────────────────────────────────────────────────
+
+const legendShapes = (page) => page.locator('#legendPanel canvas[data-shape]')
+  .evaluateAll(els => els.map(el => el.dataset.shape))
+
+test('triangles and diamonds: network, legend, meta-network and a session round-trip', async ({ page }, testInfo) => {
+  await loadDemoDataset(page, 'pilosof2017')
+  await clickToggle(page, 'nodeShapeSplitToggle')
+  await selectNodeOption(page, 'nodeShapeSelectSetA', 'triangle') // parasite is Set A
+  await selectNodeOption(page, 'nodeShapeSelectSetB', 'diamond')
+  const shapesByType = (nodes) => Object.fromEntries(
+    [...new Set(nodes.map(n => n.type))].map(t => [t, [...new Set(nodes.filter(n => n.type === t).map(n => n.shape))]]))
+  expect(shapesByType(await renderedNodes(page))).toEqual({ parasite: ['triangle'], host: ['diamond'] })
+  expect(await legendShapes(page)).toEqual(['triangle', 'diamond'])
+
+  await page.click('#metaNetworkBtn')
+  expect(await metaShapes(page)).toEqual({ parasite: ['triangle'], host: ['diamond'] })
+  expect(await legendShapes(page)).toEqual(['triangle', 'diamond'])
+  await page.click('#metaNetworkBtn')
+
+  const path = await saveSessionToFile(page, testInfo)
+  await page.goto('/')
+  await waitForAppReady(page)
+  await loadSessionFile(page, path)
+  expect(await page.inputValue('#nodeShapeSelectSetA')).toBe('triangle')
+  expect(await page.inputValue('#nodeShapeSelectSetB')).toBe('diamond')
+  expect(shapesByType(await renderedNodes(page))).toEqual({ parasite: ['triangle'], host: ['diamond'] })
+})
+
+test('a shared triangle applies to every node', async ({ page }) => {
+  await loadDemoDataset(page, 'keresztes2022_connectome')
+  await selectNodeOption(page, 'nodeShapeSelect', 'triangle')
+  expect(new Set((await renderedNodes(page)).map(n => n.shape))).toEqual(new Set(['triangle']))
+})

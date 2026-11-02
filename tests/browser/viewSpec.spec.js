@@ -123,6 +123,14 @@ test('per-set color, shared size and per-set shapes are applied', async ({ page 
   expect(await noticeMessages(page)).toBeNull()
 })
 
+test('triangles and diamonds from R', async ({ page }) => {
+  await openFromR(page, view({ node: { shape: { parasite: 'triangle', host: 'diamond' } } }))
+  expect(await shapeOf(page, PARASITE)).toBe('triangle')
+  expect(await shapeOf(page, HOST)).toBe('diamond')
+  expect(await page.inputValue('#nodeShapeSelectSetA')).toBe('triangle')
+  expect(await noticeMessages(page)).toBeNull()
+})
+
 test('per-set color without shapes splits shapes automatically', async ({ page }) => {
   await openFromR(page, view({ node: { color_by: { parasite: 'module', host: 'module' } } }))
   expect((await appState(page)).shapeSplit).toBe(true)
