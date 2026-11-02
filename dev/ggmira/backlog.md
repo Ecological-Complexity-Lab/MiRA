@@ -106,6 +106,14 @@ existing files get only small additive changes (listed in view-spec.md §1).
   sends only genus (species goes back to the palette). Same "later
   component wins" rule as every argument; a merge-by-value variant was
   proposed and declined.
+- **Stage 2 scope (2026-11-02):** `mira_filter(nodes, links)`. Each takes
+  names or a condition evaluated in R like `subset()` (`nodes` on
+  `net$nodes`, `links` on `net$extended`; NA drops); R sends names only.
+  Several arguments in one call, or in separate calls, combine; only the
+  same argument is replaced by a later component. No `layers` (item 35:
+  the gap) and no state-node columns (item 36). Link conditions may use
+  `layer_from` / `layer_to`. Developed on ggmira branch `feat/filter`, so
+  beta testers on `main` are not affected until it is merged.
 - **Palettes wait for item 17 (2026-11-01),** so categorical and
   continuous palettes arrive together.
 - **Per set = vector named by `node_type`:**
@@ -166,7 +174,7 @@ fields; screenshots). Tests: MiRA 334 unit + 31 browser; ggmira 222.
 
 | # | Feature | R sketch |
 |---|---|---|
-| 14 | Show only some layers, nodes or links (Data mode filter; restorable in MiRA) | `mira_filter(layers = c("L1", "L3"))` |
+| 14 | Show only some nodes or links (Data mode filter; restorable in MiRA) | `mira_filter(nodes = type == "bird", links = weight > 0.05)` |
 
 **Stage 3 — network-mode view (S)**
 
@@ -209,6 +217,8 @@ its own camera settings. Syntax to be discussed before any code.
 | 26 | `mira_save()`: image file from R | Headless browser; MiRA signals "rendered" |
 | 31 | "Copy as R code" button in MiRA | |
 | 32 | More node shapes (triangle, diamond) | |
+| 35 | Filter layers, closing the gap in the stack | MiRA's layer filter keeps each layer's slot (renderer positions layers by index among all layers), so a hidden layer leaves a gap. Needs renderer code to stack only the visible layers; then `mira_filter(layers = )`. |
+| 36 | Filter nodes per layer (state-node columns, e.g. `abundance > 10`) | MiRA's node filter is by node name across all layers (renderer.js); a per-(node, layer) condition has no faithful mapping. Needs a per-layer node filter in MiRA. |
 | 34 | Color scales per element (node / intralayer / interlayer / layer), not per attribute name. Decided 2026-11-02 to keep MiRA's rule for now: one `value -> color` map per attribute name (`categoryColorOverrides`, app.js), shared by every element colored by that attribute. Two tables with the same column name and the same value (node `module` 1, link `module` 1) share a color, in the UI and from R (R warns which piece replaces which). | Key the overrides by `element:attr`; touches the three color functions, the legend editor and session save/restore (fallback for old keys); then `scales` in the view spec and `.combine_scales` in R. |
 
 ## Open decisions
