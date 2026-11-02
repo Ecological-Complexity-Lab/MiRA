@@ -431,3 +431,65 @@ test('stage 4: the meta-network from R looks as when its button is clicked', asy
   // the slider steps by 1% of the largest weight; the threshold and its label are 0.5
   expect(await set.evaluate(() => document.getElementById('mnMinWeightLabel').textContent)).toBe('0.50')
 })
+
+// ── the maps open fitted to the layers, clear of the panels over them ──────────
+
+// magrach2020 (5 layers in Spain, near where MiRA's maps start), moved to the
+// Galapagos so that a map left at its start shows none of the locations
+const GALAPAGOS = [[-0.909, -89.6], [-0.533, -90.4], [-0.25, -91.0], [-1.3, -90.4], [-0.6, -89.9]]
+async function openGalapagos(page, mode) {
+  const network = JSON.parse(readFileSync(new URL('../../data/magrach2020.json', import.meta.url), 'utf8'))
+  network.layers.forEach((layer, i) => { [layer.latitude, layer.longitude] = GALAPAGOS[i] })
+  await page.setViewportSize({ width: 1400, height: 850 })
+  await page.route('**/api/network.json', route =>
+    route.fulfill({ contentType: 'application/json', body: JSON.stringify(network) }))
+  await page.route('**/api/view.json', route =>
+    route.fulfill({ contentType: 'application/json', body: JSON.stringify(view({ mode })) }))
+  await page.goto('/?autoload=true')
+  await page.waitForFunction(() => window._renderer?.model?.layers?.length > 0)
+  await page.waitForLoadState('networkidle')
+  await page.waitForTimeout(1500) // let the map's fit animation end
+}
+
+/** The boxes (left, top, right, bottom) outside the window or over a panel on the map. */
+const hiddenBoxes = (page, boxes) => page.evaluate(boxes => {
+  const panels = ['bottomBar', 'controlPanels', 'mapControlsFloat', 'legendPanel', 'mapLayerPanel']
+    .map(id => document.getElementById(id))
+    .filter(el => el && getComputedStyle(el).display !== 'none')
+    .map(el => el.getBoundingClientRect())
+    .filter(r => r.width && r.height)
+  const overlaps = (b, r) => b.left < r.right && b.right > r.left && b.top < r.bottom && b.bottom > r.top
+  return boxes.filter(b => b.left < 0 || b.top < 0 || b.right > innerWidth || b.bottom > innerHeight ||
+    panels.some(r => overlaps(b, r)))
+}, boxes)
+
+test('the map from R opens on the layers, clear of the panels', async ({ page }) => {
+  await openGalapagos(page, { view: 'map' })
+  expect(await activeView(page)).toBe('map')
+  const markers = await page.evaluate(() => [...document.querySelectorAll('#mapMarkersOverlay .map-marker')]
+    .map(m => { const r = m.getBoundingClientRect(); return { left: r.left, top: r.top, right: r.right, bottom: r.bottom } }))
+  expect(markers.length).toBe(5)
+  expect(await hiddenBoxes(page, markers)).toEqual([])
+})
+
+test('the layer view from R fits the bubbles clear of the panels', async ({ page }) => {
+  await openGalapagos(page, { view: 'layer' })
+  expect(await activeView(page)).toBe('layer')
+  const bubbles = () => page.evaluate(() => {
+    const c = document.getElementById('networkCanvas').getBoundingClientRect()
+    return window._layerView._bubbles.map(b => ({
+      left: c.left + b._geoX - b.r, top: c.top + b._geoY - b.r,
+      right: c.left + b._geoX + b.r, bottom: c.top + b._geoY + b.r }))
+  })
+  expect((await bubbles()).length).toBe(5)
+  expect(await hiddenBoxes(page, await bubbles())).toEqual([])
+
+  // Reset fits the same way after a zoom in
+  await page.mouse.move(700, 425)
+  for (let i = 0; i < 3; i++) await page.mouse.wheel(0, -300)
+  await page.waitForTimeout(800)
+  expect((await hiddenBoxes(page, await bubbles())).length).toBeGreaterThan(0)
+  await page.locator('#zoomResetBtn').click()
+  await page.waitForTimeout(1500)
+  expect(await hiddenBoxes(page, await bubbles())).toEqual([])
+})
