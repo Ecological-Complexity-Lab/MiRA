@@ -1,6 +1,22 @@
 import { traceNodeShape } from './nodeShapes.js';
+import { dataMode } from './dataMode.js';
 const SET_A_COLOR = '#0072b2';
 const SET_B_COLOR = '#f472b6';
+
+// The Data mode filter, as network mode applies it (renderer.js): layers and
+// nodes not kept are not drawn; links are drawn when both nodes are kept and
+// the link is kept.
+function layerKept(layerName) {
+    return !dataMode.filteredLayerNames || dataMode.filteredLayerNames.has(layerName);
+}
+function nodeKept(nodeName) {
+    return !dataMode.filteredNodeNames || dataMode.filteredNodeNames.has(nodeName);
+}
+function linkKept(link) {
+    if (!nodeKept(link.node_from) || !nodeKept(link.node_to)) return false;
+    return !dataMode.filteredLinkKeys ||
+        dataMode.filteredLinkKeys.has(`${link.layer_from}::${link.node_from}::${link.layer_to}::${link.node_to}`);
+}
 
 export class GridView {
     constructor() {
@@ -46,7 +62,7 @@ export class GridView {
             headerFontSize = 11,
         } = opts;
 
-        const nLayers = model.layers.length;
+        const nLayers = model.layers.filter(layer => layerKept(layer.layer_name)).length;
         if (nLayers === 0) return;
 
         const cols = Math.max(1, Math.min(columns, nLayers));
@@ -57,11 +73,13 @@ export class GridView {
         ctx.fillStyle = '#f3f4f6';
         ctx.fillRect(marginLeft, marginTop, w - marginLeft, h - marginTop);
 
-        for (let i = 0; i < nLayers; i++) {
+        let cell = 0; // cells are laid out for the layers drawn; i indexes model.layers (layer colors)
+        for (let i = 0; i < model.layers.length; i++) {
             const layer = model.layers[i];
+            if (!layerKept(layer.layer_name)) continue;
             const layerColors = layerColorFn ? layerColorFn(i, layer) : null;
             const bpInfo = bipartiteInfo?.get(layer.layer_name);
-            const { x, y, cw, ch } = this._cellRect(i, nLayers, cols, w, h, marginLeft, marginTop);
+            const { x, y, cw, ch } = this._cellRect(cell++, nLayers, cols, w, h, marginLeft, marginTop);
             const nodePositions = this._drawCell(
                 ctx, x, y, cw, ch, layer, positions, model,
                 { nodeRadius, nodeColorFn, nodeSizeFn, nodeShapeFn, intraLinkColorFn, intraMinWeight,
@@ -176,6 +194,7 @@ export class GridView {
         ctx.lineWidth = Math.max(0.4, cellScale * 0.5);
         for (const link of layerLinks) {
             if (intraMinWeight > 0 && (link.weight ?? 0) < intraMinWeight) continue;
+            if (!linkKept(link)) continue;
             const pA = layerPos.get(link.node_from);
             const pB = layerPos.get(link.node_to);
             if (!pA || !pB) continue;
@@ -201,6 +220,7 @@ export class GridView {
         let sumYA = 0, countA = 0, sumYB = 0, countB = 0;
 
         for (const [nodeName, pos] of layerPos) {
+            if (!nodeKept(nodeName)) continue;
             const { sx, sy } = toScreen(pos.x, pos.y);
             const sizeMult = nodeSizeFn ? (nodeSizeFn(layerName, nodeName) ?? 1) : 1;
             const r = Math.max(1.5, baseR * sizeMult);

@@ -10,6 +10,7 @@
 
 import { BIPARTITE_SET_A_COLOR, BIPARTITE_SET_B_COLOR } from './colorMapper.js';
 import { aggregateMetaNetwork } from './calc/metaAggregation.js';
+import { traceNodeShape, SHAPE_CIRCLE } from './nodeShapes.js';
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -24,6 +25,24 @@ const MN_BG_COLOR      = '#f8f8fc';
 const MN_UNIFORM_COLOR = '#374151';
 const MN_ARROW_SIZE    = 8;     // px in sim coords
 const MN_HIT_THRESHOLD = 6;     // px in sim coords for edge hit
+
+// Settings on entering the meta-network (the layout becomes 'bipartite' when
+// the network has a bipartite layer). Exported for viewSpec.js, which opens
+// the meta-network from R with the same starting values.
+export const META_NETWORK_DEFAULTS = Object.freeze({
+    aggregation:   'sumOccurrence', // 'union' | 'sumWeights' | 'sumOccurrence'
+    colorBy:       'uniform',       // 'participation' | 'metaDegree' | 'uniform'
+    sizeBy:        'metaDegree',    // 'participation' | 'metaDegree' | 'uniform'
+    layout:        'circular',      // 'circular' | 'force' | 'bipartite'
+    minWeight:     0,
+    showLabels:    false,
+    labelFontSize: 12,
+    nestedSort:    true,
+    baseSize:      1.0,            // multiplier applied to all node radii
+    uniformColor:  MN_UNIFORM_COLOR,      // uniform color for unipartite
+    uniformColorA: BIPARTITE_SET_A_COLOR, // uniform color for bipartite Set A
+    uniformColorB: BIPARTITE_SET_B_COLOR, // uniform color for bipartite Set B
+});
 
 // cmocean 'ice' palette — reversed so low = light cyan, high = dark navy
 const MN_ICE_COLORS = [
@@ -55,25 +74,13 @@ export class MetaNetwork {
         this._nodeMap     = new Map(); // nodeName → node object
         this._maxWeight   = 1;
         this._focusSet    = null;      // Set<nodeName> | null — ego network of selected node
+        this.nodeShapeFn  = null;      // (layerName, nodeName) => shape, network mode's (app.js); null = circles
 
         this.viewScale   = 1;
         this.viewOffsetX = 0;
         this.viewOffsetY = 0;
 
-        this.settings = {
-            aggregation:   'sumOccurrence', // 'union' | 'sumWeights' | 'sumOccurrence'
-            colorBy:       'uniform',       // 'participation' | 'metaDegree' | 'uniform'
-            sizeBy:        'metaDegree',    // 'participation' | 'metaDegree' | 'uniform'
-            layout:        'circular',      // 'circular' | 'force' | 'bipartite'
-            minWeight:     0,
-            showLabels:    false,
-            labelFontSize: 12,
-            nestedSort:    true,
-            baseSize:      1.0,            // multiplier applied to all node radii
-            uniformColor:  MN_UNIFORM_COLOR,      // uniform color for unipartite
-            uniformColorA: BIPARTITE_SET_A_COLOR, // uniform color for bipartite Set A
-            uniformColorB: BIPARTITE_SET_B_COLOR, // uniform color for bipartite Set B
-        };
+        this.settings = { ...META_NETWORK_DEFAULTS };
 
         this.state = {
             selectedNode:   null,       // nodeName | null
@@ -419,19 +426,19 @@ export class MetaNetwork {
             const selEdge = this.state.selectedEdge;
             const isRinged = node.name === this.state.selectedNode
                 || (selEdge && (node.name === selEdge.source || node.name === selEdge.target));
+            // No layer here: the shape follows the node's set, from its type
+            const shape = this.nodeShapeFn ? this.nodeShapeFn(null, node.name) : SHAPE_CIRCLE;
             if (isRinged) {
                 ctx.strokeStyle = '#1d4ed8';
                 ctx.lineWidth   = 2.5;
-                ctx.beginPath();
-                ctx.arc(node.x, node.y, node.r + 3, 0, Math.PI * 2);
+                traceNodeShape(ctx, node.x, node.y, node.r + 3, shape);
                 ctx.stroke();
             }
 
             ctx.fillStyle   = node.color;
             ctx.strokeStyle = 'rgba(0,0,0,0.12)';
             ctx.lineWidth   = 0.8;
-            ctx.beginPath();
-            ctx.arc(node.x, node.y, node.r, 0, Math.PI * 2);
+            traceNodeShape(ctx, node.x, node.y, node.r, shape);
             ctx.fill();
             ctx.stroke();
             ctx.restore();

@@ -5,7 +5,8 @@
     "test:calc": "vitest run --config config/vitest.config.js tests/dataParser.test.js tests/calculations.test.js",
     "test:watch": "vitest --config config/vitest.config.js",
     "test:browser": "playwright test --config config/playwright.config.js",
-    "sync:emln": "bash scripts/sync-emln.sh"
+    "sync:emln": "bash scripts/sync-emln.sh",
+    "sync:ggmira": "bash scripts/sync-ggmira.sh"
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2",

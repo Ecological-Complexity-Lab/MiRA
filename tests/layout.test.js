@@ -11,6 +11,9 @@
  *   fruchterman   — non-deterministic: force-directed (Fruchterman-Reingold)
  *   kamada_kawai  — non-deterministic: energy-minimization with Floyd-Warshall
  *
+ * With a `seed`, the three non-deterministic algorithms become reproducible
+ * (Group 9).
+ *
  * TESTING STRATEGY
  * ─────────────────
  * Deterministic algorithms (circle, grid, bipartite, _rescaleToFit) are tested
@@ -43,6 +46,7 @@ import * as graphologyShortestPath from 'graphology-shortest-path'
 globalThis.graphology = graphologyLib
 globalThis.graphologyShortestPath = graphologyShortestPath
 import { ForceLayout } from '../js/layout.js'
+import { createSeededRandom } from '../js/random.js'
 
 // ── Fixture helpers ───────────────────────────────────────────────────────────
 
@@ -552,5 +556,77 @@ describe('Group 8 — computeLayout integration', () => {
     const bL2 = positions.get('L2').get('B')
     expect(isFinite(bL1.x) && isFinite(bL1.y)).toBe(true)
     expect(isFinite(bL2.x) && isFinite(bL2.y)).toBe(true)
+  })
+})
+
+
+// ── Group 9 — Seeded layouts ─────────────────────────────────────────────────
+// With a seed, the random-based algorithms give identical positions for the
+// same data. Without a seed they behave as before (Math.random).
+
+const SEEDED_TYPES = ['random', 'fruchterman', 'kamada_kawai']
+const SEED = 42
+const OTHER_SEED = 7
+
+/** A small connected network so force-directed layouts have work to do. */
+function seededModel() {
+  return makeModel(['A', 'B', 'C', 'D', 'E'], [
+    { from: 'A', to: 'B' }, { from: 'B', to: 'C' }, { from: 'C', to: 'D' },
+    { from: 'D', to: 'E' }, { from: 'E', to: 'A' },
+  ])
+}
+
+/** Positions of the single layer as a plain array, for toEqual comparisons. */
+function layoutOf(layoutType, seed) {
+  const layout = new ForceLayout({ layoutType, seed, iterations: 50 })
+  return [...layout.computeLayout(seededModel()).get(LAYER).entries()]
+}
+
+describe('Group 9 — Seeded layouts', () => {
+  it.each(SEEDED_TYPES)('9.1 %s: same seed gives identical positions', (type) => {
+    expect(layoutOf(type, SEED)).toEqual(layoutOf(type, SEED))
+  })
+
+  it.each(SEEDED_TYPES)('9.2 %s: different seeds give different positions', (type) => {
+    expect(layoutOf(type, SEED)).not.toEqual(layoutOf(type, OTHER_SEED))
+  })
+
+  it('9.3 the sequence restarts on every computeLayout call', () => {
+    const layout = new ForceLayout({ layoutType: 'kamada_kawai', seed: SEED })
+    const model = seededModel()
+    const first = [...layout.computeLayout(model).get(LAYER).entries()]
+    const second = [...layout.computeLayout(model).get(LAYER).entries()]
+    expect(second).toEqual(first)
+  })
+
+  it('9.4 seed can be set as a property after construction', () => {
+    const layout = new ForceLayout({ layoutType: 'random' })
+    layout.seed = SEED
+    const positions = [...layout.computeLayout(seededModel()).get(LAYER).entries()]
+    expect(positions).toEqual(layoutOf('random', SEED))
+  })
+
+  it('9.5 without a seed, layouts still vary and stay valid', () => {
+    const a = layoutOf('random', undefined)
+    const b = layoutOf('random', undefined)
+    expect(a).not.toEqual(b)
+    expect(allInBounds(new Map(a))).toBe(true)
+  })
+
+  it('9.6 seeded layouts stay within the padded bounds', () => {
+    for (const type of SEEDED_TYPES) {
+      expect(allInBounds(new Map(layoutOf(type, SEED)))).toBe(true)
+    }
+  })
+
+  it('9.7 createSeededRandom is deterministic and returns values in [0, 1)', () => {
+    const r1 = createSeededRandom(SEED)
+    const r2 = createSeededRandom(SEED)
+    for (let i = 0; i < 1000; i++) {
+      const v = r1()
+      expect(v).toBe(r2())
+      expect(v).toBeGreaterThanOrEqual(0)
+      expect(v).toBeLessThan(1)
+    }
   })
 })

@@ -429,6 +429,29 @@ export class LayerView {
         return Math.max(1, ...this._bubbles.map(b => Math.sqrt(b.x * b.x + b.y * b.y) + b.r));
     }
 
+    /**
+     * How far (px) a bubble reaches from its place on the map, with layers at
+     * one place fanned out as _spreadGeoClusters does (for fitting the map).
+     */
+    geoExtent() {
+        const GEO_CLUSTER_EPS = 0.001;
+        let extent = 0;
+        for (const bubble of this._bubbles) {
+            const layer = this._model.layers.find(l => l.layer_name === bubble.layerName);
+            if (!layer || layer.latitude == null) continue;
+            const cluster = this._bubbles.filter(b => {
+                const other = this._model.layers.find(l => l.layer_name === b.layerName);
+                return other && other.latitude != null &&
+                    Math.abs(other.latitude - layer.latitude) < GEO_CLUSTER_EPS &&
+                    Math.abs(other.longitude - layer.longitude) < GEO_CLUSTER_EPS;
+            });
+            const maxR = Math.max(...cluster.map(b => b.r));
+            const fan = cluster.length > 1 ? (maxR + 10) / Math.sin(Math.PI / cluster.length) : 0;
+            extent = Math.max(extent, fan + maxR);
+        }
+        return extent;
+    }
+
     /** Advance simulation one step. Returns true while still animating. */
     tick() {
         const active = this._sim && (this._sim.alpha() > 0.001 || !!this._draggedBubble);

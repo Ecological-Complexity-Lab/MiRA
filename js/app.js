@@ -20,6 +20,8 @@ import { initExportManager } from './exportManager.js';
 import { GridView } from './gridView.js';
 import { buildNodeSetResolver, collectSetItems, SET_A, SET_B } from './nodeSets.js';
 import { SHAPE_CIRCLE, SHAPE_SQUARE } from './nodeShapes.js';
+import { loadFromR } from './rBridge.js';
+import { fitMapToCoords } from './mapFit.js';
 
 // ---- State ----
 let model = null;
@@ -919,14 +921,14 @@ function toggleMapMode() {
         mapEl.style.display = 'block';
         bgMap.invalidateSize();
 
-        // Calculate bounds after the map container is visible
-        fitMapToLayers();
-
         activeMapLayers.clear(); // Start with no active layers pop-out
         renderer.showMapBackground = showMapImageCheckbox.checked;
         renderer.isMapMode = true;
         mapOpacityControl.style.display = 'flex';
         mapLayerPanel.style.display = '';
+
+        // Calculate bounds after the map container and the panels over it are visible
+        fitMapToLayers();
     } else {
         mapEl.style.display = 'none';
         activeMapLayers.clear();
@@ -1288,7 +1290,7 @@ function _exitDataMode() {
 }
 
 function _updateFilterBanner() {
-    const show = dataMode.isSubsetActive() && (appMode === 'network' || appMode === 'map');
+    const show = dataMode.isSubsetActive() && (appMode === 'network' || appMode === 'map' || appMode === 'grid');
     if (!show) {
         dataFilterBanner.style.display = 'none';
     } else {
@@ -1550,6 +1552,8 @@ function toggleMetaNetwork() {
     canvas.style.cursor  = 'grab';
 
     metaNetwork = new MetaNetwork(model, cssW, cssH);
+    metaNetwork.nodeShapeFn = renderer.nodeShapeFn; // shapes as in network mode
+    window._metaNetwork = metaNetwork;
     _showMetaNetworkSidebar();
     _syncMetaNetworkControls();
     _buildMnLayerPanel();
@@ -2050,11 +2054,6 @@ function _activateLvGeoMode() {
         .map(l => [l.latitude, l.longitude]);
     lvMapEl.style.display = 'block';
     lvMap.invalidateSize();
-    if (coords.length === 1) {
-        lvMap.setView(coords[0], 10);
-    } else if (coords.length > 1) {
-        lvMap.fitBounds(coords, { padding: [60, 60] });
-    }
 
     // Re-project bubbles on every map move/zoom (fitBounds triggers move events during animation)
     _lvMapMoveHandler = () => {
@@ -2123,6 +2122,8 @@ function _activateLvGeoMode() {
     document.getElementById('lvGeoToggleContainer').style.display = '';
     document.getElementById('lvSpacing').closest('div').style.display = 'none';
     lvMapOpacityControl.style.display = 'flex';
+    // Fit once the panels over the map are shown, to keep the bubbles clear of them
+    fitMapToCoords(lvMap, coords, { margin: lv.geoExtent() + 10 });
 }
 
 function _deactivateLvGeoMode() {
@@ -2763,20 +2764,7 @@ function fitMapToLayers() {
             }
         }
     });
-    if (lats.length > 0) {
-        const minLat = Math.min(...lats);
-        const maxLat = Math.max(...lats);
-        const minLng = Math.min(...lngs);
-        const maxLng = Math.max(...lngs);
-        if (minLat === maxLat && minLng === maxLng) {
-            bgMap.setView([minLat, minLng], 12);
-        } else {
-            bgMap.fitBounds([
-                [minLat, minLng],
-                [maxLat, maxLng]
-            ], { padding: [40, 40] });
-        }
-    }
+    fitMapToCoords(bgMap, lats.map((lat, i) => [lat, lngs[i]]), { singleZoom: 12 });
 }
 
 function updateMapModeViews() {
@@ -4125,8 +4113,7 @@ zoomResetBtn.addEventListener('click', () => {
             const coords = model.layers
                 .filter(l => l.latitude != null && l.longitude != null)
                 .map(l => [l.latitude, l.longitude]);
-            if (coords.length === 1) lvMap.setView(coords[0], 10);
-            else if (coords.length > 1) lvMap.fitBounds(coords, { padding: [60, 60] });
+            fitMapToCoords(lvMap, coords, { margin: renderer.layerView.geoExtent() + 10 });
             return;
         }
         renderer.layerView.resetLayout();
@@ -4434,7 +4421,9 @@ function hideTooltip() {
                 return resp.json();
             })
             .then(json => {
-                loadData(json);
+                // Also applies a ggmira view spec (/api/view.json) when R serves one
+                return loadFromR(json, { loadData, getSessionState, restoreSessionState, renderer,
+                    getAppMode: () => appMode });
             })
             .catch(err => {
                 console.error('Autoload failed:', err);
@@ -4695,6 +4684,17 @@ function renderMetaNetworkLegend() {
             min, max, canToggle: false,
         };
         renderScaleLegend(sizeScale, 'mnSize', 'Node Size');
+    }
+
+    // ── Shape legend: one shape per node set, as in network mode
+    if (isShapeSplit()) {
+        expandedLegends.add('mnShape');
+        const { labelA, labelB } = nodeSetResolver;
+        const shapeScale = {
+            type: 'shape', attrName: 'Set',
+            map: new Map([[labelA, nodeShapeSelectSetA.value], [labelB, nodeShapeSelectSetB.value]]),
+        };
+        renderScaleLegend(shapeScale, 'mnShape', 'Node Shape');
     }
 }
 
