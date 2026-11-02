@@ -136,9 +136,9 @@ describe('Group 1 — Envelope', () => {
   })
 
   it('1.5 unknown sections are ignored with a warning', () => {
-    const r = apply({ legend: { show: true }, node: { size: 20 } })
+    const r = apply({ theme: { font: 'serif' }, node: { size: 20 } })
     expect(r.state.renderer.nodeRadius).toBe(20)
-    expect(r.warnings).toEqual(['legend: not a known section; ignored'])
+    expect(r.warnings).toEqual(['theme: not a known section; ignored'])
   })
 
   it('1.6 unknown fields are ignored with a warning, known ones still apply', () => {
@@ -627,5 +627,65 @@ describe('Group 11 — Filter', () => {
       'filter.layers: not a known field; ignored',
       'filter.nodes: must be a list or null; ignored',
     ])
+  })
+})
+
+describe('Group 12 — Camera', () => {
+  it('12.1 rotate and tilt (degrees) become the renderer angles (radians)', () => {
+    const r = apply({ camera: { rotate: 90, tilt: -30 } })
+    expect(r.state.renderer.skewX).toBeCloseTo(Math.PI / 2)
+    expect(r.state.renderer.skewY).toBeCloseTo(-Math.PI / 6)
+    expect(r.camera).toBeNull()
+  })
+
+  it('12.2 zoom and pan are returned for after the restore', () => {
+    const r = apply({ camera: { zoom: 1.5, pan: [0.1, -0.2] } })
+    expect(r.camera).toEqual({ zoom: 1.5, pan: [0.1, -0.2] })
+  })
+
+  it('12.3 invalid values keep the default', () => {
+    const r = apply({ camera: { rotate: 'left', tilt: 60, zoom: 10, pan: [2, 0] } })
+    expect(r.state.renderer.skewX).toBe(defaultState().renderer.skewX)
+    expect(r.camera).toBeNull()
+    expect(r.warnings).toEqual([
+      'camera.rotate: "left" must be a number (degrees)',
+      'camera.tilt: 60 must be a number between -45 and 45',
+      'camera.zoom: 10 must be a number between 0.2 and 5',
+      'camera.pan: [2,0] must be [x, y], each between -1 and 1',
+    ])
+  })
+})
+
+describe('Group 13 — Legends', () => {
+  it('13.1 a list of legends is opened, per-set legends included', () => {
+    const r = apply({ legend: { show: ['node_color', 'layer_color'] } })
+    expect(r.state.legend.expandedLegends).toEqual(['nodeColor', 'nodeColorA', 'nodeColorB', 'layerColor'])
+    expect(r.legendPanel).toBeNull()
+  })
+
+  it('13.2 "all", false and a position', () => {
+    expect(apply({ legend: { show: 'all' } }).state.legend.expandedLegends).toHaveLength(10)
+    const r = apply({ legend: { show: false, position: 'top-right' } })
+    expect(r.legendPanel).toEqual({ visible: false, position: 'top-right' })
+  })
+
+  it('13.3 unknown legends and positions are skipped', () => {
+    const r = apply({ legend: { show: ['node_colour', 'node_size'], position: 'top-left' } })
+    expect(r.state.legend.expandedLegends).toEqual(['nodeSize', 'nodeSizeA', 'nodeSizeB'])
+    expect(r.legendPanel).toBeNull()
+    expect(r.warnings).toEqual([
+      'legend.show[0]: "node_colour" is not a legend; expected one of node_color, node_size, node_shape, intralayer_color, interlayer_color, layer_color',
+      'legend.position: "top-left" must be one of bottom-right, top-right, bottom-left',
+    ])
+  })
+})
+
+describe('Group 14 — Highlight', () => {
+  it('14.1 node.highlight selects the node, matched to the data as stored', () => {
+    expect(apply({ node: { highlight: 'bee' } }).state.selectedNode).toBe('bee')
+    expect(apply({ node: { highlight: '7' } }).state.selectedNode).toBe(7)
+    const r = apply({ node: { highlight: 'wasp' } })
+    expect(r.state.selectedNode).toBeUndefined()
+    expect(r.warnings).toEqual(['node.highlight: "wasp" is not a node name'])
   })
 })

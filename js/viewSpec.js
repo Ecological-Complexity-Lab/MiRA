@@ -48,6 +48,26 @@ const ARROW_SIZE_MAX = 3;
 const CURVATURE_MIN = 0;
 const CURVATURE_MAX = 1;
 
+// Camera (network mode). Angles in degrees; MiRA stores radians
+// (renderer.skewX / skewY). Tilt is clamped like mouse dragging (±0.8 rad).
+const TILT_MAX = 45;
+const ZOOM_MIN = 0.2;      // relative to MiRA's fitted view (interaction.js wheel clamp)
+const ZOOM_MAX = 5;
+const PAN_MAX = 1;         // fraction of the window
+const DEGREES = Math.PI / 180;
+
+// Legend names (spec) → MiRA's legend ids (app.js renderLegends)
+const LEGEND_IDS = {
+    node_color: ['nodeColor', 'nodeColorA', 'nodeColorB'],
+    node_size: ['nodeSize', 'nodeSizeA', 'nodeSizeB'],
+    node_shape: ['nodeShape'],
+    intralayer_color: ['intraLinkColor'],
+    interlayer_color: ['interLinkColor'],
+    layer_color: ['layerColor'],
+};
+const LEGEND_ALL = 'all';
+const LEGEND_POSITIONS = new Set(['bottom-right', 'top-right', 'bottom-left']);
+
 const STACK_MODES = new Set(['horizontal', 'vertical']);
 const SCALE_TYPES = new Set(['categorical', 'continuous']);
 const PAIR_SEPARATOR = '::'; // layer pair key in the interlayer pair filter
@@ -66,12 +86,14 @@ const AUTO_SHAPE_B = 'square';
 
 const SECTION_FIELDS = {
     layout:     ['type', 'seed', 'nested'],
-    node:       ['color_by', 'color', 'size_by', 'size', 'shape', 'labels', 'label_size', 'perspective'],
+    node:       ['color_by', 'color', 'size_by', 'size', 'shape', 'labels', 'label_size', 'perspective', 'highlight'],
     intralayer: ['color_by', 'color', 'min_weight', 'arrow_size'],
     interlayer: ['show', 'color_by', 'color', 'min_weight', 'curvature', 'pairs'],
     layer:      ['color_by', 'color', 'colors', 'labels', 'label_size', 'set_labels', 'stack', 'spacing'],
     scales:     null, // keyed by attribute name; each scale has SCALE_FIELDS
     filter:     ['nodes', 'links'],
+    camera:     ['rotate', 'tilt', 'zoom', 'pan'],
+    legend:     ['show', 'position'],
 };
 const SCALE_FIELDS = ['type', 'values'];
 
@@ -82,9 +104,12 @@ const show = (v) => JSON.stringify(v);
  * @param {object} state  A complete session state (getSessionState output); not modified
  * @param {object} spec   Parsed view spec
  * @param {object} ctx    See module header
- * @returns {{ state: object, layout: {type, seed, nested}|null, warnings: string[] }}
+ * @returns {{ state: object, layout: {type, seed, nested}|null,
+ *   camera: {zoom, pan}|null, legendPanel: {visible, position}|null, warnings: string[] }}
  *   `layout` is non-null when the spec changes the layout, so the caller must
- *   recompute positions (with `seed` when given).
+ *   recompute positions (with `seed` when given). `camera` (zoom and pan,
+ *   relative to the fitted view) and `legendPanel` are not session fields:
+ *   the caller applies them after restoring the session.
  */
 export function applyViewSpec(state, spec, ctx) {
     const warnings = [];
@@ -93,20 +118,24 @@ export function applyViewSpec(state, spec, ctx) {
 
     if (!isPlainObject(spec)) {
         warn('spec', 'not a JSON object; ignored');
-        return { state: out, layout: null, warnings };
+        return { state: out, layout: null, camera: null, legendPanel: null, warnings };
     }
     if (spec.version !== VIEW_SPEC_VERSION) {
         warn('version', `expected ${VIEW_SPEC_VERSION}, got ${show(spec.version)}; whole spec ignored`);
-        return { state: out, layout: null, warnings };
+        return { state: out, layout: null, camera: null, legendPanel: null, warnings };
     }
 
     let layout = null;
+    let camera = null;
+    let legendPanel = null;
     for (const [key, section] of Object.entries(spec)) {
         if (key === 'version') continue;
         const result = applySection(out, key, section, ctx, warn);
         if (key === 'layout') layout = result;
+        if (key === 'camera') camera = result;
+        if (key === 'legend') legendPanel = result;
     }
-    return { state: out, layout, warnings };
+    return { state: out, layout, camera, legendPanel, warnings };
 }
 
 const SECTION_APPLIERS = {
@@ -117,6 +146,8 @@ const SECTION_APPLIERS = {
     layer: applyLayer,
     scales: applyScales,
     filter: applyFilter,
+    camera: applyCamera,
+    legend: applyLegend,
 };
 
 function applySection(state, key, section, ctx, warn) {
@@ -278,6 +309,11 @@ function checkSeed(value, warn) {
 // ---- node -------------------------------------------------------------------
 
 function applyNode(state, section, ctx, warn) {
+    if ('highlight' in section) {
+        const node = typeof section.highlight === 'string' ? ctx.nodeNames.get(section.highlight) : undefined;
+        if (node !== undefined) state.selectedNode = node;
+        else warn('node.highlight', `${show(section.highlight)} is not a node name`);
+    }
     if ('color' in section) applyNodeColorConstant(state.ui, section, warn);
     if ('color_by' in section) applyNodeChannel(state.ui, NODE_COLOR, section.color_by, ctx, warn);
     if ('size_by' in section) applyNodeChannel(state.ui, NODE_SIZE, section.size_by, ctx, warn);
@@ -502,6 +538,69 @@ function applyLayerDisplay(renderer, section, ctx, warn) {
         (v, path) => checkChoice(v, STACK_MODES, path, warn));
     setChecked(section, 'spacing', 'layer.spacing', renderer, 'layerSpacing',
         (v, path) => checkNumber(v, LAYER_SPACING_MIN, LAYER_SPACING_MAX, path, warn));
+}
+
+// ---- camera ---------------------------------------------------------------------
+
+/** rotate / tilt go to the session; zoom / pan are returned for the caller. */
+function applyCamera(state, section, ctx, warn) {
+    setChecked(section, 'rotate', 'camera.rotate', state.renderer, 'skewX', (v, path) => {
+        if (typeof v === 'number' && Number.isFinite(v)) return v * DEGREES;
+        warn(path, `${show(v)} must be a number (degrees)`);
+        return undefined;
+    });
+    setChecked(section, 'tilt', 'camera.tilt', state.renderer, 'skewY',
+        (v, path) => scaled(checkNumber(v, -TILT_MAX, TILT_MAX, path, warn), DEGREES));
+    const view = {};
+    setChecked(section, 'zoom', 'camera.zoom', view, 'zoom',
+        (v, path) => checkNumber(v, ZOOM_MIN, ZOOM_MAX, path, warn));
+    setChecked(section, 'pan', 'camera.pan', view, 'pan', (v, path) => {
+        const ok = Array.isArray(v) && v.length === 2 &&
+            v.every(x => typeof x === 'number' && Number.isFinite(x) && Math.abs(x) <= PAN_MAX);
+        if (ok) return v;
+        warn(path, `${show(v)} must be [x, y], each between -${PAN_MAX} and ${PAN_MAX}`);
+        return undefined;
+    });
+    return Object.keys(view).length ? view : null;
+}
+
+const scaled = (value, factor) => (value === undefined ? undefined : value * factor);
+
+// ---- legend ---------------------------------------------------------------------
+
+/**
+ * show: "all", a list of legend names (opened; the others minimized), or
+ * false (legend panel hidden). position: a corner. The panel's visibility
+ * and position are returned for the caller.
+ */
+function applyLegend(state, section, ctx, warn) {
+    const panel = {};
+    if ('show' in section) {
+        const value = section.show;
+        if (value === false) {
+            panel.visible = false;
+        } else if (value === LEGEND_ALL) {
+            setExpandedLegends(state, Object.values(LEGEND_IDS).flat());
+        } else if (Array.isArray(value)) {
+            const ids = [];
+            value.forEach((name, i) => {
+                if (Object.hasOwn(LEGEND_IDS, name)) ids.push(...LEGEND_IDS[name]);
+                else warn(`legend.show[${i}]`, `${show(name)} is not a legend; expected one of ${Object.keys(LEGEND_IDS).join(', ')}`);
+            });
+            setExpandedLegends(state, ids);
+        } else {
+            warn('legend.show', `${show(value)} must be "all", a list of legend names, or false`);
+        }
+    }
+    if ('position' in section) {
+        const position = checkChoice(section.position, LEGEND_POSITIONS, 'legend.position', warn);
+        if (position !== undefined) panel.position = position;
+    }
+    return Object.keys(panel).length ? panel : null;
+}
+
+function setExpandedLegends(state, ids) {
+    state.legend = { lvExpandedLegends: [], ...state.legend, expandedLegends: ids };
 }
 
 // ---- filter -------------------------------------------------------------------

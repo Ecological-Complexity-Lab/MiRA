@@ -32,6 +32,14 @@ const SPEC_SELECT_IDS = [
 ];
 // Second arrowhead slider (interlayer panel); restoreSessionState sets only the first
 const INTER_ARROWHEAD_SLIDER_ID = 'interArrowheadSizeSlider';
+const LEGEND_PANEL_ID = 'legendPanel';
+const LEGEND_TOGGLE_ID = 'toggleLegendBtn';
+// Legend panel corners (index.html: bottom 50px, right 20px by default)
+const LEGEND_CORNERS = {
+    'bottom-right': { top: '', bottom: '50px', left: '', right: '20px', alignItems: 'flex-end' },
+    'top-right': { top: '50px', bottom: '', left: '', right: '20px', alignItems: 'flex-end' },
+    'bottom-left': { top: '', bottom: '50px', left: '20px', right: '', alignItems: 'flex-start' },
+};
 
 /**
  * @param {object} networkJson  Network fetched from /api/network.json
@@ -81,6 +89,8 @@ function applySpecSafely(networkJson, spec, deps) {
 function applySpec(spec, deps) {
     const model = deps.renderer.model;
     const defaults = deps.getSessionState();
+    // Plots from R start with every legend minimized; mira_legends() opens them
+    defaults.legend.expandedLegends = [];
     const result = applyViewSpec(defaults, spec, buildContext(model));
     if (result.layout) result.state.positions = computePositions(model, result.layout);
 
@@ -91,15 +101,48 @@ function applySpec(spec, deps) {
     // The restored view (scale, offset) was centered for the default
     // stacking and spacing
     const rv = result.state.renderer;
-    if (rv.stackMode !== defaults.renderer.stackMode || rv.layerSpacing !== defaults.renderer.layerSpacing) {
+    // (and for the default angles)
+    if (rv.stackMode !== defaults.renderer.stackMode || rv.layerSpacing !== defaults.renderer.layerSpacing ||
+        rv.skewX !== defaults.renderer.skewX || rv.skewY !== defaults.renderer.skewY || result.camera) {
         deps.renderer.centerView();
     }
+    if (result.camera) applyCameraView(deps.renderer, result.camera);
+    if (result.legendPanel) applyLegendPanel(result.legendPanel);
     const interArrowSlider = document.getElementById(INTER_ARROWHEAD_SLIDER_ID);
     if (interArrowSlider) interArrowSlider.value = rv.arrowheadSize;
     deps.renderer.render();
 
     if (result.warnings.length) console.warn('[MiRA] View spec warnings:\n' + result.warnings.join('\n'));
     return result.warnings;
+}
+
+/** Zoom about the canvas center (as MiRA's zoom buttons), then pan by a fraction of the canvas. */
+function applyCameraView(renderer, { zoom, pan }) {
+    const dpr = renderer.dpr || 1;
+    const cssW = renderer.canvas.width / dpr;
+    const cssH = renderer.canvas.height / dpr;
+    if (zoom !== undefined) {
+        const cx = cssW / 2;
+        const cy = cssH / 2;
+        renderer.offsetX = cx - (cx - renderer.offsetX) * zoom;
+        renderer.offsetY = cy - (cy - renderer.offsetY) * zoom;
+        renderer.scale *= zoom;
+    }
+    if (pan !== undefined) {
+        renderer.offsetX += pan[0] * cssW;
+        renderer.offsetY -= pan[1] * cssH; // positive y moves the plot up
+    }
+}
+
+/** Hide the legend panel (with MiRA's own toggle, so its button state agrees), or move it to a corner. */
+function applyLegendPanel({ visible, position }) {
+    const panel = document.getElementById(LEGEND_PANEL_ID);
+    if (position !== undefined && panel) {
+        const corner = LEGEND_CORNERS[position];
+        for (const side of ['top', 'bottom', 'left', 'right']) panel.style[side] = corner[side];
+        panel.style.alignItems = corner.alignItems;
+    }
+    if (visible === false) document.getElementById(LEGEND_TOGGLE_ID)?.click();
 }
 
 function buildContext(model) {

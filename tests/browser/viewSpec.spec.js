@@ -173,12 +173,12 @@ test('a constant node color replaces the default set coloring', async ({ page })
 test('invalid fields are listed in a notice; valid fields still apply', async ({ page }) => {
   await openFromR(page, view({
     node: { color_by: 'modul', size: 14 },
-    legend: { show: true },
+    theme: { font: 'serif' },
   }))
   expect((await appState(page)).nodeRadius).toBe(14)
   expect(await noticeMessages(page)).toEqual([
     'node.color_by: "modul" is not an available attribute',
-    'legend: not a known section; ignored',
+    'theme: not a known section; ignored',
   ])
   await page.click('.view-spec-notice-close')
   expect(await noticeMessages(page)).toBeNull()
@@ -260,4 +260,53 @@ test('stage 2: the filter keeps only the listed nodes and links, with the banner
   // Clearing from the banner restores the full network
   await page.locator('#dataFilterClear').click()
   await expect(banner).toBeHidden()
+})
+
+test('stage 3: camera, legends and highlight are applied', async ({ page }) => {
+  await openFromR(page, NOT_SERVED)
+  const fitted = await page.evaluate(() => window._renderer.scale)
+
+  const again = await page.context().newPage()
+  again.on('pageerror', e => errors.push(e.message))
+  await openFromR(again, view({
+    node: { color_by: 'module', size_by: 'abundance', highlight: PARASITE },
+    camera: { rotate: 90, tilt: 20, zoom: 2 },
+    legend: { show: ['node_color'], position: 'top-right' },
+  }))
+  expect(await noticeMessages(again)).toBeNull()
+  const s = await again.evaluate(() => {
+    const r = window._renderer
+    const panel = document.getElementById('legendPanel')
+    return {
+      skewX: r.skewX, skewY: r.skewY, scale: r.scale,
+      selected: r.selectedNode?.nodeName ?? null,
+      banner: document.getElementById('selectedNodeText').innerText,
+      boxes: [...panel.querySelectorAll('.legend-box')].map(b => b.innerText.split('\n')[0]),
+      collapsed: [...panel.querySelectorAll('button.btn')].map(b => b.innerText.trim()),
+      top: panel.style.top, bottom: panel.style.bottom,
+    }
+  })
+  expect(s.skewX).toBeCloseTo(Math.PI / 2)
+  expect(s.skewY).toBeCloseTo(20 * Math.PI / 180)
+  expect(s.selected).toBe('Parasitus_consanguineus')
+  expect(s.banner).toContain('Parasitus_consanguineus')
+  expect(s.boxes).toHaveLength(1)
+  expect(s.boxes[0]).toMatch(/node color/i)
+  expect(s.collapsed.some(t => /node size/i.test(t))).toBe(true)
+  expect(s).toMatchObject({ top: '50px', bottom: '' })
+  // zoom 2 of a fit made for the new angles; not the default fit
+  expect(s.scale).not.toBeCloseTo(fitted)
+})
+
+test('stage 3: legends start minimized; show = false hides the panel', async ({ page }) => {
+  await openFromR(page, view({ node: { color_by: 'module' } }))
+  expect(await page.locator('#legendPanel .legend-box').count()).toBe(0)
+  await expect(page.locator('#legendPanel')).toBeVisible()
+
+  const again = await page.context().newPage()
+  again.on('pageerror', e => errors.push(e.message))
+  await openFromR(again, view({ node: { color_by: 'module' }, legend: { show: false } }))
+  await expect(again.locator('#legendPanel')).toBeHidden()
+  await again.locator('#toggleLegendBtn').click() // MiRA's own toggle brings it back
+  await expect(again.locator('#legendPanel')).toBeVisible()
 })
