@@ -284,7 +284,7 @@ test; the final sync goes to main only after the MiRA merge. Item 33 (bugs)
 can be its own small PR first.
 
 **Priorities (Shai, 2026-11-02): 32, 17, 20, 31**, in an order to be set.
-Suggested: 32 (self-contained), 20, 17 (touches colorMapper and session
+32 done 2026-11-02. Suggested next: 20, 17 (touches colorMapper and session
 fields), then 31 last so "Copy as R code" also covers the new arguments.
 
 | # | Feature | R sketch / notes |
@@ -297,7 +297,7 @@ fields), then 31 last so "Copy as R code" also covers the new arguments.
 | 20 | Link color by `weight`; link width scaling | `mira_intralayer(color_by = "weight", width = "scaled")` |
 | 26 | `mira_save()`: image file from R | Headless browser; MiRA signals "rendered" |
 | 31 | "Copy as R code" button in MiRA | Camera part done (stage 3 readout, *Copy for R*). |
-| 32 | More node shapes (triangle, diamond) | |
+| 32 | ~~More node shapes (triangle, diamond)~~ | **Done 2026-11-02**: MiRA #95 (1af87ef), ggmira #3 (6eab3b3). Equal area to the circle; legend glyphs drawn with `traceNodeShape`. First feature on the per-feature branch workflow. |
 | 35 | Filter layers, closing the gap in the stack | MiRA's layer filter keeps each layer's slot (renderer positions layers by index among all layers), so a hidden layer leaves a gap. Needs renderer code to stack only the visible layers; then `mira_filter(layers = )`. |
 | 36 | Filter nodes per layer (state-node columns, e.g. `abundance > 10`) | MiRA's node filter is by node name across all layers (renderer.js); a per-(node, layer) condition has no faithful mapping. Needs a per-layer node filter in MiRA. |
 | 34 | Color scales per element (node / intralayer / interlayer / layer), not per attribute name. Decided 2026-11-02 to keep MiRA's rule for now: one `value -> color` map per attribute name (`categoryColorOverrides`, app.js), shared by every element colored by that attribute. Two tables with the same column name and the same value (node `module` 1, link `module` 1) share a color, in the UI and from R (R warns which piece replaces which). | Key the overrides by `element:attr`; touches the three color functions, the legend editor and session save/restore (fallback for old keys); then `scales` in the view spec and `.combine_scales` in R. |
@@ -520,7 +520,6 @@ Each needs MiRA work first; the R side is cheap once MiRA supports it.
 - **Legend titles / `labs()`.** MiRA titles are fixed ("Node Color: module").
 - **Link color by `weight`.** MiRA's link color dropdown excludes `weight`
   (dataParser `linkAttributeNames`). Needs a MiRA change.
-- **More node shapes** beyond circle and square (triangle, diamond).
 - **`aes()` as an alternative mapping syntax.** Its real gain is derived
   variables (`aes(size = log(abundance))`). Could be added later without
   breaking the string API.
