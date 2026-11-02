@@ -24,6 +24,11 @@ const COPIED_MS = 1500;
 const ZOOM_MIN = 0.2;
 const ZOOM_MAX = 5;
 const PAN_MAX = 1;
+// Digits in the copied call: enough that the view comes back within a pixel
+// (0.01 of pan is 14 px on a 1400 px window; 1° of rotation moves the far
+// layers by several pixels). The line on screen stays rounded.
+const ANGLE_DIGITS = 1;
+const VIEW_DIGITS = 3;
 
 /**
  * The camera of `renderer` as mira_camera() values.
@@ -52,13 +57,13 @@ export function cameraValues(renderer) {
     };
 }
 
-/** The mira_camera() call for `values`, rounded and within mira_camera()'s limits. */
+/** The mira_camera() call for `values`, within mira_camera()'s limits. */
 export function cameraCode({ rotate, tilt, zoom, pan }) {
     const clamp = (v, max) => Math.max(-max, Math.min(max, v));
     const zoomed = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, zoom));
-    const [x, y] = pan.map(v => round(clamp(v, PAN_MAX), 2));
-    return `mira_camera(rotate = ${Math.round(rotate)}, tilt = ${Math.round(tilt)}, ` +
-        `zoom = ${round(zoomed, 2)}, pan = c(${x}, ${y}))`;
+    const [x, y] = pan.map(v => round(clamp(v, PAN_MAX), VIEW_DIGITS));
+    return `mira_camera(rotate = ${round(rotate, ANGLE_DIGITS)}, tilt = ${round(tilt, ANGLE_DIGITS)}, ` +
+        `zoom = ${round(zoomed, VIEW_DIGITS)}, pan = c(${x}, ${y}))`;
 }
 
 /** Show the readout and keep it current. @param getAppMode () => MiRA's mode */

@@ -45,8 +45,8 @@ describe('camera readout', () => {
   })
 
   it('copies a mira_camera() call within its limits', () => {
-    expect(cameraCode({ rotate: 61.6, tilt: 18.2, zoom: 1.404, pan: [0.051, -0.024] }))
-      .toBe('mira_camera(rotate = 62, tilt = 18, zoom = 1.4, pan = c(0.05, -0.02))')
+    expect(cameraCode({ rotate: 61.64, tilt: 18.23, zoom: 1.40449, pan: [0.05123, -0.02377] }))
+      .toBe('mira_camera(rotate = 61.6, tilt = 18.2, zoom = 1.404, pan = c(0.051, -0.024))')
     expect(cameraCode({ rotate: 0, tilt: 0, zoom: 9, pan: [3, -2] }))
       .toBe('mira_camera(rotate = 0, tilt = 0, zoom = 5, pan = c(1, -1))')
   })
