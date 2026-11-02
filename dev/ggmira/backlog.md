@@ -14,6 +14,9 @@ Phase 3 done: ggmira package at `~/GitHub/ecomplab/ggmira`
 **QA of stage 1 done 2026-11-02** (see Decided: QA 2026-11-02). **Milestone 1 is complete.** **Stage 1 of the development plan is done
 (2026-11-01):** MiRA feat/ggmira ed29cbc, ggmira 21316e6 + bundled MiRA
 322b587. Next: stage 2 (`mira_filter`), design first.
+**2026-11-02:** stages 2–3 merged to ggmira main; stage 4 (views) built
+and tested by Shai, not merged (see Stage 4 and the handoff of
+2026-11-02 afternoon).
 
 ## Milestones
 
@@ -235,14 +238,29 @@ fields; screenshots). Tests: MiRA 334 unit + 31 browser; ggmira 222.
 meta-network with settings; map, layer, dashboard and data open with
 MiRA's defaults; `plot_mira(mode = )`. Pending: node shapes in the
 meta-network (item 38, MiRA code, design shown to Shai first).
+Added the afternoon of 2026-11-02, tested by Shai: `mira_filter()` in grid
+mode (MiRA ee8484e: the grid applies the Data mode filter);
+`mira_mode_meta(layers = )` selects layers in the meta-network's Filter
+Layers panel (MiRA 1e62644). Map fixes (Shai's QA): plots from R opened the
+map in Spain, MiRA's start position (aedadfb: rBridge no longer restores
+the captured map position); the layer view zoomed in so far that bubbles
+sat under the panels, and layers sharing one place zoomed to the maximum
+(9c560db: new `js/mapFit.js` fits clear of the panels; map mode uses it
+too). Checked on emln 17 (Galapagos), 23 (Canada), 38 (Japan), 7 (one
+place). Docs (ggmira 6620aad): one help page per view, with a screenshot
+(man/figures) and an icon; `?mira_mode` is the overview with a table of
+which components apply in which view. **Next for the views: their
+settings, map and layer view first (items 23, 22); each page is where
+the arguments go.**
 
 | # | Feature | R sketch |
 |---|---|---|
 | 21 | ~~Grid view: layers side by side, columns~~ | Done: `mira_mode_grid(columns = 3)` |
-| 22 | Layer mode settings: bubble size/color, edge metric, edge min weight, labels, geographic placement | Open-only for now (`mira_mode_layer()`). Restoring layer-view settings skips MiRA's own refresh (bubble sizes, legend), geographic mode cannot be turned off, the layout is random: MiRA work first. |
-| 23 | Map mode settings: which layers, opacity, street map, center/zoom | Open-only for now (`mira_mode_map()`). Deferred 2026-11-02 ("map seems difficult"): a restored session does not apply opacity, tiles or markers to the map (MiRA bug, item 33). |
+| 22 | Layer mode settings: bubble size/color, edge metric, edge min weight, labels, geographic placement | **Next (with 23).** Arguments go on `?mira_mode_layer`. Open-only for now (`mira_mode_layer()`). Restoring layer-view settings skips MiRA's own refresh (bubble sizes, legend), geographic mode cannot be turned off, the layout is random: MiRA work first. |
+| 23 | Map mode settings: which layers, opacity, street map, show locations, center/zoom | **Next (first).** Arguments go on `?mira_mode_map`. Open-only for now (`mira_mode_map()`). The map now opens fitted to the layers (aedadfb, 9c560db). Deferred 2026-11-02 ("map seems difficult"): a restored session does not apply opacity, tiles or markers to the map (MiRA bug, item 33). |
 | 24 | ~~Meta-network: aggregation, layout, color/size, min weight, nested sort, labels~~ | Done: `mira_mode_meta(...)` |
 | 25 | ~~Open in Dashboard or Data mode~~ | Done: `mira_mode_dashboard()`, `mira_mode_data()` (settings not saved in sessions) |
+| 39 | Data mode: which table opens (nodes, state nodes, links, layers) | `mira_mode_data(table = "links")`; check MiRA can open a tab other than Nodes. Arguments go on `?mira_mode_data`. |
 | 38 | Node shapes in the meta-network follow network mode (circle / square per node set) | Asked 2026-11-02; R inherits it. MiRA: `metaNetwork.js` draws with `traceNodeShape` from a shape function app.js sets from `renderer.nodeShapeFn` on entering the meta-network and when shapes change. |
 
 **Stage 5 — R only**
@@ -258,7 +276,7 @@ meta-network (item 38, MiRA code, design shown to Shai first).
 
 | # | Feature | R sketch / notes |
 |---|---|---|
-| 33 | Bugs: `renderer.layoutType` not restored; double "Data warnings" alert; at 1280 px the top bar's Feedback button covers the Data filter banner's Clear button; at 1400 px with both the filter and the "Selected node" banners, the second runs under the Feedback button (banners need their own row, or the Feedback button moves); the layer view of a network with coordinates (emln 17) opens off-center, part of it outside the window | Small fixes, PR to main (live site) |
+| 33 | Bugs: `renderer.layoutType` not restored; double "Data warnings" alert; at 1280 px the top bar's Feedback button covers the Data filter banner's Clear button; at 1400 px with both the filter and the "Selected node" banners, the second runs under the Feedback button (banners need their own row, or the Feedback button moves); ~~the layer view of a network with coordinates (emln 17) opens off-center, part of it outside the window~~ (fixed 2026-11-02, 9c560db) | Small fixes, PR to main (live site) |
 | 10 | ~~Interlayer arrowhead size~~ | Done in stage 1: MiRA has one arrowhead size (`renderer.arrowheadSize`, saved); `mira_intralayer(arrow_size)` sets it |
 | 17 | Named palettes (categorical and continuous), gradient limits, palettes on computed attributes | `mira_node(color_by = "body_mass", color_palette = "magma", color_limits = c(0, 100))` |
 | 18 | Node size range | `mira_scale_size(range = c(1, 6))` |
@@ -322,6 +340,22 @@ meta-network (item 38, MiRA code, design shown to Shai first).
       `ggmira::plot_multilayer()` (agree with Geut).
 
 ---
+
+## Handoff: 2026-11-02 afternoon
+
+- ggmira `feat/modes`: stage 4 with the grid filter, meta-network layers,
+  the map fixes (bundled MiRA 65c7743) and one help page per view
+  (6620aad). R CMD check: 0 errors, 0 warnings. Not merged: Shai merges
+  when approved.
+- MiRA `feat/ggmira` (worktree MiRA-dev): aedadfb, 9c560db on top of
+  1e62644. 370 unit + 43 browser tests pass (`--workers 1`). With 3
+  workers, a few browser tests time out (e.g. "a seeded layout gives
+  identical positions on every load"), on the old code too: the
+  single-threaded test server under load, not a regression.
+- Pre-existing roxygen warning: `R/mira_filter.R:78`, `[layer_from, ...]`
+  read as a link in an internal doc; escape the brackets.
+- Next: item 38 (design first), then items 23 and 22 (map and layer view
+  settings).
 
 ## Handoff: resume after `feat/node-set-channels` is merged (2026-11-01)
 
