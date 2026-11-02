@@ -274,6 +274,15 @@ the arguments go.**
 
 **Then M (needs MiRA code) — 33 first, order of the rest to discuss**
 
+**Workflow from 2026-11-02 (replaces the long-lived `feat/ggmira`):** each
+feature below is a MiRA feature first. One MiRA branch `feat/<feature>` from
+main (code, tests, `manual.html`), PR, squash merge, live. A ggmira branch of
+the same name from main holds the R side (arguments, tests, help, article,
+examples, `npm run sync:ggmira` after the MiRA merge). ggmira merges after
+MiRA. While developing, the R branch may bundle the unmerged MiRA branch to
+test; the final sync goes to main only after the MiRA merge. Item 33 (bugs)
+can be its own small PR first.
+
 **Priorities (Shai, 2026-11-02): 32, 17, 20, 31**, in an order to be set.
 Suggested: 32 (self-contained), 20, 17 (touches colorMapper and session
 fields), then 31 last so "Copy as R code" also covers the new arguments.
