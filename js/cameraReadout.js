@@ -20,7 +20,9 @@ const READOUT_ID = 'cameraReadout';
 const ANCHOR_ID = 'zoomInBtn';
 const NETWORK_MODE = 'network';
 const COPIED_MS = 1500;
-// mira_camera() limits: the copied call is clamped to them
+// mira_camera() limits: the copied call is clamped to them (the mouse can
+// tilt a little past 45°)
+const TILT_MAX = 45;
 const ZOOM_MIN = 0.2;
 const ZOOM_MAX = 5;
 const PAN_MAX = 1;
@@ -62,8 +64,14 @@ export function cameraCode({ rotate, tilt, zoom, pan }) {
     const clamp = (v, max) => Math.max(-max, Math.min(max, v));
     const zoomed = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, zoom));
     const [x, y] = pan.map(v => round(clamp(v, PAN_MAX), VIEW_DIGITS));
-    return `mira_camera(rotate = ${round(rotate, ANGLE_DIGITS)}, tilt = ${round(tilt, ANGLE_DIGITS)}, ` +
+    return `mira_camera(rotate = ${round(rotate, ANGLE_DIGITS)}, tilt = ${round(clamp(tilt, TILT_MAX), ANGLE_DIGITS)}, ` +
         `zoom = ${round(zoomed, VIEW_DIGITS)}, pan = c(${x}, ${y}))`;
+}
+
+/** The line shown on screen for `values`: rounded, never "-0". */
+export function cameraLine({ rotate, tilt, zoom, pan }) {
+    return `rotate ${fixed(rotate, 0)}°  tilt ${fixed(tilt, 0)}°  ` +
+        `zoom ${fixed(zoom, 2)}  pan ${pan.map(v => fixed(v, 2)).join(', ')}`;
 }
 
 /** Show the readout and keep it current. @param getAppMode () => MiRA's mode */
@@ -106,17 +114,21 @@ export function startCameraReadout(renderer, getAppMode) {
             box.style.top = `${anchor.bottom + 8}px`;
         }
         const values = cameraValues(renderer);
-        const line = `rotate ${Math.round(values.rotate)}°  tilt ${Math.round(values.tilt)}°  ` +
-            `zoom ${values.zoom.toFixed(2)}  pan ${values.pan.map(v => v.toFixed(2)).join(', ')}`;
+        code = cameraCode(values); // every tick: a change too small for the line still copies
+        const line = cameraLine(values);
         if (line === shown) return;
         shown = line;
         text.textContent = line;
-        code = cameraCode(values);
-        box.dataset.code = code;
     }, POLL_MS);
 }
 
 const round = (v, digits) => Number(v.toFixed(digits));
+
+// toFixed without "-0" / "-0.00"
+function fixed(v, digits) {
+    const s = v.toFixed(digits);
+    return Number(s) === 0 ? (0).toFixed(digits) : s;
+}
 
 // (-180, 180]
 function normalizeDegrees(deg) {

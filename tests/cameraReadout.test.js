@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { cameraValues, cameraCode } from '../js/cameraReadout.js'
+import { cameraValues, cameraCode, cameraLine } from '../js/cameraReadout.js'
 
 // A renderer whose fit is scale 2 at offset (100, 50), on a 1000 x 600 canvas
 const fakeRenderer = (camera) => ({
@@ -49,5 +49,15 @@ describe('camera readout', () => {
       .toBe('mira_camera(rotate = 61.6, tilt = 18.2, zoom = 1.404, pan = c(0.051, -0.024))')
     expect(cameraCode({ rotate: 0, tilt: 0, zoom: 9, pan: [3, -2] }))
       .toBe('mira_camera(rotate = 0, tilt = 0, zoom = 5, pan = c(1, -1))')
+  })
+
+  it("clamps the copied tilt to mira_camera()'s limit", () => {
+    expect(cameraCode({ rotate: 0, tilt: 45.84, zoom: 1, pan: [0, 0] })).toContain("tilt = 45,")
+    expect(cameraCode({ rotate: 0, tilt: -45.84, zoom: 1, pan: [0, 0] })).toContain("tilt = -45,")
+  })
+
+  it("shows the line rounded, without -0", () => {
+    expect(cameraLine({ rotate: 40.1, tilt: -0.3, zoom: 1.004, pan: [-0.004, 0.126] }))
+      .toBe("rotate 40°  tilt 0°  zoom 1.00  pan 0.00, 0.13")
   })
 })
