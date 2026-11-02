@@ -366,9 +366,11 @@ the arguments go.**
   `feat/node-set-channels` deleted, kept as tags `archive/ggmira`,
   `archive/ggmira-view-spec`, `archive/node-set-channels` (the commit
   hashes cited in this backlog stay reachable). ggmira keeps only `main`.
-  MiRA-dev worktree is detached at main: start each next item on a new
-  branch from main (`git -C MiRA-dev switch -c feat/<item> origin/main`),
-  one PR to main per item; re-bundle into ggmira from that branch.
+  Shai prefers one long-lived branch for the MiRA side of ggmira:
+  `feat/ggmira` was recreated from main (89915d6) and MiRA-dev works on
+  it. Since MiRA squash-merges PRs, after each merge reset it to main
+  (`git -C MiRA-dev fetch && git -C MiRA-dev reset --hard origin/main &&
+  git -C MiRA-dev push --force-with-lease`) before continuing.
   MiRA `feat/ggmira` to main (live site) only after a website-path check:
   demo datasets without R, grid filter, map, layer view, Reset,
   meta-network. Then items 23 and 22 (map and layer view settings).
