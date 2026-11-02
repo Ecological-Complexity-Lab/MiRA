@@ -123,6 +123,8 @@ All top-level sections and all fields are optional. Missing = MiRA default.
 | `scales.<attr>.type` | string | `categorical` or `continuous` (continuous needs numeric data: MiRA warns and ignores it otherwise; R does not send it for a non-numeric column). |
 | `scales.<attr>.values` | object | Category value → `#rrggbb`. Keys are strings; MiRA matches them to the data values (`"1"` matches number `1`). An attribute is any node, state-node, link or layer attribute, data or computed. |
 | `scales[".set"].values` | object | Node set label → `#rrggbb`: the colors of the two node sets (with `node.color_by: ".set"`). Stored under MiRA's set-color key in the category overrides, where the legend edits them. No `type`. R: `mira_node(color_by = ".set", color_values = c(bird = "red"))`. |
+| `filter.nodes` | array or null | Node names: only these nodes are drawn (MiRA's Data mode filter, network and map modes; the "Data filter active" banner clears it). Matched to the data as stored (`"7"` matches `7`). Unknown names skipped with a warning; a list with no valid name is ignored; `[]` hides every node; `null` = no node filter. |
+| `filter.links` | array or null | Links as `[layer_from, node_from, layer_to, node_to]` (intra- or interlayer): only these are drawn. Same rules as `filter.nodes`. A link is drawn only if both its nodes pass `filter.nodes`. |
 
 ### Mappings (`color_by`, `size_by`)
 
@@ -202,6 +204,7 @@ These functions live in the separate R package **ggmira** (not emln).
 | `mira_intralayer(color_by, color, min_weight, arrow_size, color_values, color_scale)` | `intralayer` (+ `scales`) |
 | `mira_interlayer(show, color_by, color, min_weight, curvature, pairs, color_values, color_scale)` | `interlayer` (+ `scales`) |
 | `mira_layer(color_by, color, color_values, color_scale, labels, label_size, set_labels, stack, spacing)` | `layer` (+ `scales`, or `layer.colors`) |
+| `mira_filter(nodes, links)` | `filter` (conditions evaluated in R, sent as names / links) |
 
 **Color scales in R.** `color_values` (colors named by value) and
 `color_scale` (`"categorical"` / `"continuous"`) sit in the piece whose

@@ -170,7 +170,7 @@ are optional, so the spec stays version 1. R names below are sketches.
 Checked end to end on emln 17 (bipartite and Kamada-Kawai, all stage 1
 fields; screenshots). Tests: MiRA 334 unit + 31 browser; ggmira 222.
 
-**Stage 2 — filters (S)**
+**Stage 2 — filters (S) — done 2026-11-02** (ggmira `feat/filter`, MiRA `feat/ggmira` acad719; not yet merged to ggmira `main`)
 
 | # | Feature | R sketch |
 |---|---|---|
@@ -208,7 +208,7 @@ its own camera settings. Syntax to be discussed before any code.
 
 | # | Feature | R sketch / notes |
 |---|---|---|
-| 33 | Bugs: `renderer.layoutType` not restored; double "Data warnings" alert | Small fixes, PR to main (live site) |
+| 33 | Bugs: `renderer.layoutType` not restored; double "Data warnings" alert; at 1280 px the top bar's Feedback button covers the Data filter banner's Clear button | Small fixes, PR to main (live site) |
 | 10 | ~~Interlayer arrowhead size~~ | Done in stage 1: MiRA has one arrowhead size (`renderer.arrowheadSize`, saved); `mira_intralayer(arrow_size)` sets it |
 | 17 | Named palettes (categorical and continuous), gradient limits, palettes on computed attributes | `mira_node(color_by = "body_mass", color_palette = "magma", color_limits = c(0, 100))` |
 | 18 | Node size range | `mira_scale_size(range = c(1, 6))` |
