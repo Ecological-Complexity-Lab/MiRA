@@ -131,6 +131,10 @@ All top-level sections and all fields are optional. Missing = MiRA default.
 | `camera.pan` | [x, y] | Fractions of the window, each −1 to 1 (positive y = up). Applied by rBridge after the zoom. |
 | `legend.show` | `"all"`, array, or `false` | Legends opened (`state.legend.expandedLegends`): names `node_color` (nodeColor, A, B), `node_size` (nodeSize, A, B), `node_shape`, `intralayer_color`, `interlayer_color`, `layer_color`. `false` hides the panel (rBridge clicks MiRA's legend toggle). Plots from R start with every legend minimized. R sends `show` only when given (`mira_legends()` alone sends `"all"`), so a later `mira_legends(position = )` keeps an earlier `show`. |
 | `legend.position` | string | `bottom-right` (default), `top-right`, `bottom-left`: rBridge moves the legend panel after restore (it stays draggable). |
+| `mode.view` | string | The view MiRA opens in (`state.appMode`): `network`, `grid`, `map`, `layer`, `meta` (→ `metanetwork`), `dashboard`, `data`. One view per spec. Restore enters it; rBridge enters `data` (restore does not) and warns when MiRA could not open the view (the map needs layer coordinates). |
+| `mode.columns` | integer | `grid` only: columns, 1–8 → `renderer.gridColumns`; not given → MiRA's own (ceil(sqrt(layers))). |
+| `mode.aggregation` / `layout` / `color_by` / `size_by` | string | `meta` only. aggregation `occurrence` / `weights` / `union` (→ sumOccurrence / sumWeights / union); layout `circular` / `force` / `bipartite` (bipartite needs a bipartite layer); color_by, size_by `participation` / `degree` / `uniform` (degree → metaDegree). |
+| `mode.size` / `min_weight` / `nested` / `labels` / `label_size` / `color` | | `meta` only: base size 0.2–3; min weight ≥ 0; nested sort (bool); labels (bool); label size 8–24; color `#rrggbb` (every node and both sets) or `{set label: #rrggbb}`. The meta-network starts from MiRA's entry settings (`META_NETWORK_DEFAULTS`, two-row on bipartite data, fitted), then takes these. Fields of another view are skipped with a warning. |
 
 ### Mappings (`color_by`, `size_by`)
 
@@ -213,6 +217,7 @@ These functions live in the separate R package **ggmira** (not emln).
 | `mira_filter(nodes, links)` | `filter` (conditions evaluated in R, sent as names / links) |
 | `mira_camera(rotate, tilt, zoom, pan)` | `camera` |
 | `mira_legends(show = "all", position)` | `legend` |
+| `mira_mode_*()`; `plot_mira(mode = )` | `mode` |
 | `mira_node(highlight)` | `node.highlight` |
 
 **Color scales in R.** `color_values` (colors named by value) and

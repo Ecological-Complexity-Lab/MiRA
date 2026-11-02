@@ -101,6 +101,28 @@ existing files get only small additive changes (listed in view-spec.md §1).
   shows 0.4984 for 0.5 (slider step; the threshold is 0.5); `c("TRUE" =
   ...)` does not match a logical column (JSON `true`); prototype-named JSON
   keys throw in viewSpec (R never sends them).
+- **Stage 4 views (2026-11-02):** one `mira_mode_*()` per view
+  (`mira_mode_grid/meta/map/layer/dashboard/data`; "mode" is MiRA's word).
+  Settings for grid and meta-network only; the others open with defaults.
+  **One view per plot:** a later `mira_mode_*()` of another view replaces
+  the earlier one with a warning; the same view merges; no MiRA code for
+  several views (Shai: users make one plot per view). Components still
+  apply where MiRA uses them; R warns for `mira_camera()` (network mode
+  only) and `mira_filter()` (MiRA's data filter works in network and map
+  modes only; grid, meta-network and data show the whole network, also
+  when entered by clicking). `mira_mode_meta()` follows the package rules:
+  `color_by` or `color`, not both; `nested` only for bipartite networks.
+  **`plot_mira()`** = `plot_multilayer()` + `mode` (open any view with
+  defaults); named `plot_mira` because `mira_plot` is the class of
+  `mira()` objects; `plot_multilayer()` kept unchanged, same help page.
+  MiRA: `viewSpec.js` `mode` section starts the meta-network from
+  `META_NETWORK_DEFAULTS` (exported from `metaNetwork.js`; two-row layout
+  on bipartite data, fitted), because MiRA's blank session would open it
+  circular, sized by participation, at a fixed zoom; rBridge enters Data
+  mode after restore and warns when a view could not open. Seen, MiRA's
+  own: the layer view of emln 17 (geographic) opens off-center, also by
+  clicking (item 33); the meta-network min-weight slider snaps to 1% of the
+  largest weight (0.5 shows as 0.61; the threshold and its label are 0.5).
 - **QA 2026-11-02 (stages 2 and 3, both sides):** fixed in ggmira —
   numeric node names are written out (`100000`, not `"1e+05"`) in
   `mira_filter()` and `highlight`, names may be given as numbers when
@@ -208,16 +230,20 @@ fields; screenshots). Tests: MiRA 334 unit + 31 browser; ggmira 222.
 | 12 | Which legends are open | `mira_view(legends = c("node_color"))` |
 | 13 | Highlight a node (like search) | `mira_view(highlight = "Apis mellifera")` |
 
-**Stage 4 — other views (S).** One family, `mira_mode_*()`; each view has
-its own camera settings. Syntax to be discussed before any code.
+**Stage 4 — other views (S) — built 2026-11-02, not merged** (ggmira
+`feat/modes` 44dcf3d..882819f, MiRA `feat/ggmira` 288d15f). Grid and
+meta-network with settings; map, layer, dashboard and data open with
+MiRA's defaults; `plot_mira(mode = )`. Pending: node shapes in the
+meta-network (item 38, MiRA code, design shown to Shai first).
 
 | # | Feature | R sketch |
 |---|---|---|
-| 21 | Grid view: layers side by side, columns | `mira_mode_grid(columns = 3)` |
-| 22 | Layer mode: bubble size/color, edge metric, edge min weight, labels, geographic placement | `mira_mode_layer(...)` |
-| 23 | Map mode: which layers, opacity, street map, center/zoom | `mira_mode_map(...)` |
-| 24 | Meta-network: aggregation, layout, color/size, min weight, nested sort, labels | `mira_mode_meta(...)` |
-| 25 | Open in Dashboard or Data mode | `mira_mode_dashboard()`, `mira_mode_data()` |
+| 21 | ~~Grid view: layers side by side, columns~~ | Done: `mira_mode_grid(columns = 3)` |
+| 22 | Layer mode settings: bubble size/color, edge metric, edge min weight, labels, geographic placement | Open-only for now (`mira_mode_layer()`). Restoring layer-view settings skips MiRA's own refresh (bubble sizes, legend), geographic mode cannot be turned off, the layout is random: MiRA work first. |
+| 23 | Map mode settings: which layers, opacity, street map, center/zoom | Open-only for now (`mira_mode_map()`). Deferred 2026-11-02 ("map seems difficult"): a restored session does not apply opacity, tiles or markers to the map (MiRA bug, item 33). |
+| 24 | ~~Meta-network: aggregation, layout, color/size, min weight, nested sort, labels~~ | Done: `mira_mode_meta(...)` |
+| 25 | ~~Open in Dashboard or Data mode~~ | Done: `mira_mode_dashboard()`, `mira_mode_data()` (settings not saved in sessions) |
+| 38 | Node shapes in the meta-network follow network mode (circle / square per node set) | Asked 2026-11-02; R inherits it. MiRA: `metaNetwork.js` draws with `traceNodeShape` from a shape function app.js sets from `renderer.nodeShapeFn` on entering the meta-network and when shapes change. |
 
 **Stage 5 — R only**
 
@@ -232,7 +258,7 @@ its own camera settings. Syntax to be discussed before any code.
 
 | # | Feature | R sketch / notes |
 |---|---|---|
-| 33 | Bugs: `renderer.layoutType` not restored; double "Data warnings" alert; at 1280 px the top bar's Feedback button covers the Data filter banner's Clear button; at 1400 px with both the filter and the "Selected node" banners, the second runs under the Feedback button (banners need their own row, or the Feedback button moves) | Small fixes, PR to main (live site) |
+| 33 | Bugs: `renderer.layoutType` not restored; double "Data warnings" alert; at 1280 px the top bar's Feedback button covers the Data filter banner's Clear button; at 1400 px with both the filter and the "Selected node" banners, the second runs under the Feedback button (banners need their own row, or the Feedback button moves); the layer view of a network with coordinates (emln 17) opens off-center, part of it outside the window | Small fixes, PR to main (live site) |
 | 10 | ~~Interlayer arrowhead size~~ | Done in stage 1: MiRA has one arrowhead size (`renderer.arrowheadSize`, saved); `mira_intralayer(arrow_size)` sets it |
 | 17 | Named palettes (categorical and continuous), gradient limits, palettes on computed attributes | `mira_node(color_by = "body_mass", color_palette = "magma", color_limits = c(0, 100))` |
 | 18 | Node size range | `mira_scale_size(range = c(1, 6))` |
