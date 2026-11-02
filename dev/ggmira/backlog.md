@@ -175,6 +175,7 @@ its own camera settings. Syntax to be discussed before any code.
 | 26 | `mira_save()`: image file from R | Headless browser; MiRA signals "rendered" |
 | 31 | "Copy as R code" button in MiRA | |
 | 32 | More node shapes (triangle, diamond) | |
+| 34 | Color scales per element (node / intralayer / interlayer / layer), not per attribute name. Decided 2026-11-02 to keep MiRA's rule for now: one `value -> color` map per attribute name (`categoryColorOverrides`, app.js), shared by every element colored by that attribute. Two tables with the same column name and the same value (node `module` 1, link `module` 1) share a color, in the UI and from R (R warns which piece replaces which). | Key the overrides by `element:attr`; touches the three color functions, the legend editor and session save/restore (fallback for old keys); then `scales` in the view spec and `.combine_scales` in R. |
 
 ## Open decisions
 
