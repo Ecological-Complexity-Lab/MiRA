@@ -406,6 +406,7 @@ test('meta-network layers from R are selected in its Filter Layers panel', async
 })
 
 test('stage 4: the meta-network from R looks as when its button is clicked', async ({ page }) => {
+  test.slow() // three pages, and the canvas pixels copied out of each; near 30 s in CI
   await openFromR(page, NOT_SERVED)
   await page.click('#metaNetworkBtn')
   await page.waitForTimeout(1500) // let the layout settle
