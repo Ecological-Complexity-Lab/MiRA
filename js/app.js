@@ -746,12 +746,13 @@ function resetVisualizationOptions() {
 }
 
 // ---- Load Data ----
-function loadData(json) {
+// warn: false when the same data was already loaded (and its warnings shown)
+function loadData(json, { warn = true } = {}) {
     try {
         model = parseMultilayerData(json);
         currentDatasetName = json?.dataset?.name ?? null;
 
-        if (model.warnings && model.warnings.length) {
+        if (warn && model.warnings && model.warnings.length) {
             alert('Data warnings:\n\n• ' + model.warnings.join('\n• '));
         }
 
@@ -5265,11 +5266,12 @@ function _restoreLayerViewDOM(s) {
     lvSpacingLabel.textContent = s.bubbleSpacing.toFixed(1) + '×';
 }
 
-function restoreSessionState(state) {
+// warnData: false when the data was just loaded (MiRA opened from R)
+function restoreSessionState(state, { warnData = true } = {}) {
     if (!state.rawData) return;
 
     // 1. Load data — resets mode, visual options, computes fresh positions
-    loadData(state.rawData);
+    loadData(state.rawData, { warn: warnData });
 
     // 2. Override positions with saved ones to restore exact layout
     if (state.positions) {
@@ -5335,6 +5337,7 @@ function restoreSessionState(state) {
     // 6. Layout
     layoutSelect.value = ui.layoutSelect;
     layout.layoutType = ui.layoutSelect;
+    renderer.layoutType = layout.layoutType; // bipartite-only drawing (set names, diagonal placement)
     bipartiteNestedCheckbox.checked = ui.bipartiteNestedCheckbox;
     layout.bipartiteNested = ui.bipartiteNestedCheckbox;
 

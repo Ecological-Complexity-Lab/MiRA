@@ -97,6 +97,7 @@ const ctxWithSets = () => ({
   layerNames: ['L1', 'L2', 'L3'],
   nodeNames: new Map([['bee', 'bee'], ['fly', 'fly'], ['rose', 'rose'], ['7', 7]]),
   linkKeys: new Set(['L1::bee::L1::rose', 'L1::fly::L1::rose', 'L1::bee::L2::bee']),
+  reverseLinkKeys: new Map([['L1::rose::L1::bee', 'L1::bee::L1::rose']]), // undirected bee–rose
   values: {
     module: new Set([1, 2, 3]),
     abundance: new Set([0.5, 2]),
@@ -610,6 +611,12 @@ describe('Group 11 — Filter', () => {
     expect(r.state.filter.nodeNames).toEqual(['bee', 'rose'])
     expect(r.state.filter.linkKeys).toEqual(['L1::bee::L1::rose', 'L1::bee::L2::bee'])
     expect(r.state.filter.layerNames).toBeNull()
+    expect(r.warnings).toEqual([])
+  })
+
+  it('11.1b an undirected link given in the other direction keeps the drawn link', () => {
+    const r = apply({ filter: { links: [['L1', 'rose', 'L1', 'bee'], ['L1', 'bee', 'L1', 'rose']] } })
+    expect(r.state.filter.linkKeys).toEqual(['L1::bee::L1::rose'])
     expect(r.warnings).toEqual([])
   })
 

@@ -324,12 +324,13 @@ test('camera readout: the values R sent, live, with Copy for R; only when opened
   await openFromR(page, view({ camera: { rotate: 70, tilt: 15, zoom: 1.5, pan: [0.1, -0.05] } }))
   const readout = page.locator('#cameraReadout')
   await expect(readout).toBeVisible()
-  await expect(readout).toContainText('rotate 70°  tilt 15°  zoom 1.50  pan 0.10, -0.05')
+  await expect(readout).toHaveAttribute('title', 'rotate 70°  tilt 15°  zoom 1.50  pan 0.10, -0.05')
+  await expect(readout).toContainText('rotate70°')
 
   // Zooming about the center also scales the earlier pan; the readout gives
   // the call that reproduces the view
   await page.locator('#zoomInBtn').click() // ×1.2
-  await expect(readout).toContainText('zoom 1.80  pan 0.12, -0.06')
+  await expect(readout).toHaveAttribute('title', /zoom 1\.80  pan 0\.12, -0\.06/)
 
   await readout.locator('button').click()
   await expect(readout.locator('button')).toHaveText('Copied')
@@ -512,4 +513,52 @@ test('meta-network from R: nodes take mira_node(shape = ) shapes', async ({ page
   }, [PARASITE, HOST])
   expect(shapes).toEqual(['square', 'circle'])
   await expect(page.locator('#legendPanel')).toContainText('Node Shape')
+})
+
+// ── small fixes (backlog item 33) ────────────────────────────────────────────
+
+test('opened from R, data warnings are shown once', async ({ page }) => {
+  const net = JSON.parse(NETWORK)
+  const first = net.extended.find(l => l.layer_from === l.layer_to)
+  net.extended.push({ ...first, node_from: first.node_to, node_to: first.node_from }) // B→A of an undirected A→B
+  const dialogs = []
+  page.on('dialog', d => dialogs.push(d.message()))
+  await page.route('**/api/network.json', route =>
+    route.fulfill({ contentType: 'application/json', body: JSON.stringify(net) }))
+  await page.route('**/api/view.json', route =>
+    route.fulfill({ contentType: 'application/json', body: JSON.stringify(view({ node: { size: 8 } })) }))
+  await page.goto('/?autoload=true')
+  await page.waitForFunction(() => window._renderer?.model?.layers?.length > 0)
+  await page.waitForLoadState('networkidle')
+  await page.waitForTimeout(500)
+  expect(dialogs.filter(m => m.startsWith('Data warnings:'))).toHaveLength(1)
+})
+
+test('the camera readout and both banners sit in one row, clear of the bar and the panels', async ({ page }) => {
+  for (const width of [1280, 1400]) {
+    await page.setViewportSize({ width, height: 800 })
+    await openFromR(page, view({ filter: { nodes: [PARASITE, HOST] }, node: { highlight: HOST } }))
+    for (const id of ['cameraReadout', 'dataFilterBanner', 'selectedNodeBanner']) {
+      await expect(page.locator(`#${id}`), `${id} at ${width}px`).toBeVisible()
+    }
+    const boxes = await page.evaluate(() => Object.fromEntries(
+      ['cameraReadout', 'dataFilterBanner', 'selectedNodeBanner', 'dataFilterClear', 'selectedNodeClear',
+        'controlPanels', 'bottomBar', 'brandingGroup']
+        .map(id => [id, document.getElementById(id).getBoundingClientRect().toJSON()])))
+    const overlap = (a, b) => a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom
+    const row = ['cameraReadout', 'dataFilterBanner', 'selectedNodeBanner']
+    for (const id of row) {
+      for (const other of ['controlPanels', 'bottomBar', ...row.filter(o => o !== id)]) {
+        expect(overlap(boxes[id], boxes[other]), `${id} overlaps ${other} at ${width}px`).toBe(false)
+      }
+    }
+    // the readout is first, right of the menu panels, at their top
+    expect(boxes.cameraReadout.left).toBeGreaterThan(boxes.controlPanels.right)
+    expect(Math.abs(boxes.cameraReadout.top - boxes.controlPanels.top)).toBeLessThan(2)
+    for (const id of ['dataFilterClear', 'selectedNodeClear']) {
+      const b = boxes[id]
+      const hit = await page.evaluate(([x, y]) => document.elementFromPoint(x, y)?.id, [b.left + b.width / 2, b.top + b.height / 2])
+      expect(hit, `${id} clickable at ${width}px`).toBe(id)
+    }
+  }
 })

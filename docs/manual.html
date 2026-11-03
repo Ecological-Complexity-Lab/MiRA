@@ -469,7 +469,7 @@
   <p>One row per edge — intralayer and interlayer edges both go in this single list. An edge is classified <strong>automatically</strong> as intralayer when <code>layer_from</code> equals <code>layer_to</code>, and as interlayer otherwise.</p>
   <ul>
     <li><code>layer_from</code>, <code>node_from</code>, <code>layer_to</code>, <code>node_to</code> — required.</li>
-    <li><code>weight</code> <em>(optional)</em> — sets edge line width (thicker = higher weight) and feeds the weight-threshold filter that hides links below a chosen value. Defaults to 1. <em>(Weight itself is not a selectable link-color attribute.)</em></li>
+    <li><code>weight</code> <em>(optional)</em> — sets edge line width (thicker = higher weight; within a layer, weight × 2 px up to 8 px, and when large weights are common, e.g. percentages, all weights are scaled down together so they keep their proportions) and feeds the weight-threshold filter that hides links below a chosen value. Defaults to 1. <em>(Weight itself is not a selectable link-color attribute.)</em></li>
     <li><code>directed</code> <em>(optional, per-edge Boolean)</em> — marks this individual edge as directed; if any edge sets it, the matching global flag (<code>directed</code> for intralayer, <code>directed_interlayer</code> for interlayer) is inferred as <code>true</code>.</li>
     <li>Any extra fields become selectable attributes for color/size mapping.</li>
   </ul>
@@ -984,7 +984,7 @@ Ixodes_ricinus,0.003</code></pre>
   <p>Filters and selections in Data Mode propagate to <span class="pill pill-network">Network</span>, <span class="pill pill-map">Map</span> and Grid modes. When a subset is active:</p>
   <ul>
     <li>Only matching nodes, links, and layers are rendered on the canvas.</li>
-    <li>A compact <strong>amber filter banner</strong> appears in the bottom-right corner (above the branding panel) showing how many items are filtered and a <em>Clear</em> button.</li>
+    <li>A compact <strong>amber filter banner</strong> appears under the toolbar, right of the menu panels, showing how many items are filtered and a <em>Clear</em> button.</li>
     <li>The banner is visible only in Network, Map and Grid modes — it hides in other modes.</li>
   </ul>
   <p>Subsets are derived from the active tab: filtering the <em>Nodes</em> tab subsets by node names; filtering <em>Layers</em> subsets by layer names; filtering <em>Links</em> subsets by individual link keys.</p>

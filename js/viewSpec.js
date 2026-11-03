@@ -20,7 +20,9 @@
  *   ctx.nodeNames     Map<String(node_name), node_name> — every node, keyed by
  *                     its name as JSON sends it
  *   ctx.linkKeys      Set of "layer_from::node_from::layer_to::node_to" — every
- *                     link (intra- and interlayer), as dataMode keys them
+ *                     link MiRA draws (intra- and interlayer), as dataMode keys them
+ *   ctx.reverseLinkKeys  Map<reversed key, drawn key> for undirected links, so a
+ *                     link given in the other direction finds the drawn one
  *
  * Invalid fields are skipped with a warning; the setting keeps its default.
  * Contract: dev/ggmira/view-spec.md (development branch).
@@ -650,6 +652,8 @@ function applyFilter(state, section, ctx, warn) {
             const ok = Array.isArray(link) && link.length === 4 && link.every(v => typeof v === 'string');
             const key = ok ? link.join(LINK_KEY_SEPARATOR) : undefined;
             if (key !== undefined && ctx.linkKeys.has(key)) return key;
+            const drawn = key !== undefined ? ctx.reverseLinkKeys?.get(key) : undefined;
+            if (drawn !== undefined) return drawn;
             warn(path, ok ? `${show(link)} is not a link of this network`
                 : `${show(link)} must be [layer_from, node_from, layer_to, node_to]`);
             return undefined;

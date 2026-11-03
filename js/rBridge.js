@@ -88,7 +88,7 @@ function applySpecSafely(networkJson, spec, deps) {
         if (warnings.length) showSpecNotice('Some plot settings from R were ignored', warnings);
     } catch (err) {
         console.error('[MiRA] View spec could not be applied:', err);
-        deps.loadData(networkJson);
+        deps.loadData(networkJson, { warn: false });
         showSpecNotice('The plot settings from R could not be applied',
             [`${err.message}. Showing the default view.`]);
     }
@@ -106,7 +106,7 @@ function applySpec(spec, deps) {
     const result = applyViewSpec(defaults, spec, buildContext(model));
     if (result.layout) result.state.positions = computePositions(model, result.layout);
 
-    deps.restoreSessionState(result.state);
+    deps.restoreSessionState(result.state, { warnData: false }); // loadFromR showed them
     // restoreSessionState does not set the renderer's layout type, which
     // decides bipartite-only drawing (set names, diagonal placement).
     deps.renderer.layoutType = result.state.ui.layoutSelect;
@@ -191,9 +191,23 @@ function buildContext(model) {
         layerNames: model.layers.map(layer => layer.layer_name),
         values: collectAttributeValues(model),
         nodeNames: new Map(model.nodes.map(node => [String(node.node_name), node.node_name])),
-        linkKeys: new Set(model.extended.map(link =>
-            `${link.layer_from}::${link.node_from}::${link.layer_to}::${link.node_to}`)), // dataMode.js linkKey
+        ...drawnLinkKeys(model),
     };
+}
+
+// The links MiRA draws (weight 0 and duplicates dropped), keyed as dataMode.js
+// linkKey does. An undirected link is also found by its reverse, which is the
+// row MiRA dropped when the table lists both directions.
+export function drawnLinkKeys(model) {
+    const key = (lf, nf, lt, nt) => `${lf}::${nf}::${lt}::${nt}`;
+    const linkKeys = new Set();
+    const reverseLinkKeys = new Map();
+    for (const link of [...model.intralayerLinks, ...model.interlayerLinks]) {
+        const drawn = key(link.layer_from, link.node_from, link.layer_to, link.node_to);
+        linkKeys.add(drawn);
+        if (!link.directed) reverseLinkKeys.set(key(link.layer_to, link.node_to, link.layer_from, link.node_from), drawn);
+    }
+    return { linkKeys, reverseLinkKeys };
 }
 
 /** { [attrName]: Set<value> } over nodes, state nodes, links and layers. */
