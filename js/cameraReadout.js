@@ -1,8 +1,8 @@
 /**
  * cameraReadout.js — The network-mode camera, in ggmira's mira_camera() terms.
  *
- * Shown only when MiRA is opened from R (started by rBridge), under the zoom
- * buttons: rotate and tilt in degrees, zoom relative to MiRA's fitted view,
+ * Shown only when MiRA is opened from R (started by rBridge), as a small box
+ * right of the menu panels, before the alerts: rotate and tilt in degrees, zoom relative to MiRA's fitted view,
  * pan as fractions of the window. "Copy for R" copies the mira_camera() call
  * that gives the current view, so a view set with the mouse can go into an
  * R script.
@@ -17,7 +17,7 @@
 const DEGREES = Math.PI / 180;
 const POLL_MS = 250;
 const READOUT_ID = 'cameraReadout';
-const ANCHOR_ID = 'zoomInBtn';
+const OVERLAYS_ID = 'canvasOverlays'; // index.html: the row under the bar, right of the menu panels
 const NETWORK_MODE = 'network';
 const COPIED_MS = 1500;
 // mira_camera() limits: the copied call is clamped to them (the mouse can
@@ -74,23 +74,37 @@ export function cameraLine({ rotate, tilt, zoom, pan }) {
         `zoom ${fixed(zoom, 2)}  pan ${pan.map(v => fixed(v, 2)).join(', ')}`;
 }
 
+/** The readout's rows for `values`, rounded as cameraLine: [[label, value], ...]. */
+export function cameraRows({ rotate, tilt, zoom, pan }) {
+    return [
+        ['rotate', `${fixed(rotate, 0)}°`],
+        ['tilt', `${fixed(tilt, 0)}°`],
+        ['zoom', fixed(zoom, 2)],
+        ['pan', pan.map(v => fixed(v, 2)).join(', ')],
+    ];
+}
+
 /** Show the readout and keep it current. @param getAppMode () => MiRA's mode */
 export function startCameraReadout(renderer, getAppMode) {
     if (document.getElementById(READOUT_ID)) return;
     const box = document.createElement('div');
     box.id = READOUT_ID;
-    box.style.cssText = 'position: absolute; z-index: 20; display: none; align-items: center; gap: 8px; ' +
-        'padding: 3px 8px; font: 11px Inter, system-ui, sans-serif; color: #4b5563; ' +
+    box.style.cssText = 'display: none; grid-template-columns: auto auto; gap: 1px 8px; ' +
+        'padding: 6px 8px; font: 11px Inter, system-ui, sans-serif; color: #4b5563; ' +
         'background: rgba(255,255,255,0.92); border: 1px solid rgba(0,0,0,0.1); border-radius: 6px; ' +
         'font-variant-numeric: tabular-nums;';
-    const text = document.createElement('span');
+    const text = document.createElement('div');
+    text.style.cssText = 'display: contents;';
     const copy = document.createElement('button');
     copy.textContent = 'Copy for R';
     copy.title = 'Copy the mira_camera() call for this view';
     copy.style.cssText = 'font: inherit; font-weight: 600; padding: 1px 6px; cursor: pointer; ' +
-        'border: 1px solid rgba(0,0,0,0.15); border-radius: 4px; background: #f9fafb; color: #374151;';
+        'border: 1px solid rgba(0,0,0,0.15); border-radius: 4px; background: #f9fafb; color: #374151; ' +
+        'grid-column: 1 / -1; margin-top: 4px;';
     box.append(text, copy);
-    document.body.appendChild(box);
+    const overlays = document.getElementById(OVERLAYS_ID);
+    if (overlays) overlays.prepend(box);
+    else document.body.appendChild(box);
 
     let code = '';
     copy.addEventListener('click', async () => {
@@ -106,19 +120,23 @@ export function startCameraReadout(renderer, getAppMode) {
     let shown = '';
     setInterval(() => {
         const visible = getAppMode() === NETWORK_MODE && renderer.model;
-        box.style.display = visible ? 'flex' : 'none';
+        box.style.display = visible ? 'grid' : 'none';
         if (!visible) return;
-        const anchor = document.getElementById(ANCHOR_ID)?.getBoundingClientRect();
-        if (anchor) {
-            box.style.left = `${anchor.left}px`;
-            box.style.top = `${anchor.bottom + 8}px`;
-        }
         const values = cameraValues(renderer);
         code = cameraCode(values); // every tick: a change too small for the line still copies
         const line = cameraLine(values);
         if (line === shown) return;
         shown = line;
-        text.textContent = line;
+        text.replaceChildren(...cameraRows(values).flatMap(([label, value]) => {
+            const name = document.createElement('span');
+            name.textContent = label;
+            name.style.color = '#9ca3af';
+            const num = document.createElement('span');
+            num.textContent = value;
+            num.style.textAlign = 'right';
+            return [name, num];
+        }));
+        box.title = line;
     }, POLL_MS);
 }
 

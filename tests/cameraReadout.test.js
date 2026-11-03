@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { cameraValues, cameraCode, cameraLine } from '../js/cameraReadout.js'
+import { cameraValues, cameraCode, cameraLine, cameraRows } from '../js/cameraReadout.js'
 
 // A renderer whose fit is scale 2 at offset (100, 50), on a 1000 x 600 canvas
 const fakeRenderer = (camera) => ({
@@ -59,5 +59,10 @@ describe('camera readout', () => {
   it("shows the line rounded, without -0", () => {
     expect(cameraLine({ rotate: 40.1, tilt: -0.3, zoom: 1.004, pan: [-0.004, 0.126] }))
       .toBe("rotate 40°  tilt 0°  zoom 1.00  pan 0.00, 0.13")
+  })
+
+  it("shows the same values as rows in the box", () => {
+    expect(cameraRows({ rotate: 40.1, tilt: -0.3, zoom: 1.004, pan: [-0.004, 0.126] }))
+      .toEqual([["rotate", "40°"], ["tilt", "0°"], ["zoom", "1.00"], ["pan", "0.00, 0.13"]])
   })
 })

@@ -6,6 +6,7 @@
  */
 
 import { traceNodeShape } from './nodeShapes.js';
+import { intraLinkWidthScale, intraLinkWidth } from './linkWidth.js';
 import { defaultColorMapper, BIPARTITE_SET_A_COLOR, BIPARTITE_SET_B_COLOR } from './colorMapper.js';
 import { dataMode } from './dataMode.js';
 
@@ -102,6 +103,8 @@ export class Renderer {
     setData(model, positions) {
         this.model = model;
         this.positions = positions;
+        // One weight-to-width scale for every layer's intralayer links
+        this._intraWidthScale = model ? intraLinkWidthScale(model.intralayerLinks) : 1;
     }
 
     /**
@@ -689,7 +692,7 @@ export class Renderer {
             const isFaded = !!this._focusSet && !!_fn &&
                 link.node_from !== _fn && link.node_to !== _fn;
 
-            const baseWidth = link.weight ? Math.min(link.weight * 2, 8) : 2;
+            const baseWidth = intraLinkWidth(link.weight, this._intraWidthScale);
             ctx.beginPath();
             ctx.moveTo(from.x, from.y);
             ctx.lineTo(to.x, to.y);

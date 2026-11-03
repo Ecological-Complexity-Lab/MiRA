@@ -457,3 +457,15 @@ test('a shared triangle applies to every node', async ({ page }) => {
   await selectNodeOption(page, 'nodeShapeSelect', 'triangle')
   expect(new Set((await renderedNodes(page)).map(n => n.shape))).toEqual(new Set(['triangle']))
 })
+
+test('a session saved in a non-bipartite layout reloads without bipartite drawing', async ({ page }, testInfo) => {
+  await loadDemoDataset(page, 'pilosof2017') // opens in the bipartite layout
+  await setLayout(page, 'kamada_kawai')
+  expect(await page.evaluate(() => window._renderer.layoutType)).toBe('kamada_kawai')
+  const path = await saveSessionToFile(page, testInfo)
+  await page.goto('/')
+  await waitForAppReady(page)
+  await loadSessionFile(page, path)
+  expect(await page.inputValue('#layoutSelect')).toBe('kamada_kawai')
+  expect(await page.evaluate(() => window._renderer.layoutType)).toBe('kamada_kawai')
+})
