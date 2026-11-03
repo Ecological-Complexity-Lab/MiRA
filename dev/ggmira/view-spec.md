@@ -122,6 +122,9 @@ All top-level sections and all fields are optional. Missing = MiRA default.
 | `interlayer.pairs` | array | `[[layer_name, layer_name], ...]`; only interlayer links between these pairs are shown; order within a pair does not matter. |
 | `scales.<attr>.type` | string | `categorical` or `continuous` (continuous needs numeric data: MiRA warns and ignores it otherwise; R does not send it for a non-numeric column). |
 | `scales.<attr>.values` | object | Category value → `#rrggbb`. Keys are strings; MiRA matches them to the data values (`"1"` matches number `1`). An attribute is any node, state-node, link or layer attribute, data or computed. |
+| `scales.<attr>.palette` | string | A palette name from `js/palettes.js`, matched without case. Categorical: Dark2 (default), Set1, Set2, Set3, Paired, Accent, Okabe-Ito. Continuous: viridis (default), magma, cividis, Blues, Greens, Reds, Purples, Oranges, Greys, YlOrRd, YlGnBu, RdBu, RdYlBu, Spectral, PiYG, BrBG, PuOr. With `type`, it must be a palette of that type (warning, ignored otherwise); without one, MiRA draws the type's default where it does not fit. R always sends `type` with it. |
+| `scales.<attr>.reverse` | boolean | Reverses the palette. |
+| `scales.<attr>.limits` | array | `[min, max]`, two numbers with min < max: the gradient runs from min to max instead of the data's range; values outside take the end colors (squish). Numeric attributes only (warning, ignored otherwise). R sends `type: "continuous"` with it. |
 | `scales[".set"].values` | object | Node set label → `#rrggbb`: the colors of the two node sets (with `node.color_by: ".set"`). Stored under MiRA's set-color key in the category overrides, where the legend edits them. No `type`. R: `mira_node(color_by = ".set", color_values = c(bird = "red"))`. |
 | `filter.nodes` | array or null | Node names: only these nodes are drawn (MiRA's Data mode filter, network and map modes; the "Data filter active" banner clears it). Matched to the data as stored (`"7"` matches `7`). Unknown names skipped with a warning; a list with no valid name is ignored; `[]` hides every node; `null` = no node filter. |
 | `filter.links` | array or null | Links as `[layer_from, node_from, layer_to, node_to]` (intra- or interlayer): only these are drawn. Same rules as `filter.nodes`. A link is drawn only if both its nodes pass `filter.nodes`. Keys are checked against the raw link table, in the direction given; on an undirected network whose table lists both directions, the reverse row passes but is not drawn (backlog item 37). R writes numeric names out (`100000`, never `1e+05`). |
@@ -182,6 +185,9 @@ All top-level sections and all fields are optional. Missing = MiRA default.
 | `interlayer.pairs` | `filter.interPairFilter` (`"from::to"`) |
 | `scales.<attr>.type` | `ui.colorScaleOverrides` |
 | `scales.<attr>.values` | `ui.categoryColorOverrides` (keys converted to the data's values) |
+| `scales.<attr>.palette` | `ui.colorPalettes` |
+| `scales.<attr>.reverse` | `ui.colorReverse` |
+| `scales.<attr>.limits` | `ui.colorLimits` |
 
 The translation context from `rBridge` also carries the layer names and the
 distinct values of every attribute (`ctx.layerNames`, `ctx.values`).
@@ -210,10 +216,10 @@ chosen layout (restore does not set it; see backlog).
 
 These functions live in the separate R package **ggmira** (not emln).
 | `mira_layout(type, seed, nested)` | `layout` |
-| `mira_node(color_by, color, size_by, size, shape, labels, label_size, perspective, color_values, color_scale)` | `node` (+ `scales`) |
-| `mira_intralayer(color_by, color, min_weight, arrow_size, color_values, color_scale)` | `intralayer` (+ `scales`) |
-| `mira_interlayer(show, color_by, color, min_weight, curvature, pairs, color_values, color_scale)` | `interlayer` (+ `scales`) |
-| `mira_layer(color_by, color, color_values, color_scale, labels, label_size, set_labels, stack, spacing)` | `layer` (+ `scales`, or `layer.colors`) |
+| `mira_node(color_by, color, size_by, size, shape, labels, label_size, perspective, color_values, color_scale, color_palette, color_reverse, color_limits)` | `node` (+ `scales`) |
+| `mira_intralayer(color_by, color, min_weight, arrow_size, color_values, color_scale, color_palette, color_reverse, color_limits)` | `intralayer` (+ `scales`) |
+| `mira_interlayer(show, color_by, color, min_weight, curvature, pairs, color_values, color_scale, color_palette, color_reverse, color_limits)` | `interlayer` (+ `scales`) |
+| `mira_layer(color_by, color, color_values, color_scale, labels, label_size, set_labels, stack, spacing, color_palette, color_reverse, color_limits)` | `layer` (+ `scales`, or `layer.colors`) |
 | `mira_filter(nodes, links)` | `filter` (conditions evaluated in R, sent as names / links) |
 | `mira_camera(rotate, tilt, zoom, pan)` | `camera` |
 | `mira_legends(show = "all", position)` | `legend` |
@@ -230,7 +236,12 @@ attribute from different pieces are merged; a value given two colors, or
 two scale types → R warning, the later piece wins. A new `color_by` /
 `color` drops that section's earlier `color_values` / `color_scale`.
 On nodes, both may be per set (`list(<set> = c(...))`), following each
-set's `color_by`.
+set's `color_by`. `color_palette`, `color_reverse` and `color_limits` (item
+17) sit in the same pieces and go to `scales.<attr>.palette`, `.reverse`
+and `.limits`; R sends the `type` they imply (the palette's type;
+continuous for limits). Settings needing different types → R error.
+Conflicting palettes, reversals or limits for one attribute → R warning,
+the later piece wins. Not for `.set` or `layer_name` (R error).
 
 - `pairs` turns interlayer links on unless the same piece gives `show`.
 
@@ -241,10 +252,8 @@ set's `color_by`.
   `color_by` are one channel: a later `color` removes an earlier
   `color_by` in the same section, and the other way round.
 - Per-set names may cover one set only; the other set keeps its default.
-- **Palettes: item 17** (decision 2026-11-01: wait, so categorical and
-  continuous palettes arrive together): `color_palette` and
-  `color_limits` in the same pieces. Categorical palettes on data columns
-  could be expanded in R into `values`; continuous palettes, limits and
-  palettes on computed attributes need MiRA work.
+- **Palettes: done (item 17, 2026-11-03).** MiRA applies them, so they
+  work on computed attributes too; the legend has the same choices (a
+  palette dropdown and ⇄), saved in sessions.
 - R validates types, names and set names; an unknown attribute name only
   warns in R, MiRA has the final say.

@@ -285,15 +285,14 @@ test; the final sync goes to main only after the MiRA merge. Item 33 (bugs)
 can be its own small PR first.
 
 **Priorities (Shai, 2026-11-02): 32, 17, 31** (20 dropped, see its row).
-32 done 2026-11-02, 33 done 2026-11-03. Next: 17 (touches colorMapper
-and session fields), then 31 last so "Copy as R code" also covers the new
+32 done 2026-11-02, 33 and 17 done 2026-11-03. Next: 31 last so "Copy as R code" also covers the new
 arguments.
 
 | # | Feature | R sketch / notes |
 |---|---|---|
 | 33 | ~~Small MiRA bugs~~ | **Done 2026-11-03**: MiRA #96 (88a2b12), ggmira #4 (20e81e5). Intralayer link width rescaled by 4 / the 99th percentile of the weights when it is above 4 (`js/linkWidth.js`; pilosof2017 unchanged pixel for pixel; magrach2020, costa2020, diseasome, emln 23/63 now proportional); `renderer.layoutType` restored from sessions; data warnings once from R; filter banners + camera readout (now a small box) in one row under the bar, right of the menu panels; the roxygen warning in `mira_filter.R`. |
 | 10 | ~~Interlayer arrowhead size~~ | Done in stage 1: MiRA has one arrowhead size (`renderer.arrowheadSize`, saved); `mira_intralayer(arrow_size)` sets it |
-| 17 | Named palettes (categorical and continuous), gradient limits, palettes on computed attributes | `mira_node(color_by = "body_mass", color_palette = "magma", color_limits = c(0, 100))` |
+| 17 | ~~Named palettes, reversal, gradient limits~~ | **Done 2026-11-03**: MiRA #97, ggmira `feat/palettes`. `js/palettes.js`: 7 categorical (Dark2 default, Okabe-Ito), 17 continuous (viridis default; magma kept, inferno/plasma dropped as look-alikes; Pastel1/2 dropped). Limits squish. Legend: palette dropdown + ⇄, saved in sessions. R: `color_palette`, `color_reverse`, `color_limits` in the four color components, per set on nodes. Possible follow-up: the same choices in the panels under each Color dropdown. |
 | 18 | Node size range | `mira_scale_size(range = c(1, 6))` |
 | 19 | Legend titles | `mira_labs(node_color = "Module")` |
 | 20 | ~~Link color by `weight`; link width scaling~~ | Dropped 2026-11-02. Widths already show weight; color by weight would show it twice (in Later). (Corrected 2026-11-03: the raw-weight width was the intralayer links', not the interlayer; fixed in 33.) |
@@ -328,7 +327,7 @@ arguments.
 
 - [x] `mira()`, `mira_*()` pieces + `+` method that accumulates a spec.
 - [x] Color scales: `color_values` / `color_scale` in each piece (stage 1).
-- [ ] Palettes (`color_palette`, `color_limits`): item 17.
+- [x] Palettes (`color_palette`, `color_reverse`, `color_limits`): item 17.
 - [x] Validation in R: attribute exists (warning), numeric for `size_by`
       (warning; numbers stored as text count, as in MiRA), set names match
       `node_type` values (error).
