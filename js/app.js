@@ -22,6 +22,7 @@ import { buildNodeSetResolver, collectSetItems, SET_A, SET_B } from './nodeSets.
 import { SHAPE_CIRCLE, SHAPE_SQUARE, SHAPE_TRIANGLE, traceNodeShape } from './nodeShapes.js';
 import { loadFromR } from './rBridge.js';
 import { fitMapToCoords } from './mapFit.js';
+import { palettesFor } from './palettes.js';
 
 // ---- State ----
 let model = null;
@@ -45,6 +46,19 @@ let activeLayerColorScale = null;
 let _interPairFilter = new Set(); // empty = show all; Set<"from::to"> = selected pairs
 const colorScaleOverrides = new Map(); // attrName -> 'categorical' | 'continuous'
 const categoryColorOverrides = new Map(); // attrName -> Map<value, hex color>
+// Palette, reversal and continuous limits per attribute name (palettes.js),
+// shared by every element colored by the attribute, as the two maps above
+const colorPalettes = new Map(); // attrName -> palette name
+const colorReverse = new Set();  // attrNames with reversed palettes
+const colorLimits = new Map();   // attrName -> [min, max]
+
+function scaleOptions(attrName) {
+    return {
+        palette: colorPalettes.get(attrName) ?? null,
+        reverse: colorReverse.has(attrName),
+        limits: colorLimits.get(attrName) ?? null,
+    };
+}
 
 function applyCategoryOverride(attrName, value, fallback) {
     const m = categoryColorOverrides.get(attrName);
@@ -721,6 +735,9 @@ function resetVisualizationOptions() {
     activeLayerColorScale = null;
     colorScaleOverrides.clear();
     categoryColorOverrides.clear();
+    colorPalettes.clear();
+    colorReverse.clear();
+    colorLimits.clear();
     expandedLegends.clear();
 
     // Layer view
@@ -3909,7 +3926,7 @@ function buildSetColorFn(val, items, domainItems, defaultColor) {
     if (!val) return { scale: null, fn: () => defaultColor };
     const [source, attrName] = val.split(':');
     const scale = colorMapper.buildColorScale(
-        items[source], attrName, colorScaleOverrides.get(attrName), domainItems[source]);
+        items[source], attrName, colorScaleOverrides.get(attrName), domainItems[source], scaleOptions(attrName));
     const fn = (layerName, nodeName) => {
         const obj = attrSource(source, layerName, nodeName);
         return obj ? applyCategoryOverride(attrName, obj[attrName], scale.scaleFn(obj[attrName])) : NO_SET_COLOR;
@@ -3950,7 +3967,7 @@ function applySharedNodeColors() {
 
     const [source, attrName] = val.split(':');
     const items = source === 'node' ? model.nodes : model.stateNodes;
-    const sc = colorMapper.buildColorScale(items, attrName, colorScaleOverrides.get(attrName));
+    const sc = colorMapper.buildColorScale(items, attrName, colorScaleOverrides.get(attrName), null, scaleOptions(attrName));
     activeNodeColorScale = sc;
     renderer.nodeColorFn = (layerName, nodeName) => {
         const obj = attrSource(source, layerName, nodeName);
@@ -3983,7 +4000,8 @@ function updateIntraLinkColors() {
     }
     const override = colorScaleOverrides.get(attrName);
     const sc = colorMapper.buildColorScale(
-        model.intralayerLinks.length ? model.intralayerLinks : model.extended, attrName, override);
+        model.intralayerLinks.length ? model.intralayerLinks : model.extended, attrName, override, null,
+        scaleOptions(attrName));
     activeIntraLinkColorScale = sc;
     renderer.intraLinkColorFn = (link) => applyCategoryOverride(attrName, link[attrName], sc.scaleFn(link[attrName]));
     if (activeIntraLinkColorScale) expandedLegends.add('intraLinkColor');
@@ -4002,7 +4020,8 @@ function updateInterLinkColors() {
     }
     const override = colorScaleOverrides.get(attrName);
     const sc = colorMapper.buildColorScale(
-        model.interlayerLinks.length ? model.interlayerLinks : model.extended, attrName, override);
+        model.interlayerLinks.length ? model.interlayerLinks : model.extended, attrName, override, null,
+        scaleOptions(attrName));
     activeInterLinkColorScale = sc;
     renderer.interLinkColorFn = (link) => applyCategoryOverride(attrName, link[attrName], sc.scaleFn(link[attrName]));
     if (activeInterLinkColorScale) expandedLegends.add('interLinkColor');
@@ -4036,7 +4055,7 @@ function updateLayerColors() {
         };
     } else if (attrName) {
         const override = colorScaleOverrides.get(attrName);
-        const sc = colorMapper.buildColorScale(model.layers, attrName, override);
+        const sc = colorMapper.buildColorScale(model.layers, attrName, override, null, scaleOptions(attrName));
         activeLayerColorScale = sc;
         renderer.layerColorFn = (layerIndex, layer) => {
             const hex = applyCategoryOverride(attrName, layer[attrName], sc.scaleFn(layer[attrName]));
@@ -4469,6 +4488,41 @@ function shapeGlyph(shape) {
     return canvas;
 }
 
+// Rebuild every color scale (a palette, reversal or type change applies to
+// all elements colored by the attribute)
+function refreshColorScales() {
+    updateNodeColors();
+    updateIntraLinkColors(); updateInterLinkColors();
+    updateLayerColors();
+    renderer.render();
+}
+
+// Palette dropdown and reverse button for a scale MiRA built from a palette
+function paletteControls(scale) {
+    const row = document.createElement('div');
+    row.className = 'legend-palette-row legend-no-drag';
+    const select = document.createElement('select');
+    select.className = 'legend-palette-select';
+    select.title = 'Palette';
+    for (const name of palettesFor(scale.type)) select.add(new Option(name, name, false, name === scale.palette));
+    select.addEventListener('change', () => {
+        colorPalettes.set(scale.attrName, select.value);
+        refreshColorScales();
+    });
+    const reverse = document.createElement('button');
+    reverse.className = 'legend-palette-reverse' + (scale.reverse ? ' active' : '');
+    reverse.textContent = '\u21C4';
+    reverse.title = 'Reverse the palette';
+    reverse.setAttribute('aria-pressed', String(!!scale.reverse));
+    reverse.addEventListener('click', () => {
+        if (colorReverse.has(scale.attrName)) colorReverse.delete(scale.attrName);
+        else colorReverse.add(scale.attrName);
+        refreshColorScales();
+    });
+    row.append(select, reverse);
+    return row;
+}
+
 function renderScaleLegend(scale, id, titleText) {
     if (!scale) return;
     if (expandedLegends.has(id)) {
@@ -4550,10 +4604,7 @@ function createLegendDOM(titleText, scale, id) {
         toggleBtn.onclick = () => {
             const newType = scale.type === 'continuous' ? 'categorical' : 'continuous';
             colorScaleOverrides.set(scale.attrName, newType);
-            updateNodeColors();
-            updateIntraLinkColors(); updateInterLinkColors();
-            updateLayerColors();
-            renderer.render();
+            refreshColorScales();
         };
         controls.appendChild(toggleBtn);
     }
@@ -4573,6 +4624,7 @@ function createLegendDOM(titleText, scale, id) {
     header.appendChild(title);
     header.appendChild(controls);
     wrapper.appendChild(header);
+    if (scale.palette) wrapper.appendChild(paletteControls(scale));
 
     if (scale.type === 'categorical') {
         const list = document.createElement('div');
@@ -5194,6 +5246,9 @@ function getSessionState() {
             categoryColorOverrides: [...categoryColorOverrides.entries()].map(
                 ([k, m]) => [k, [...m.entries()]]
             ),
+            colorPalettes: [...colorPalettes.entries()],
+            colorReverse: [...colorReverse],
+            colorLimits: [...colorLimits.entries()],
             layerColors: [...layerColors.entries()],
         },
         layerView: renderer.layerView ? {
@@ -5346,6 +5401,13 @@ function restoreSessionState(state, { warnData = true } = {}) {
     for (const [k, v] of ui.colorScaleOverrides) colorScaleOverrides.set(k, v);
     categoryColorOverrides.clear();
     for (const [k, entries] of ui.categoryColorOverrides) categoryColorOverrides.set(k, new Map(entries));
+    // Palettes (sessions saved before them have none: the defaults)
+    colorPalettes.clear();
+    for (const [k, v] of ui.colorPalettes ?? []) colorPalettes.set(k, v);
+    colorReverse.clear();
+    for (const k of ui.colorReverse ?? []) colorReverse.add(k);
+    colorLimits.clear();
+    for (const [k, v] of ui.colorLimits ?? []) colorLimits.set(k, v);
     // Per-layer color overrides set via Data Mode (defaults already populated by initLayerColors on load)
     if (ui.layerColors) {
         for (const [name, hex] of ui.layerColors) layerColors.set(name, hex);

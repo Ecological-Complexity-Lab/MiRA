@@ -562,11 +562,11 @@ describe('Group 10 — Scales', () => {
   })
 
   it('10.5 an unknown attribute, type or field is skipped', () => {
-    const r = apply({ scales: { modul: { type: 'categorical' }, module: { type: 'discrete', palette: 'magma' } } })
+    const r = apply({ scales: { modul: { type: 'categorical' }, module: { type: 'discrete', range: [0, 1] } } })
     expect(r.state.ui.colorScaleOverrides).toEqual([])
     expect(r.warnings).toEqual([
       'scales.modul: "modul" is not an attribute of this network; ignored',
-      'scales.module.palette: not a known field; ignored',
+      'scales.module.range: not a known field; ignored',
       'scales.module.type: "discrete" must be one of categorical, continuous',
     ])
   })
@@ -602,6 +602,40 @@ describe('Group 10 — Scales', () => {
       ['habitat', [['forest', '#00aa00']]],
       ['module', [[2, '#ff0000']]],
     ])
+  })
+})
+
+describe('Group 10b — Palettes, reversal, limits', () => {
+  it('10b.1 palette, reverse and limits go to the session, by attribute', () => {
+    const r = apply({ scales: { abundance: { type: 'continuous', palette: 'MAGMA', reverse: true, limits: [0, 3] } } })
+    expect(r.state.ui.colorPalettes).toEqual([['abundance', 'magma']])
+    expect(r.state.ui.colorReverse).toEqual(['abundance'])
+    expect(r.state.ui.colorLimits).toEqual([['abundance', [0, 3]]])
+    expect(r.warnings).toEqual([])
+  })
+
+  it('10b.2 unknown palettes, a palette of the other type and bad limits are skipped', () => {
+    const r = apply({ scales: {
+      abundance: { type: 'continuous', palette: 'Set1', limits: [3, 0] },
+      module: { palette: 'rainbow', reverse: 'yes' },
+      habitat: { limits: [0, 1] },
+    } })
+    expect(r.state.ui.colorPalettes ?? []).toEqual([])
+    expect(r.state.ui.colorLimits ?? []).toEqual([])
+    expect(r.warnings).toEqual([
+      'scales.abundance.palette: "Set1" is not a continuous palette (viridis, magma, cividis, Blues, Greens, Reds, Purples, Oranges, Greys, YlOrRd, YlGnBu, RdBu, RdYlBu, Spectral, PiYG, BrBG, PuOr); ignored',
+      'scales.abundance.limits: [3,0] must be [min, max], two numbers with min < max; ignored',
+      'scales.module.palette: "rainbow" is not a palette; ignored',
+      'scales.module.reverse: "yes" must be true or false',
+      'scales.habitat.limits: "habitat" is not numeric; ignored',
+    ])
+  })
+
+  it('10b.3 reverse: false removes an earlier reversal', () => {
+    const state = defaultState()
+    state.ui.colorReverse = ['module']
+    const r = applyViewSpec(state, { version: 1, scales: { module: { reverse: false } } }, ctxWithSets())
+    expect(r.state.ui.colorReverse).toEqual([])
   })
 })
 
