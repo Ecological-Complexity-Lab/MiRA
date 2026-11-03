@@ -271,6 +271,7 @@ the arguments go.**
 | 28 | Derived mappings, `color_by = ~log10(weight)` | R adds the column |
 | 29 | ~~Plain data frames as input~~ | Dropped 2026-11-02: emln exists because turning raw data into a multilayer object is an essential, validating step. ggmira takes only emln objects. |
 | 30 | Presets, e.g. `mira_theme_paper()` | Bundles of settings above |
+| 41 | ~~`mira_options(net, ...)`: what each component can be set to~~ | **Done 2026-11-03**, ggmira #5 (aa3a1fe). One row per component, argument and attribute (data columns, MiRA-computed ones, keywords, filter and meta-layer condition columns, meta measures), with MiRA's default scale type (colorMapper.js rule), switchable, source, sets and values. Takes the network plus mira()'s arguments. Prints grouped and colored by element (nodes amber, intralayer light blue, interlayer blue, layers purple; cli import). In Getting started at the end of step 1. Site: lab logo under the developers. |
 
 **Then M (needs MiRA code) — 33 first, order of the rest to discuss**
 
