@@ -284,25 +284,26 @@ test; the final sync goes to main only after the MiRA merge. Item 33 (bugs)
 can be its own small PR first.
 
 **Priorities (Shai, 2026-11-02): 32, 17, 31** (20 dropped, see its row).
-32 done 2026-11-02. Next: 33 as a small PR, then 17 (touches colorMapper
+32 done 2026-11-02, 33 done 2026-11-03. Next: 17 (touches colorMapper
 and session fields), then 31 last so "Copy as R code" also covers the new
 arguments.
 
 | # | Feature | R sketch / notes |
 |---|---|---|
-| 33 | Bugs: interlayer link width is `min(weight × 2, 8)` px on the raw weight (renderer.js ~692; weights ≥ 4 all 8 px, < 0.5 under 1 px; emln 23 and 63): normalize as intralayer links do; `renderer.layoutType` not restored; double "Data warnings" alert; at 1280 px the top bar's Feedback button covers the Data filter banner's Clear button; at 1400 px with both the filter and the "Selected node" banners, the second runs under the Feedback button (banners need their own row, or the Feedback button moves); ~~the layer view of a network with coordinates (emln 17) opens off-center, part of it outside the window~~ (fixed 2026-11-02, 9c560db) | Small fixes, PR to main (live site) |
+| 33 | ~~Small MiRA bugs~~ | **Done 2026-11-03**: MiRA #96 (88a2b12), ggmira #4 (20e81e5). Intralayer link width rescaled by 4 / the 99th percentile of the weights when it is above 4 (`js/linkWidth.js`; pilosof2017 unchanged pixel for pixel; magrach2020, costa2020, diseasome, emln 23/63 now proportional); `renderer.layoutType` restored from sessions; data warnings once from R; filter banners + camera readout (now a small box) in one row under the bar, right of the menu panels; the roxygen warning in `mira_filter.R`. |
 | 10 | ~~Interlayer arrowhead size~~ | Done in stage 1: MiRA has one arrowhead size (`renderer.arrowheadSize`, saved); `mira_intralayer(arrow_size)` sets it |
 | 17 | Named palettes (categorical and continuous), gradient limits, palettes on computed attributes | `mira_node(color_by = "body_mass", color_palette = "magma", color_limits = c(0, 100))` |
 | 18 | Node size range | `mira_scale_size(range = c(1, 6))` |
 | 19 | Legend titles | `mira_labs(node_color = "Module")` |
-| 20 | ~~Link color by `weight`; link width scaling~~ | Dropped 2026-11-02. Intralayer widths already scale with weight (normalized to 0.8–5 px, renderer.js); color by weight would show weight twice (in Later). The real problem, interlayer widths from raw weight, moved to 33. |
+| 20 | ~~Link color by `weight`; link width scaling~~ | Dropped 2026-11-02. Widths already show weight; color by weight would show it twice (in Later). (Corrected 2026-11-03: the raw-weight width was the intralayer links', not the interlayer; fixed in 33.) |
 | 26 | `mira_save()`: image file from R | Headless browser; MiRA signals "rendered" |
 | 31 | "Copy as R code" button in MiRA | Camera part done (stage 3 readout, *Copy for R*). |
 | 32 | ~~More node shapes (triangle, diamond)~~ | **Done 2026-11-02**: MiRA #95 (1af87ef), ggmira #3 (6eab3b3). Equal area to the circle; legend glyphs drawn with `traceNodeShape`. First feature on the per-feature branch workflow. |
 | 35 | Filter layers, closing the gap in the stack | MiRA's layer filter keeps each layer's slot (renderer positions layers by index among all layers), so a hidden layer leaves a gap. Needs renderer code to stack only the visible layers; then `mira_filter(layers = )`. |
 | 36 | Filter nodes per layer (state-node columns, e.g. `abundance > 10`) | MiRA's node filter is by node name across all layers (renderer.js); a per-(node, layer) condition has no faithful mapping. Needs a per-layer node filter in MiRA. |
 | 34 | Color scales per element (node / intralayer / interlayer / layer), not per attribute name. Decided 2026-11-02 to keep MiRA's rule for now: one `value -> color` map per attribute name (`categoryColorOverrides`, app.js), shared by every element colored by that attribute. Two tables with the same column name and the same value (node `module` 1, link `module` 1) share a color, in the UI and from R (R warns which piece replaces which). | Key the overrides by `element:attr`; touches the three color functions, the legend editor and session save/restore (fallback for old keys); then `scales` in the view spec and `.combine_scales` in R. |
-| 37 | Link filter on undirected networks whose link table lists both directions (A→B and B→A). MiRA keeps the first row and drops the reverse as a duplicate (`dataParser.js`), but `filter.links` is checked against the raw table, so R accepts the reverse row, the banner counts it, and the drawn line (the first row) is not in the kept list: nothing is drawn, depending on row order. emln lists each link once, so networks from emln are not affected. | In `viewSpec.js` `applyFilterList`, accept a key or its reverse when the network is undirected and match against the drawn links (`model.intralayerLinks` / `interlayerLinks`), not `model.extended`. ~5 lines + a unit test. |
+| 37 | ~~Link filter on undirected networks listing both directions~~ | **Done 2026-11-03** in MiRA #96: filters are checked against the drawn links, and an undirected link given in the other direction finds the drawn one (`drawnLinkKeys` in rBridge.js). |
+| 40 | Arrowheads in dense directed layers | Arrowheads are at least 14 px long (`14 + 1.5 × width`, renderer.js), so small, dense directed layers turn black (emln 23, costa2020). The slider (`mira_intralayer(arrow_size = )`) fixes it by hand. Options: scale with layer density, or a smaller default. Found 2026-11-03. |
 
 ## Open decisions
 
@@ -539,9 +540,7 @@ Each needs MiRA work first; the R side is cheap once MiRA supports it.
   Kamada-Kawai and load it: positions are Kamada-Kawai but the renderer still
   draws bipartite details (set names, diagonal placement). One-line fix in
   restore step 6. The R path already works around it in `rBridge`.
-- **Link width with large weights:** checked 2026-11-02: intralayer
-  widths are normalized; interlayer widths use the raw weight. Fix is in
-  item 33.
+- **Link width with large weights:** fixed in item 33 (2026-11-03).
 - **Weight slider snapping:** a `min_weight` from R that is not on the
   slider's step (max weight / 100) shows a snapped knob (0.5 → 0.4984);
   the filter itself uses the exact value. Cosmetic; same for sessions.
