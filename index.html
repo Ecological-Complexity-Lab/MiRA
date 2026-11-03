@@ -632,6 +632,19 @@
   </div>
 
   <!-- Unified Bottom Bar -->
+  <!-- Under the bar, right of the menu panels: the camera readout (from R)
+       and the alerts. One row, so they never overlap; it wraps when narrow. -->
+  <div id="canvasOverlays">
+    <div id="dataFilterBanner" style="display:none;">
+      <span id="dataFilterText"></span>
+      <button id="dataFilterClear">Clear</button>
+    </div>
+    <div id="selectedNodeBanner" style="display:none;">
+      <span id="selectedNodeText"></span>
+      <button id="selectedNodeClear">Clear</button>
+    </div>
+  </div>
+
   <div id="bottomBar">
     <button id="helpBtn" class="btn zoom-btn attn-btn" title="Help" style="font-size:13px;font-weight:700;">?</button>
     <button id="tourBtn" class="btn zoom-btn attn-btn" title="Quick tour of key features">Tour</button>
@@ -735,17 +748,8 @@
     </div>
     <input type="file" id="sessionFileInput" accept=".json" style="display:none">
 
-    <!-- Alerts zone (elastic middle) -->
-    <div id="toolbarAlerts">
-      <div id="dataFilterBanner" style="display:none;">
-        <span id="dataFilterText"></span>
-        <button id="dataFilterClear">Clear</button>
-      </div>
-      <div id="selectedNodeBanner" style="display:none;">
-        <span id="selectedNodeText"></span>
-        <button id="selectedNodeClear">Clear</button>
-      </div>
-    </div>
+    <!-- Elastic middle (the alerts are in #canvasOverlays, under the bar) -->
+    <div id="toolbarAlerts"></div>
 
     <span class="toolbar-sep"></span>
 
