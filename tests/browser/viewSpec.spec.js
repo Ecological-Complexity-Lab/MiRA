@@ -562,3 +562,22 @@ test('the camera readout and both banners sit in one row, clear of the bar and t
     }
   }
 })
+
+test('palette, reversal and limits from R', async ({ page }) => {
+  await openFromR(page, view({
+    node: { color_by: 'abundance' },
+    scales: { abundance: { type: 'continuous', palette: 'magma', reverse: true, limits: [0, 100] } },
+    legend: { show: ['node_color'] },
+  }))
+  const legend = page.locator('#legendPanel')
+  await expect(legend.locator('.legend-palette-select')).toHaveValue('magma')
+  await expect(legend.locator('.legend-palette-reverse')).toHaveAttribute('aria-pressed', 'true')
+  // above the upper limit: the end color of the reversed palette (magma's first stop)
+  const color = await page.evaluate(() => {
+    const r = window._renderer
+    const sn = r.model.stateNodes.find(s => Number(s.abundance) > 100)
+    return r.nodeColorFn(sn.layer_name, sn.node_name)
+  })
+  expect(color).toBe('#000004')
+  expect(await noticeMessages(page)).toBeNull()
+})

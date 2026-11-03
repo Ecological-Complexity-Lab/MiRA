@@ -2,6 +2,8 @@
  * colorMapper.js — Maps values to colors using categorical or numeric palettes
  */
 
+import { paletteColors, usedPalette } from './palettes.js';
+
 // ColorBrewer Dark2 — qualitative palette, colorblind-safe, scientific standard
 // Accessed via globalThis so it works both in the browser (window.chroma) and in the test env
 const getCategoricalPalette = () => globalThis.chroma.brewer.Dark2;
@@ -50,8 +52,14 @@ export class ColorMapper {
     /**
      * Build a color mapping for a given attribute across a collection of items.
      * Returns a function: value -> color
+     * options: { palette, reverse, limits } — a palette name (palettes.js; one
+     * of the other type, or none, gives the type's default), reversed colors,
+     * and [min, max] for a continuous scale instead of the data's range
+     * (values outside take the end colors). Without options the scale is
+     * MiRA's default (Dark2 / Viridis over the data).
      */
-    buildColorScale(items, attrName, forceType = null, domainItems = null) {
+    buildColorScale(items, attrName, forceType = null, domainItems = null, options = {}) {
+        const { palette = null, reverse = false, limits = null } = options;
         const values = items.map(item => item[attrName]).filter(v => v !== undefined && v !== null);
         // domainItems: a wider population (e.g. both bipartite sets) that fixes the
         // scale type and the category → color assignment, so the same category
@@ -95,21 +103,34 @@ export class ColorMapper {
         if (useContinuous) {
             // Numeric gradient
             const nums = values.map(Number);
-            const min = Math.min(...nums);
-            const max = Math.max(...nums);
+            const min = limits ? limits[0] : Math.min(...nums);
+            const max = limits ? limits[1] : Math.max(...nums);
             const range = max - min || 1;
+            const custom = palette !== null || reverse;
+            const gradient = custom
+                ? globalThis.chroma.scale(paletteColors('continuous', palette, reverse))
+                : globalThis.chroma.scale('Viridis');
 
             const scaleFn = (value) => {
                 if (value === undefined || value === null) return '#6b7280';
-                const t = (Number(value) - min) / range;
-                return globalThis.chroma.scale('Viridis')(t).hex();
+                const t = Math.min(1, Math.max(0, (Number(value) - min) / range)); // outside the limits: the end colors
+                return gradient(t).hex();
             };
-            return { type: 'continuous', min, max, attrName, scaleFn, canToggle, warnings };
+            const scale = {
+                type: 'continuous', min, max, attrName, scaleFn, canToggle, warnings,
+                palette: usedPalette('continuous', palette), reverse, limits,
+            };
+            // The legend's bar (it draws Viridis when this is missing)
+            if (custom) scale.gradient = `linear-gradient(to right, ${gradient.colors(9).join(', ')})`;
+            return scale;
         } else {
             // Categorical
+            const colors = (palette !== null || reverse)
+                ? paletteColors('categorical', palette, reverse)
+                : getCategoricalPalette();
             const colorMap = new Map();
             uniqueValues.forEach((val, i) => {
-                colorMap.set(val, getCategoricalPalette()[i % getCategoricalPalette().length]);
+                colorMap.set(val, colors[i % colors.length]);
             });
 
             const scaleFn = (value) => {
@@ -121,7 +142,10 @@ export class ColorMapper {
             const legendMap = domainItems
                 ? new Map([...colorMap].filter(([val]) => presentValues.has(val)))
                 : colorMap;
-            return { type: 'categorical', map: legendMap, attrName, scaleFn, canToggle, warnings };
+            return {
+                type: 'categorical', map: legendMap, attrName, scaleFn, canToggle, warnings,
+                palette: usedPalette('categorical', palette), reverse,
+            };
         }
     }
 }

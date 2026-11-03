@@ -2151,3 +2151,34 @@ body {
   line-height: 1;
   cursor: pointer;
 }
+
+/* Legend: palette dropdown and reverse button */
+.legend-palette-row {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  margin: -2px 0 8px;
+}
+.legend-palette-select {
+  flex: 1;
+  min-width: 0;
+  font: 11px Inter, system-ui, sans-serif;
+  color: #374151;
+  padding: 2px 4px;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  background: #fff;
+  cursor: pointer;
+}
+.legend-palette-reverse {
+  font-size: 12px;
+  line-height: 1;
+  padding: 3px 6px;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  background: #fff;
+  color: #6b7280;
+  cursor: pointer;
+}
+.legend-palette-reverse:hover { color: #374151; background: #f9fafb; }
+.legend-palette-reverse.active { color: #7c3aed; border-color: #c4b5fd; background: #f5f3ff; }

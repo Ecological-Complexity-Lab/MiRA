@@ -469,3 +469,42 @@ test('a session saved in a non-bipartite layout reloads without bipartite drawin
   expect(await page.inputValue('#layoutSelect')).toBe('kamada_kawai')
   expect(await page.evaluate(() => window._renderer.layoutType)).toBe('kamada_kawai')
 })
+
+// ── Palettes (legend dropdown and reverse button) ────────────────────────────
+
+const nodeColor = (page, name) => page.evaluate(n => {
+  const r = window._renderer
+  const sn = r.model.stateNodes.find(s => s.node_name === n)
+  return r.nodeColorFn(sn.layer_name, sn.node_name)
+}, name)
+
+test('a palette and its reversal from the legend, kept in a session', async ({ page }, testInfo) => {
+  await loadDemoDataset(page, 'pilosof2017')
+  await selectNodeOption(page, 'nodeColorSelect', 'state:module') // categorical
+  const select = page.locator('#legendPanel .legend-palette-select')
+  await expect(select).toHaveValue('Dark2')
+  const name = await page.evaluate(() => window._renderer.model.stateNodes[0].node_name)
+  const before = await nodeColor(page, name)
+  await select.selectOption('Okabe-Ito')
+  const okabe = await nodeColor(page, name)
+  expect(okabe).not.toBe(before)
+  await page.click('#legendPanel .legend-palette-reverse')
+  await expect(page.locator('#legendPanel .legend-palette-reverse')).toHaveAttribute('aria-pressed', 'true')
+  const reversed = await nodeColor(page, name)
+  expect(reversed).not.toBe(okabe)
+
+  const path = await saveSessionToFile(page, testInfo)
+  await page.goto('/')
+  await waitForAppReady(page)
+  await loadSessionFile(page, path)
+  await expect(page.locator('#legendPanel .legend-palette-select')).toHaveValue('Okabe-Ito')
+  expect(await nodeColor(page, name)).toBe(reversed)
+})
+
+test('a continuous legend lists only continuous palettes', async ({ page }) => {
+  await loadDemoDataset(page, 'pilosof2017')
+  await selectNodeOption(page, 'nodeColorSelect', 'state:abundance')
+  const options = await page.locator('#legendPanel .legend-palette-select option').allTextContents()
+  expect(options).toContain('magma')
+  expect(options).not.toContain('Dark2')
+})

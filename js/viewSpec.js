@@ -30,6 +30,7 @@
 
 import { META_NETWORK_DEFAULTS } from './metaNetwork.js';
 import { NODE_SHAPES } from './nodeShapes.js';
+import { canonicalPalette, palettesFor } from './palettes.js';
 
 export const VIEW_SPEC_VERSION = 1;
 
@@ -119,7 +120,7 @@ const SECTION_FIELDS = {
     legend:     ['show', 'position'],
     mode:       ['view', ...GRID_FIELDS, ...META_FIELDS],
 };
-const SCALE_FIELDS = ['type', 'values'];
+const SCALE_FIELDS = ['type', 'values', 'palette', 'reverse', 'limits'];
 
 const isPlainObject = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
 const show = (v) => JSON.stringify(v);
@@ -681,7 +682,7 @@ function applyFilterList(state, key, value, path, warn, resolve) {
 
 // ---- scales -------------------------------------------------------------------
 // MiRA keeps one color scale per attribute name, used wherever the attribute
-// colors nodes, links or layers: { <attr>: { type, values } }.
+// colors nodes, links or layers: { <attr>: { type, values, palette, reverse, limits } }.
 
 function applyScales(state, section, ctx, warn) {
     for (const [attr, scale] of Object.entries(section)) {
@@ -701,8 +702,53 @@ function applyScales(state, section, ctx, warn) {
         warnUnknownFields(path, scale, SCALE_FIELDS, warn);
         if ('type' in scale) applyScaleType(state.ui, attr, scale.type, ctx.values[attr], path, warn);
         if ('values' in scale) applyScaleValues(state.ui, attr, scale.values, ctx.values[attr], attr, path, warn);
+        if ('palette' in scale) applyScalePalette(state.ui, attr, scale.palette, scale.type, path, warn);
+        if ('reverse' in scale) applyScaleReverse(state.ui, attr, scale.reverse, path, warn);
+        if ('limits' in scale) applyScaleLimits(state.ui, attr, scale.limits, ctx.values[attr], path, warn);
     }
     return null;
+}
+
+// palette: a name from palettes.js (any case). With a type, it must be a
+// palette of that type; without one, MiRA draws the default where it does not fit.
+function applyScalePalette(ui, attr, value, type, path, warn) {
+    const name = canonicalPalette(value);
+    if (name === undefined) {
+        warn(`${path}.palette`, `${show(value)} is not a palette; ignored`);
+        return;
+    }
+    if (SCALE_TYPES.has(type) && !palettesFor(type).includes(name)) {
+        warn(`${path}.palette`, `${show(name)} is not a ${type} palette (${palettesFor(type).join(', ')}); ignored`);
+        return;
+    }
+    const palettes = new Map(ui.colorPalettes ?? []);
+    palettes.set(attr, name);
+    ui.colorPalettes = [...palettes];
+}
+
+function applyScaleReverse(ui, attr, value, path, warn) {
+    const reverse = checkBoolean(value, `${path}.reverse`, warn);
+    if (reverse === undefined) return;
+    const reversed = new Set(ui.colorReverse ?? []);
+    if (reverse) reversed.add(attr); else reversed.delete(attr);
+    ui.colorReverse = [...reversed];
+}
+
+// limits: [min, max] of a continuous scale; values outside take the end colors
+function applyScaleLimits(ui, attr, value, dataValues, path, warn) {
+    const ok = Array.isArray(value) && value.length === 2 &&
+        value.every(v => typeof v === 'number' && Number.isFinite(v)) && value[0] < value[1];
+    if (!ok) {
+        warn(`${path}.limits`, `${show(value)} must be [min, max], two numbers with min < max; ignored`);
+        return;
+    }
+    if (!looksNumeric(dataValues)) {
+        warn(`${path}.limits`, `${show(attr)} is not numeric; ignored`);
+        return;
+    }
+    const limits = new Map(ui.colorLimits ?? []);
+    limits.set(attr, [...value]);
+    ui.colorLimits = [...limits];
 }
 
 function applyScaleType(ui, attr, value, dataValues, path, warn) {
