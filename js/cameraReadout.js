@@ -3,9 +3,8 @@
  *
  * Shown only when MiRA is opened from R (started by rBridge), as a small box
  * right of the menu panels, before the alerts: rotate and tilt in degrees, zoom relative to MiRA's fitted view,
- * pan as fractions of the window. "Copy for R" copies the mira_camera() call
- * that gives the current view, so a view set with the mouse can go into an
- * R script.
+ * pan as fractions of the window. The R button (Copy as R code, rBridge)
+ * includes the mira_camera() call for the current view.
  *
  * Zoom and pan are measured against the fit at the current angles, which is
  * how rBridge applies them (fit, zoom about the canvas center, then pan), so
@@ -19,7 +18,6 @@ const POLL_MS = 250;
 const READOUT_ID = 'cameraReadout';
 const OVERLAYS_ID = 'canvasOverlays'; // index.html: the row under the bar, right of the menu panels
 const NETWORK_MODE = 'network';
-const COPIED_MS = 1500;
 // mira_camera() limits: the copied call is clamped to them (the mouse can
 // tilt a little past 45°)
 const TILT_MAX = 45;
@@ -90,40 +88,34 @@ export function startCameraReadout(renderer, getAppMode) {
     const box = document.createElement('div');
     box.id = READOUT_ID;
     box.style.cssText = 'display: none; grid-template-columns: auto auto; gap: 1px 8px; ' +
-        'padding: 6px 8px; font: 11px Inter, system-ui, sans-serif; color: #4b5563; ' +
+        'position: relative; padding: 6px 18px 6px 8px; font: 11px Inter, system-ui, sans-serif; color: #4b5563; ' +
         'background: rgba(255,255,255,0.92); border: 1px solid rgba(0,0,0,0.1); border-radius: 6px; ' +
         'font-variant-numeric: tabular-nums;';
     const text = document.createElement('div');
     text.style.cssText = 'display: contents;';
-    const copy = document.createElement('button');
-    copy.textContent = 'Copy for R';
-    copy.title = 'Copy the mira_camera() call for this view';
-    copy.style.cssText = 'font: inherit; font-weight: 600; padding: 1px 6px; cursor: pointer; ' +
-        'border: 1px solid rgba(0,0,0,0.15); border-radius: 4px; background: #f9fafb; color: #374151; ' +
-        'grid-column: 1 / -1; margin-top: 4px;';
-    box.append(text, copy);
+    // × hides the readout for this page; the R button still includes the camera
+    const close = document.createElement('button');
+    close.textContent = '×';
+    close.title = 'Hide the camera values';
+    close.setAttribute('aria-label', 'Hide the camera values');
+    close.style.cssText = 'position: absolute; top: 1px; right: 3px; padding: 0 2px; border: none; ' +
+        'background: none; color: #9ca3af; font: 13px/1 Inter, system-ui, sans-serif; cursor: pointer;';
+    let closed = false;
+    close.addEventListener('click', () => {
+        closed = true;
+        box.style.display = 'none';
+    });
+    box.append(text, close);
     const overlays = document.getElementById(OVERLAYS_ID);
     if (overlays) overlays.prepend(box);
     else document.body.appendChild(box);
 
-    let code = '';
-    copy.addEventListener('click', async () => {
-        try {
-            await navigator.clipboard.writeText(code);
-            copy.textContent = 'Copied';
-        } catch {
-            copy.textContent = 'Copy failed';
-        }
-        setTimeout(() => { copy.textContent = 'Copy for R'; }, COPIED_MS);
-    });
-
     let shown = '';
     setInterval(() => {
-        const visible = getAppMode() === NETWORK_MODE && renderer.model;
+        const visible = !closed && getAppMode() === NETWORK_MODE && renderer.model;
         box.style.display = visible ? 'grid' : 'none';
         if (!visible) return;
         const values = cameraValues(renderer);
-        code = cameraCode(values); // every tick: a change too small for the line still copies
         const line = cameraLine(values);
         if (line === shown) return;
         shown = line;

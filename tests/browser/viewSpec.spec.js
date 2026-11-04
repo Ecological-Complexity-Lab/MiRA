@@ -319,7 +319,7 @@ test('stage 3: legends start minimized; show = false hides the panel', async ({ 
   await expect(again.locator('#legendPanel')).toBeVisible()
 })
 
-test('camera readout: the values R sent, live, with Copy for R; only when opened from R', async ({ page, context }) => {
+test('camera readout: the values R sent, live; the R button copies them; only when opened from R', async ({ page, context }) => {
   await context.grantPermissions(['clipboard-read', 'clipboard-write'])
   await openFromR(page, view({ camera: { rotate: 70, tilt: 15, zoom: 1.5, pan: [0.1, -0.05] } }))
   const readout = page.locator('#cameraReadout')
@@ -332,10 +332,17 @@ test('camera readout: the values R sent, live, with Copy for R; only when opened
   await page.locator('#zoomInBtn').click() // ×1.2
   await expect(readout).toHaveAttribute('title', /zoom 1\.80  pan 0\.12, -0\.06/)
 
-  await readout.locator('button').click()
-  await expect(readout.locator('button')).toHaveText('Copied')
+  // The readout has no copy button: the R button (Copy as R code) has the camera
+  await page.locator('#copyRCodeBtn').click()
+  await page.locator('#rCodePanel .r-code-copy').click()
   expect(await page.evaluate(() => navigator.clipboard.readText()))
-    .toBe('mira_camera(rotate = 70, tilt = 15, zoom = 1.8, pan = c(0.12, -0.06))')
+    .toContain('mira_camera(rotate = 70, tilt = 15, zoom = 1.8, pan = c(0.12, -0.06))')
+  await page.keyboard.press('Escape')
+
+  // × hides it for good (the polling does not bring it back)
+  await readout.getByRole('button', { name: 'Hide the camera values' }).click()
+  await page.waitForTimeout(600)
+  await expect(readout).toBeHidden()
 
   const site = await context.newPage()
   await site.goto('/')

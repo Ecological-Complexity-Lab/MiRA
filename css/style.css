@@ -2182,3 +2182,65 @@ body {
 }
 .legend-palette-reverse:hover { color: #374151; background: #f9fafb; }
 .legend-palette-reverse.active { color: #7c3aed; border-color: #c4b5fd; background: #f5f3ff; }
+
+/* ---- "Copy as R code" (MiRA opened from R with ggmira; js/rCodePanel.js) ---- */
+.r-code-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 3100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.r-code-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(760px, calc(100vw - 32px));
+  max-height: calc(100vh - 80px);
+  padding: 14px 16px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.2);
+  color: #1f2937;
+  font-size: 13px;
+}
+
+.r-code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.r-code-close {
+  border: none;
+  background: none;
+  color: #6b7280;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.r-code {
+  margin: 0;
+  padding: 12px;
+  overflow: auto;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  color: #1f2937;
+  font: 12px/1.5 ui-monospace, "SF Mono", Menlo, monospace;
+  white-space: pre;
+}
+
+.r-code-comment {
+  color: #6b7280;
+}
+
+.r-code-copy {
+  align-self: flex-end;
+  padding: 5px 16px;
+  font-weight: 600;
+}

@@ -14,6 +14,11 @@
  * If anything throws, the network is reloaded with the default view, so a
  * bad spec never leaves MiRA half-configured.
  *
+ * With a view spec, the R button (Copy as R code) shows the ggmira code for
+ * the current view (rCode.js), read against the default view and the view
+ * as R opened it; the spec's `r` field (the mira() call, filter conditions)
+ * is R's own text, not a setting.
+ *
  * Opened by ggmira's mira_save() (?save=true, in a headless browser): once
  * the plot is drawn and still, window.miraStatus tells R (with the spec
  * warnings), and window.miraSaveToR(options) posts the image to R.
@@ -24,7 +29,9 @@
 import { applyViewSpec } from './viewSpec.js';
 import { ForceLayout } from './layout.js';
 import { buildNodeSetResolver } from './nodeSets.js';
-import { startCameraReadout } from './cameraReadout.js';
+import { startCameraReadout, cameraValues } from './cameraReadout.js';
+import { stateToSpec, specToR, LEGEND_MOVED } from './rCode.js';
+import { showRCodePanel } from './rCodePanel.js';
 
 const VIEW_SPEC_URL = '/api/view.json';
 const SAVE_URL = '/api/save';
@@ -34,6 +41,9 @@ const SAVE_MODE = typeof window !== 'undefined' && new URLSearchParams(window.lo
 const SETTLE_TIMEOUT_MS = 20000;
 const SETTLE_POLL_MS = 100;
 const NOTICE_ID = 'viewSpecNotice';
+const R_CODE_BUTTON_ID = 'copyRCodeBtn';
+const NETWORK_VIEW = 'network';
+const DEFAULT_LEGEND_CORNER = 'bottom-right'; // index.html
 
 // Dropdowns whose options decide which attributes a view spec may use
 const SPEC_SELECT_IDS = [
@@ -172,7 +182,9 @@ function applySpec(spec, deps) {
     defaults.map.lvMapZoom = null;
     // Plots from R start with every legend minimized; mira_legends() opens them
     defaults.legend.expandedLegends = [];
-    const result = applyViewSpec(defaults, spec, buildContext(model));
+    const { r, ...settings } = spec; // r: R's own text, for Copy as R code
+    const ctx = buildContext(model);
+    const result = applyViewSpec(defaults, settings, ctx);
     if (result.layout) result.state.positions = computePositions(model, result.layout);
 
     deps.restoreSessionState(result.state, { warnData: false }); // loadFromR showed them
@@ -196,7 +208,44 @@ function applySpec(spec, deps) {
     if (result.mode?.layers && deps.getAppMode?.() === META_VIEW) selectMetaLayers(result.mode.layers);
 
     if (result.warnings.length) console.warn('[MiRA] View spec warnings:\n' + result.warnings.join('\n'));
+    startRCode(deps, { baseline: defaults, applied: deps.getSessionState(), spec, ctx });
     return result.warnings;
+}
+
+/** Show the R button; it opens the code for the view at the time of the click. */
+function startRCode(deps, ref) {
+    const button = document.getElementById(R_CODE_BUTTON_ID);
+    if (!button) return;
+    button.style.display = '';
+    button.onclick = () => {
+        const mode = deps.getAppMode?.() ?? NETWORK_VIEW;
+        const { spec, notes } = stateToSpec(deps.getSessionState(), ref, ref.ctx, {
+            camera: mode === NETWORK_VIEW ? cameraValues(deps.renderer) : null,
+            legendPanel: legendPanelState(),
+            metaLayers: mode === META_VIEW ? selectedMetaLayers() : null,
+        });
+        showRCodePanel(specToR(spec), notes);
+    };
+}
+
+/** The legend panel: shown or hidden (MiRA's toggle), and its corner, or LEGEND_MOVED when dragged. */
+function legendPanelState() {
+    const hidden = document.getElementById(LEGEND_TOGGLE_ID)?.classList.contains('active');
+    const style = document.getElementById(LEGEND_PANEL_ID)?.style;
+    const sides = ['top', 'bottom', 'left', 'right'];
+    let position = DEFAULT_LEGEND_CORNER;
+    if (style && sides.some(side => style[side])) {
+        position = Object.keys(LEGEND_CORNERS)
+            .find(name => sides.every(side => style[side] === LEGEND_CORNERS[name][side])) ?? LEGEND_MOVED;
+    }
+    return { visible: !hidden, position };
+}
+
+/** The layers selected in the meta-network's "Filter Layers" panel; null when none or all are. */
+function selectedMetaLayers() {
+    const items = [...document.querySelectorAll(`#${META_LAYER_LIST_ID} li`)];
+    const active = items.filter(item => item.classList.contains('active')).map(item => item.dataset.layerName);
+    return active.length && active.length < items.length ? active : null;
 }
 
 /**

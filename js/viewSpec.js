@@ -63,7 +63,7 @@ const PAN_MAX = 1;         // fraction of the window
 const DEGREES = Math.PI / 180;
 
 // Legend names (spec) → MiRA's legend ids (app.js renderLegends)
-const LEGEND_IDS = {
+export const LEGEND_IDS = {
     node_color: ['nodeColor', 'nodeColorA', 'nodeColorB'],
     node_size: ['nodeSize', 'nodeSizeA', 'nodeSizeB'],
     node_shape: ['nodeShape'],
@@ -71,11 +71,11 @@ const LEGEND_IDS = {
     interlayer_color: ['interLinkColor'],
     layer_color: ['layerColor'],
 };
-const LEGEND_ALL = 'all';
+export const LEGEND_ALL = 'all';
 const LEGEND_POSITIONS = new Set(['bottom-right', 'top-right', 'bottom-left']);
 
 // Views (spec mode.view) → MiRA's appMode. Only one view opens.
-const VIEWS = {
+export const VIEWS = {
     network: 'network', grid: 'grid', map: 'map', layer: 'layer',
     meta: 'metanetwork', dashboard: 'dashboard', data: 'data',
 };
@@ -84,9 +84,9 @@ const META_FIELDS = ['aggregation', 'layout', 'color_by', 'size_by', 'size', 'mi
     'labels', 'label_size', 'color', 'layers'];
 const GRID_COLUMNS_MIN = 1; // grid columns slider (index.html)
 const GRID_COLUMNS_MAX = 8;
-const META_AGGREGATIONS = { occurrence: 'sumOccurrence', weights: 'sumWeights', union: 'union' };
+export const META_AGGREGATIONS = { occurrence: 'sumOccurrence', weights: 'sumWeights', union: 'union' };
 const META_LAYOUTS = new Set(['circular', 'force', 'bipartite']);
-const META_MEASURES = { participation: 'participation', degree: 'metaDegree', uniform: 'uniform' };
+export const META_MEASURES = { participation: 'participation', degree: 'metaDegree', uniform: 'uniform' };
 const META_SIZE_MIN = 0.2; // meta-network base size slider (index.html)
 const META_SIZE_MAX = 3;
 const META_LABEL_SIZE_MIN = 8;
@@ -94,19 +94,19 @@ const META_LABEL_SIZE_MAX = 24;
 
 const STACK_MODES = new Set(['horizontal', 'vertical']);
 const SCALE_TYPES = new Set(['categorical', 'continuous']);
-const PAIR_SEPARATOR = '::'; // layer pair key in the interlayer pair filter
+export const PAIR_SEPARATOR = '::'; // layer pair key in the interlayer pair filter
 
 // Spec keywords → dropdown option values
-const SET_COLOR_KEYWORD = '.set';
-const SET_COLOR_VALUE = 'set:membership';
-const SET_COLOR_ATTR = '__mira_set__'; // app.js: the set colors' key in the category overrides
-const INDIVIDUAL_KEYWORD = '.individual';
-const INDIVIDUAL_VALUE = '__individual__';
-const DEFAULT_OPTION = '';
+export const SET_COLOR_KEYWORD = '.set';
+export const SET_COLOR_VALUE = 'set:membership';
+export const SET_COLOR_ATTR = '__mira_set__'; // app.js: the set colors' key in the category overrides
+export const INDIVIDUAL_KEYWORD = '.individual';
+export const INDIVIDUAL_VALUE = '__individual__';
+export const DEFAULT_OPTION = '';
 
 // Automatic shape split (same as the UI): set A circles, set B squares
-const AUTO_SHAPE_A = 'circle';
-const AUTO_SHAPE_B = 'square';
+export const AUTO_SHAPE_A = 'circle';
+export const AUTO_SHAPE_B = 'square';
 
 const SECTION_FIELDS = {
     layout:     ['type', 'seed', 'nested'],
@@ -638,7 +638,7 @@ function setExpandedLegends(state, ids) {
 // one); a list whose entries are all invalid is ignored rather than hiding
 // everything.
 
-const LINK_KEY_SEPARATOR = '::'; // dataMode.js linkKey
+export const LINK_KEY_SEPARATOR = '::'; // dataMode.js linkKey
 
 function applyFilter(state, section, ctx, warn) {
     if ('nodes' in section) {
