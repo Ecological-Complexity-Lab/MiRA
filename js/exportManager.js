@@ -11,6 +11,8 @@
  *     via html2canvas, draws a branding badge, and saves via the File System
  *     Access API (or a download-link fallback).
  *   - For PDF: fixed 4× DPI, jsPDF container at original CSS-pixel page size.
+ *   - exportImage(format, options) returns the export as a Blob, with the
+ *     settings given instead of the dialog's (ggmira's mira_save()).
  *
  * External dependencies (passed via init):
  *   - getRenderer() → current Renderer instance
@@ -155,6 +157,18 @@ export function initExportManager({ getRenderer, getAppMode }) {
         });
     }
 
+    // The legend's palette dropdown and reverse button are controls, not
+    // part of the picture (and html2canvas cuts the dropdown's text). Hidden
+    // on the page itself while the panels are captured, so the panels are
+    // measured without them (removing them from the clone only would leave
+    // each panel drawn at its taller on-screen size, stretched).
+    function _hidePaletteControls() {
+        const rows = [...document.querySelectorAll('.legend-palette-row')];
+        const shown = rows.map(row => row.style.display);
+        rows.forEach(row => { row.style.display = 'none'; });
+        return () => rows.forEach((row, i) => { row.style.display = shown[i]; });
+    }
+
     // ── Composite visible overlay panels onto offscreen canvas ────────────
     // Captures legend + drill/compare panels (if open) and draws them at
     // their screen positions, scaled to match the export resolution.
@@ -174,36 +188,56 @@ export function initExportManager({ getRenderer, getAppMode }) {
         const compare = document.getElementById('layerComparePanel');
         if (compare && compare.style.opacity === '1') panels.push(compare);
 
-        for (const el of panels) {
-            const rect = el.getBoundingClientRect();
-            try {
-                const panelCanvas = await html2canvas(el, {
-                    scale,
-                    useCORS: true,
-                    allowTaint: true,
-                    backgroundColor: null,
-                    logging: false,
-                    onclone: _replaceColorInputsInClone,
-                });
-                ctx.drawImage(panelCanvas, rect.left * scale, rect.top * scale,
-                    rect.width * scale, rect.height * scale);
-            } catch (e) {
-                console.warn('Panel capture failed for', el.id, e);
+        const showPaletteControls = _hidePaletteControls();
+        try {
+            for (const el of panels) {
+                const rect = el.getBoundingClientRect();
+                try {
+                    const panelCanvas = await html2canvas(el, {
+                        scale,
+                        useCORS: true,
+                        allowTaint: true,
+                        backgroundColor: null,
+                        logging: false,
+                        onclone: _replaceColorInputsInClone,
+                    });
+                    ctx.drawImage(panelCanvas, rect.left * scale, rect.top * scale,
+                        rect.width * scale, rect.height * scale);
+                } catch (e) {
+                    console.warn('Panel capture failed for', el.id, e);
+                }
             }
+        } finally {
+            showPaletteControls();
         }
     }
 
-    async function exportScreenshot(format, dirHandle) {
-        if (format === 'pdf') { await _exportPDF(dirHandle); return; }
+    // Export settings: the dialog's, unless `options` gives them (exportImage)
+    function _settings(options, defaultMultiplier) {
+        return {
+            multiplier: options.resolution ??
+                (defaultMultiplier ?? (parseInt(document.getElementById('exportResolutionSelect').value) || 1)),
+            includeGrid: options.grid ?? document.getElementById('exportGridCheckbox').checked,
+            includePanels: options.panels ?? document.getElementById('exportPanelsCheckbox').checked,
+            transparent: options.transparent === true,
+        };
+    }
+
+    // An alert for the dialog; an error for exportImage (no one to see an alert)
+    function _fail(message, dirHandle) {
+        if (typeof dirHandle === 'function') throw new Error(message);
+        alert(message);
+    }
+
+    async function exportScreenshot(format, dirHandle, options = {}) {
+        if (format === 'pdf') { await _exportPDF(dirHandle, options); return; }
         const filename = _buildFilename(format);
 
         const renderer = getRenderer();
         const appMode  = getAppMode();
 
         const srcCanvas   = document.getElementById('networkCanvas');
-        const multiplier  = parseInt(document.getElementById('exportResolutionSelect').value) || 1;
-        const includeGrid   = document.getElementById('exportGridCheckbox').checked;
-        const includePanels = document.getElementById('exportPanelsCheckbox').checked;
+        const { multiplier, includeGrid, includePanels, transparent } = _settings(options);
 
         // In map/geo modes, layer positions come from Leaflet's latLngToContainerPoint()
         // which is always in screen-space pixels. Scaling the renderer transforms would
@@ -215,7 +249,7 @@ export function initExportManager({ getRenderer, getAppMode }) {
         // Dashboard is DOM (SVG charts), not the canvas — capture the container.
         if (appMode === 'dashboard') {
             const offscreen = await _captureDashboard(multiplier);
-            if (!offscreen) { alert('Nothing to export — open the Dashboard first.'); return; }
+            if (!offscreen) { _fail('Nothing to export — open the Dashboard first.', dirHandle); return; }
             await _drawBranding(offscreen.getContext('2d'), offscreen.width, offscreen.height, multiplier);
             const mimeType = format === 'jpg' ? 'image/jpeg' : 'image/png';
             const quality  = format === 'jpg' ? 0.92 : undefined;
@@ -235,16 +269,17 @@ export function initExportManager({ getRenderer, getAppMode }) {
             // (same trade-off as geo modes: correct content, screen-res detail).
             const snapshot = appMode === 'metanetwork';
 
-            let origOX, origOY, origS, isGrid = false;
+            let isGrid = false;
             if (!snapshot) {
-                // Non-map modes: genuinely re-render at multiplier× resolution
-                origOX = renderer.offsetX; origOY = renderer.offsetY; origS = renderer.scale;
+                // Non-map modes: genuinely re-render at multiplier× resolution,
+                // as a screen with multiplier× the pixel density, so labels and
+                // line widths (set in screen pixels) grow with the drawing
                 srcCanvas.width  = origW  * multiplier;
                 srcCanvas.height = origH * multiplier;
-                renderer.offsetX = origOX * multiplier;
-                renderer.offsetY = origOY * multiplier;
-                renderer.scale   = origS  * multiplier;
+                renderer.dpr = dpr * multiplier;
                 renderer.showGrid = includeGrid;
+                renderer.transparentBackground = transparent;
+                renderer.crisp = true;
                 // In grid mode, drop the sidebar/toolbar margins so the grid fills
                 // the export canvas instead of leaving an empty strip at top-left.
                 isGrid = appMode === 'grid';
@@ -257,17 +292,19 @@ export function initExportManager({ getRenderer, getAppMode }) {
             offscreen.width = W; offscreen.height = H;
             const ctx = offscreen.getContext('2d');
 
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(0, 0, W, H);
+            if (!transparent) {
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, W, H);
+            }
             ctx.drawImage(srcCanvas, 0, 0, W, H);
 
             if (!snapshot) {
                 srcCanvas.width  = origW;
                 srcCanvas.height = origH;
-                renderer.offsetX = origOX;
-                renderer.offsetY = origOY;
-                renderer.scale   = origS;
+                renderer.dpr = dpr;
                 renderer.showGrid = prevShowGrid;
+                renderer.transparentBackground = false;
+                renderer.crisp = false;
                 if (isGrid) renderer._gridMarginOverride = null;
                 renderer.render();
             }
@@ -293,8 +330,10 @@ export function initExportManager({ getRenderer, getAppMode }) {
         offscreen.width = W; offscreen.height = H;
         const ctx = offscreen.getContext('2d');
 
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 0, W, H);
+        if (!transparent) {
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, W, H);
+        }
 
         if (includeGrid) {
             try {
@@ -365,6 +404,8 @@ export function initExportManager({ getRenderer, getAppMode }) {
      * the File System Access API (showDirectoryPicker) is unavailable.
      */
     async function _saveBlob(blob, filename, dirHandle) {
+        // exportImage passes a function that takes the Blob
+        if (typeof dirHandle === 'function') { dirHandle(blob); return; }
         if (dirHandle) {
             const fh = await dirHandle.getFileHandle(filename, { create: true });
             const writable = await fh.createWritable();
@@ -419,11 +460,11 @@ export function initExportManager({ getRenderer, getAppMode }) {
         ctx.fillText(text, x + padL, y + boxH / 2);
     }
 
-    async function _exportPDF(dirHandle) {
+    async function _exportPDF(dirHandle, options = {}) {
         try {
             await _loadScript('https://unpkg.com/jspdf@2.5.2/dist/jspdf.umd.min.js');
         } catch (err) {
-            alert('Could not load PDF library. Please check your internet connection and try again.');
+            _fail('Could not load PDF library. Please check your internet connection and try again.', dirHandle);
             return;
         }
 
@@ -434,14 +475,13 @@ export function initExportManager({ getRenderer, getAppMode }) {
             const appMode  = getAppMode();
 
             const srcCanvas = document.getElementById('networkCanvas');
-            const scale = 4; // ~300 DPI
-            const includeGrid   = document.getElementById('exportGridCheckbox').checked;
-            const includePanels = document.getElementById('exportPanelsCheckbox').checked;
+            // 4 = ~300 DPI
+            const { multiplier: scale, includeGrid, includePanels } = _settings(options, 4);
 
             // Dashboard is DOM — rasterize it, then embed in a PDF sized to match.
             if (appMode === 'dashboard') {
                 const dash = await _captureDashboard(scale);
-                if (!dash) { alert('Nothing to export — open the Dashboard first.'); return; }
+                if (!dash) { _fail('Nothing to export — open the Dashboard first.', dirHandle); return; }
                 await _drawBranding(dash.getContext('2d'), dash.width, dash.height, scale);
                 const pageW = Math.round(dash.width / scale), pageH = Math.round(dash.height / scale);
                 const dpdf = new jsPDF({
@@ -458,15 +498,23 @@ export function initExportManager({ getRenderer, getAppMode }) {
             const snapshot = appMode === 'metanetwork';
             const prevShowGrid  = renderer.showGrid;
             const isGridPdf = appMode === 'grid';
+            const w = srcCanvas.width, h = srcCanvas.height;
+            const pdfDpr  = renderer.dpr || 1;
+            const cssWpdf = Math.round(w / pdfDpr), cssHpdf = Math.round(h / pdfDpr);
+            // Off the map, draw at scale× pixel density, as the PNG export does;
+            // on a map the layers follow Leaflet's screen pixels, so screen density
+            const sharpPdf = !snapshot && appMode !== 'map' && !(appMode === 'layer' && renderer.layerView?.geoMode);
             if (!snapshot) {
+                if (sharpPdf) {
+                    srcCanvas.width  = w * scale;
+                    srcCanvas.height = h * scale;
+                    renderer.dpr = pdfDpr * scale;
+                    renderer.crisp = true;
+                }
                 renderer.showGrid = includeGrid;
                 if (isGridPdf) renderer._gridMarginOverride = { left: 0, top: 0 };
                 renderer.render();
             }
-
-            const w = srcCanvas.width, h = srcCanvas.height;
-            const pdfDpr  = renderer.dpr || 1;
-            const cssWpdf = Math.round(w / pdfDpr), cssHpdf = Math.round(h / pdfDpr);
             const offscreen = document.createElement('canvas');
             offscreen.width = cssWpdf * scale; offscreen.height = cssHpdf * scale;
             const ctx = offscreen.getContext('2d');
@@ -505,6 +553,12 @@ export function initExportManager({ getRenderer, getAppMode }) {
             }
 
             if (!snapshot) {
+                if (sharpPdf) {
+                    srcCanvas.width  = w;
+                    srcCanvas.height = h;
+                    renderer.dpr = pdfDpr;
+                    renderer.crisp = false;
+                }
                 renderer.showGrid = prevShowGrid;
                 if (isGridPdf) renderer._gridMarginOverride = null;
                 renderer.render();
@@ -533,8 +587,20 @@ export function initExportManager({ getRenderer, getAppMode }) {
 
             await _saveBlob(pdf.output('blob'), _buildFilename('pdf'), dirHandle);
         } catch (err) {
-            alert('PDF export failed: ' + err.message);
             console.error(err);
+            _fail('PDF export failed: ' + err.message, dirHandle);
         }
     }
+
+    /**
+     * The export as a Blob instead of a file: options { resolution, grid,
+     * panels, transparent } replace the dialog's settings.
+     */
+    async function exportImage(format, options = {}) {
+        let image = null;
+        await exportScreenshot(format, blob => { image = blob; }, options);
+        return image;
+    }
+
+    return { exportImage };
 }

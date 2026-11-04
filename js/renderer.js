@@ -75,6 +75,11 @@ export class Renderer {
 
         this.showMapBackground = false;
         this.isMapMode = false;
+        // Exports with a transparent background skip the white fill
+        this.transparentBackground = false;
+        // Exports draw node outlines inside the node and links opaque, so the
+        // picture stays sharp zoomed in or printed (no soft halo, no haze)
+        this.crisp = false;
 
         // Layer meta-graph view
         this.layerViewMode = false;
@@ -426,7 +431,7 @@ export class Renderer {
      */
     renderToContext(ctx, w, h) {
         // Background
-        if (!this.showMapBackground) {
+        if (!this.showMapBackground && !this.transparentBackground) {
             ctx.fillStyle = '#ffffff';
             ctx.fillRect(0, 0, w, h);
         }
@@ -597,7 +602,7 @@ export class Renderer {
         ctx.fill();
 
         // Border
-        ctx.strokeStyle = layerColors.border;
+        ctx.strokeStyle = this.crisp ? this._opaqueOnWhite(layerColors.border) : layerColors.border;
         ctx.lineWidth = 1.5;
         ctx.stroke();
 
@@ -692,13 +697,15 @@ export class Renderer {
             const isFaded = !!this._focusSet && !!_fn &&
                 link.node_from !== _fn && link.node_to !== _fn;
 
-            const baseWidth = intraLinkWidth(link.weight, this._intraWidthScale);
+            let baseWidth = intraLinkWidth(link.weight, this._intraWidthScale);
+            // a line thinner than a pixel is drawn as a faint smear: one pixel at least
+            if (this.crisp) baseWidth = Math.max(baseWidth, 1 / this.dpr);
             ctx.beginPath();
             ctx.moveTo(from.x, from.y);
             ctx.lineTo(to.x, to.y);
             ctx.strokeStyle = isHighlighted && typeof color === 'string' ? this._brighten(color) : color;
             ctx.lineWidth = isHighlighted ? baseWidth + 2 : baseWidth;
-            ctx.globalAlpha = isFaded ? 0.04 : isHighlighted ? 1 : (useBipartiteGradient ? 0.5 : 0.9);
+            ctx.globalAlpha = isFaded ? 0.04 : (isHighlighted || this.crisp) ? 1 : (useBipartiteGradient ? 0.5 : 0.9);
             ctx.stroke();
             ctx.globalAlpha = 1;
 
@@ -768,7 +775,7 @@ export class Renderer {
             ctx.quadraticCurveTo(cpx, cpy, toScreen.x, toScreen.y);
             ctx.strokeStyle = isHighlighted ? this._brighten(color) : color;
             ctx.lineWidth = isHighlighted ? baseWidth + 2 : baseWidth;
-            ctx.globalAlpha = isFaded ? 0.04 : isHighlighted ? 1 : 0.7;
+            ctx.globalAlpha = isFaded ? 0.04 : (isHighlighted || this.crisp) ? 1 : 0.7;
             ctx.setLineDash([6, 4]);
             ctx.stroke();
             ctx.setLineDash([]);
@@ -886,6 +893,12 @@ export class Renderer {
                     ? '#333333'
                     : 'rgba(0,0,0,0.2)';
             ctx.lineWidth = (isSelected || isSearched) ? 2.5 : this.nodeStrokeWidth;
+            if (this.crisp) {
+                // only the inner half of a ring twice as wide: the same outline,
+                // without the translucent half outside the node
+                ctx.clip();
+                ctx.lineWidth *= 2;
+            }
             ctx.stroke();
 
             ctx.restore();
@@ -977,6 +990,15 @@ export class Renderer {
             if (link.node_to   === nodeName) set.add(`${link.layer_from}::${link.node_from}`);
         }
         return set;
+    }
+
+    /** An rgba() colour as the solid colour it shows over white; other colours unchanged. */
+    _opaqueOnWhite(color) {
+        const m = /^rgba\(\s*(\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)\s*\)$/.exec(color);
+        if (!m) return color;
+        const alpha = Number(m[4]);
+        const [r, g, b] = [m[1], m[2], m[3]].map(c => Math.round(255 - (255 - Number(c)) * alpha));
+        return `rgb(${r},${g},${b})`;
     }
 
     _brighten(color) {

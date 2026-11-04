@@ -1223,6 +1223,7 @@ Ixodes_ricinus,0.003</code></pre>
 
   <h3 id="export-figure">How do I export a publication-quality figure from MiRA?</h3>
   <p>Click the <strong>Snapshot</strong> button in the top toolbar strip. MiRA produces a high-resolution export of the current view in any visualization mode; choose <strong>PNG</strong>, <strong>JPG</strong>, or <strong>PDF</strong>, and optionally include the backdrop grid. The snapshot captures exactly what is on screen, so set your colors, sizes, thresholds, and camera angle first.</p>
+  <p>Legends are included with their colors and labels; the palette dropdown and reverse button are controls and are left out. From R, the ggmira package saves the same export without opening a window: <code>mira_save(p, "fig1.png")</code>, with a choice of format, resolution, size, background (grid, white or transparent) and legends.</p>
 
   <hr>
 
