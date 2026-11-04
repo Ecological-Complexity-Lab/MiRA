@@ -285,8 +285,7 @@ test; the final sync goes to main only after the MiRA merge. Item 33 (bugs)
 can be its own small PR first.
 
 **Priorities (Shai, 2026-11-02): 32, 17, 31** (20 dropped, see its row).
-32 done 2026-11-02, 33 and 17 done 2026-11-03, 26 done 2026-11-04. Next: 31 last so "Copy as R code" also covers the new
-arguments.
+32 done 2026-11-02, 33 and 17 done 2026-11-03, 26 and 31 done 2026-11-04. Next: 42 (link alpha), then 40, 23/22/39.
 
 | # | Feature | R sketch / notes |
 |---|---|---|
@@ -297,7 +296,7 @@ arguments.
 | 19 | Legend titles | `mira_labs(node_color = "Module")` |
 | 20 | ~~Link color by `weight`; link width scaling~~ | Dropped 2026-11-02. Widths already show weight; color by weight would show it twice (in Later). (Corrected 2026-11-03: the raw-weight width was the intralayer links', not the interlayer; fixed in 33.) |
 | 26 | ~~`mira_save()`: image file from R~~ | **Done 2026-11-04**: MiRA #98 (b2a7ca0), ggmira #7 (d334489). chromote opens MiRA with `?save=true`; MiRA sets `window.miraStatus` when drawn and still, `window.miraSaveToR()` posts its own export to `/api/save` (view-spec.md §2). PNG / JPG / PDF, resolution 1–4, background grid / white / transparent, legends on or off, the mark kept. Exports now re-render at the export's pixel density (PDFs were screen resolution, stretched) and draw crisp: opaque links at least one pixel wide, node outlines inside the node, solid layer borders (screen unchanged). Still stretched from the screen: map, layer-view geo and meta-network views. Known: a grey band inside legend boxes at resolution 1 (html2canvas). |
-| 31 | "Copy as R code" button in MiRA | Camera part done (stage 3 readout, *Copy for R*). |
+| 31 | ~~"Copy as R code" button in MiRA~~ | **Done 2026-11-04**: MiRA #99 (f4b212a), ggmira #8 (6a74ae5). R button next to Save Session (only with a view spec: `mira()` plots and `plot_mira()`, not the website or `plot_multilayer()`); panel with the code colored by element (mira_options() colors), notes for what R cannot set as comments, Copy. `js/rCode.js` stateToSpec / specToR, `js/rCodePanel.js`; R sends its `mira()` call and filter conditions in the spec's `r` field (view-spec.md §2). Camera readout: Copy for R removed, × to hide it. `plot_mira()` now sends a spec (legends start minimized, as for `mira()`). Ideas: bipartite auto-detection in `plot_mira()` / `mira()` (asked, not decided); the R button for `plot_multilayer()`. |
 | 32 | ~~More node shapes (triangle, diamond)~~ | **Done 2026-11-02**: MiRA #95 (1af87ef), ggmira #3 (6eab3b3). Equal area to the circle; legend glyphs drawn with `traceNodeShape`. First feature on the per-feature branch workflow. |
 | 35 | Filter layers, closing the gap in the stack | MiRA's layer filter keeps each layer's slot (renderer positions layers by index among all layers), so a hidden layer leaves a gap. Needs renderer code to stack only the visible layers; then `mira_filter(layers = )`. |
 | 36 | Filter nodes per layer (state-node columns, e.g. `abundance > 10`) | MiRA's node filter is by node name across all layers (renderer.js); a per-(node, layer) condition has no faithful mapping. Needs a per-layer node filter in MiRA. |
@@ -527,8 +526,7 @@ Each needs MiRA work first; the R side is cheap once MiRA supports it.
 - **`aes()` as an alternative mapping syntax.** Its real gain is derived
   variables (`aes(size = log(abundance))`). Could be added later without
   breaking the string API.
-- **"Copy as R code"** button in MiRA that generates ggmira code from the
-  current view.
+- ~~**"Copy as R code"**~~ — done 2026-11-04 (item 31).
 - **Per-set scales**, only if MiRA ever stores scales per set.
 - Map mode and meta-network views. v1 covers network mode only.
 - Camera and stacking from R (`mira_view()`: rotation, layer spacing,

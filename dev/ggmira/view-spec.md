@@ -60,6 +60,32 @@ session today. Not fixed in v1 (it would mean touching `loadData`).
 - `plot_multilayer()` serves no view spec → 404 → MiRA behaves as today.
 - Older MiRA builds never request `/api/view.json` → spec is ignored.
 
+### R's own text: `r` (Copy as R code, MiRA #99, ggmira #8)
+
+- A top-level `r` field is not a setting: `{ mira: "<the mira() call as
+  typed>", filter: { nodes: "<condition>", links: "<condition>" } }`.
+  ggmira's `.view_json()` adds it for `print()` and `mira_save()`
+  (`mira_spec()` leaves it out); `plot_mira()` sends `{ version, r: { mira }
+  [, mode] }`, the `mira()` call of the same plot (`directed = TRUE` added
+  when it auto-detected a directed bipartite network). `rBridge` keeps `r`
+  out of `applyViewSpec`.
+- With any view spec, MiRA shows the R button (`#copyRCodeBtn`, next to
+  Save Session). `js/rCode.js`: `stateToSpec(state, { baseline, applied,
+  spec }, ctx, view)` is the reverse of `applyViewSpec`: a field is written
+  when the state differs from `baseline` (the default view the spec was
+  applied to); `applied` (the session right after) tells what changed in
+  MiRA (layout recomputed: no seed, a note; filter unchanged: R's condition
+  text; legends). `view` holds what is not in the session: camera values
+  (cameraReadout.js), the legend panel (hidden, corner, dragged), the
+  meta-network's selected layers. `specToR(spec)` prints ggmira components,
+  each line tagged with its element; scale settings go to the component
+  that maps the attribute; `color_scale` is left out when ggmira infers it
+  (palette, limits, values). Notes (R cannot set it): layers moved by hand,
+  a layer filter, dragged legends, layer-view and map settings.
+- Invariant (tests/rCode.test.js): applying `stateToSpec`'s spec to the
+  baseline gives the state back; ggmira test-copy_r.R runs the code and
+  compares `mira_spec()`.
+
 ### Save mode (`mira_save()`, MiRA #98, ggmira #7)
 
 - R opens `/?autoload=true&save=true` in headless Chrome (chromote) and
