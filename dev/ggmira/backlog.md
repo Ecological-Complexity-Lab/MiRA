@@ -285,7 +285,7 @@ test; the final sync goes to main only after the MiRA merge. Item 33 (bugs)
 can be its own small PR first.
 
 **Priorities (Shai, 2026-11-02): 32, 17, 31** (20 dropped, see its row).
-32 done 2026-11-02, 33 and 17 done 2026-11-03. Next: 31 last so "Copy as R code" also covers the new
+32 done 2026-11-02, 33 and 17 done 2026-11-03, 26 done 2026-11-04. Next: 31 last so "Copy as R code" also covers the new
 arguments.
 
 | # | Feature | R sketch / notes |
@@ -296,7 +296,7 @@ arguments.
 | 18 | Node size range | `mira_scale_size(range = c(1, 6))` |
 | 19 | Legend titles | `mira_labs(node_color = "Module")` |
 | 20 | ~~Link color by `weight`; link width scaling~~ | Dropped 2026-11-02. Widths already show weight; color by weight would show it twice (in Later). (Corrected 2026-11-03: the raw-weight width was the intralayer links', not the interlayer; fixed in 33.) |
-| 26 | `mira_save()`: image file from R | Headless browser; MiRA signals "rendered" |
+| 26 | ~~`mira_save()`: image file from R~~ | **Done 2026-11-04**: MiRA #98 (b2a7ca0), ggmira #7 (d334489). chromote opens MiRA with `?save=true`; MiRA sets `window.miraStatus` when drawn and still, `window.miraSaveToR()` posts its own export to `/api/save` (view-spec.md §2). PNG / JPG / PDF, resolution 1–4, background grid / white / transparent, legends on or off, the mark kept. Exports now re-render at the export's pixel density (PDFs were screen resolution, stretched) and draw crisp: opaque links at least one pixel wide, node outlines inside the node, solid layer borders (screen unchanged). Still stretched from the screen: map, layer-view geo and meta-network views. Known: a grey band inside legend boxes at resolution 1 (html2canvas). |
 | 31 | "Copy as R code" button in MiRA | Camera part done (stage 3 readout, *Copy for R*). |
 | 32 | ~~More node shapes (triangle, diamond)~~ | **Done 2026-11-02**: MiRA #95 (1af87ef), ggmira #3 (6eab3b3). Equal area to the circle; legend glyphs drawn with `traceNodeShape`. First feature on the per-feature branch workflow. |
 | 35 | Filter layers, closing the gap in the stack | MiRA's layer filter keeps each layer's slot (renderer positions layers by index among all layers), so a hidden layer leaves a gap. Needs renderer code to stack only the visible layers; then `mira_filter(layers = )`. |
@@ -304,6 +304,8 @@ arguments.
 | 34 | Color scales per element (node / intralayer / interlayer / layer), not per attribute name. Decided 2026-11-02 to keep MiRA's rule for now: one `value -> color` map per attribute name (`categoryColorOverrides`, app.js), shared by every element colored by that attribute. Two tables with the same column name and the same value (node `module` 1, link `module` 1) share a color, in the UI and from R (R warns which piece replaces which). | Key the overrides by `element:attr`; touches the three color functions, the legend editor and session save/restore (fallback for old keys); then `scales` in the view spec and `.combine_scales` in R. |
 | 37 | ~~Link filter on undirected networks listing both directions~~ | **Done 2026-11-03** in MiRA #96: filters are checked against the drawn links, and an undirected link given in the other direction finds the drawn one (`drawnLinkKeys` in rBridge.js). |
 | 40 | Arrowheads in dense directed layers | Arrowheads are at least 14 px long (`14 + 1.5 × width`, renderer.js), so small, dense directed layers turn black (emln 23, costa2020). The slider (`mira_intralayer(arrow_size = )`) fixes it by hand. Options: scale with layer density, or a smaller default. Found 2026-11-03. |
+| 42 | Link opacity: `mira_intralayer(alpha = )`, `mira_interlayer(alpha = )` | Added 2026-11-04 (from `mira_save()` review: translucent links look hazy in print). MiRA first: an opacity slider (0–1, "default" = today's 0.9 / 0.5 bipartite gradient / 0.7 interlayer) in the intralayer and interlayer link settings, used by the renderer (network and map views), saved in sessions, reset by Reset; spec keys `intralayer.alpha`, `interlayer.alpha`. When set, exports use it instead of the crisp default (opaque). Grid view draws links opaque already; layer view and meta-network links are between layers, not affected. Own branch `feat/link-alpha`. |
+| 43 | Vector export (SVG, vector PDF) | Added 2026-11-04, later. Raster exports pixelate past 100 % zoom however high the resolution. Earlier attempts at SVG export in MiRA never worked. Idea: draw the renderer's canvas calls into an SVG-recording context (it uses only paths, arcs, text, transforms, dashes); the HTML legends need their own vector version. |
 
 ## Open decisions
 
@@ -513,8 +515,7 @@ Each needs MiRA work first; the R side is cheap once MiRA supports it.
 - **Save a session file from R** (was item 27), only if someone needs to
   save without a browser. Check MiRA accepts a session without positions.
 
-- **`mira_save()`** — next dev session (headless render to file; needs
-  chromote or similar, and MiRA signaling "rendered" back to R).
+- ~~**`mira_save()`**~~ — done 2026-11-04 (item 26).
 - **Continuous color palettes** (`palette = "magma"`) and palettes for
   MiRA-computed attributes. MiRA is Dark2 / Viridis only; needs a palette
   argument in `colorMapper.js` and a new session field.

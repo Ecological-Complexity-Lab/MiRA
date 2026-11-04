@@ -60,6 +60,27 @@ session today. Not fixed in v1 (it would mean touching `loadData`).
 - `plot_multilayer()` serves no view spec → 404 → MiRA behaves as today.
 - Older MiRA builds never request `/api/view.json` → spec is ignored.
 
+### Save mode (`mira_save()`, MiRA #98, ggmira #7)
+
+- R opens `/?autoload=true&save=true` in headless Chrome (chromote) and
+  serves `POST /api/save` (`.mira_app(on_save = )`).
+- With `?save=true`, once the plot is drawn and still (fonts loaded,
+  layer-view and meta-network animations finished at once, map tiles
+  faded in; at most 20 s), MiRA sets
+  `window.miraStatus = { rendered: true, warnings: [...] }`; if the load
+  fails, `{ rendered: false, error }` (`js/rBridge.js`).
+- R then calls `window.miraSaveToR({ format, resolution, background,
+  legends })`: `format` png | jpg | pdf, `resolution` 1–4, `background`
+  grid | white | transparent. MiRA runs its own export
+  (`exportImage(format, options)` in `js/exportManager.js`), posts the
+  file to `/api/save` and returns its size in bytes.
+- Exports re-render at the export's pixel density (`renderer.dpr`) and
+  draw crisp (`renderer.crisp`: opaque links at least one pixel wide,
+  node outlines inside the node, solid layer borders). Map, layer-view
+  geo and meta-network views still stretch the screen image.
+- chromote's synchronous calls block httpuv, so R calls them
+  asynchronously and runs `later::run_now()` while waiting.
+
 ---
 
 ## 3. Schema
