@@ -14,6 +14,10 @@
  * If anything throws, the network is reloaded with the default view, so a
  * bad spec never leaves MiRA half-configured.
  *
+ * Opened by ggmira's mira_save() (?save=true, in a headless browser): once
+ * the plot is drawn and still, window.miraStatus tells R (with the spec
+ * warnings), and window.miraSaveToR(options) posts the image to R.
+ *
  * App functions are passed in (`deps`), the same way other modules are wired.
  */
 
@@ -23,6 +27,12 @@ import { buildNodeSetResolver } from './nodeSets.js';
 import { startCameraReadout } from './cameraReadout.js';
 
 const VIEW_SPEC_URL = '/api/view.json';
+const SAVE_URL = '/api/save';
+// (no window when unit tests import this module)
+const SAVE_MODE = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('save') === 'true';
+// Longest wait for animations and map tiles before saving anyway
+const SETTLE_TIMEOUT_MS = 20000;
+const SETTLE_POLL_MS = 100;
 const NOTICE_ID = 'viewSpecNotice';
 
 // Dropdowns whose options decide which attributes a view spec may use
@@ -50,20 +60,76 @@ const LEGEND_CORNERS = {
 
 /**
  * @param {object} networkJson  Network fetched from /api/network.json
- * @param {{ loadData, getSessionState, restoreSessionState, renderer, getAppMode }} deps
+ * @param {{ loadData, getSessionState, restoreSessionState, renderer, getAppMode, exportImage, isAnimating, finishAnimations }} deps
  */
 export async function loadFromR(networkJson, deps) {
     deps.loadData(networkJson);
-    if (!deps.renderer.model) return; // loadData already reported the error
+    if (!deps.renderer.model) { // loadData already reported the error
+        reportLoadFailure('MiRA could not read the network');
+        return;
+    }
     // Camera values in mira_camera() terms, with "Copy for R" (network mode only)
     startCameraReadout(deps.renderer, deps.getAppMode ?? (() => 'network'));
 
     const fetched = await fetchViewSpec();
     if (fetched.error) {
         showSpecNotice('The plot settings from R were ignored', [fetched.error]);
+        await reportRendered(deps, [fetched.error]);
         return;
     }
-    if (fetched.spec !== null) applySpecSafely(networkJson, fetched.spec, deps);
+    const warnings = fetched.spec !== null ? applySpecSafely(networkJson, fetched.spec, deps) : [];
+    await reportRendered(deps, warnings);
+}
+
+/** mira_save(): MiRA could not open the plot. */
+export function reportLoadFailure(message) {
+    if (SAVE_MODE) window.miraStatus = { rendered: false, error: message, warnings: [] };
+}
+
+/** mira_save(): wait until the plot is drawn and still, then tell R and take its save request. */
+async function reportRendered(deps, warnings) {
+    if (!SAVE_MODE) return;
+    window.miraSaveToR = options => saveToR(deps, options);
+    await settled(deps);
+    window.miraStatus = { rendered: true, warnings };
+}
+
+// Fonts loaded, layout animations (layer view, meta-network) run to rest, map tiles
+// loaded and no map zoom animation; at most SETTLE_TIMEOUT_MS
+async function settled(deps) {
+    await document.fonts?.ready;
+    deps.finishAnimations?.();
+    const start = performance.now();
+    while (performance.now() - start < SETTLE_TIMEOUT_MS) {
+        await nextFrame();
+        await nextFrame();
+        // Leaflet fades tiles in after loading (style.opacity up to 1)
+        const tilesLoaded = [...document.querySelectorAll('img.leaflet-tile')]
+            .every(img => img.complete && (img.style.opacity === '' || Number(img.style.opacity) >= 1));
+        const zooming = document.querySelector('.leaflet-zoom-anim') !== null;
+        if (!deps.isAnimating?.() && tilesLoaded && !zooming) return;
+        await new Promise(resolve => setTimeout(resolve, SETTLE_POLL_MS));
+    }
+}
+
+const nextFrame = () => new Promise(resolve => requestAnimationFrame(resolve));
+
+/**
+ * Export the plot and post it to R's server.
+ * @param {{ format: string, resolution: number, background: 'grid'|'white'|'transparent', legends: boolean }} options
+ * @returns {Promise<number>} the image size in bytes
+ */
+async function saveToR(deps, { format, resolution, background, legends }) {
+    const image = await deps.exportImage(format, {
+        resolution,
+        grid: background === 'grid',
+        transparent: background === 'transparent',
+        panels: legends,
+    });
+    if (!image) throw new Error('MiRA made no image');
+    const resp = await fetch(SAVE_URL, { method: 'POST', body: image });
+    if (!resp.ok) throw new Error(`R did not take the image (${resp.status})`);
+    return image.size;
 }
 
 /** @returns {Promise<{ spec: object|null, error?: string }>} */
@@ -82,15 +148,18 @@ async function fetchViewSpec() {
     }
 }
 
+/** @returns {string[]} the warnings shown */
 function applySpecSafely(networkJson, spec, deps) {
     try {
         const warnings = applySpec(spec, deps);
         if (warnings.length) showSpecNotice('Some plot settings from R were ignored', warnings);
+        return warnings;
     } catch (err) {
         console.error('[MiRA] View spec could not be applied:', err);
         deps.loadData(networkJson, { warn: false });
-        showSpecNotice('The plot settings from R could not be applied',
-            [`${err.message}. Showing the default view.`]);
+        const messages = [`${err.message}. Showing the default view.`];
+        showSpecNotice('The plot settings from R could not be applied', messages);
+        return messages;
     }
 }
 

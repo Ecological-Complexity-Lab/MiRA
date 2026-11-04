@@ -20,7 +20,7 @@ import { initExportManager } from './exportManager.js';
 import { GridView } from './gridView.js';
 import { buildNodeSetResolver, collectSetItems, SET_A, SET_B } from './nodeSets.js';
 import { SHAPE_CIRCLE, SHAPE_SQUARE, SHAPE_TRIANGLE, traceNodeShape } from './nodeShapes.js';
-import { loadFromR } from './rBridge.js';
+import { loadFromR, reportLoadFailure } from './rBridge.js';
 import { fitMapToCoords } from './mapFit.js';
 import { palettesFor } from './palettes.js';
 
@@ -971,6 +971,18 @@ function _startLayerViewLoop() {
         lvRAF = stillHot ? requestAnimationFrame(loop) : null;
     }
     lvRAF = requestAnimationFrame(loop);
+}
+
+// mira_save(): run the layer-view and meta-network layouts to rest at once
+// (the layer view cools over ~20 s); their loops then draw the final frame
+function finishAnimations() {
+    const MAX_TICKS = 5000;
+    if (appMode === 'layer' && renderer.layerView) {
+        for (let i = 0; i < MAX_TICKS && renderer.layerView.tick(); i++);
+    }
+    if (appMode === 'metanetwork' && metaNetwork) {
+        for (let i = 0; i < MAX_TICKS && metaNetwork.tick(); i++);
+    }
 }
 
 function _ensureLayerViewLoop() {
@@ -4443,10 +4455,14 @@ function hideTooltip() {
             .then(json => {
                 // Also applies a ggmira view spec (/api/view.json) when R serves one
                 return loadFromR(json, { loadData, getSessionState, restoreSessionState, renderer,
-                    getAppMode: () => appMode });
+                    getAppMode: () => appMode,
+                    exportImage: (format, options) => exportApi.exportImage(format, options),
+                    isAnimating: () => lvRAF !== null || mnRAF !== null,
+                    finishAnimations });
             })
             .catch(err => {
                 console.error('Autoload failed:', err);
+                reportLoadFailure(err.message);
             });
     }
 })();
@@ -5066,7 +5082,7 @@ toggleLegendBtn.addEventListener('click', () => {
 });
 
 // ---- Export dialog (PNG / JPG / PDF) ----
-initExportManager({
+const exportApi = initExportManager({
     getRenderer: () => renderer,
     getAppMode:  () => appMode,
 });
