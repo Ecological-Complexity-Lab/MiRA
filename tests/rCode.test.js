@@ -357,7 +357,7 @@ describe('Group 4 — R code', () => {
     expect(code({ scales: { '.set': { values: { bird: '#ff0000' } } } }))
       .toBe('mira(net) +\n  mira_node(color_by = ".set", color_values = c(bird = "#ff0000"))')
     expect(code({ layer: { color_by: '.individual', colors: { layer_1: '#ff0000' } } }))
-      .toBe('mira(net) +\n  mira_layer(color_by = ".individual", color_values = c(layer_1 = "#ff0000"))')
+      .toBe('mira(net) +\n  mira_layer(color_by = "layer_name", color_values = c(layer_1 = "#ff0000"))')
   })
 
   it('4.7 filters: R\'s text, node names, or links as a condition on net$extended', () => {
@@ -392,5 +392,15 @@ describe('Group 4 — R code', () => {
     const lines = specToR({ version: 1, node: { size: 9 }, intralayer: { color: '#000000' },
       interlayer: { show: true }, layer: { labels: true }, camera: { zoom: 2 } })
     expect(lines.map(line => line.element)).toEqual([null, 'node', 'intralayer', 'interlayer', 'layer', null])
+  })
+
+  it('4.10 for RStudio\'s Viewer: the plot in p, then print(p, viewer = TRUE)', () => {
+    const viewer = (body) => specToR({ version: 1, ...body }, { viewer: true }).map(line => line.text).join('\n')
+    expect(viewer({ r: { mira: 'mira(net, bipartite = TRUE)' }, node: { size: 12 } }))
+      .toBe('p <- mira(net, bipartite = TRUE) +\n  mira_node(size = 12)\nprint(p, viewer = TRUE)')
+    expect(viewer({})).toBe('p <- mira(net)\nprint(p, viewer = TRUE)')
+    // R's own line breaks in the mira() call move with it
+    expect(viewer({ r: { mira: 'mira(net,\n     bipartite = TRUE)' }, node: { size: 12 } }))
+      .toBe('p <- mira(net,\n          bipartite = TRUE) +\n  mira_node(size = 12)\nprint(p, viewer = TRUE)')
   })
 })

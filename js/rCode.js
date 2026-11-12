@@ -44,6 +44,11 @@ const PAN_MAX = 1;
 const LINE_WIDTH = 80;
 const INDENT = '  ';
 const FALLBACK_MIRA_CALL = 'mira(net)';
+// mira_layer(color_by = "layer_name") is R's name for ".individual" (the one the docs use)
+const LAYER_NAME_COLUMN = 'layer_name';
+// { viewer: true }: keep the plot in `p` and open it in RStudio's Viewer pane
+const PLOT_ASSIGN = 'p <- ';
+const VIEWER_PRINT = 'print(p, viewer = TRUE)';
 const ELEMENTS = { node: 'node', intralayer: 'intralayer', interlayer: 'interlayer', layer: 'layer' };
 const R_RESERVED = new Set(['if', 'else', 'repeat', 'while', 'function', 'for', 'next', 'break', 'TRUE',
     'FALSE', 'NULL', 'Inf', 'NaN', 'NA', 'NA_integer_', 'NA_real_', 'NA_character_', 'in']);
@@ -375,10 +380,12 @@ const mapSettings = (map) => map && ({
 
 /**
  * @param {object} spec  From stateToSpec
+ * @param {{ viewer?: boolean }} [options]  viewer: assign the plot to `p` and
+ *   end with print(p, viewer = TRUE), which opens it in RStudio's Viewer pane
  * @returns {{ element: string|null, text: string }[]} The code, line by line;
  *   `element` (node, intralayer, interlayer, layer, or null) colors the line.
  */
-export function specToR(spec) {
+export function specToR(spec, { viewer = false } = {}) {
     const calls = [{ element: null, text: spec.r?.mira ?? FALLBACK_MIRA_CALL }];
     const add = (element, fn, args) => {
         const given = args.filter(([, value]) => value !== undefined);
@@ -420,7 +427,7 @@ export function specToR(spec) {
     const layer = spec.layer ?? {};
     const individual = layer.color_by === INDIVIDUAL_KEYWORD;
     add(ELEMENTS.layer, 'mira_layer', [
-        ['color_by', layer.color_by], ['color', layer.color],
+        ['color_by', individual ? LAYER_NAME_COLUMN : layer.color_by], ['color', layer.color],
         ...(individual ? [['color_values', layer.colors]] : scaleArgs(layer.color_by, takeScale)),
         ['labels', layer.labels], ['label_size', layer.label_size], ['set_labels', layer.set_labels],
         ['stack', layer.stack], ['spacing', layer.spacing],
@@ -446,7 +453,7 @@ export function specToR(spec) {
         calls.push({ element: null, text: callText(`mira_mode_${view}`, args) });
     }
 
-    return calls.flatMap((call, i) => {
+    const code = calls.flatMap((call, i) => {
         const last = i === calls.length - 1;
         const lines = call.text.split('\n');
         return lines.map((line, j) => ({
@@ -454,6 +461,17 @@ export function specToR(spec) {
             text: (i === 0 ? '' : INDENT) + line + (last || j < lines.length - 1 ? '' : ' +'),
         }));
     });
+    if (!viewer) return code;
+    // The mira() call's own continuation lines (R's text) move with it
+    const miraLines = calls[0].text.split('\n').length;
+    const pad = ' '.repeat(PLOT_ASSIGN.length);
+    return [
+        ...code.map((line, k) => ({
+            ...line,
+            text: (k === 0 ? PLOT_ASSIGN : k < miraLines ? pad : '') + line.text,
+        })),
+        { element: null, text: VIEWER_PRINT },
+    ];
 }
 
 /**

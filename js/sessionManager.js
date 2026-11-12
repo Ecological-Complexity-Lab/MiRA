@@ -11,17 +11,20 @@ export async function saveSession(state) {
             const writable = await handle.createWritable();
             await writable.write(blob);
             await writable.close();
+            return;
         } catch (err) {
-            if (err.name !== 'AbortError') console.error('Save session failed:', err);
+            if (err.name === 'AbortError') return; // cancelled
+            // e.g. SecurityError in a frame from another origin (RStudio's
+            // Viewer pane): download it instead
+            console.warn('Save dialog failed, downloading instead:', err.name, err.message);
         }
-    } else {
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.download = 'session.json';
-        a.href = url;
-        a.click();
-        URL.revokeObjectURL(url);
     }
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.download = 'session.json';
+    a.href = url;
+    a.click();
+    URL.revokeObjectURL(url);
 }
 
 export async function loadSession(file) {

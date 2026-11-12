@@ -23,6 +23,7 @@ import { SHAPE_CIRCLE, SHAPE_SQUARE, SHAPE_TRIANGLE, traceNodeShape } from './no
 import { loadFromR, reportLoadFailure } from './rBridge.js';
 import { fitMapToCoords } from './mapFit.js';
 import { palettesFor } from './palettes.js';
+import { initScreenSizeWarning } from './screenSize.js';
 
 // ---- State ----
 let model = null;
@@ -909,6 +910,7 @@ initDemoDatasets(loadData);
 
 // ---- Feedback dialog ----
 initFeedback(() => ({ mode: appMode, model, datasetName: currentDatasetName }));
+initScreenSizeWarning();
 
 
 // ---- Mode Button Highlighting ----
