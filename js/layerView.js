@@ -7,7 +7,7 @@
  * Both views use d3-force (loaded globally via CDN) for simulation.
  */
 
-import { layerColors } from './dataMode.js';
+import { dataMode, layerColors } from './dataMode.js';
 
 // Curated palette (same order as colorMapper.js CATEGORICAL_PALETTE)
 const PALETTE = [
@@ -139,11 +139,15 @@ export class LayerView {
 
     _computeMetaGraph() {
         const model  = this._model;
-        const layers = model.layers;
+        // Only the layers kept by Data mode's layer filter (ggmira #15); node and
+        // link filters do not apply: a bubble summarizes its whole layer
+        const kept   = dataMode.filteredLayerNames;
+        const layers = kept ? model.layers.filter(l => kept.has(l.layer_name)) : model.layers;
         const L      = layers.length;
 
+        // Colors by position among all layers, so a layer keeps its color when others are filtered out
         this._layerColorMap = new Map();
-        layers.forEach((l, i) => {
+        model.layers.forEach((l, i) => {
             const custom = layerColors.get(l.layer_name);
             this._layerColorMap.set(l.layer_name, custom || PALETTE[i % PALETTE.length]);
         });

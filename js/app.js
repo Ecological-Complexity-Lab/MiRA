@@ -1317,14 +1317,18 @@ function _exitDataMode() {
 }
 
 function _updateFilterBanner() {
-    const show = dataMode.isSubsetActive() && (appMode === 'network' || appMode === 'map' || appMode === 'grid');
+    // The layer view applies only the layer filter (ggmira #15)
+    const layerViewOnly = appMode === 'layer';
+    const show = layerViewOnly
+        ? Boolean(dataMode.filteredLayerNames)
+        : dataMode.isSubsetActive() && (appMode === 'network' || appMode === 'map' || appMode === 'grid');
     if (!show) {
         dataFilterBanner.style.display = 'none';
     } else {
         const parts = [];
-        if (dataMode.filteredNodeNames) parts.push(`${dataMode.filteredNodeNames.size} nodes`);
+        if (dataMode.filteredNodeNames && !layerViewOnly) parts.push(`${dataMode.filteredNodeNames.size} nodes`);
         if (dataMode.filteredLayerNames) parts.push(`${dataMode.filteredLayerNames.size} layers`);
-        if (dataMode.filteredLinkKeys) parts.push(`${dataMode.filteredLinkKeys.size} links`);
+        if (dataMode.filteredLinkKeys && !layerViewOnly) parts.push(`${dataMode.filteredLinkKeys.size} links`);
         dataFilterText.textContent = `\u26A1 Data filter active \u2014 ${parts.join(', ')} visible`;
         dataFilterBanner.style.display = 'flex';
     }
@@ -1427,8 +1431,23 @@ dataFilterClear.addEventListener('click', () => {
     dataMode.clear();
     renderer.searchedNodeName = null;
     _updateFilterBanner();
+    if (appMode === 'layer') _rebuildLayerView(); // bring back the filtered-out layers
     if (appMode !== 'data') renderer.render();
 });
+
+/** Rebuild the layer view (after its layer filter changed), keeping its settings. */
+function _rebuildLayerView() {
+    const settings = { ...renderer.layerView.settings };
+    const geo = renderer.layerView.geoMode;
+    toggleLayerView(); // back to network mode
+    toggleLayerView(); // the layer view again, with the current filter
+    const lv = renderer.layerView;
+    if (!lv) return;
+    for (const [key, value] of Object.entries(settings)) lv.updateSetting(key, value);
+    _restoreLayerViewDOM(settings);
+    if (geo !== lv.geoMode) geo ? _activateLvGeoMode() : _deactivateLvGeoMode();
+    renderLayerViewLegend();
+}
 
 selectedNodeClear.addEventListener('click', () => {
     _clearCrossModeSelection();
@@ -5501,6 +5520,8 @@ function restoreSessionState(state, { warnData = true } = {}) {
         updateMapModeViews();
         if (mp.mapZoom != null) bgMap.setView([mp.mapCenter.lat, mp.mapCenter.lng], mp.mapZoom, { animate: false });
     } else if (state.appMode === 'layer') {
+        // The layer view applies the layer filter when built; step 15 restores the rest
+        dataMode.filteredLayerNames = state.filter?.layerNames ? new Set(state.filter.layerNames) : null;
         toggleLayerView();
         if (renderer.layerView && state.layerView) {
             const lv = renderer.layerView;
