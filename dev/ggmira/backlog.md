@@ -17,6 +17,9 @@ Phase 3 done: ggmira package at `~/GitHub/ecomplab/ggmira`
 **2026-11-02:** stages 2–3 merged to ggmira main; stage 4 (views) built
 and tested by Shai, not merged (see Stage 4 and the handoff of
 2026-11-02 afternoon).
+**2026-11-12: working toward the first release (v1).** Beta fixes and
+item 35 merged (MiRA #100, ggmira #19). **Start at "Handoff: 2026-11-12
+— toward the first release"** below.
 
 ## Milestones
 
@@ -285,7 +288,7 @@ test; the final sync goes to main only after the MiRA merge. Item 33 (bugs)
 can be its own small PR first.
 
 **Priorities (Shai, 2026-11-02): 32, 17, 31** (20 dropped, see its row).
-32 done 2026-11-02, 33 and 17 done 2026-11-03, 26 and 31 done 2026-11-04. Next: 42 (link alpha), then 40, 23/22/39.
+32 done 2026-11-02, 33 and 17 done 2026-11-03, 26 and 31 done 2026-11-04, 35 done 2026-11-12. **Release scope (2026-11-12): 40 for v1; 42, 23/22/39 and the rest after the release.**
 
 | # | Feature | R sketch / notes |
 |---|---|---|
@@ -298,7 +301,7 @@ can be its own small PR first.
 | 26 | ~~`mira_save()`: image file from R~~ | **Done 2026-11-04**: MiRA #98 (b2a7ca0), ggmira #7 (d334489). chromote opens MiRA with `?save=true`; MiRA sets `window.miraStatus` when drawn and still, `window.miraSaveToR()` posts its own export to `/api/save` (view-spec.md §2). PNG / JPG / PDF, resolution 1–4, background grid / white / transparent, legends on or off, the mark kept. Exports now re-render at the export's pixel density (PDFs were screen resolution, stretched) and draw crisp: opaque links at least one pixel wide, node outlines inside the node, solid layer borders (screen unchanged). Still stretched from the screen: map, layer-view geo and meta-network views. Known: a grey band inside legend boxes at resolution 1 (html2canvas). |
 | 31 | ~~"Copy as R code" button in MiRA~~ | **Done 2026-11-04**: MiRA #99 (f4b212a), ggmira #8 (6a74ae5). R button next to Save Session (only with a view spec: `mira()` plots and `plot_mira()`, not the website or `plot_multilayer()`); panel with the code colored by element (mira_options() colors), notes for what R cannot set as comments, Copy. `js/rCode.js` stateToSpec / specToR, `js/rCodePanel.js`; R sends its `mira()` call and filter conditions in the spec's `r` field (view-spec.md §2). Camera readout: Copy for R removed, × to hide it. `plot_mira()` now sends a spec (legends start minimized, as for `mira()`). Ideas: bipartite auto-detection in `plot_mira()` / `mira()` (asked, not decided); the R button for `plot_multilayer()`. |
 | 32 | ~~More node shapes (triangle, diamond)~~ | **Done 2026-11-02**: MiRA #95 (1af87ef), ggmira #3 (6eab3b3). Equal area to the circle; legend glyphs drawn with `traceNodeShape`. First feature on the per-feature branch workflow. |
-| 35 | Filter layers, closing the gap in the stack | MiRA's layer filter keeps each layer's slot (renderer positions layers by index among all layers), so a hidden layer leaves a gap. Needs renderer code to stack only the visible layers; then `mira_filter(layers = )`. |
+| 35 | ~~Filter layers, closing the gap in the stack~~ | **Done 2026-11-12**: MiRA #100 (eebf58d), ggmira #19 (25e0a77). `renderer._stackSlot()`: a layer's place is its position among the kept layers (cached per filter); hit tests and `centerView` skip hidden layers; the view refits when the layer filter changed the stack (`stackChangedSinceFit()`: leaving Data mode, the banner's Clear, opening from R). View spec `filter.layers`; R code writes `mira_filter(layers = )`. R: `mira_filter(layers = )` names or a condition on `net$layers` (shared `.layer_names()` with `mira_mode_meta(layers = )`); the layer view applies `layers` only. |
 | 36 | Filter nodes per layer (state-node columns, e.g. `abundance > 10`) | MiRA's node filter is by node name across all layers (renderer.js); a per-(node, layer) condition has no faithful mapping. Needs a per-layer node filter in MiRA. |
 | 34 | Color scales per element (node / intralayer / interlayer / layer), not per attribute name. Decided 2026-11-02 to keep MiRA's rule for now: one `value -> color` map per attribute name (`categoryColorOverrides`, app.js), shared by every element colored by that attribute. Two tables with the same column name and the same value (node `module` 1, link `module` 1) share a color, in the UI and from R (R warns which piece replaces which). | Key the overrides by `element:attr`; touches the three color functions, the legend editor and session save/restore (fallback for old keys); then `scales` in the view spec and `.combine_scales` in R. |
 | 37 | ~~Link filter on undirected networks listing both directions~~ | **Done 2026-11-03** in MiRA #96: filters are checked against the drawn links, and an undirected link given in the other direction finds the drawn one (`drawnLinkKeys` in rBridge.js). |
@@ -356,6 +359,84 @@ can be its own small PR first.
       `ggmira::plot_multilayer()` (agree with Geut).
 
 ---
+
+## Handoff: 2026-11-12 — toward the first release
+
+Session of 2026-11-12 (opened in the ggmira folder by mistake; continue in
+the multi-folder workspace MiRA + MiRA-dev + ggmira).
+
+**Release decisions (Shai, 2026-11-12):**
+- **Target:** public GitHub + pkgdown site on GitHub Pages; install with
+  `remotes::install_github()`. Not CRAN for now.
+- **Modes:** keep every `mira_mode_*()`. Network, grid and meta-network are
+  fully supported; map, layer, dashboard and data are documented as
+  opening with MiRA's defaults (the `?mira_mode` table already says what
+  applies where).
+- **Must-haves for v1 besides the fixes:** item 40 (arrowheads in dense
+  directed layers) and ggmira issue #13 (open in RStudio's Viewer pane, e.g.
+  `print(p, viewer = TRUE)` or `options(ggmira.viewer = )`, browser outside
+  RStudio). Everything else in the M table (18, 19, 22, 23, 39, 42, 43…)
+  and issue #18 (rename layers) is after the release.
+
+**Done this session (all merged):** MiRA #100 → main eebf58d (live);
+ggmira #19 → main 25e0a77 (bundles MiRA eebf58d).
+- Beta issues fixed: #16 (a click on a legend counted as a drag: the panel
+  now switches to left/top only after a > 3 px move; layer-view drags noted
+  in the R code, `layerView.movedBubbleCount()`), #14 ("Network loaded from
+  R"), #12 (meta-network legend redrawn after a session restore), #15 (the
+  layer view applies Data mode's layer filter; banner in the layer view;
+  `_rebuildLayerView()` on Clear), #17 (layer view `colorBy: 'attribute'` +
+  `colorAttr`, network mode's layer color scale, the dropdown lists layer
+  attributes and is shared with network mode both ways; "Layer color" =
+  Individual).
+- Item 35 (see its row).
+- Docs: `?mira_filter`, `?mira_mode` table, `?mira_mode_layer`,
+  `?mira_mode_data`; Getting started step 6 (layers, new screenshot
+  step-6-filter-layers.png) and step 8 screenshot (meta color legend).
+  Help pages regenerated with roxygen2 8.1.1 (Shai's new R: formatting
+  only; DESCRIPTION has `Config/roxygen2/version`).
+- QA baseline: R CMD check clean (0/0/0); ggmira 539 tests; MiRA 442 unit
+  + 69 browser tests.
+- The GitHub issues #12, #14, #15, #16, #17 are closed by hand by Shai
+  (closing notes were drafted in the session; no "Closes #" in PRs).
+
+**Next, in order:**
+1. Item 40, arrowheads in dense directed layers (MiRA, then R if needed).
+2. Issue #13, RStudio Viewer (R only).
+3. QA sweep. Shai asked for an independent QA pass: a Fable subagent on
+   the R package and the bundled MiRA, given the code, not conclusions.
+   Plus hands-on runs of every mode on emln 13, 14, 17, 23, 63 and the
+   Siberian demo, a fresh `install_github()` into a clean library, and
+   the website-path check (demo datasets without R).
+4. Release prep: NEWS.md, version (0.1.0 → 1.0.0?), README pass, `url` in
+   `_pkgdown.yml` (pkgdown warns), make the repo public, GitHub Pages,
+   retake all article screenshots (most predate MiRA's R button), tag.
+
+**Open questions for Shai:**
+- MiRA's fit leaves no room for the toolbar: in vertical stacks the top
+  layer sits under it (Getting started steps 5 and 6). Fix in v1? It shifts
+  every opening view, and so how `mira_camera()` values frame a plot.
+- The R button writes `color_by = ".individual"`; the docs recommend
+  `"layer_name"` (R accepts both). Make the R code write `"layer_name"`?
+
+**Practical notes:**
+- The Siberian demo (pilosof2017) is not in emln; build it in R from
+  `MiRA-dev/data/pilosof2017.json` (`jsonlite::fromJSON()`, then
+  `structure(list(nodes, layers[, c("layer_id", "layer_name")], extended,
+  state_nodes), class = "multilayer")`) and open with
+  `mira(net, bipartite = TRUE, setA_type = "parasite", directed_interlayer = TRUE)`.
+- Headless checks: chromote from R with ggmira internals (`.mira_app`,
+  `.start_server`, `.wait_for`), `mira_path` = MiRA-dev; MiRA exposes
+  `window._layerView`, `window._metaNetwork`, and modules can be imported
+  in the page (`await import('/js/dataMode.js')`).
+- Browser tests: start `/usr/bin/python3 -m http.server 8001` by hand
+  (`/usr/local/bin/python3` is Intel), then
+  `npx playwright test --config config/playwright.config.js --workers 1`.
+- `gh pr merge --squash --delete-branch` in MiRA-dev fails locally after
+  merging (main is checked out in the MiRA worktree); delete the remote
+  branch by hand. The MiRA worktree (`~/GitHub/ecomplab/MiRA`, main) was
+  behind (106f938): pull it before working there.
+- emln is on CRAN (not GitHub).
 
 ## Handoff: 2026-11-02 afternoon
 
