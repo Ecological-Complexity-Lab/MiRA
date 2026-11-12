@@ -59,6 +59,7 @@ const LEGEND_TOGGLE_ID = 'toggleLegendBtn';
 const DATA_VIEW = 'data';
 const MAP_VIEW = 'map';
 const META_VIEW = 'metanetwork';
+const LAYER_VIEW = 'layer';
 const META_LAYER_LIST_ID = 'mnLayerList'; // the meta-network's "Filter Layers" panel
 const DATA_MODE_BUTTON_ID = 'dataModeBtn';
 // Legend panel corners (index.html: bottom 50px, right 20px by default)
@@ -223,6 +224,7 @@ function startRCode(deps, ref) {
             camera: mode === NETWORK_VIEW ? cameraValues(deps.renderer) : null,
             legendPanel: legendPanelState(),
             metaLayers: mode === META_VIEW ? selectedMetaLayers() : null,
+            movedLayers: mode === LAYER_VIEW ? (deps.renderer.layerView?.movedBubbleCount() ?? 0) : 0,
         });
         showRCodePanel(specToR(spec), notes);
     };

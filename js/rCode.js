@@ -64,7 +64,8 @@ const isEmpty = (object) => Object.keys(object).length === 0;
  *   applied: the session right after it; spec: the spec R sent
  * @param {object} ctx    As for applyViewSpec (sets, hasBipartite, layerNames)
  * @param {{ camera?: {rotate, tilt, zoom, pan}|null, legendPanel?: {visible, position},
- *   metaLayers?: string[]|null }} view  What is not in the session state
+ *   metaLayers?: string[]|null, movedLayers?: number }} view  What is not in the session state
+ *   (movedLayers: layers dragged by hand in the layer view)
  * @returns {{ spec: object, notes: string[] }}
  */
 export function stateToSpec(state, ref, ctx, view = {}) {
@@ -84,7 +85,7 @@ export function stateToSpec(state, ref, ctx, view = {}) {
     put('camera', readCamera(state, base, view.camera));
     put('legend', readLegend(state, ref, view.legendPanel, notes));
     put('mode', readMode(state, base, ctx, view.metaLayers));
-    addNotes(state, ref, notes);
+    addNotes(state, ref, notes, view);
     return { spec, notes };
 }
 
@@ -340,11 +341,14 @@ function readMeta(meta, ctx, metaLayers) {
 }
 
 /** What R cannot set, compared with the plot as R opened it. */
-function addNotes(state, ref, notes) {
+function addNotes(state, ref, notes, view = {}) {
     const applied = ref.applied;
     const moved = (state.renderer.layerOffsets ?? []).filter(([, offset]) => offset.x !== 0 || offset.y !== 0);
     if (!same(state.renderer.layerOffsets, applied.renderer.layerOffsets) && moved.length) {
         notes.push(`${moved.length === 1 ? 'A layer was' : `${moved.length} layers were`} moved with Cmd+drag: R cannot move single layers.`);
+    }
+    if (view.movedLayers > 0) {
+        notes.push(`${view.movedLayers === 1 ? 'A layer was' : `${view.movedLayers} layers were`} moved by hand in the layer view: R cannot set their positions.`);
     }
     if (state.appMode === 'layer' && state.layerView && applied.layerView &&
         !same(state.layerView.settings, applied.layerView.settings)) {

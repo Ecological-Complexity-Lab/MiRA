@@ -188,23 +188,16 @@ legendPanel.addEventListener('mousedown', (e) => {
     // Only ignore if clicking on a no-drag button (like minimize or toggle)
     if (e.target.closest('.legend-no-drag')) return;
 
-    // Use current computed bounding box for absolute left/top switch if not already set
+    // Where the panel is now; it switches to left/top positioning only once it is
+    // really dragged (mousemove), so a click (expand, ✕) leaves it in its corner
     const rect = legendPanel.getBoundingClientRect();
-
-    // Switch from bottom/right to absolute window-based left/top positioning
-    if (!legendPanel.style.left || !legendPanel.style.top) {
-        legendPanel.style.right = 'auto';
-        legendPanel.style.bottom = 'auto';
-        legendPanel.style.left = rect.left + 'px';
-        legendPanel.style.top = rect.top + 'px';
-    }
 
     isDraggingLegend = true;
     hasDraggedLegend = false;
     dragStartX = e.clientX;
     dragStartY = e.clientY;
-    legendStartLeft = parseFloat(legendPanel.style.left);
-    legendStartTop = parseFloat(legendPanel.style.top);
+    legendStartLeft = legendPanel.style.left ? parseFloat(legendPanel.style.left) : rect.left;
+    legendStartTop = legendPanel.style.top ? parseFloat(legendPanel.style.top) : rect.top;
 
     document.body.style.cursor = 'grabbing';
 });
@@ -217,7 +210,11 @@ window.addEventListener('mousemove', (e) => {
     if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
         hasDraggedLegend = true;
     }
+    if (!hasDraggedLegend) return;
 
+    // Switch from bottom/right to absolute window-based left/top positioning
+    legendPanel.style.right = 'auto';
+    legendPanel.style.bottom = 'auto';
     legendPanel.style.left = (legendStartLeft + dx) + 'px';
     legendPanel.style.top = (legendStartTop + dy) + 'px';
 });
@@ -4475,15 +4472,15 @@ if (IS_EMLN) {
     const btnRow = document.querySelector('#sectionData .btn-row');
     if (btnRow) {
         btnRow.innerHTML = `<div class="emln-data-msg">
-            Network loaded from EMLN.<br>
+            Network loaded from R.<br>
             For example datasets and manual import, use the
             <a href="${ONLINE_URL}" target="_blank" rel="noopener">online version &#x2197;</a>
         </div>`;
     }
 
-    // Swap "(Beta)" → "(EMLN)" in branding
+    // Swap "(Beta)" → "(R)" in branding
     const betaEl = document.querySelector('.branding-beta');
-    if (betaEl) betaEl.textContent = '(EMLN)';
+    if (betaEl) betaEl.textContent = '(R)';
 
 }
 

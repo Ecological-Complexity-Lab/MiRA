@@ -254,6 +254,16 @@ describe('Group 3 — Changed in MiRA', () => {
       'A layer was moved with Cmd+drag: R cannot move single layers.',
     ])
   })
+
+  it('3.5 notes: layers dragged in the layer view (#16); none when none were', () => {
+    const ref = fromR({})
+    const state = JSON.parse(JSON.stringify(ref.applied))
+    expect(stateToSpec(state, ref, ctx(), { movedLayers: 0 }).notes).toEqual([])
+    expect(stateToSpec(state, ref, ctx(), { movedLayers: 1 }).notes)
+      .toEqual(['A layer was moved by hand in the layer view: R cannot set their positions.'])
+    expect(stateToSpec(state, ref, ctx(), { movedLayers: 3 }).notes)
+      .toEqual(['3 layers were moved by hand in the layer view: R cannot set their positions.'])
+  })
 })
 
 describe('Group 4 — R code', () => {

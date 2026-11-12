@@ -490,9 +490,15 @@ export class LayerView {
     endDragBubble() {
         if (this._draggedBubble) {
             // Keep fx/fy set → bubble stays pinned where dropped (like old b.pinned)
+            this._draggedBubble.bubble.movedByHand = true; // the R code notes it
             this._draggedBubble = null;
             if (this._sim) this._sim.alpha(Math.max(this._sim.alpha(), 0.05));
         }
+    }
+
+    /** How many layer bubbles were dragged to a new place (not just clicked). */
+    movedBubbleCount() {
+        return this._bubbles.filter(b => b.movedByHand).length;
     }
 
     /** Cancel a drag that turned out to be a click — pin in place but skip the alpha bump. */
