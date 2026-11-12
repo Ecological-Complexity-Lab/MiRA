@@ -64,7 +64,8 @@ const isEmpty = (object) => Object.keys(object).length === 0;
  *   applied: the session right after it; spec: the spec R sent
  * @param {object} ctx    As for applyViewSpec (sets, hasBipartite, layerNames)
  * @param {{ camera?: {rotate, tilt, zoom, pan}|null, legendPanel?: {visible, position},
- *   metaLayers?: string[]|null }} view  What is not in the session state
+ *   metaLayers?: string[]|null, movedLayers?: number }} view  What is not in the session state
+ *   (movedLayers: layers dragged by hand in the layer view)
  * @returns {{ spec: object, notes: string[] }}
  */
 export function stateToSpec(state, ref, ctx, view = {}) {
@@ -84,7 +85,7 @@ export function stateToSpec(state, ref, ctx, view = {}) {
     put('camera', readCamera(state, base, view.camera));
     put('legend', readLegend(state, ref, view.legendPanel, notes));
     put('mode', readMode(state, base, ctx, view.metaLayers));
-    addNotes(state, ref, notes);
+    addNotes(state, ref, notes, view);
     return { spec, notes };
 }
 
@@ -92,7 +93,7 @@ export function stateToSpec(state, ref, ctx, view = {}) {
 function readR(state, ref) {
     const r = { mira: ref.spec.r.mira };
     const filter = {};
-    for (const [arg, key] of [['nodes', 'nodeNames'], ['links', 'linkKeys']]) {
+    for (const [arg, key] of [['nodes', 'nodeNames'], ['links', 'linkKeys'], ['layers', 'layerNames']]) {
         const text = ref.spec.r.filter?.[arg];
         if (text && same(state.filter[key], ref.applied.filter[key])) filter[arg] = text;
     }
@@ -253,7 +254,7 @@ function readScales(state, base) {
     return scales;
 }
 
-/** Data mode filter: node names and links ([layer_from, node_from, layer_to, node_to]). */
+/** Data mode filter: node names, links ([layer_from, node_from, layer_to, node_to]) and layer names. */
 function readFilter(state, ref, notes) {
     const filter = {};
     const f = state.filter, base = ref.baseline.filter;
@@ -261,9 +262,7 @@ function readFilter(state, ref, notes) {
     if (!same(f.linkKeys, base.linkKeys)) {
         filter.links = f.linkKeys === null ? null : f.linkKeys.map(key => key.split(LINK_KEY_SEPARATOR));
     }
-    if (f.layerNames && !same(f.layerNames, base.layerNames)) {
-        notes.push(`A layer filter (${f.layerNames.length} layers kept): R can filter nodes and links, not layers.`);
-    }
+    if (!same(f.layerNames, base.layerNames)) filter.layers = f.layerNames === null ? null : f.layerNames.map(String);
     return filter;
 }
 
@@ -340,19 +339,31 @@ function readMeta(meta, ctx, metaLayers) {
 }
 
 /** What R cannot set, compared with the plot as R opened it. */
-function addNotes(state, ref, notes) {
+function addNotes(state, ref, notes, view = {}) {
     const applied = ref.applied;
     const moved = (state.renderer.layerOffsets ?? []).filter(([, offset]) => offset.x !== 0 || offset.y !== 0);
     if (!same(state.renderer.layerOffsets, applied.renderer.layerOffsets) && moved.length) {
         notes.push(`${moved.length === 1 ? 'A layer was' : `${moved.length} layers were`} moved with Cmd+drag: R cannot move single layers.`);
     }
+    if (view.movedLayers > 0) {
+        notes.push(`${view.movedLayers === 1 ? 'A layer was' : `${view.movedLayers} layers were`} moved by hand in the layer view: R cannot set their positions.`);
+    }
     if (state.appMode === 'layer' && state.layerView && applied.layerView &&
-        !same(state.layerView.settings, applied.layerView.settings)) {
+        !same(ownLayerViewSettings(state.layerView.settings), ownLayerViewSettings(applied.layerView.settings))) {
         notes.push("The layer view's own settings (bubble size, spacing, links): R opens the layer view with its defaults.");
     }
     if (state.appMode === 'map' && !same(mapSettings(state.map), mapSettings(applied.map))) {
         notes.push('The map settings (opacity, street map, layers shown): R opens the map with its defaults.');
     }
+}
+
+// Layer view colors 'layer' and 'attribute' follow network mode's layer color, which
+// mira_layer(color_by = ) sets: only the layer view's other settings are its own
+const LAYER_VIEW_SHARED_COLORS = ['layer', 'attribute'];
+function ownLayerViewSettings(settings) {
+    if (!LAYER_VIEW_SHARED_COLORS.includes(settings.colorBy)) return settings;
+    const { colorBy, colorAttr, ...own } = settings;
+    return own;
 }
 
 const mapSettings = (map) => map && ({
@@ -419,6 +430,7 @@ export function specToR(spec) {
     add(null, 'mira_filter', [
         ['nodes', 'nodes' in filter ? { code: spec.r?.filter?.nodes ?? rValue(filter.nodes) } : undefined],
         ['links', 'links' in filter ? { code: spec.r?.filter?.links ?? linkCondition(filter.links) } : undefined],
+        ['layers', 'layers' in filter ? { code: spec.r?.filter?.layers ?? rValue(filter.layers) } : undefined],
     ]);
     const camera = spec.camera ?? {};
     add(null, 'mira_camera', [['rotate', camera.rotate], ['tilt', camera.tilt], ['zoom', camera.zoom], ['pan', camera.pan]]);

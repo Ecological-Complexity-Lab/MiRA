@@ -59,6 +59,7 @@ const LEGEND_TOGGLE_ID = 'toggleLegendBtn';
 const DATA_VIEW = 'data';
 const MAP_VIEW = 'map';
 const META_VIEW = 'metanetwork';
+const LAYER_VIEW = 'layer';
 const META_LAYER_LIST_ID = 'mnLayerList'; // the meta-network's "Filter Layers" panel
 const DATA_MODE_BUTTON_ID = 'dataModeBtn';
 // Legend panel corners (index.html: bottom 50px, right 20px by default)
@@ -194,9 +195,10 @@ function applySpec(spec, deps) {
     // The restored view (scale, offset) was centered for the default
     // stacking and spacing
     const rv = result.state.renderer;
-    // (and for the default angles)
+    // (and for the default angles, and all layers: a layer filter closes up the stack)
     if (rv.stackMode !== defaults.renderer.stackMode || rv.layerSpacing !== defaults.renderer.layerSpacing ||
-        rv.skewX !== defaults.renderer.skewX || rv.skewY !== defaults.renderer.skewY || result.camera) {
+        rv.skewX !== defaults.renderer.skewX || rv.skewY !== defaults.renderer.skewY || result.camera ||
+        deps.renderer.stackChangedSinceFit?.()) {
         deps.renderer.centerView();
     }
     if (result.camera) applyCameraView(deps.renderer, result.camera);
@@ -223,6 +225,7 @@ function startRCode(deps, ref) {
             camera: mode === NETWORK_VIEW ? cameraValues(deps.renderer) : null,
             legendPanel: legendPanelState(),
             metaLayers: mode === META_VIEW ? selectedMetaLayers() : null,
+            movedLayers: mode === LAYER_VIEW ? (deps.renderer.layerView?.movedBubbleCount() ?? 0) : 0,
         });
         showRCodePanel(specToR(spec), notes);
     };

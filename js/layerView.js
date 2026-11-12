@@ -7,7 +7,7 @@
  * Both views use d3-force (loaded globally via CDN) for simulation.
  */
 
-import { layerColors } from './dataMode.js';
+import { dataMode, layerColors } from './dataMode.js';
 
 // Curated palette (same order as colorMapper.js CATEGORICAL_PALETTE)
 const PALETTE = [
@@ -37,7 +37,8 @@ export class LayerView {
         this.settings = {
             sizeBy:          'nodes',   // 'nodes' | 'edges' | 'uniform'
             sizeMultiplier:  1.0,
-            colorBy:         'layer',   // 'layer' | 'nodecount' | 'density' | 'uniform'
+            colorBy:         'layer',   // 'layer' | 'nodecount' | 'density' | 'uniform' | 'attribute'
+            colorAttr:       null,      // the layer attribute when colorBy is 'attribute' (network mode's scale)
             colorLegendType: 'continuous', // 'continuous' | 'categorical' (for nodecount/density)
             uniformColor:    '#6ee7b7',
             showEdges:       true,
@@ -50,6 +51,10 @@ export class LayerView {
         };
 
         this.geoMode = false;  // true = bubbles pinned to lat/lon via Leaflet
+
+        // colorBy 'attribute': colors and legend from network mode's layer color scale (setAttributeColors)
+        this._attrColors = new Map(); // layerName → color
+        this._attrLegend = null;      // legend scale ({ type, attrName, map | gradient, minLabel, maxLabel })
 
         this._computeMetaGraph();
         this._refreshRadii();   // sets b.r + builds _microGraphs
@@ -139,11 +144,15 @@ export class LayerView {
 
     _computeMetaGraph() {
         const model  = this._model;
-        const layers = model.layers;
+        // Only the layers kept by Data mode's layer filter (ggmira #15); node and
+        // link filters do not apply: a bubble summarizes its whole layer
+        const kept   = dataMode.filteredLayerNames;
+        const layers = kept ? model.layers.filter(l => kept.has(l.layer_name)) : model.layers;
         const L      = layers.length;
 
+        // Colors by position among all layers, so a layer keeps its color when others are filtered out
         this._layerColorMap = new Map();
-        layers.forEach((l, i) => {
+        model.layers.forEach((l, i) => {
             const custom = layerColors.get(l.layer_name);
             this._layerColorMap.set(l.layer_name, custom || PALETTE[i % PALETTE.length]);
         });
@@ -251,7 +260,11 @@ export class LayerView {
         const s = this.settings;
         const scales = [];
 
-        if (s.colorBy === 'layer') {
+        if (s.colorBy === 'attribute') {
+            if (this._attrLegend) {
+                scales.push({ ...this._attrLegend, id: 'lvColor', title: 'Circle Color', canToggle: false });
+            }
+        } else if (s.colorBy === 'layer') {
             scales.push({
                 id: 'lvColor', type: 'categorical', title: 'Circle Color', attrName: 'Layer',
                 canToggle: false,
@@ -490,9 +503,26 @@ export class LayerView {
     endDragBubble() {
         if (this._draggedBubble) {
             // Keep fx/fy set → bubble stays pinned where dropped (like old b.pinned)
+            this._draggedBubble.bubble.movedByHand = true; // the R code notes it
             this._draggedBubble = null;
             if (this._sim) this._sim.alpha(Math.max(this._sim.alpha(), 0.05));
         }
+    }
+
+    /**
+     * Colors for colorBy 'attribute', from network mode's layer color scale, so a layer
+     * has the same color in both views (ggmira #17).
+     * @param {Map<string, string>} colors  layerName → color
+     * @param {object|null} legend  Legend scale: categorical { map } or continuous { gradient, minLabel, maxLabel }
+     */
+    setAttributeColors(colors, legend) {
+        this._attrColors = colors;
+        this._attrLegend = legend;
+    }
+
+    /** How many layer bubbles were dragged to a new place (not just clicked). */
+    movedBubbleCount() {
+        return this._bubbles.filter(b => b.movedByHand).length;
     }
 
     /** Cancel a drag that turned out to be a click — pin in place but skip the alpha bump. */
@@ -530,6 +560,7 @@ export class LayerView {
     _getBubbleColor(bubble) {
         const { colorBy, uniformColor } = this.settings;
         if (colorBy === 'layer')   return bubble.color;
+        if (colorBy === 'attribute') return this._attrColors.get(bubble.layerName) ?? bubble.color;
         if (colorBy === 'uniform') return uniformColor || '#6ee7b7';
         const vals = this._bubbles.map(b => colorBy === 'density' ? b.density : b.nodeCount);
         const minV = Math.min(...vals), maxV = Math.max(...vals);

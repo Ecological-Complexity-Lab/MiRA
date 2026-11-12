@@ -188,23 +188,16 @@ legendPanel.addEventListener('mousedown', (e) => {
     // Only ignore if clicking on a no-drag button (like minimize or toggle)
     if (e.target.closest('.legend-no-drag')) return;
 
-    // Use current computed bounding box for absolute left/top switch if not already set
+    // Where the panel is now; it switches to left/top positioning only once it is
+    // really dragged (mousemove), so a click (expand, ✕) leaves it in its corner
     const rect = legendPanel.getBoundingClientRect();
-
-    // Switch from bottom/right to absolute window-based left/top positioning
-    if (!legendPanel.style.left || !legendPanel.style.top) {
-        legendPanel.style.right = 'auto';
-        legendPanel.style.bottom = 'auto';
-        legendPanel.style.left = rect.left + 'px';
-        legendPanel.style.top = rect.top + 'px';
-    }
 
     isDraggingLegend = true;
     hasDraggedLegend = false;
     dragStartX = e.clientX;
     dragStartY = e.clientY;
-    legendStartLeft = parseFloat(legendPanel.style.left);
-    legendStartTop = parseFloat(legendPanel.style.top);
+    legendStartLeft = legendPanel.style.left ? parseFloat(legendPanel.style.left) : rect.left;
+    legendStartTop = legendPanel.style.top ? parseFloat(legendPanel.style.top) : rect.top;
 
     document.body.style.cursor = 'grabbing';
 });
@@ -217,7 +210,11 @@ window.addEventListener('mousemove', (e) => {
     if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
         hasDraggedLegend = true;
     }
+    if (!hasDraggedLegend) return;
 
+    // Switch from bottom/right to absolute window-based left/top positioning
+    legendPanel.style.right = 'auto';
+    legendPanel.style.bottom = 'auto';
     legendPanel.style.left = (legendStartLeft + dx) + 'px';
     legendPanel.style.top = (legendStartTop + dy) + 'px';
 });
@@ -1009,6 +1006,12 @@ function toggleLayerView() {
     _updateModeButtons();
     renderer.layerView = new LayerView(model, positions);
     window._layerView = renderer.layerView;
+    // Layers colored by an attribute in network mode keep those colors here (ggmira #17)
+    const networkLayerColor = layerColorSelect.value;
+    if (networkLayerColor && networkLayerColor !== LAYER_COLOR_INDIVIDUAL) {
+        renderer.layerView.settings.colorBy = 'attribute';
+        renderer.layerView.settings.colorAttr = networkLayerColor;
+    }
     renderer.layerViewMode = true;
     canvas.style.cursor = 'grab';
     _showLayerViewSidebar();
@@ -1317,17 +1320,22 @@ function _exitDataMode() {
     document.getElementById('controlPanels').style.display = '';
     legendPanel.style.display = '';
     renderer.searchedNodeName = null;
+    if (renderer.stackChangedSinceFit()) renderer.centerView(); // layers filtered: fit the new stack
 }
 
 function _updateFilterBanner() {
-    const show = dataMode.isSubsetActive() && (appMode === 'network' || appMode === 'map' || appMode === 'grid');
+    // The layer view applies only the layer filter (ggmira #15)
+    const layerViewOnly = appMode === 'layer';
+    const show = layerViewOnly
+        ? Boolean(dataMode.filteredLayerNames)
+        : dataMode.isSubsetActive() && (appMode === 'network' || appMode === 'map' || appMode === 'grid');
     if (!show) {
         dataFilterBanner.style.display = 'none';
     } else {
         const parts = [];
-        if (dataMode.filteredNodeNames) parts.push(`${dataMode.filteredNodeNames.size} nodes`);
+        if (dataMode.filteredNodeNames && !layerViewOnly) parts.push(`${dataMode.filteredNodeNames.size} nodes`);
         if (dataMode.filteredLayerNames) parts.push(`${dataMode.filteredLayerNames.size} layers`);
-        if (dataMode.filteredLinkKeys) parts.push(`${dataMode.filteredLinkKeys.size} links`);
+        if (dataMode.filteredLinkKeys && !layerViewOnly) parts.push(`${dataMode.filteredLinkKeys.size} links`);
         dataFilterText.textContent = `\u26A1 Data filter active \u2014 ${parts.join(', ')} visible`;
         dataFilterBanner.style.display = 'flex';
     }
@@ -1430,8 +1438,24 @@ dataFilterClear.addEventListener('click', () => {
     dataMode.clear();
     renderer.searchedNodeName = null;
     _updateFilterBanner();
+    if (appMode === 'layer') _rebuildLayerView(); // bring back the filtered-out layers
+    if (renderer.stackChangedSinceFit()) renderer.centerView(); // all layers back: fit the stack
     if (appMode !== 'data') renderer.render();
 });
+
+/** Rebuild the layer view (after its layer filter changed), keeping its settings. */
+function _rebuildLayerView() {
+    const settings = { ...renderer.layerView.settings };
+    const geo = renderer.layerView.geoMode;
+    toggleLayerView(); // back to network mode
+    toggleLayerView(); // the layer view again, with the current filter
+    const lv = renderer.layerView;
+    if (!lv) return;
+    for (const [key, value] of Object.entries(settings)) lv.updateSetting(key, value);
+    _restoreLayerViewDOM(settings);
+    if (geo !== lv.geoMode) geo ? _activateLvGeoMode() : _deactivateLvGeoMode();
+    renderLayerViewLegend();
+}
 
 selectedNodeClear.addEventListener('click', () => {
     _clearCrossModeSelection();
@@ -2020,8 +2044,10 @@ function _syncLayerViewControls() {
     const lv = renderer.layerView;
     if (!lv) return;
     const s = lv.settings;
+    _fillLvColorOptions();
+    _applyLvAttributeColors();
     lvSizeBy.value    = s.sizeBy;
-    lvColorBy.value   = s.colorBy;
+    lvColorBy.value   = _lvColorValue(s);
     lvUniformColor.value = s.uniformColor;
     lvUniformColorContainer.style.display = s.colorBy === 'uniform' ? '' : 'none';
     lvShowEdges.checked  = s.showEdges;
@@ -2718,12 +2744,85 @@ lvSizeBy.addEventListener('change', () => {
     _ensureLayerViewLoop();
 });
 lvColorBy.addEventListener('change', () => {
-    if (!renderer.layerView) return;
-    lvUniformColorContainer.style.display = lvColorBy.value === 'uniform' ? '' : 'none';
-    renderer.layerView.updateSetting('colorBy', lvColorBy.value);
+    const lv = renderer.layerView;
+    if (!lv) return;
+    const value = lvColorBy.value;
+    lvUniformColorContainer.style.display = value === 'uniform' ? '' : 'none';
+    // A layer attribute, or "Layer color", is shared with network mode's layer color (ggmira #17)
+    if (value.startsWith(LV_ATTR_PREFIX)) {
+        const attr = value.slice(LV_ATTR_PREFIX.length);
+        lv.updateSetting('colorAttr', attr);
+        lv.updateSetting('colorBy', 'attribute');
+        _setNetworkLayerColor(attr);
+    } else {
+        lv.updateSetting('colorBy', value);
+        if (value === 'layer') _setNetworkLayerColor(LAYER_COLOR_INDIVIDUAL);
+    }
+    _applyLvAttributeColors();
     renderLayerViewLegend();
     renderer.render();
 });
+
+// ── Layer view colors shared with network mode (ggmira #17) ────────────────
+const LV_ATTR_PREFIX = 'attr:';          // lvColorBy option values for layer attributes
+const LAYER_COLOR_INDIVIDUAL = '__individual__'; // layerColorSelect: one color per layer
+const LV_LEGEND_STEPS = 9;               // colors sampled for a continuous legend bar
+
+/** The lvColorBy value for the layer view's settings. */
+function _lvColorValue(s) {
+    return s.colorBy === 'attribute' && s.colorAttr ? LV_ATTR_PREFIX + s.colorAttr : s.colorBy;
+}
+
+/** Add the layer attributes to the layer view's Color dropdown (after its own options). */
+function _fillLvColorOptions() {
+    lvColorBy.querySelectorAll('option[data-layer-attr]').forEach(opt => opt.remove());
+    for (const attr of model?.layerAttributeNames ?? []) {
+        const opt = document.createElement('option');
+        opt.value = LV_ATTR_PREFIX + attr;
+        opt.textContent = attr;
+        opt.dataset.layerAttr = attr;
+        lvColorBy.appendChild(opt);
+    }
+}
+
+/** Set network mode's layer color, as if chosen in its dropdown (its legend stays open or minimized). */
+function _setNetworkLayerColor(value) {
+    if (layerColorSelect.value === value) return;
+    const legendOpen = expandedLegends.has('layerColor');
+    layerColorSelect.value = value;
+    updateLayerColors(); // opens network mode's layer legend
+    if (!legendOpen) expandedLegends.delete('layerColor');
+}
+
+/** Give the layer view network mode's layer colors and legend when it colors by an attribute. */
+function _applyLvAttributeColors() {
+    const lv = renderer.layerView;
+    if (!lv || lv.settings.colorBy !== 'attribute') return;
+    _setNetworkLayerColor(lv.settings.colorAttr); // a restored session may name it only here
+    const colors = new Map();
+    model.layers.forEach((layer, i) => {
+        const color = renderer.layerColorFn?.(i, layer)?.text;
+        if (color) colors.set(layer.layer_name, color);
+    });
+    lv.setAttributeColors(colors, _lvAttributeLegend());
+}
+
+/** The layer view's legend for network mode's layer color scale. */
+function _lvAttributeLegend() {
+    const sc = activeLayerColorScale;
+    if (!sc) return null;
+    if (sc.type === 'categorical') {
+        const map = new Map([...sc.map].map(([value, color]) => [value, applyCategoryOverride(sc.attrName, value, color)]));
+        return { type: 'categorical', attrName: sc.attrName, map };
+    }
+    const steps = Array.from({ length: LV_LEGEND_STEPS },
+        (_, k) => sc.scaleFn(sc.min + (sc.max - sc.min) * k / (LV_LEGEND_STEPS - 1)));
+    return {
+        type: 'continuous', attrName: sc.attrName,
+        gradient: `linear-gradient(to right, ${steps.join(', ')})`,
+        minLabel: String(+sc.min.toFixed(3)), maxLabel: String(+sc.max.toFixed(3)),
+    };
+}
 lvUniformColor.addEventListener('input', () => {
     if (!renderer.layerView) return;
     renderer.layerView.updateSetting('uniformColor', lvUniformColor.value);
@@ -4475,15 +4574,15 @@ if (IS_EMLN) {
     const btnRow = document.querySelector('#sectionData .btn-row');
     if (btnRow) {
         btnRow.innerHTML = `<div class="emln-data-msg">
-            Network loaded from EMLN.<br>
+            Network loaded from R.<br>
             For example datasets and manual import, use the
             <a href="${ONLINE_URL}" target="_blank" rel="noopener">online version &#x2197;</a>
         </div>`;
     }
 
-    // Swap "(Beta)" → "(EMLN)" in branding
+    // Swap "(Beta)" → "(R)" in branding
     const betaEl = document.querySelector('.branding-beta');
-    if (betaEl) betaEl.textContent = '(EMLN)';
+    if (betaEl) betaEl.textContent = '(R)';
 
 }
 
@@ -5319,8 +5418,9 @@ function getSessionState() {
 }
 
 function _restoreLayerViewDOM(s) {
+    _applyLvAttributeColors();
     lvSizeBy.value = s.sizeBy;
-    lvColorBy.value = s.colorBy;
+    lvColorBy.value = _lvColorValue(s);
     lvUniformColor.value = s.uniformColor;
     lvUniformColorContainer.style.display = s.colorBy === 'uniform' ? '' : 'none';
     lvShowEdges.checked = s.showEdges;
@@ -5335,6 +5435,7 @@ function _restoreLayerViewDOM(s) {
     lvSizeMultLabel.textContent = s.sizeMultiplier.toFixed(1) + '×';
     lvSpacing.value = s.bubbleSpacing;
     lvSpacingLabel.textContent = s.bubbleSpacing.toFixed(1) + '×';
+    renderLayerViewLegend(); // for the restored color and size
 }
 
 // warnData: false when the data was just loaded (MiRA opened from R)
@@ -5504,6 +5605,8 @@ function restoreSessionState(state, { warnData = true } = {}) {
         updateMapModeViews();
         if (mp.mapZoom != null) bgMap.setView([mp.mapCenter.lat, mp.mapCenter.lng], mp.mapZoom, { animate: false });
     } else if (state.appMode === 'layer') {
+        // The layer view applies the layer filter when built; step 15 restores the rest
+        dataMode.filteredLayerNames = state.filter?.layerNames ? new Set(state.filter.layerNames) : null;
         toggleLayerView();
         if (renderer.layerView && state.layerView) {
             const lv = renderer.layerView;
@@ -5541,6 +5644,9 @@ function restoreSessionState(state, { warnData = true } = {}) {
             // _syncMetaNetworkControls resets minWeight slider to 0 — restore it
             mnMinWeightSlider.value = mn.minWeight;
             mnMinWeightLabel.textContent = mn.minWeight.toFixed(2);
+            // The legend was drawn on entering, with the defaults: redraw it for the
+            // restored color and size (a color legend was missing; ggmira #12)
+            renderMetaNetworkLegend();
             // Restore view transform (must be last — layout calls may call _fitView)
             if (mn.viewScale != null) {
                 metaNetwork.viewScale = mn.viewScale;

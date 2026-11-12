@@ -115,7 +115,7 @@ const SECTION_FIELDS = {
     interlayer: ['show', 'color_by', 'color', 'min_weight', 'curvature', 'pairs'],
     layer:      ['color_by', 'color', 'colors', 'labels', 'label_size', 'set_labels', 'stack', 'spacing'],
     scales:     null, // keyed by attribute name; each scale has SCALE_FIELDS
-    filter:     ['nodes', 'links'],
+    filter:     ['nodes', 'links', 'layers'],
     camera:     ['rotate', 'tilt', 'zoom', 'pan'],
     legend:     ['show', 'position'],
     mode:       ['view', ...GRID_FIELDS, ...META_FIELDS],
@@ -632,8 +632,9 @@ function setExpandedLegends(state, ids) {
 }
 
 // ---- filter -------------------------------------------------------------------
-// The Data mode filter: only the listed nodes / links are drawn (network and
-// map modes), with the "Data filter active" banner to clear it. null = no
+// The Data mode filter: only the listed nodes / links / layers are drawn (network,
+// map, grid; layers also in the layer view; the stack closes up over filtered-out
+// layers), with the "Data filter active" banner to clear it. null = no
 // filter. An empty list is kept (it hides everything; R warns before sending
 // one); a list whose entries are all invalid is ignored rather than hiding
 // everything.
@@ -657,6 +658,13 @@ function applyFilter(state, section, ctx, warn) {
             if (drawn !== undefined) return drawn;
             warn(path, ok ? `${show(link)} is not a link of this network`
                 : `${show(link)} must be [layer_from, node_from, layer_to, node_to]`);
+            return undefined;
+        });
+    }
+    if ('layers' in section) {
+        applyFilterList(state, 'layerNames', section.layers, 'filter.layers', warn, (name, path) => {
+            if (typeof name === 'string' && ctx.layerNames.includes(name)) return name;
+            warn(path, `${show(name)} is not a layer name`);
             return undefined;
         });
     }
