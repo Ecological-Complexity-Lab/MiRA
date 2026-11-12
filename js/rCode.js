@@ -93,7 +93,7 @@ export function stateToSpec(state, ref, ctx, view = {}) {
 function readR(state, ref) {
     const r = { mira: ref.spec.r.mira };
     const filter = {};
-    for (const [arg, key] of [['nodes', 'nodeNames'], ['links', 'linkKeys']]) {
+    for (const [arg, key] of [['nodes', 'nodeNames'], ['links', 'linkKeys'], ['layers', 'layerNames']]) {
         const text = ref.spec.r.filter?.[arg];
         if (text && same(state.filter[key], ref.applied.filter[key])) filter[arg] = text;
     }
@@ -254,7 +254,7 @@ function readScales(state, base) {
     return scales;
 }
 
-/** Data mode filter: node names and links ([layer_from, node_from, layer_to, node_to]). */
+/** Data mode filter: node names, links ([layer_from, node_from, layer_to, node_to]) and layer names. */
 function readFilter(state, ref, notes) {
     const filter = {};
     const f = state.filter, base = ref.baseline.filter;
@@ -262,9 +262,7 @@ function readFilter(state, ref, notes) {
     if (!same(f.linkKeys, base.linkKeys)) {
         filter.links = f.linkKeys === null ? null : f.linkKeys.map(key => key.split(LINK_KEY_SEPARATOR));
     }
-    if (f.layerNames && !same(f.layerNames, base.layerNames)) {
-        notes.push(`A layer filter (${f.layerNames.length} layers kept): R can filter nodes and links, not layers.`);
-    }
+    if (!same(f.layerNames, base.layerNames)) filter.layers = f.layerNames === null ? null : f.layerNames.map(String);
     return filter;
 }
 
@@ -432,6 +430,7 @@ export function specToR(spec) {
     add(null, 'mira_filter', [
         ['nodes', 'nodes' in filter ? { code: spec.r?.filter?.nodes ?? rValue(filter.nodes) } : undefined],
         ['links', 'links' in filter ? { code: spec.r?.filter?.links ?? linkCondition(filter.links) } : undefined],
+        ['layers', 'layers' in filter ? { code: spec.r?.filter?.layers ?? rValue(filter.layers) } : undefined],
     ]);
     const camera = spec.camera ?? {};
     add(null, 'mira_camera', [['rotate', camera.rotate], ['tilt', camera.tilt], ['zoom', camera.zoom], ['pan', camera.pan]]);

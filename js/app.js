@@ -1320,6 +1320,7 @@ function _exitDataMode() {
     document.getElementById('controlPanels').style.display = '';
     legendPanel.style.display = '';
     renderer.searchedNodeName = null;
+    if (renderer.stackChangedSinceFit()) renderer.centerView(); // layers filtered: fit the new stack
 }
 
 function _updateFilterBanner() {
@@ -1438,6 +1439,7 @@ dataFilterClear.addEventListener('click', () => {
     renderer.searchedNodeName = null;
     _updateFilterBanner();
     if (appMode === 'layer') _rebuildLayerView(); // bring back the filtered-out layers
+    if (renderer.stackChangedSinceFit()) renderer.centerView(); // all layers back: fit the stack
     if (appMode !== 'data') renderer.render();
 });
 

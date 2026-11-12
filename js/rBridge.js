@@ -195,9 +195,10 @@ function applySpec(spec, deps) {
     // The restored view (scale, offset) was centered for the default
     // stacking and spacing
     const rv = result.state.renderer;
-    // (and for the default angles)
+    // (and for the default angles, and all layers: a layer filter closes up the stack)
     if (rv.stackMode !== defaults.renderer.stackMode || rv.layerSpacing !== defaults.renderer.layerSpacing ||
-        rv.skewX !== defaults.renderer.skewX || rv.skewY !== defaults.renderer.skewY || result.camera) {
+        rv.skewX !== defaults.renderer.skewX || rv.skewY !== defaults.renderer.skewY || result.camera ||
+        deps.renderer.stackChangedSinceFit?.()) {
         deps.renderer.centerView();
     }
     if (result.camera) applyCameraView(deps.renderer, result.camera);

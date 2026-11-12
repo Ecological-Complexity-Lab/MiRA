@@ -648,6 +648,14 @@ describe('Group 11 — Filter', () => {
     expect(r.warnings).toEqual([])
   })
 
+  it('11.1c layers become the Data mode layer filter; unknown names warn; null clears', () => {
+    const r = apply({ filter: { layers: ['L1', 'L3', 'L1', 'L9'] } })
+    expect(r.state.filter.layerNames).toEqual(['L1', 'L3'])
+    expect(r.warnings).toEqual(['filter.layers[3]: "L9" is not a layer name'])
+    expect(apply({ filter: { layers: null } }).state.filter.layerNames).toBeNull()
+    expect(apply({ filter: { layers: ['L9'] } }).state.filter.layerNames).toBeNull() // all invalid: ignored
+  })
+
   it('11.1b an undirected link given in the other direction keeps the drawn link', () => {
     const r = apply({ filter: { links: [['L1', 'rose', 'L1', 'bee'], ['L1', 'bee', 'L1', 'rose']] } })
     expect(r.state.filter.linkKeys).toEqual(['L1::bee::L1::rose'])
@@ -676,10 +684,10 @@ describe('Group 11 — Filter', () => {
     const state = defaultState()
     state.filter.nodeNames = ['bee']
     expect(applyViewSpec(state, { version: 1, filter: { nodes: null } }, ctxWithSets()).state.filter.nodeNames).toBeNull()
-    const r = apply({ filter: { nodes: 'bee', layers: ['L1'] } })
+    const r = apply({ filter: { nodes: 'bee', edges: ['L1'] } })
     expect(r.state.filter.nodeNames).toBeNull()
     expect(r.warnings).toEqual([
-      'filter.layers: not a known field; ignored',
+      'filter.edges: not a known field; ignored',
       'filter.nodes: must be a list or null; ignored',
     ])
   })

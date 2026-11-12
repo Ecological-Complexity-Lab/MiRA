@@ -112,6 +112,28 @@ export class Renderer {
         this._intraWidthScale = model ? intraLinkWidthScale(model.intralayerLinks) : 1;
     }
 
+    /** True when Data mode's layer filter hides this layer. */
+    _isLayerHidden(layerIndex) {
+        const kept = dataMode.filteredLayerNames;
+        return Boolean(kept && this.model && !kept.has(this.model.layers[layerIndex]?.layer_name));
+    }
+
+    /**
+     * A layer's place in the stack: its position among the layers Data mode's
+     * filter keeps, so filtered-out layers leave no gap. Cached per filter and model.
+     */
+    _stackSlot(layerIndex) {
+        const kept = dataMode.filteredLayerNames;
+        if (!kept || !this.model) return layerIndex;
+        const cache = this._slotCache;
+        if (!cache || cache.kept !== kept || cache.model !== this.model) {
+            let slot = 0;
+            const slots = this.model.layers.map(layer => (kept.has(layer.layer_name) ? slot++ : slot));
+            this._slotCache = { kept, model: this.model, slots };
+        }
+        return this._slotCache.slots[layerIndex] ?? layerIndex;
+    }
+
     /**
      * Project a point from layer-local (x, y) + layerIndex into screen coordinates.
      * Uses 3D rotation + orthographic projection.
@@ -165,7 +187,7 @@ export class Renderer {
             const yCompress = Math.sin(this.skewY) * 0.85;
 
             const sx = lx + ly * shear + halfW;
-            const sy = ly * yCompress + halfH + layerIndex * this.layerSpacing;
+            const sy = ly * yCompress + halfH + this._stackSlot(layerIndex) * this.layerSpacing;
 
             return {
                 x: sx * this.scale + this.offsetX + lo.dx,
@@ -174,7 +196,7 @@ export class Renderer {
         }
 
         // Horizontal stacking (default): layers recede in depth (Z)
-        const lz = layerIndex * this.layerSpacing;
+        const lz = this._stackSlot(layerIndex) * this.layerSpacing;
 
         const cosY = Math.cos(this.skewX);
         const sinY = Math.sin(this.skewX);
@@ -237,6 +259,7 @@ export class Renderer {
 
         // Test back-to-front (front layers have priority)
         for (let i = this.model.layers.length - 1; i >= 0; i--) {
+            if (this._isLayerHidden(i)) continue;
             const layer = this.model.layers[i];
             const layerPos = this.positions.get(layer.layer_name);
             if (!layerPos) continue;
@@ -311,6 +334,7 @@ export class Renderer {
 
         // 2. Check Intralayer links (straight lines) - back-to-front
         for (let i = this.model.layers.length - 1; i >= 0; i--) {
+            if (this._isLayerHidden(i)) continue;
             const layer = this.model.layers[i];
             const links = this.model.intralayerLinks.filter(l => l.layer_from === layer.layer_name);
             const layerPos = this.positions.get(layer.layer_name);
@@ -344,6 +368,7 @@ export class Renderer {
     hitTestLayer(sx, sy) {
         if (!this.model) return -1;
         for (let i = this.model.layers.length - 1; i >= 0; i--) {
+            if (this._isLayerHidden(i)) continue;
             const corners = this.getLayerCorners(i);
             if (this._pointInPolygon(sx, sy, corners)) return i;
         }
@@ -1046,6 +1071,7 @@ export class Renderer {
     centerView() {
         if (!this.model) return;
         const numLayers = this.model.layers.length;
+        this._fittedLayers = dataMode.filteredLayerNames; // the stack this view fits
 
         // Temporarily reset transform to compute raw projected bounds
         const savedScale = this.scale;
@@ -1058,6 +1084,7 @@ export class Renderer {
         // Compute bounding box of all projected layer corners
         let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
         for (let i = 0; i < numLayers; i++) {
+            if (this._isLayerHidden(i)) continue; // fit the visible stack
             const corners = this.getLayerCorners(i);
             for (const c of corners) {
                 minX = Math.min(minX, c.x);
@@ -1067,6 +1094,12 @@ export class Renderer {
             }
         }
 
+        if (minX === Infinity) { // every layer filtered out: keep the view
+            this.scale = savedScale;
+            this.offsetX = savedOX;
+            this.offsetY = savedOY;
+            return;
+        }
         const rawWidth = maxX - minX;
         const rawHeight = maxY - minY;
 
@@ -1085,6 +1118,15 @@ export class Renderer {
         const scaledH = rawHeight * this.scale;
         this.offsetX = (cssW - scaledW) / 2 - minX * this.scale;
         this.offsetY = (cssH - scaledH) / 2 - minY * this.scale;
+    }
+
+    /** True when Data mode's layer filter changed the stack since the view was last fitted. */
+    stackChangedSinceFit() {
+        const fitted = this._fittedLayers ?? null;
+        const kept = dataMode.filteredLayerNames ?? null;
+        if (fitted === kept) return false;
+        if (!fitted || !kept || fitted.size !== kept.size) return true;
+        return [...kept].some(name => !fitted.has(name));
     }
 
     // ---- Konva hit-test overlay ----

@@ -157,6 +157,10 @@ describe('Group 1 — Round trip', () => {
     expectSame({ filter: { nodes: ['bee', '7'], links: [['L1', 'bee', 'L1', 'rose']] } })
   })
 
+  it('1.11b filter: layer names', () => {
+    expectSame({ filter: { layers: ['L1', 'L3'] } })
+  })
+
   it('1.12 views: grid columns, meta-network settings, the others', () => {
     expectSame({ mode: { view: 'grid', columns: 4 } })
     expectSame({ mode: { view: 'meta', aggregation: 'weights', size_by: 'participation', labels: true } })
@@ -242,17 +246,26 @@ describe('Group 3 — Changed in MiRA', () => {
     expect(changed.filter).toEqual({ nodes: ['bee', 'fly'] })
   })
 
-  it('3.4 notes: layers moved by hand, a layer filter, dragged legends', () => {
+  it('3.4 notes: layers moved by hand, dragged legends; a layer filter is code, not a note', () => {
     const ref = fromR({})
     const state = JSON.parse(JSON.stringify(ref.applied))
     state.renderer.layerOffsets = [['L1', { x: 5, y: 0 }]]
     state.filter.layerNames = ['L1', 'L2']
-    const { notes } = stateToSpec(state, ref, ctx(), { legendPanel: { visible: true, position: 'moved' } })
+    const { spec, notes } = stateToSpec(state, ref, ctx(), { legendPanel: { visible: true, position: 'moved' } })
+    expect(spec.filter).toEqual({ layers: ['L1', 'L2'] })
     expect(notes).toEqual([
-      'A layer filter (2 layers kept): R can filter nodes and links, not layers.',
       'The legends were dragged: R puts them in a corner (mira_legends(position = )).',
       'A layer was moved with Cmd+drag: R cannot move single layers.',
     ])
+  })
+
+  it('3.4b R\'s layer condition is kept while the layer filter is as R set it', () => {
+    const ref = fromR({ filter: { layers: ['L1'] }, r: undefined })
+    ref.spec.r = { mira: 'mira(net)', filter: { layers: 'habitat == "forest"' } }
+    expect(stateToSpec(ref.applied, ref, ctx()).spec.r.filter).toEqual({ layers: 'habitat == "forest"' })
+    const state = JSON.parse(JSON.stringify(ref.applied))
+    state.filter.layerNames = ['L1', 'L2']
+    expect(stateToSpec(state, ref, ctx()).spec.r.filter).toBeUndefined()
   })
 
   it('3.6 notes: a layer view color that follows network mode is not its own setting (#17)', () => {
@@ -367,6 +380,12 @@ describe('Group 4 — R code', () => {
     expect(code({ legend: { show: false } })).toBe('mira(net) +\n  mira_legends(show = FALSE)')
     expect(code({ mode: { view: 'meta', color: { bird: '#ff0000' }, layers: ['L1'] } }))
       .toBe('mira(net) +\n  mira_mode_meta(color = c(bird = "#ff0000"), layers = "L1")')
+  })
+
+  it('4.8b a layer filter: names, or R\'s condition', () => {
+    expect(code({ filter: { layers: ['L1', 'L3'] } })).toBe('mira(net) +\n  mira_filter(layers = c("L1", "L3"))')
+    expect(code({ filter: { layers: ['L1'] }, r: { mira: 'mira(net)', filter: { layers: 'habitat == "forest"' } } }))
+      .toBe('mira(net) +\n  mira_filter(layers = habitat == "forest")')
   })
 
   it('4.9 each line carries its element', () => {
