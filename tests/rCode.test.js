@@ -255,6 +255,20 @@ describe('Group 3 — Changed in MiRA', () => {
     ])
   })
 
+  it('3.6 notes: a layer view color that follows network mode is not its own setting (#17)', () => {
+    const ref = fromR({})
+    ref.applied.appMode = 'layer'
+    ref.applied.layerView = { settings: { colorBy: 'layer', colorAttr: null, sizeBy: 'nodes' } }
+    const state = JSON.parse(JSON.stringify(ref.applied))
+    const layerNote = (settings) => {
+      state.layerView.settings = settings
+      return stateToSpec(state, ref, ctx()).notes.filter(n => n.startsWith("The layer view's own settings"))
+    }
+    expect(layerNote({ colorBy: 'attribute', colorAttr: 'host_order', sizeBy: 'nodes' })).toEqual([])
+    expect(layerNote({ colorBy: 'density', colorAttr: null, sizeBy: 'nodes' })).toHaveLength(1)
+    expect(layerNote({ colorBy: 'attribute', colorAttr: 'host_order', sizeBy: 'edges' })).toHaveLength(1)
+  })
+
   it('3.5 notes: layers dragged in the layer view (#16); none when none were', () => {
     const ref = fromR({})
     const state = JSON.parse(JSON.stringify(ref.applied))

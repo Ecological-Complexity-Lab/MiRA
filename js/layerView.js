@@ -37,7 +37,8 @@ export class LayerView {
         this.settings = {
             sizeBy:          'nodes',   // 'nodes' | 'edges' | 'uniform'
             sizeMultiplier:  1.0,
-            colorBy:         'layer',   // 'layer' | 'nodecount' | 'density' | 'uniform'
+            colorBy:         'layer',   // 'layer' | 'nodecount' | 'density' | 'uniform' | 'attribute'
+            colorAttr:       null,      // the layer attribute when colorBy is 'attribute' (network mode's scale)
             colorLegendType: 'continuous', // 'continuous' | 'categorical' (for nodecount/density)
             uniformColor:    '#6ee7b7',
             showEdges:       true,
@@ -50,6 +51,10 @@ export class LayerView {
         };
 
         this.geoMode = false;  // true = bubbles pinned to lat/lon via Leaflet
+
+        // colorBy 'attribute': colors and legend from network mode's layer color scale (setAttributeColors)
+        this._attrColors = new Map(); // layerName → color
+        this._attrLegend = null;      // legend scale ({ type, attrName, map | gradient, minLabel, maxLabel })
 
         this._computeMetaGraph();
         this._refreshRadii();   // sets b.r + builds _microGraphs
@@ -255,7 +260,11 @@ export class LayerView {
         const s = this.settings;
         const scales = [];
 
-        if (s.colorBy === 'layer') {
+        if (s.colorBy === 'attribute') {
+            if (this._attrLegend) {
+                scales.push({ ...this._attrLegend, id: 'lvColor', title: 'Circle Color', canToggle: false });
+            }
+        } else if (s.colorBy === 'layer') {
             scales.push({
                 id: 'lvColor', type: 'categorical', title: 'Circle Color', attrName: 'Layer',
                 canToggle: false,
@@ -500,6 +509,17 @@ export class LayerView {
         }
     }
 
+    /**
+     * Colors for colorBy 'attribute', from network mode's layer color scale, so a layer
+     * has the same color in both views (ggmira #17).
+     * @param {Map<string, string>} colors  layerName → color
+     * @param {object|null} legend  Legend scale: categorical { map } or continuous { gradient, minLabel, maxLabel }
+     */
+    setAttributeColors(colors, legend) {
+        this._attrColors = colors;
+        this._attrLegend = legend;
+    }
+
     /** How many layer bubbles were dragged to a new place (not just clicked). */
     movedBubbleCount() {
         return this._bubbles.filter(b => b.movedByHand).length;
@@ -540,6 +560,7 @@ export class LayerView {
     _getBubbleColor(bubble) {
         const { colorBy, uniformColor } = this.settings;
         if (colorBy === 'layer')   return bubble.color;
+        if (colorBy === 'attribute') return this._attrColors.get(bubble.layerName) ?? bubble.color;
         if (colorBy === 'uniform') return uniformColor || '#6ee7b7';
         const vals = this._bubbles.map(b => colorBy === 'density' ? b.density : b.nodeCount);
         const minV = Math.min(...vals), maxV = Math.max(...vals);

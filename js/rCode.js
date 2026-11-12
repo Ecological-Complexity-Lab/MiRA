@@ -351,12 +351,21 @@ function addNotes(state, ref, notes, view = {}) {
         notes.push(`${view.movedLayers === 1 ? 'A layer was' : `${view.movedLayers} layers were`} moved by hand in the layer view: R cannot set their positions.`);
     }
     if (state.appMode === 'layer' && state.layerView && applied.layerView &&
-        !same(state.layerView.settings, applied.layerView.settings)) {
+        !same(ownLayerViewSettings(state.layerView.settings), ownLayerViewSettings(applied.layerView.settings))) {
         notes.push("The layer view's own settings (bubble size, spacing, links): R opens the layer view with its defaults.");
     }
     if (state.appMode === 'map' && !same(mapSettings(state.map), mapSettings(applied.map))) {
         notes.push('The map settings (opacity, street map, layers shown): R opens the map with its defaults.');
     }
+}
+
+// Layer view colors 'layer' and 'attribute' follow network mode's layer color, which
+// mira_layer(color_by = ) sets: only the layer view's other settings are its own
+const LAYER_VIEW_SHARED_COLORS = ['layer', 'attribute'];
+function ownLayerViewSettings(settings) {
+    if (!LAYER_VIEW_SHARED_COLORS.includes(settings.colorBy)) return settings;
+    const { colorBy, colorAttr, ...own } = settings;
+    return own;
 }
 
 const mapSettings = (map) => map && ({

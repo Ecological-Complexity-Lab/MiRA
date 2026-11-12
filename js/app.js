@@ -1006,6 +1006,12 @@ function toggleLayerView() {
     _updateModeButtons();
     renderer.layerView = new LayerView(model, positions);
     window._layerView = renderer.layerView;
+    // Layers colored by an attribute in network mode keep those colors here (ggmira #17)
+    const networkLayerColor = layerColorSelect.value;
+    if (networkLayerColor && networkLayerColor !== LAYER_COLOR_INDIVIDUAL) {
+        renderer.layerView.settings.colorBy = 'attribute';
+        renderer.layerView.settings.colorAttr = networkLayerColor;
+    }
     renderer.layerViewMode = true;
     canvas.style.cursor = 'grab';
     _showLayerViewSidebar();
@@ -2036,8 +2042,10 @@ function _syncLayerViewControls() {
     const lv = renderer.layerView;
     if (!lv) return;
     const s = lv.settings;
+    _fillLvColorOptions();
+    _applyLvAttributeColors();
     lvSizeBy.value    = s.sizeBy;
-    lvColorBy.value   = s.colorBy;
+    lvColorBy.value   = _lvColorValue(s);
     lvUniformColor.value = s.uniformColor;
     lvUniformColorContainer.style.display = s.colorBy === 'uniform' ? '' : 'none';
     lvShowEdges.checked  = s.showEdges;
@@ -2734,12 +2742,85 @@ lvSizeBy.addEventListener('change', () => {
     _ensureLayerViewLoop();
 });
 lvColorBy.addEventListener('change', () => {
-    if (!renderer.layerView) return;
-    lvUniformColorContainer.style.display = lvColorBy.value === 'uniform' ? '' : 'none';
-    renderer.layerView.updateSetting('colorBy', lvColorBy.value);
+    const lv = renderer.layerView;
+    if (!lv) return;
+    const value = lvColorBy.value;
+    lvUniformColorContainer.style.display = value === 'uniform' ? '' : 'none';
+    // A layer attribute, or "Layer color", is shared with network mode's layer color (ggmira #17)
+    if (value.startsWith(LV_ATTR_PREFIX)) {
+        const attr = value.slice(LV_ATTR_PREFIX.length);
+        lv.updateSetting('colorAttr', attr);
+        lv.updateSetting('colorBy', 'attribute');
+        _setNetworkLayerColor(attr);
+    } else {
+        lv.updateSetting('colorBy', value);
+        if (value === 'layer') _setNetworkLayerColor(LAYER_COLOR_INDIVIDUAL);
+    }
+    _applyLvAttributeColors();
     renderLayerViewLegend();
     renderer.render();
 });
+
+// ── Layer view colors shared with network mode (ggmira #17) ────────────────
+const LV_ATTR_PREFIX = 'attr:';          // lvColorBy option values for layer attributes
+const LAYER_COLOR_INDIVIDUAL = '__individual__'; // layerColorSelect: one color per layer
+const LV_LEGEND_STEPS = 9;               // colors sampled for a continuous legend bar
+
+/** The lvColorBy value for the layer view's settings. */
+function _lvColorValue(s) {
+    return s.colorBy === 'attribute' && s.colorAttr ? LV_ATTR_PREFIX + s.colorAttr : s.colorBy;
+}
+
+/** Add the layer attributes to the layer view's Color dropdown (after its own options). */
+function _fillLvColorOptions() {
+    lvColorBy.querySelectorAll('option[data-layer-attr]').forEach(opt => opt.remove());
+    for (const attr of model?.layerAttributeNames ?? []) {
+        const opt = document.createElement('option');
+        opt.value = LV_ATTR_PREFIX + attr;
+        opt.textContent = attr;
+        opt.dataset.layerAttr = attr;
+        lvColorBy.appendChild(opt);
+    }
+}
+
+/** Set network mode's layer color, as if chosen in its dropdown (its legend stays open or minimized). */
+function _setNetworkLayerColor(value) {
+    if (layerColorSelect.value === value) return;
+    const legendOpen = expandedLegends.has('layerColor');
+    layerColorSelect.value = value;
+    updateLayerColors(); // opens network mode's layer legend
+    if (!legendOpen) expandedLegends.delete('layerColor');
+}
+
+/** Give the layer view network mode's layer colors and legend when it colors by an attribute. */
+function _applyLvAttributeColors() {
+    const lv = renderer.layerView;
+    if (!lv || lv.settings.colorBy !== 'attribute') return;
+    _setNetworkLayerColor(lv.settings.colorAttr); // a restored session may name it only here
+    const colors = new Map();
+    model.layers.forEach((layer, i) => {
+        const color = renderer.layerColorFn?.(i, layer)?.text;
+        if (color) colors.set(layer.layer_name, color);
+    });
+    lv.setAttributeColors(colors, _lvAttributeLegend());
+}
+
+/** The layer view's legend for network mode's layer color scale. */
+function _lvAttributeLegend() {
+    const sc = activeLayerColorScale;
+    if (!sc) return null;
+    if (sc.type === 'categorical') {
+        const map = new Map([...sc.map].map(([value, color]) => [value, applyCategoryOverride(sc.attrName, value, color)]));
+        return { type: 'categorical', attrName: sc.attrName, map };
+    }
+    const steps = Array.from({ length: LV_LEGEND_STEPS },
+        (_, k) => sc.scaleFn(sc.min + (sc.max - sc.min) * k / (LV_LEGEND_STEPS - 1)));
+    return {
+        type: 'continuous', attrName: sc.attrName,
+        gradient: `linear-gradient(to right, ${steps.join(', ')})`,
+        minLabel: String(+sc.min.toFixed(3)), maxLabel: String(+sc.max.toFixed(3)),
+    };
+}
 lvUniformColor.addEventListener('input', () => {
     if (!renderer.layerView) return;
     renderer.layerView.updateSetting('uniformColor', lvUniformColor.value);
@@ -5335,8 +5416,9 @@ function getSessionState() {
 }
 
 function _restoreLayerViewDOM(s) {
+    _applyLvAttributeColors();
     lvSizeBy.value = s.sizeBy;
-    lvColorBy.value = s.colorBy;
+    lvColorBy.value = _lvColorValue(s);
     lvUniformColor.value = s.uniformColor;
     lvUniformColorContainer.style.display = s.colorBy === 'uniform' ? '' : 'none';
     lvShowEdges.checked = s.showEdges;
@@ -5351,6 +5433,7 @@ function _restoreLayerViewDOM(s) {
     lvSizeMultLabel.textContent = s.sizeMultiplier.toFixed(1) + '×';
     lvSpacing.value = s.bubbleSpacing;
     lvSpacingLabel.textContent = s.bubbleSpacing.toFixed(1) + '×';
+    renderLayerViewLegend(); // for the restored color and size
 }
 
 // warnData: false when the data was just loaded (MiRA opened from R)
