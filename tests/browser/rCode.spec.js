@@ -40,8 +40,10 @@ async function openFromR(page, spec) {
   await page.waitForLoadState('networkidle')
 }
 
+/** The code for the browser: the Viewer checkbox (ticked by default) unticked */
 async function openCode(page) {
   await page.locator('#copyRCodeBtn').click()
+  await page.locator('.r-code-viewer input').uncheck()
   return page.locator('#rCodePanel pre').innerText()
 }
 
@@ -141,4 +143,39 @@ test('plot_mira(): no settings, only the mira() call; changes made in MiRA becom
     el.dispatchEvent(new Event('input', { bubbles: true }))
   })
   expect(await openCode(page)).toBe(`${call} +\n  mira_node(size = 20)`)
+})
+
+// RStudio's Viewer pane shows MiRA in a frame from another origin, where the
+// Clipboard API and the save dialog are refused
+test('in a frame from another origin (RStudio\'s Viewer pane), Copy and Save Session still work', async ({ page }) => {
+  await page.route('**/api/network.json', route =>
+    route.fulfill({ contentType: 'application/json', body: NETWORK }))
+  await page.route('**/api/view.json', route =>
+    route.fulfill({ contentType: 'application/json', body: JSON.stringify({ version: 1, ...SPEC }) }))
+  await page.goto('/tests/browser/fixtures/rstudio-pane.html')
+  const frame = page.frameLocator('iframe')
+  await expect(frame.locator('#copyRCodeBtn')).toBeVisible({ timeout: 15000 })
+
+  await frame.locator('#copyRCodeBtn').click()
+  const copy = frame.locator('.r-code-copy')
+  await copy.click()
+  await expect(copy).toHaveText('Copied')
+  await frame.locator('.r-code-close').click()
+
+  const download = page.waitForEvent('download')
+  await frame.locator('#saveSessionBtn').click()
+  expect((await download).suggestedFilename()).toBe('session.json')
+})
+
+test('the code opens the plot in RStudio\'s Viewer pane, unless the box is unticked', async ({ page }) => {
+  await openFromR(page, { r: { mira: MIRA_CALL }, node: { size: 20 } })
+  await page.locator('#copyRCodeBtn').click()
+  const box = page.locator('.r-code-viewer input')
+  await expect(box).toBeChecked()
+  const pre = page.locator('#rCodePanel pre')
+  expect(await pre.innerText()).toBe(`p <- ${MIRA_CALL} +\n  mira_node(size = 20)\nprint(p, viewer = TRUE)`)
+  await box.uncheck()
+  expect(await pre.innerText()).toBe(`${MIRA_CALL} +\n  mira_node(size = 20)`)
+  await box.check()
+  await expect(pre).toContainText('print(p, viewer = TRUE)')
 })

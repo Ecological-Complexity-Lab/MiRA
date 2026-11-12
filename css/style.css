@@ -2152,6 +2152,43 @@ body {
   cursor: pointer;
 }
 
+/* Small window warning (js/screenSize.js) */
+.screen-size-notice {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 3000;
+  max-width: min(380px, calc(100vw - 32px));
+  padding: 10px 32px 10px 12px;
+  background: #fffbeb;
+  border: 1px solid #f59e0b;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  color: #78350f;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.screen-size-notice p {
+  margin: 4px 0 0;
+}
+
+.screen-size-notice-size {
+  white-space: nowrap;
+}
+
+.screen-size-notice-close {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  border: none;
+  background: none;
+  color: inherit;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+}
+
 /* Legend: palette dropdown and reverse button */
 .legend-palette-row {
   display: flex;
@@ -2243,4 +2280,20 @@ body {
   align-self: flex-end;
   padding: 5px 16px;
   font-weight: 600;
+}
+
+.r-code-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.r-code-viewer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #374151;
+  cursor: pointer;
 }

@@ -227,7 +227,7 @@ function startRCode(deps, ref) {
             metaLayers: mode === META_VIEW ? selectedMetaLayers() : null,
             movedLayers: mode === LAYER_VIEW ? (deps.renderer.layerView?.movedBubbleCount() ?? 0) : 0,
         });
-        showRCodePanel(specToR(spec), notes);
+        showRCodePanel(viewer => specToR(spec, { viewer }), notes);
     };
 }
 
