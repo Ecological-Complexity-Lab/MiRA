@@ -288,7 +288,7 @@ test; the final sync goes to main only after the MiRA merge. Item 33 (bugs)
 can be its own small PR first.
 
 **Priorities (Shai, 2026-11-02): 32, 17, 31** (20 dropped, see its row).
-32 done 2026-11-02, 33 and 17 done 2026-11-03, 26 and 31 done 2026-11-04, 35 done 2026-11-12. **Release scope (2026-11-12): 40 for v1; 42, 23/22/39 and the rest after the release.**
+32 done 2026-11-02, 33 and 17 done 2026-11-03, 26 and 31 done 2026-11-04, 35 done 2026-11-12. **Release scope (2026-11-12): 42, 23/22/39 and the rest after the release; 40 moved there too (Shai, 2026-11-12: not important enough for v1).**
 
 | # | Feature | R sketch / notes |
 |---|---|---|
@@ -305,7 +305,7 @@ can be its own small PR first.
 | 36 | Filter nodes per layer (state-node columns, e.g. `abundance > 10`) | MiRA's node filter is by node name across all layers (renderer.js); a per-(node, layer) condition has no faithful mapping. Needs a per-layer node filter in MiRA. |
 | 34 | Color scales per element (node / intralayer / interlayer / layer), not per attribute name. Decided 2026-11-02 to keep MiRA's rule for now: one `value -> color` map per attribute name (`categoryColorOverrides`, app.js), shared by every element colored by that attribute. Two tables with the same column name and the same value (node `module` 1, link `module` 1) share a color, in the UI and from R (R warns which piece replaces which). | Key the overrides by `element:attr`; touches the three color functions, the legend editor and session save/restore (fallback for old keys); then `scales` in the view spec and `.combine_scales` in R. |
 | 37 | ~~Link filter on undirected networks listing both directions~~ | **Done 2026-11-03** in MiRA #96: filters are checked against the drawn links, and an undirected link given in the other direction finds the drawn one (`drawnLinkKeys` in rBridge.js). |
-| 40 | Arrowheads in dense directed layers | Arrowheads are at least 14 px long (`14 + 1.5 × width`, renderer.js), so small, dense directed layers turn black (emln 23, costa2020). The slider (`mira_intralayer(arrow_size = )`) fixes it by hand. Options: scale with layer density, or a smaller default. Found 2026-11-03. |
+| 40 | Arrowheads in dense directed layers | Arrowheads are at least 14 px long (`14 + 1.5 × width`, renderer.js), so small, dense directed layers turn black (emln 23, costa2020). The slider (`mira_intralayer(arrow_size = )`) fixes it by hand. Found 2026-11-03. **After the release** (Shai, 2026-11-12). Cause: the arrowhead is a fixed size on screen while nodes and links shrink with the zoom (`nodeRadius × scale`), so at the fitted zoom of several layers (~0.5) a 5 px node gets a 14 px+ head. Plan (not built): (1) size `(1.4 × nodeRadius × scale + 1.5 × width) × arrowheadSize`, identical to today at zoom 1; (2) cap at a third of the link's length on screen. Both in `_drawArrowhead`'s size argument (intra and inter), slider and spec unchanged; R only re-syncs. Branch `feat/arrowheads`. |
 | 42 | Link opacity: `mira_intralayer(alpha = )`, `mira_interlayer(alpha = )` | Added 2026-11-04 (from `mira_save()` review: translucent links look hazy in print). MiRA first: an opacity slider (0–1, "default" = today's 0.9 / 0.5 bipartite gradient / 0.7 interlayer) in the intralayer and interlayer link settings, used by the renderer (network and map views), saved in sessions, reset by Reset; spec keys `intralayer.alpha`, `interlayer.alpha`. When set, exports use it instead of the crisp default (opaque). Grid view draws links opaque already; layer view and meta-network links are between layers, not affected. Own branch `feat/link-alpha`. |
 | 43 | Vector export (SVG, vector PDF) | Added 2026-11-04, later. Raster exports pixelate past 100 % zoom however high the resolution. Earlier attempts at SVG export in MiRA never worked. Idea: draw the renderer's canvas calls into an SVG-recording context (it uses only paths, arcs, text, transforms, dashes); the HTML legends need their own vector version. |
 
@@ -372,11 +372,11 @@ the multi-folder workspace MiRA + MiRA-dev + ggmira).
   fully supported; map, layer, dashboard and data are documented as
   opening with MiRA's defaults (the `?mira_mode` table already says what
   applies where).
-- **Must-haves for v1 besides the fixes:** item 40 (arrowheads in dense
-  directed layers) and ggmira issue #13 (open in RStudio's Viewer pane, e.g.
+- **Must-have for v1 besides the fixes:** ggmira issue #13 (open in RStudio's Viewer pane, e.g.
   `print(p, viewer = TRUE)` or `options(ggmira.viewer = )`, browser outside
-  RStudio). Everything else in the M table (18, 19, 22, 23, 39, 42, 43…)
-  and issue #18 (rename layers) is after the release.
+  RStudio). Everything else in the M table (18, 19, 22, 23, 39, 40, 42,
+  43…) and issue #18 (rename layers) is after the release. Item 40 was a
+  must-have until later that day (moved by Shai; plan in its row).
 
 **Done this session (all merged):** MiRA #100 → main eebf58d (live);
 ggmira #19 → main 25e0a77 (bundles MiRA eebf58d).
@@ -400,19 +400,38 @@ ggmira #19 → main 25e0a77 (bundles MiRA eebf58d).
 - The GitHub issues #12, #14, #15, #16, #17 are closed by hand by Shai
   (closing notes were drafted in the session; no "Closes #" in PRs).
 
+**Done later on 2026-11-12 (merged):** MiRA #101 → main 354fc85; ggmira #20
+→ main 84cfb66 (bundles 354fc85).
+- Issue #13: `print(p, viewer = TRUE)`, `plot_mira()/plot_multilayer(viewer = )`,
+  `options(ggmira.viewer = TRUE)`; outside RStudio the browser, with a
+  message; `browser` given wins; the pane URL has `&pane=rstudio`. Opt-in
+  (Shai). In the pane (a cross-origin frame) Save Session fell back to
+  nothing and Copy failed: Save Session now downloads when the save dialog is
+  refused, Copy falls back to execCommand (test with
+  `tests/browser/fixtures/rstudio-pane.html`). The R panel has "Open in
+  RStudio's Viewer pane" (ticked by default): the code is `p <- ...` then
+  `print(p, viewer = TRUE)` (Shai's choice over options() or a print() wrap).
+- Toolbar overlap (open question 1): not fixed, by decision; instead a
+  small-window warning in MiRA (`js/screenSize.js`, below 1024 x 600 CSS px,
+  website and R, closable for the session, not in save mode, pane hint).
+- Open question 2: the R code writes `color_by = "layer_name"`;
+  `mira_options()` lists `layer_name`.
+- Tests: MiRA 445 unit + 76 browser; ggmira 554. R CMD check: 0/0, notes:
+  Rd "height/width attributes should be in pixels" on the mira_mode_* pages
+  (new with R/roxygen; fix in release prep).
+
 **Next, in order:**
-1. Item 40, arrowheads in dense directed layers (MiRA, then R if needed).
-2. Issue #13, RStudio Viewer (R only).
-3. QA sweep. Shai asked for an independent QA pass: a Fable subagent on
+1. ~~Issue #13~~ done (above). (Item 40 moved after the release.)
+2. QA sweep. Shai asked for an independent QA pass: a Fable subagent on
    the R package and the bundled MiRA, given the code, not conclusions.
    Plus hands-on runs of every mode on emln 13, 14, 17, 23, 63 and the
    Siberian demo, a fresh `install_github()` into a clean library, and
    the website-path check (demo datasets without R).
-4. Release prep: NEWS.md, version (0.1.0 → 1.0.0?), README pass, `url` in
+3. Release prep: NEWS.md, version (0.1.0 → 1.0.0?), README pass, `url` in
    `_pkgdown.yml` (pkgdown warns), make the repo public, GitHub Pages,
    retake all article screenshots (most predate MiRA's R button), tag.
 
-**Open questions for Shai:**
+**Open questions for Shai (both answered 2026-11-12, see above):**
 - MiRA's fit leaves no room for the toolbar: in vertical stacks the top
   layer sits under it (Getting started steps 5 and 6). Fix in v1? It shifts
   every opening view, and so how `mira_camera()` values frame a plot.
