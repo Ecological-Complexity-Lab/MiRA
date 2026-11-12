@@ -5538,6 +5538,9 @@ function restoreSessionState(state, { warnData = true } = {}) {
             // _syncMetaNetworkControls resets minWeight slider to 0 — restore it
             mnMinWeightSlider.value = mn.minWeight;
             mnMinWeightLabel.textContent = mn.minWeight.toFixed(2);
+            // The legend was drawn on entering, with the defaults: redraw it for the
+            // restored color and size (a color legend was missing; ggmira #12)
+            renderMetaNetworkLegend();
             // Restore view transform (must be last — layout calls may call _fitView)
             if (mn.viewScale != null) {
                 metaNetwork.viewScale = mn.viewScale;
