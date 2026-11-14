@@ -291,6 +291,72 @@ describe('Group 3 — Changed in MiRA', () => {
     expect(stateToSpec(state, ref, ctx(), { movedLayers: 3 }).notes)
       .toEqual(['3 layers were moved by hand in the layer view: R cannot set their positions.'])
   })
+  it('3.7 per set with both sets at Default stays per set (NA in R)', () => {
+    const ref = fromR({})
+    const state = JSON.parse(JSON.stringify(ref.applied))
+    state.ui.nodeColorSplit = true
+    state.ui.nodeSizeSplit = true
+    state.ui.nodeShapeAuto = true
+    const { spec } = stateToSpec(state, ref, ctx())
+    expect(spec.node).toEqual({
+      color_by: { pollinator: null, plant: null }, size_by: { pollinator: null, plant: null },
+    })
+    expect(applyViewSpec(ref.baseline, spec, ctx()).state.ui).toMatchObject({ nodeColorSplit: true, nodeSizeSplit: true })
+    expect(specToR(spec).map(line => line.text).join('\n')).toBe(
+      'mira(net) +\n  mira_node(color_by = c(pollinator = NA, plant = NA),\n' +
+      '            size_by = c(pollinator = NA, plant = NA))')
+  })
+
+  it('3.8 one shape for both sets while color is per set is written (R would split the shapes)', () => {
+    const ref = fromR({ node: { color_by: { pollinator: 'module', plant: 'abundance' } } })
+    expect(ref.applied.ui.nodeShapeAuto).toBe(true)
+    const state = JSON.parse(JSON.stringify(ref.applied))
+    Object.assign(state.ui, { nodeShapeAuto: false, nodeShapeSplit: false })
+    const { spec } = stateToSpec(state, ref, ctx())
+    expect(spec.node.shape).toBe('circle')
+    expect(applyViewSpec(ref.baseline, spec, ctx()).state.ui).toMatchObject({ nodeShapeAuto: false, nodeShapeSplit: false })
+  })
+
+  it('3.9 a node color chosen while color is per set: a note (R cannot say both)', () => {
+    const ref = fromR({ node: { color_by: { pollinator: 'module' } } })
+    const state = JSON.parse(JSON.stringify(ref.applied))
+    state.ui.nodeColorPicker = '#123456'
+    const { spec, notes } = stateToSpec(state, ref, ctx())
+    expect(spec.node.color).toBeUndefined()
+    expect(notes).toEqual([expect.stringMatching(/^The node color was changed while nodes are colored per set/)])
+    expect(stateToSpec(ref.applied, ref, ctx()).notes).toEqual([])
+  })
+
+  it('3.10 pairs with the interlayer links hidden say so (in R, pairs alone shows them)', () => {
+    const ref = fromR({ interlayer: { pairs: [['L1', 'L2']], show: false } })
+    expect(stateToSpec(ref.applied, ref, ctx()).spec.interlayer).toEqual({ pairs: [['L1', 'L2']], show: false })
+    const shown = fromR({ interlayer: { pairs: [['L1', 'L2']], show: true } })
+    expect(stateToSpec(shown.applied, shown, ctx()).spec.interlayer).toEqual({ pairs: [['L1', 'L2']], show: true })
+  })
+
+  it('3.11 grid columns are written unless they are the number MiRA chooses itself', () => {
+    // 3 layers: MiRA draws 2 columns; the slider's own default (3) is a setting like any other
+    const ref = fromR({ mode: { view: 'grid', columns: 3 } })
+    expect(stateToSpec(ref.applied, ref, ctx()).spec.mode).toEqual({ view: 'grid', columns: 3 })
+    const own = JSON.parse(JSON.stringify(ref.applied))
+    own.renderer.gridColumns = 2
+    expect(stateToSpec(own, ref, ctx()).spec.mode).toEqual({ view: 'grid' })
+  })
+
+  it('3.12 meta-network: the color is written only with Color by at uniform', () => {
+    const ref = fromR({ mode: { view: 'meta', color: '#ff0000' } })
+    expect(stateToSpec(ref.applied, ref, ctx()).spec.mode).toEqual({ view: 'meta', color: '#ff0000' })
+    const state = JSON.parse(JSON.stringify(ref.applied))
+    state.meta.colorBy = 'participation'
+    expect(stateToSpec(state, ref, ctx()).spec.mode).toEqual({ view: 'meta', color_by: 'participation' })
+  })
+
+  it('3.13 the values of a logical column are named as R names them', () => {
+    const ref = fromR({})
+    const state = JSON.parse(JSON.stringify(ref.applied))
+    state.ui.categoryColorOverrides = [['native', [[true, '#ff0000'], [false, '#0000ff']]]]
+    expect(stateToSpec(state, ref, ctx()).spec.scales).toEqual({ native: { values: { TRUE: '#ff0000', FALSE: '#0000ff' } } })
+  })
 })
 
 describe('Group 4 — R code', () => {
@@ -329,6 +395,23 @@ describe('Group 4 — R code', () => {
       '            color_reverse = TRUE) +',
       '  mira_layer(color_by = "module")',
     ].join('\n'))
+  })
+
+  it('4.4b a scale switched to the other type: only what that type uses (R rejects the rest together)', () => {
+    // the legend's Continuous/Discrete switch keeps the palette, limits and colors per value
+    const flat = (body) => code(body).replace(/\n\s+/g, ' ') // wrapping aside
+    expect(flat({ node: { color_by: 'degree' }, scales: { degree: { type: 'categorical', palette: 'magma' } } }))
+      .toBe('mira(net) + mira_node(color_by = "degree", color_scale = "categorical")')
+    expect(flat({ node: { color_by: 'degree' }, scales: { degree: { type: 'categorical', limits: [0, 5], reverse: true } } }))
+      .toBe('mira(net) + mira_node(color_by = "degree", color_scale = "categorical", color_reverse = TRUE)')
+    expect(flat({ node: { color_by: 'degree' }, scales: { degree: { type: 'continuous', values: { 1: '#ff0000' }, palette: 'Set1' } } }))
+      .toBe('mira(net) + mira_node(color_by = "degree", color_scale = "continuous")')
+    // per set
+    expect(flat({
+      node: { color_by: { bird: 'degree', plant: 'type' } },
+      scales: { degree: { type: 'categorical', palette: 'magma', limits: [0, 5] }, type: { palette: 'Set1' } },
+    })).toBe('mira(net) + mira_node(color_by = c(bird = "degree", plant = "type"), ' +
+      'color_scale = c(bird = "categorical"), color_palette = c(plant = "Set1"))')
   })
 
   it('4.5 per-set scales are named by set; limits and values per set are lists', () => {

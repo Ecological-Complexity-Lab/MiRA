@@ -179,3 +179,30 @@ test('the code opens the plot in RStudio\'s Viewer pane, unless the box is untic
   await box.check()
   await expect(pre).toContainText('print(p, viewer = TRUE)')
 })
+
+test('the meta-network: size and minimum weight come back as R gave them, not as the sliders round them', async ({ page }) => {
+  await openFromR(page, { r: { mira: MIRA_CALL }, mode: { view: 'meta', size: 1.25, min_weight: 2.5 } })
+  expect(await openCode(page)).toBe(`${MIRA_CALL} +\n  mira_mode_meta(size = 1.25, min_weight = 2.5)`)
+})
+
+test('per set with both sets at Default, and a grid of 3 columns, are in the code', async ({ page }) => {
+  await openFromR(page, { r: { mira: MIRA_CALL } })
+  await page.locator('#sectionNodes > summary').click()
+  await page.locator('#nodeColorSplitToggle').click()
+  // the split also gives each set a shape, and opens the shape legend
+  expect(await openCode(page)).toBe(`${MIRA_CALL} +\n  mira_node(color_by = c(parasite = NA, host = NA)) +\n` +
+    '  mira_legends(show = "node_shape")')
+
+  // 6 layers: MiRA's own grid has 3 columns, so mira_mode_grid() alone says it; 2 is a setting
+  const grid = await page.context().newPage()
+  grid.on('pageerror', e => errors.push(e.message))
+  await grid.setViewportSize({ width: 1200, height: 800 })
+  await openFromR(grid, { r: { mira: MIRA_CALL }, mode: { view: 'grid', columns: 3 } })
+  expect(await openCode(grid)).toBe(`${MIRA_CALL} +\n  mira_mode_grid()`)
+  const two = await page.context().newPage()
+  two.on('pageerror', e => errors.push(e.message))
+  await two.setViewportSize({ width: 1200, height: 800 })
+  await openFromR(two, { r: { mira: MIRA_CALL }, mode: { view: 'grid', columns: 2 } })
+  expect(await openCode(two)).toBe(`${MIRA_CALL} +\n  mira_mode_grid(columns = 2)`)
+})
+

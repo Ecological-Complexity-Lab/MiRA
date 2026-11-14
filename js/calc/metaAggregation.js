@@ -46,7 +46,7 @@ export function aggregateMetaNetwork(model, mode) {
     const weight = edgeWeightForMode(mode, weightSum, layers.size);
     const perLayer = [...perLayerMap.entries()]
       .map(([layerName, w]) => ({ layerName, weight: w }))
-      .sort((a, b) => a.layerName.localeCompare(b.layerName));
+      .sort((a, b) => String(a.layerName).localeCompare(String(b.layerName))); // names can be numbers (years)
     edges.push({ source: src, target: tgt, weight, perLayer, _layers: layers });
     if (weight > maxWeight) maxWeight = weight;
   }

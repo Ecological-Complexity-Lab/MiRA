@@ -114,4 +114,17 @@ describe('Group calc/metaAggregation', () => {
     expect(nodes.get('A').metaDegree).toBe(1) // only partners with B
     expect(nodes.get('C').metaDegree).toBe(1)
   })
+
+  it('layer names that are numbers (years) are aggregated like any others', () => {
+    const fixture = makeFixture()
+    const year = { L1: 2001, L2: 2002 }
+    for (const row of [...fixture.layers, ...fixture.nodes, ...fixture.state_nodes]) row.layer_name = year[row.layer_name]
+    for (const link of fixture.extended) {
+      link.layer_from = year[link.layer_from]
+      link.layer_to = year[link.layer_to]
+    }
+    const { edges } = aggregateMetaNetwork(parseMultilayerData(fixture), 'sumWeights')
+    const ab = edges.find(e => (e.source === 'A' && e.target === 'B') || (e.source === 'B' && e.target === 'A'))
+    expect(ab.perLayer.map(p => p.layerName)).toEqual([2001, 2002])
+  })
 })

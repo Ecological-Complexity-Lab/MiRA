@@ -74,22 +74,25 @@ const LEGEND_CORNERS = {
  * @param {{ loadData, getSessionState, restoreSessionState, renderer, getAppMode, exportImage, isAnimating, finishAnimations }} deps
  */
 export async function loadFromR(networkJson, deps) {
-    deps.loadData(networkJson);
+    // mira_save(): no "Data warnings" alert, which would block the headless
+    // browser; the warnings go to R with the plot's status instead
+    deps.loadData(networkJson, { warn: !SAVE_MODE });
     if (!deps.renderer.model) { // loadData already reported the error
         reportLoadFailure('MiRA could not read the network');
         return;
     }
-    // Camera values in mira_camera() terms, with "Copy for R" (network mode only)
+    const dataWarnings = SAVE_MODE ? (deps.renderer.model.warnings ?? []) : [];
+    // Camera values in mira_camera() terms (network mode only)
     startCameraReadout(deps.renderer, deps.getAppMode ?? (() => 'network'));
 
     const fetched = await fetchViewSpec();
     if (fetched.error) {
         showSpecNotice('The plot settings from R were ignored', [fetched.error]);
-        await reportRendered(deps, [fetched.error]);
+        await reportRendered(deps, [...dataWarnings, fetched.error]);
         return;
     }
     const warnings = fetched.spec !== null ? applySpecSafely(networkJson, fetched.spec, deps) : [];
-    await reportRendered(deps, warnings);
+    await reportRendered(deps, [...dataWarnings, ...warnings]);
 }
 
 /** mira_save(): MiRA could not open the plot. */
@@ -269,8 +272,9 @@ function enterView(view, deps, warnings) {
  * items (the other layers are dimmed). The panel starts with none selected.
  */
 function selectMetaLayers(layers) {
+    const names = layers.map(String); // the panel's items carry the names as text
     for (const item of document.querySelectorAll(`#${META_LAYER_LIST_ID} li`)) {
-        if (layers.includes(item.dataset.layerName) && !item.classList.contains('active')) item.click();
+        if (names.includes(item.dataset.layerName) && !item.classList.contains('active')) item.click();
     }
 }
 

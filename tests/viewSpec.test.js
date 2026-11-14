@@ -825,3 +825,44 @@ describe('Group 15 — Mode', () => {
     expect(r.warnings).toEqual(['mode.layers: only for view "meta"; ignored'])
   })
 })
+
+describe('Group 16 — Names and values as R writes them', () => {
+  // R sends names as text; a network can store layer names as numbers (years)
+  const ctxWithYears = () => ({ ...ctxWithSets(), layerNames: [2001, 2002, 2003] })
+  const state = () => ({ ...defaultState(), ui: { ...defaultState().ui, layerColors: [[2001, '#8b5cf6'], [2002, '#8b5cf6']] } })
+  const applyYears = (body) => applyViewSpec(state(), { version: 1, ...body }, ctxWithYears())
+
+  it('16.1 numeric layer names: the filter keeps the names as stored', () => {
+    const r = applyYears({ filter: { layers: ['2001', '2003'] } })
+    expect(r.warnings).toEqual([])
+    expect(r.state.filter.layerNames).toEqual([2001, 2003])
+  })
+
+  it('16.2 numeric layer names: pairs, per-layer colors and the meta-network layers', () => {
+    let r = applyYears({ interlayer: { pairs: [['2001', '2002']] } })
+    expect(r.warnings).toEqual([])
+    expect(r.state.filter.interPairFilter).toEqual(['2001::2002'])
+    r = applyYears({ layer: { color_by: '.individual', colors: { 2002: '#ff0000' } } })
+    expect(r.warnings).toEqual([])
+    expect(r.state.ui.layerColors).toEqual([[2001, '#8b5cf6'], [2002, '#ff0000']])
+    r = applyYears({ mode: { view: 'meta', layers: ['2003', '2001'] } })
+    expect(r.warnings).toEqual([])
+    expect(r.mode.layers).toEqual([2003, 2001])
+  })
+
+  it('16.3 numeric layer names: a name that is not a layer is still reported', () => {
+    const r = applyYears({ filter: { layers: ['2001', '1999'] } })
+    expect(r.warnings).toEqual(['filter.layers[1]: "1999" is not a layer name'])
+    expect(r.state.filter.layerNames).toEqual([2001])
+  })
+
+  it('16.4 the values of a logical column: R\'s "TRUE" and "FALSE"', () => {
+    const ctx = ctxWithSets()
+    ctx.values.native = new Set([true, false])
+    ctx.options.nodeColorSelect.add('node:native')
+    const r = applyViewSpec(defaultState(), { version: 1, node: { color_by: 'native' },
+      scales: { native: { values: { TRUE: '#ff0000', FALSE: '#0000ff' } } } }, ctx)
+    expect(r.warnings).toEqual([])
+    expect(r.state.ui.categoryColorOverrides).toEqual([['native', [[true, '#ff0000'], [false, '#0000ff']]]])
+  })
+})

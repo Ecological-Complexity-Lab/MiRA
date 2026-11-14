@@ -20,7 +20,7 @@
 import {
     LEGEND_IDS, LEGEND_ALL, VIEWS, META_AGGREGATIONS, META_MEASURES, PAIR_SEPARATOR,
     SET_COLOR_KEYWORD, SET_COLOR_VALUE, SET_COLOR_ATTR, INDIVIDUAL_KEYWORD, INDIVIDUAL_VALUE,
-    DEFAULT_OPTION, AUTO_SHAPE_A, AUTO_SHAPE_B, LINK_KEY_SEPARATOR, VIEW_SPEC_VERSION,
+    DEFAULT_OPTION, AUTO_SHAPE_A, AUTO_SHAPE_B, LINK_KEY_SEPARATOR, VIEW_SPEC_VERSION, GRID_COLUMNS_MAX,
 } from './viewSpec.js';
 import { META_NETWORK_DEFAULTS } from './metaNetwork.js';
 import { palettesFor } from './palettes.js';
@@ -81,7 +81,7 @@ export function stateToSpec(state, ref, ctx, view = {}) {
 
     if (ref.spec?.r) spec.r = readR(state, ref);
     put('layout', readLayout(state, ref, notes));
-    put('node', readNode(state, base, ctx));
+    put('node', readNode(state, base, ctx, notes));
     put('intralayer', readIntralayer(state, base));
     put('interlayer', readInterlayer(state, base));
     put('layer', readLayer(state, base));
@@ -130,15 +130,19 @@ function attrOf(option) {
     return colon === -1 ? option : option.slice(colon + 1);
 }
 
-/** Per-set dropdowns as { <set label>: attribute }, without the sets at Default. */
+/**
+ * Per-set dropdowns as { <set label>: attribute }, without the sets at Default.
+ * Both at Default: both sets with null (R: c(a = NA, b = NA)), which is what
+ * keeps the setting per set.
+ */
 function perSetAttrs(a, b, ctx) {
     const out = {};
     if (a !== DEFAULT_OPTION) out[ctx.sets.labelA] = attrOf(a);
     if (b !== DEFAULT_OPTION) out[ctx.sets.labelB] = attrOf(b);
-    return out;
+    return isEmpty(out) ? { [ctx.sets.labelA]: null, [ctx.sets.labelB]: null } : out;
 }
 
-function readNode(state, base, ctx) {
+function readNode(state, base, ctx, notes = []) {
     const ui = state.ui, b = base.ui, r = state.renderer, br = base.renderer;
     const node = {};
     if (state.selectedNode !== null && state.selectedNode !== undefined && state.selectedNode !== base.selectedNode) {
@@ -146,8 +150,10 @@ function readNode(state, base, ctx) {
     }
     // Color: per set, a mapping, or one color (Default shows the picker's color)
     if (ui.nodeColorSplit) {
-        const perSet = perSetAttrs(ui.nodeColorSelectSetA, ui.nodeColorSelectSetB, ctx);
-        if (!isEmpty(perSet)) node.color_by = perSet;
+        node.color_by = perSetAttrs(ui.nodeColorSelectSetA, ui.nodeColorSelectSetB, ctx);
+        if (ui.nodeColorPicker !== b.nodeColorPicker) {
+            notes.push('The node color was changed while nodes are colored per set: R cannot give `color` together with a per-set `color_by`.');
+        }
     } else if (ui.nodeColorSelect === DEFAULT_OPTION) {
         if (ui.nodeColorSelect !== b.nodeColorSelect || b.nodeColorSplit || ui.nodeColorPicker !== b.nodeColorPicker) {
             node.color = ui.nodeColorPicker;
@@ -156,8 +162,7 @@ function readNode(state, base, ctx) {
         node.color_by = attrOf(ui.nodeColorSelect);
     }
     if (ui.nodeSizeSplit) {
-        const perSet = perSetAttrs(ui.nodeSizeSelectSetA, ui.nodeSizeSelectSetB, ctx);
-        if (!isEmpty(perSet)) node.size_by = perSet;
+        node.size_by = perSetAttrs(ui.nodeSizeSelectSetA, ui.nodeSizeSelectSetB, ctx);
     } else if (ui.nodeSizeSelect !== b.nodeSizeSelect || b.nodeSizeSplit) {
         node.size_by = attrOf(ui.nodeSizeSelect);
     }
@@ -166,7 +171,9 @@ function readNode(state, base, ctx) {
     if (!ui.nodeShapeAuto) {
         if (ui.nodeShapeSplit) {
             node.shape = { [ctx.sets.labelA]: ui.nodeShapeSelectSetA, [ctx.sets.labelB]: ui.nodeShapeSelectSetB };
-        } else if (ui.nodeShapeSelect !== b.nodeShapeSelect || b.nodeShapeSplit) {
+        } else if (ui.nodeShapeSelect !== b.nodeShapeSelect || b.nodeShapeSplit ||
+            ui.nodeColorSplit || ui.nodeSizeSplit) {
+            // per-set color or size splits the shapes unless one shape is given
             node.shape = ui.nodeShapeSelect;
         }
     }
@@ -202,6 +209,7 @@ function readInterlayer(state, base) {
     const pairs = state.filter.interPairFilter ?? [];
     if (pairs.length && !same(pairs, base.filter.interPairFilter)) {
         section.pairs = pairs.map(key => key.split(PAIR_SEPARATOR));
+        if (!r.showInterlayerLinks) section.show = false; // in R, `pairs` alone shows the links
     }
     return section;
 }
@@ -246,7 +254,7 @@ function readScales(state, base) {
     for (const [attr, colors] of values) {
         const before = baseValues.get(attr) ?? new Map();
         const changed = {};
-        for (const [value, color] of colors) if (before.get(value) !== color) changed[String(value)] = color;
+        for (const [value, color] of colors) if (before.get(value) !== color) changed[valueName(value)] = color;
         if (!isEmpty(changed)) scaleOf(attr).values = changed;
     }
     for (const [attr, name] of palettes) if (basePalettes.get(attr) !== name) scaleOf(attr).palette = name;
@@ -258,6 +266,9 @@ function readScales(state, base) {
     if (!bySet) delete scales[SET_COLOR_KEYWORD];
     return scales;
 }
+
+/** A data value as R names it in color_values: TRUE and FALSE for a logical column. */
+const valueName = (value) => (typeof value === 'boolean' ? String(value).toUpperCase() : String(value));
 
 /** Data mode filter: node names, links ([layer_from, node_from, layer_to, node_to]) and layer names. */
 function readFilter(state, ref, notes) {
@@ -309,12 +320,15 @@ function readMode(state, base, ctx, metaLayers) {
     if (!view || view === NETWORK_VIEW) return null;
     const mode = { view };
     if (view === 'grid' && Number.isInteger(state.renderer.gridColumns) &&
-        state.renderer.gridColumns !== base.renderer.gridColumns) {
+        state.renderer.gridColumns !== ownGridColumns(ctx.layerNames.length)) {
         mode.columns = state.renderer.gridColumns;
     }
     if (view === 'meta') Object.assign(mode, readMeta(state.meta, ctx, metaLayers));
     return mode;
 }
+
+/** The columns MiRA gives the grid itself (app.js _enterGridView): what mira_mode_grid() alone draws. */
+const ownGridColumns = (layers) => Math.min(Math.ceil(Math.sqrt(layers)), GRID_COLUMNS_MAX);
 
 /** mira_mode_meta() fields: the meta-network settings that differ from those MiRA opens it with. */
 function readMeta(meta, ctx, metaLayers) {
@@ -330,13 +344,15 @@ function readMeta(meta, ctx, metaLayers) {
     if (meta.nestedSort !== d.nestedSort) out.nested = meta.nestedSort;
     if (meta.showLabels !== d.showLabels) out.labels = meta.showLabels;
     if (meta.labelSize !== d.labelFontSize) out.label_size = meta.labelSize;
-    if (ctx.sets.hasSets) {
+    // The colors show only with Color by at uniform; R takes `color_by` or `color`, not both
+    const uniform = meta.colorBy === META_MEASURES.uniform;
+    if (uniform && ctx.sets.hasSets) {
         if (meta.colorSetA !== d.uniformColorA || meta.colorSetB !== d.uniformColorB) {
             out.color = meta.colorSetA === meta.colorSetB
                 ? meta.colorSetA
                 : { [ctx.sets.labelA]: meta.colorSetA, [ctx.sets.labelB]: meta.colorSetB };
         }
-    } else if (meta.uniformColor !== d.uniformColor) {
+    } else if (uniform && meta.uniformColor !== d.uniformColor) {
         out.color = meta.uniformColor;
     }
     if (metaLayers?.length) out.layers = metaLayers;
@@ -491,11 +507,28 @@ function impliedType(scale) {
 const withoutImpliedType = (scale) =>
     (scale && scale.type === impliedType(scale) ? { ...scale, type: undefined } : scale);
 
+/**
+ * A scale without the settings its type does not use. The legend's
+ * Continuous/Discrete switch changes the type and keeps the other type's
+ * palette, limits and colors per value, which MiRA then ignores (palettes.js
+ * usedPalette); R stops when they are given together.
+ */
+function forItsType(scale) {
+    if (!scale || scale.type === undefined) return scale;
+    const out = { ...scale };
+    if (out.palette !== undefined && !palettesFor(out.type).includes(out.palette)) delete out.palette;
+    delete out[out.type === 'continuous' ? 'values' : 'limits'];
+    return out;
+}
+
+/** A scale as R takes it: what its type uses, the type only when it says more. */
+const scaleForR = (scale) => withoutImpliedType(forItsType(scale));
+
 /** The scale arguments of a component whose color_by is `colorBy`. */
 function scaleArgs(colorBy, takeScale) {
     if (colorBy === undefined || colorBy === null) return [];
     if (typeof colorBy === 'string') {
-        const scale = withoutImpliedType(takeScale(colorBy));
+        const scale = scaleForR(takeScale(colorBy));
         return scale ? [
             ['color_scale', scale.type], ['color_values', scale.values], ['color_palette', scale.palette],
             ['color_reverse', scale.reverse], ['color_limits', scale.limits],
@@ -504,7 +537,7 @@ function scaleArgs(colorBy, takeScale) {
     // Per set: each part named by the sets whose attribute has a scale
     const parts = { type: {}, values: {}, palette: {}, reverse: {}, limits: {} };
     for (const [label, attr] of Object.entries(colorBy)) {
-        const scale = attr === null || attr === SET_COLOR_KEYWORD ? undefined : withoutImpliedType(takeScale(attr));
+        const scale = attr === null || attr === SET_COLOR_KEYWORD ? undefined : scaleForR(takeScale(attr));
         if (!scale) continue;
         for (const part of Object.keys(parts)) if (scale[part] !== undefined) parts[part][label] = scale[part];
     }
@@ -568,7 +601,9 @@ function rValue(value) {
             : `list(${Object.entries(inner).map(([k, v]) => `${rName(k)} = ${rValue(v)}`).join(', ')})`;
     }
     const nested = Object.values(value).some(v => v !== null && typeof v === 'object');
-    return `${nested ? 'list' : 'c'}(${Object.entries(value).map(([k, v]) => `${rName(k)} = ${rValue(v)}`).join(', ')})`;
+    // null in a named vector is NA (a set at Default): c() would drop a NULL
+    return `${nested ? 'list' : 'c'}(${Object.entries(value)
+        .map(([k, v]) => `${rName(k)} = ${v === null && !nested ? 'NA' : rValue(v)}`).join(', ')})`;
 }
 
 /** A name in c(name = ...): bare when R allows it, else quoted. */

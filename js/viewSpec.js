@@ -83,7 +83,7 @@ const GRID_FIELDS = ['columns'];
 const META_FIELDS = ['aggregation', 'layout', 'color_by', 'size_by', 'size', 'min_weight', 'nested',
     'labels', 'label_size', 'color', 'layers'];
 const GRID_COLUMNS_MIN = 1; // grid columns slider (index.html)
-const GRID_COLUMNS_MAX = 8;
+export const GRID_COLUMNS_MAX = 8;
 export const META_AGGREGATIONS = { occurrence: 'sumOccurrence', weights: 'sumWeights', union: 'union' };
 const META_LAYOUTS = new Set(['circular', 'force', 'bipartite']);
 export const META_MEASURES = { participation: 'participation', degree: 'metaDegree', uniform: 'uniform' };
@@ -238,10 +238,19 @@ function setChecked(section, field, path, target, key, check) {
     if (value !== undefined) target[key] = value;
 }
 
-function checkLayerName(value, ctx, path, warn) {
+/**
+ * The layer name as stored in the data. R sends names as text; a network can
+ * store them as numbers (years), so "2001" is matched to 2001, as for nodes.
+ */
+function storedLayerName(value, ctx) {
     if (ctx.layerNames.includes(value)) return value;
-    warn(path, `${show(value)} is not a layer name`);
-    return undefined;
+    return typeof value === 'string' ? ctx.layerNames.find(name => String(name) === value) : undefined;
+}
+
+function checkLayerName(value, ctx, path, warn) {
+    const stored = storedLayerName(value, ctx);
+    if (stored === undefined) warn(path, `${show(value)} is not a layer name`);
+    return stored;
 }
 
 /**
@@ -545,9 +554,10 @@ function applyLayerColors(ui, colors, ctx, warn) {
     const byLayer = new Map(ui.layerColors);
     for (const [name, value] of Object.entries(colors)) {
         const path = `layer.colors.${name}`;
-        if (checkLayerName(name, ctx, path, warn) === undefined) continue;
+        const layer = checkLayerName(name, ctx, path, warn);
+        if (layer === undefined) continue;
         const color = checkColor(value, path, warn);
-        if (color !== undefined) byLayer.set(name, color);
+        if (color !== undefined) byLayer.set(layer, color);
     }
     ui.layerColors = [...byLayer];
 }
@@ -663,7 +673,7 @@ function applyFilter(state, section, ctx, warn) {
     }
     if ('layers' in section) {
         applyFilterList(state, 'layerNames', section.layers, 'filter.layers', warn, (name, path) => {
-            if (typeof name === 'string' && ctx.layerNames.includes(name)) return name;
+            if (typeof name === 'string') return checkLayerName(name, ctx, path, warn);
             warn(path, `${show(name)} is not a layer name`);
             return undefined;
         });
@@ -826,9 +836,10 @@ function applyScaleValues(ui, attr, values, dataValues, label, path, warn) {
     ui.categoryColorOverrides = [...overrides].map(([k, m]) => [k, [...m]]);
 }
 
+// R names the values of a logical column "TRUE" and "FALSE"; the data has true and false
 function matchDataValue(key, values) {
     if (values.has(key)) return key;
-    return [...values].find(v => String(v) === key);
+    return [...values].find(v => String(v) === key || (typeof v === 'boolean' && String(v).toUpperCase() === key));
 }
 
 // ---- mode -----------------------------------------------------------------------
