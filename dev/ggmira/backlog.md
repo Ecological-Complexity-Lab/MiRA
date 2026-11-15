@@ -26,6 +26,18 @@ ggmira #21 → 7ee8ace); findings, what was fixed and what is left are in
 and a testing guide for two beta testers (ggmira #23, the Beta testing
 article) are merged too. Next: the testers' feedback, Shai's RStudio
 check, then release prep.
+**2026-11-15: ggmira 0.9.0** (ggmira #25 → main 7602e37), made to look ready
+to share with the paper's editor; **the repository stays private** (Shai).
+Version 0.9.0, lifecycle still beta; maintainer Geut Galai (`cre`,
+geutg@post.bgu.ac.il); NEWS.md; feedback without "beta" (label renamed
+`feedback` on GitHub); Getting started: large-screen note, an RStudio
+section (screenshot `vignettes/articles/figures/rstudio-viewer.png` from
+Shai, pending), the mira_spec() section removed; all screenshots retaken
+(script: the session's scratchpad `shots/shots.R`); Rd image-size NOTE fixed.
+The Beta testing article stays on the site. Next: the editor's bundle (the
+package built from a clean copy of main, the zipped site, a short note),
+after the RStudio screenshot. Not done (not public yet): `url` in
+`_pkgdown.yml`, GitHub Pages, tag and GitHub release.
 
 ## Milestones
 
