@@ -20,6 +20,10 @@ and tested by Shai, not merged (see Stage 4 and the handoff of
 **2026-11-12: working toward the first release (v1).** Beta fixes and
 item 35 merged (MiRA #100, ggmira #19). **Start at "Handoff: 2026-11-12
 — toward the first release"** below.
+**2026-11-15:** the QA sweep's code fixes are merged (MiRA #102 → 5bef89b,
+ggmira #21 → 7ee8ace); findings, what was fixed and what is left are in
+[qa-2026-11-13.md](qa-2026-11-13.md). Next: the documentation fixes
+(tier 2 there), then release prep; a Windows run by a tester is pending.
 
 ## Milestones
 
