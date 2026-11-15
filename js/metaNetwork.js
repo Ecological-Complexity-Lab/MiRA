@@ -246,12 +246,18 @@ export class MetaNetwork {
                 .force('x',       d3.forceX(0).strength(bipartite ? 0.02 : 0.05))
                 .force('y',       d3.forceY(0).strength(bipartite ? 0    : 0.05))
                 .force('collide', d3.forceCollide(n => n.r + 4).iterations(3))
+                // The link force moves a dense network as a whole, further than
+                // the weak x and y forces pull it back: keep its center in place
+                .force('center',  d3.forceCenter(0, 0))
                 .stop();
 
             // Pre-settle to convergence (cap at 500 ticks for safety on huge graphs)
             for (let i = 0; i < 500 && this._sim.alpha() > this._sim.alphaMin(); i++) {
                 this._sim.tick();
             }
+            // The settled network can be wider than the window: center it, and
+            // shrink it when it does not fit (never enlarge)
+            this._fitView(0.88, 1);
             // Brief gentle animation so the user sees the network is "live" (drag-able)
             this._sim.alpha(0.05).restart();
         }
@@ -259,7 +265,7 @@ export class MetaNetwork {
 
     // ── Fit view to content ──────────────────────────────────────────────────
 
-    _fitView(padding = 0.88) {
+    _fitView(padding = 0.88, maxScale = Infinity) {
         if (!this._mnNodes.length) return;
         let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
         for (const n of this._mnNodes) {
@@ -271,7 +277,7 @@ export class MetaNetwork {
         const contentW = maxX - minX;
         const contentH = maxY - minY;
         if (contentW === 0 || contentH === 0) return;
-        this.viewScale   = Math.min(this._canvasW / contentW, this._canvasH / contentH) * padding;
+        this.viewScale   = Math.min(Math.min(this._canvasW / contentW, this._canvasH / contentH) * padding, maxScale);
         this.viewOffsetX = -((minX + maxX) / 2) * this.viewScale;
         this.viewOffsetY = -((minY + maxY) / 2) * this.viewScale;
     }
@@ -595,7 +601,16 @@ export class MetaNetwork {
                         for (const n of this._mnNodes) {
                             if (n.nodeType === 'A' || n.nodeType === 'B') n.fx = undefined;
                         }
-                        this._sim?.alpha(0.15).restart();
+                        // Settle and fit at once, as _initLayout does: the freed
+                        // rows spread wider than the window on a large network
+                        if (this._sim) {
+                            this._sim.alpha(0.15);
+                            for (let i = 0; i < 500 && this._sim.alpha() > this._sim.alphaMin(); i++) {
+                                this._sim.tick();
+                            }
+                            this._fitView(0.88, 1);
+                            this._sim.alpha(0.05).restart();
+                        }
                     }
                 }
                 break;

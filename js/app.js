@@ -1441,6 +1441,7 @@ dataFilterClear.addEventListener('click', () => {
     renderer.searchedNodeName = null;
     _updateFilterBanner();
     if (appMode === 'layer') _rebuildLayerView(); // bring back the filtered-out layers
+    if (appMode === 'map') renderMapMarkers();    // and their markers on the map
     if (renderer.stackChangedSinceFit()) renderer.centerView(); // all layers back: fit the stack
     if (appMode !== 'data') renderer.render();
 });
@@ -3005,6 +3006,8 @@ function renderMapMarkers() {
 
                 // Hide marker if the layer is currently popped out
                 if (activeMapLayers.has(layer.layer_name)) return;
+                // ...or filtered out (Data mode, or mira_filter(layers = ) from R)
+                if (dataMode.filteredLayerNames && !dataMode.filteredLayerNames.has(layer.layer_name)) return;
 
                 const marker = document.createElement('div');
                 marker.className = 'map-marker';
@@ -5380,8 +5383,12 @@ function getSessionState() {
             layout: mnLayoutSelect.value,
             colorBy: mnColorBySelect.value,
             sizeBy: mnSizeBySelect.value,
-            baseSize: parseFloat(mnBaseSizeSlider.value),
-            minWeight: parseFloat(mnMinWeightSlider.value),
+            // In the meta-network: its own values. The sliders snap to their
+            // step and maximum, so a value set from R would come back changed
+            baseSize: appMode === 'metanetwork' && metaNetwork
+                ? metaNetwork.settings.baseSize : parseFloat(mnBaseSizeSlider.value),
+            minWeight: appMode === 'metanetwork' && metaNetwork
+                ? metaNetwork.settings.minWeight : parseFloat(mnMinWeightSlider.value),
             nestedSort: mnNestedSortCheckbox.checked,
             showLabels: mnShowLabelsCheckbox.checked,
             labelSize: parseInt(mnLabelSizeSlider.value),
@@ -5673,6 +5680,7 @@ function restoreSessionState(state, { warnData = true } = {}) {
         dataMode.filteredLayerNames = state.filter.layerNames ? new Set(state.filter.layerNames) : null;
         dataMode.filteredLinkKeys   = state.filter.linkKeys   ? new Set(state.filter.linkKeys)   : null;
         _updateFilterBanner();
+        if (appMode === 'map') renderMapMarkers(); // the map was entered before the filter was set
         if (state.filter.interPairFilter?.length) {
             _interPairFilter = new Set(state.filter.interPairFilter);
             _applyInterPairFilter();

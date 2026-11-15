@@ -10,6 +10,9 @@ import { intraLinkWidthScale, intraLinkWidth } from './linkWidth.js';
 import { defaultColorMapper, BIPARTITE_SET_A_COLOR, BIPARTITE_SET_B_COLOR } from './colorMapper.js';
 import { dataMode } from './dataMode.js';
 
+// The link color before any is chosen: the renderer's own, and the color picker's default
+const GRID_DEFAULT_LINK_COLORS = ['rgba(0,0,0,0.85)', '#000000'];
+
 export class Renderer {
     constructor(canvas, options = {}) {
         this.canvas = canvas;
@@ -425,7 +428,7 @@ export class Renderer {
                 nodeColorFn:      this.nodeColorFn,
                 nodeSizeFn:       this.nodeSizeFn,
                 nodeShapeFn:      this.nodeShapeFn,
-                intraLinkColorFn: this.intraLinkColorFn ?? this.linkColorFn,
+                intraLinkColorFn: this.intraLinkColorFn ?? this.linkColorFn ?? this._gridLinkColorFn(),
                 intraMinWeight:   this.intraMinWeight,
                 layerColorFn:     this.layerColorFn,
                 layerWidth:       this.layerWidth,
@@ -950,6 +953,16 @@ export class Renderer {
                 ctx.restore();
             }
         }
+    }
+
+    /**
+     * The grid's color for links without a mapping: null (the grid's own faint
+     * grey) while the link color is the default black, else the color chosen
+     * (the picker, or mira_intralayer(color = ) from R).
+     */
+    _gridLinkColorFn() {
+        const color = this.defaultIntraColor;
+        return GRID_DEFAULT_LINK_COLORS.includes(color) ? null : () => color;
     }
 
     _drawHighlights(ctx) {

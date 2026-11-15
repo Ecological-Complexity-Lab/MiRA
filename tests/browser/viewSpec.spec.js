@@ -454,14 +454,14 @@ test('stage 4: the meta-network from R looks as when its button is clicked', asy
 // magrach2020 (5 layers in Spain, near where MiRA's maps start), moved to the
 // Galapagos so that a map left at its start shows none of the locations
 const GALAPAGOS = [[-0.909, -89.6], [-0.533, -90.4], [-0.25, -91.0], [-1.3, -90.4], [-0.6, -89.9]]
-async function openGalapagos(page, mode) {
+async function openGalapagos(page, mode, more = {}) {
   const network = JSON.parse(readFileSync(new URL('../../data/magrach2020.json', import.meta.url), 'utf8'))
   network.layers.forEach((layer, i) => { [layer.latitude, layer.longitude] = GALAPAGOS[i] })
   await page.setViewportSize({ width: 1400, height: 850 })
   await page.route('**/api/network.json', route =>
     route.fulfill({ contentType: 'application/json', body: JSON.stringify(network) }))
   await page.route('**/api/view.json', route =>
-    route.fulfill({ contentType: 'application/json', body: JSON.stringify(view({ mode })) }))
+    route.fulfill({ contentType: 'application/json', body: JSON.stringify(view({ mode, ...more })) }))
   await page.goto('/?autoload=true')
   await page.waitForFunction(() => window._renderer?.model?.layers?.length > 0)
   await page.waitForLoadState('networkidle')
@@ -588,3 +588,113 @@ test('palette, reversal and limits from R', async ({ page }) => {
   expect(color).toBe('#000004')
   expect(await noticeMessages(page)).toBeNull()
 })
+
+// ── QA before the first release (2026-11) ───────────────────────────────────
+
+/** Open MiRA from R with another network (a parsed JSON object or a file in data/). */
+async function openNetworkFromR(page, network, spec) {
+  const body = typeof network === 'string'
+    ? readFileSync(new URL(`../../data/${network}`, import.meta.url), 'utf8') : JSON.stringify(network)
+  await page.route('**/api/network.json', route => route.fulfill({ contentType: 'application/json', body }))
+  await page.route('**/api/view.json', route =>
+    route.fulfill({ contentType: 'application/json', body: JSON.stringify(view(spec)) }))
+  await page.goto('/?autoload=true')
+  await page.waitForFunction(() => window._renderer?.model?.layers?.length > 0)
+  await page.waitForLoadState('networkidle')
+}
+
+/** The meta-network nodes drawn outside the window, once its layout is at rest. */
+async function metaNodesOutside(page) {
+  await page.waitForFunction(() => window._metaNetwork && !window._metaNetwork.tick(), null, { timeout: 20000 })
+  return page.evaluate(() => {
+    const mn = window._metaNetwork
+    const { width, height } = document.getElementById('networkCanvas').getBoundingClientRect()
+    return mn._mnNodes.filter(n => {
+      const x = width / 2 + mn.viewOffsetX + n.x * mn.viewScale
+      const y = height / 2 + mn.viewOffsetY + n.y * mn.viewScale
+      return x - n.r * mn.viewScale < 0 || x + n.r * mn.viewScale > width ||
+        y - n.r * mn.viewScale < 0 || y + n.r * mn.viewScale > height
+    }).length
+  })
+}
+
+test('the meta-network is fitted to the window: force layout, and two rows without nesting', async ({ page }) => {
+  // kefi2016: dense, its force layout settles far from the center of the window
+  await page.setViewportSize({ width: 1400, height: 850 })
+  await openNetworkFromR(page, 'kefi2016.json', { mode: { view: 'meta', layout: 'force' } })
+  expect(await activeView(page)).toBe('meta')
+  expect(await metaNodesOutside(page)).toBe(0)
+
+  // pilosof2017: 78 nodes in two rows, wider than a 1000 px window when not nested
+  const rows = await page.context().newPage()
+  rows.on('pageerror', e => errors.push(e.message))
+  await rows.setViewportSize({ width: 1000, height: 700 })
+  await openFromR(rows, view({ mode: { view: 'meta', nested: false } }))
+  expect(await metaNodesOutside(rows)).toBe(0)
+  expect(await rows.evaluate(() => window._metaNetwork.viewScale)).toBeLessThan(1) // shrunk to fit
+})
+
+test('the map shows only the layers the filter keeps', async ({ page }) => {
+  const names = JSON.parse(readFileSync(new URL('../../data/magrach2020.json', import.meta.url), 'utf8'))
+    .layers.map(layer => layer.layer_name)
+  await openGalapagos(page, { view: 'map' }, { filter: { layers: names.slice(0, 2) } })
+  expect(await activeView(page)).toBe('map')
+  expect(await noticeMessages(page)).toBeNull()
+  expect(await page.locator('#mapMarkersOverlay .map-marker').count()).toBe(2)
+  await page.locator('#dataFilterClear').click()
+  expect(await page.locator('#mapMarkersOverlay .map-marker').count()).toBe(5)
+})
+
+test('the grid draws a link color from R; its own faint grey without one', async ({ page }) => {
+  const redPixels = (p) => p.evaluate(() => {
+    const c = document.getElementById('networkCanvas')
+    const data = c.getContext('2d').getImageData(0, 0, c.width, c.height).data
+    let n = 0
+    for (let i = 0; i < data.length; i += 4) if (data[i] > 200 && data[i + 1] < 60 && data[i + 2] < 60) n++
+    return n
+  })
+  await openFromR(page, view({ mode: { view: 'grid' }, intralayer: { color: '#ff0000' } }))
+  expect(await redPixels(page)).toBeGreaterThan(100)
+  const plain = await page.context().newPage()
+  plain.on('pageerror', e => errors.push(e.message))
+  await openFromR(plain, view({ mode: { view: 'grid' } }))
+  expect(await redPixels(plain)).toBe(0)
+})
+
+test('layer names that are numbers: filter, pairs, layer colors and the meta-network', async ({ page }) => {
+  // pilosof2017 names its layers "1982"…: here they are numbers, as R writes a numeric layer_name
+  const network = JSON.parse(NETWORK, (key, value) =>
+    (['layer_name', 'layer_from', 'layer_to'].includes(key) ? Number(value) : value))
+  expect(typeof network.layers[0].layer_name).toBe('number')
+  await openNetworkFromR(page, network, {
+    filter: { layers: ['1982', '1984', '1985'] },
+    interlayer: { show: true, pairs: [['1982', '1984']] },
+    layer: { color_by: '.individual', colors: { 1982: '#ff0000' } },
+  })
+  expect(await noticeMessages(page)).toBeNull()
+  expect(await page.evaluate(() => document.getElementById('dataFilterText').textContent)).toMatch(/3 layers visible/)
+
+  const meta = await page.context().newPage()
+  meta.on('pageerror', e => errors.push(e.message))
+  await openNetworkFromR(meta, network, { mode: { view: 'meta', layers: ['1982', '1984'] } })
+  expect(await activeView(meta)).toBe('meta')
+  expect(await noticeMessages(meta)).toBeNull()
+  expect(await meta.evaluate(() =>
+    [...document.querySelectorAll('#mnLayerList li.active')].map(li => li.dataset.layerName))).toEqual(['1982', '1984'])
+})
+
+test('color_values for a logical column, named as R names them', async ({ page }) => {
+  const network = JSON.parse(NETWORK)
+  network.nodes.forEach((node, i) => { node.native = i % 2 === 0 })
+  await openNetworkFromR(page, network, {
+    node: { color_by: 'native' }, scales: { native: { values: { TRUE: '#ff0000', FALSE: '#0000ff' } } },
+  })
+  expect(await noticeMessages(page)).toBeNull()
+  const node = network.nodes[0]
+  const colors = await page.evaluate(() => {
+    const r = window._renderer
+    return r.model.stateNodes.slice(0, 40).map(sn => r.nodeColorFn(sn.layer_name, sn.node_name))
+  })
+  expect(new Set(colors)).toEqual(new Set(['#ff0000', '#0000ff']))
+})
+

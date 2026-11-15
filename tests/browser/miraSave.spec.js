@@ -159,3 +159,42 @@ test('the export dialog still downloads a PNG', async ({ page }) => {
   ])
   expect(download.suggestedFilename()).toMatch(/\.png$/)
 })
+
+test('data warnings do not stop mira_save(): no alert, R gets them with the status', async ({ page }) => {
+  // a link of weight 0 is a data warning, shown in an alert when MiRA is opened to look at
+  const network = JSON.parse(NETWORK)
+  network.extended[0].weight = 0
+  const dialogs = []
+  page.on('dialog', d => dialogs.push(d.message()))
+  await page.route('**/api/network.json', route =>
+    route.fulfill({ contentType: 'application/json', body: JSON.stringify(network) }))
+  await page.route('**/api/view.json', route =>
+    route.fulfill({ contentType: 'application/json', body: JSON.stringify({ version: 1 }) }))
+  const saved = []
+  await page.route('**/api/save', route => {
+    saved.push(route.request().postDataBuffer())
+    return route.fulfill({ status: 200, body: 'saved' })
+  })
+  await page.goto('/?autoload=true&save=true')
+  const status = await waitForStatus(page)
+  expect(dialogs).toEqual([])
+  expect(status.rendered).toBe(true)
+  expect(status.warnings).toHaveLength(1)
+  expect(status.warnings[0]).toMatch(/weight/i)
+  await page.evaluate(() => window.miraSaveToR({ format: 'png', resolution: 1, background: 'grid', legends: true }))
+  expect(starts(saved[0], PNG_SIGNATURE)).toBe(true)
+
+  // opened to look at (no ?save=true): the alert, as before
+  const seen = await page.context().newPage()
+  const alerts = []
+  seen.on('dialog', d => { alerts.push(d.message()); d.dismiss() })
+  await seen.route('**/api/network.json', route =>
+    route.fulfill({ contentType: 'application/json', body: JSON.stringify(network) }))
+  await seen.route('**/api/view.json', route =>
+    route.fulfill({ contentType: 'application/json', body: JSON.stringify({ version: 1 }) }))
+  await seen.goto('/?autoload=true')
+  await seen.waitForFunction(() => window._renderer?.model?.layers?.length > 0)
+  expect(alerts).toHaveLength(1)
+  expect(alerts[0]).toMatch(/^Data warnings:/)
+})
+
