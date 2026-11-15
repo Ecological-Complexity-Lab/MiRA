@@ -22,8 +22,10 @@ item 35 merged (MiRA #100, ggmira #19). **Start at "Handoff: 2026-11-12
 — toward the first release"** below.
 **2026-11-15:** the QA sweep's code fixes are merged (MiRA #102 → 5bef89b,
 ggmira #21 → 7ee8ace); findings, what was fixed and what is left are in
-[qa-2026-11-13.md](qa-2026-11-13.md). Next: the documentation fixes
-(tier 2 there), then release prep; a Windows run by a tester is pending.
+[qa-2026-11-13.md](qa-2026-11-13.md). The documentation fixes (ggmira #22)
+and a testing guide for two beta testers (ggmira #23, the Beta testing
+article) are merged too. Next: the testers' feedback, Shai's RStudio
+check, then release prep.
 
 ## Milestones
 
