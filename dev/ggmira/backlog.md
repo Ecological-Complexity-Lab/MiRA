@@ -19,7 +19,9 @@ and tested by Shai, not merged (see Stage 4 and the handoff of
 2026-11-02 afternoon).
 **2026-11-12: working toward the first release (v1).** Beta fixes and
 item 35 merged (MiRA #100, ggmira #19). **Start at "Handoff: 2026-11-16
-— ggmira 0.9.0, shared privately"** below (the 2026-11-12 handoff is older).
+— ggmira 0.9.0, shared privately"** below (the 2026-11-12 handoff is older);
+its "Update, 2026-11-16 afternoon" says ggmira is now public, with the site
+at https://ggmira.ecomplab.com (no release yet: Geut makes it).
 **2026-11-15:** the QA sweep's code fixes are merged (MiRA #102 → 5bef89b,
 ggmira #21 → 7ee8ace); findings, what was fixed and what is left are in
 [qa-2026-11-13.md](qa-2026-11-13.md). The documentation fixes (ggmira #22)
@@ -382,6 +384,24 @@ can be its own small PR first.
 
 Written for continuing on another computer. Claude's memory on the first
 computer does not travel; everything needed is here and in the repos.
+
+**Update, 2026-11-16 afternoon: ggmira is public, the site is live.**
+- Repository public (Shai's go). ggmira #29 (main 69aaf25): pkgdown's
+  standard GitHub Action (`.github/workflows/pkgdown.yaml`) builds the site
+  on every push to `main` and deploys it to the `gh-pages` branch (on a PR
+  it only builds, as a check); `url: https://ggmira.ecomplab.com` (pkgdown
+  writes `CNAME`); `DESCRIPTION` has the site in `URL` and `BugReports`;
+  the Beta testing page installs without a token.
+- GitHub Pages: deploy from branch `gh-pages` /, custom domain
+  ggmira.ecomplab.com (DNS CNAME to ecological-complexity-lab.github.io,
+  added by Shai), HTTPS enforced. Live at https://ggmira.ecomplab.com.
+- Checked as an outsider: anonymous download and `install_github()` without
+  a token install 0.9.0.
+- **No tag and no GitHub release yet:** Geut makes the release after she
+  tests too (Shai). Zenodo DOI not decided.
+- So in "Next" below, step 3 is done except the tag and release; the
+  testers no longer need a token. The editor's offline bundle is no longer
+  needed for new people: point them to the site and `install_github()`.
 
 **State (all merged, nothing open; branches deleted):**
 - MiRA `main` 5bef89b (live on mira.ecomplab.com): the QA fixes (#102).
