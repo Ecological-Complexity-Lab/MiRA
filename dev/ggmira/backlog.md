@@ -18,8 +18,8 @@ Phase 3 done: ggmira package at `~/GitHub/ecomplab/ggmira`
 and tested by Shai, not merged (see Stage 4 and the handoff of
 2026-11-02 afternoon).
 **2026-11-12: working toward the first release (v1).** Beta fixes and
-item 35 merged (MiRA #100, ggmira #19). **Start at "Handoff: 2026-11-12
-— toward the first release"** below.
+item 35 merged (MiRA #100, ggmira #19). **Start at "Handoff: 2026-11-16
+— ggmira 0.9.0, shared privately"** below (the 2026-11-12 handoff is older).
 **2026-11-15:** the QA sweep's code fixes are merged (MiRA #102 → 5bef89b,
 ggmira #21 → 7ee8ace); findings, what was fixed and what is left are in
 [qa-2026-11-13.md](qa-2026-11-13.md). The documentation fixes (ggmira #22)
@@ -377,6 +377,73 @@ can be its own small PR first.
       `ggmira::plot_multilayer()` (agree with Geut).
 
 ---
+
+## Handoff: 2026-11-16 — ggmira 0.9.0, shared privately
+
+Written for continuing on another computer. Claude's memory on the first
+computer does not travel; everything needed is here and in the repos.
+
+**State (all merged, nothing open; branches deleted):**
+- MiRA `main` 5bef89b (live on mira.ecomplab.com): the QA fixes (#102).
+- ggmira `main` fdf62d1, version **0.9.0**, **repository private** (Shai's
+  decision; going public later). Bundles MiRA 5bef89b. 578 tests;
+  `R CMD check` 0 errors, 0 warnings.
+- ggmira PRs this round: #21 QA fixes, #22 docs fixes, #23 beta testing
+  guide, #24 token steps for the private repo, #25 0.9.0 (maintainer Geut
+  Galai `cre`, NEWS.md, feedback without "beta", large-screen note,
+  screenshots retaken), #26–27 the RStudio screenshot (home page, under
+  Usage: `man/figures/README-rstudio.png`), #28 `dev/screenshots.R` and
+  `dev/DEVELOPMENT.md` (screenshots, checks, sharing a build privately).
+- Details of the QA round: [qa-2026-11-13.md](qa-2026-11-13.md) (what was
+  fixed, what is left for 1.0.1).
+
+**In progress (Shai):**
+- **The paper's editor:** a package file and the zipped site, shared through
+  a Drive link (email blocked the `.tar.gz`), with an email of install
+  steps (RStudio: Tools > Install Packages > Package Archive File; open
+  `ggmira-site/index.html`) and five things to try. Built on the first
+  computer in `~/Downloads/ggmira-for-editor/`; to rebuild elsewhere, follow
+  ggmira `dev/DEVELOPMENT.md`, "Sharing a build while the repository is
+  private". Question to him: whether ggmira goes into the MiRA paper.
+- **Two beta testers:** the Beta testing article (`vignettes/articles/
+  beta-testing.Rmd`) is their guide: networks emln 17, 23, 13, 63 (7 and 38
+  for edge cases), an export part (~40 `mira_save()` calls), features by
+  network, the R button, their own network. Part 1 is also the first run on
+  **Windows and Linux** (the Windows path fix, R-A1, is untested on
+  Windows). Shai checks they are collaborators of the private repo (they
+  need a GitHub token to install; the guide says how). Their answer on the
+  export look (H1: saved links opaque and heavier than on screen) decides it.
+
+**Next, in order:**
+1. Read the testers' and the editor's feedback (ggmira issues, label
+   `feedback`; or email). Fixes become 0.9.1.
+2. Shai's own check in RStudio: `print(p)`, `viewer = TRUE`, the R button's
+   Copy, `browser = "open -a Firefox"` (documented, never run).
+3. Going public (Shai's go): update the Beta testing page (no token step),
+   `url` in `_pkgdown.yml`, GitHub Pages (address to choose:
+   ggmira.ecomplab.com needs a DNS record, or the github.io one), tag and
+   GitHub release; lifecycle stays beta until 1.0.
+4. Open items: `mira_filter()` in the meta-network stays out for now (Shai
+   opens a GitHub issue; it would change MiRA's logic); node names cut at
+   the grid panel edges (seen with emln 63); the 1.0.1 list in the QA file.
+5. Separate ideas: an intro movie of MiRA and ggmira, see
+   [../intro_movie.md](../intro_movie.md).
+
+**Working agreements (from Claude's memory on the first computer):**
+- No code before a plan: describe the change and get Shai's approval first;
+  keep changes to existing files additive; no refactors.
+- One MiRA branch + a same-named ggmira branch per feature; MiRA PR with CI
+  (guard, vitest, playwright), squash merge; then `npm run sync:ggmira` from
+  the MiRA checkout on `main` and a ggmira PR (no CI there). No "Closes #"
+  in PRs; Shai closes issues by hand. Delete merged branches when asked.
+- Never commit Shai's untracked files in the ggmira folder (test scripts,
+  data); the repo will be public.
+- Never open Shai's browser from scripts: use `mira_spec()` / `mira_save()`;
+  `library(emln)` after ggmira masks `plot_multilayer()` with emln's, which
+  always opens a browser.
+- Tests: MiRA `npm test`; browser tests `npx playwright test --config
+  config/playwright.config.js --workers 1` (server on port 8001); ggmira
+  `devtools::test()` and the check in `dev/DEVELOPMENT.md`.
 
 ## Handoff: 2026-11-12 — toward the first release
 
