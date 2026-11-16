@@ -399,6 +399,13 @@ computer does not travel; everything needed is here and in the repos.
   a token install 0.9.0.
 - **No tag and no GitHub release yet:** Geut makes the release after she
   tests too (Shai). Zenodo DOI not decided.
+- **`dev/` and `tests/` are no longer in the ggmira repository** (ggmira
+  #30, main fb732a9; Shai: no need for them to be public). Both are in
+  `.gitignore` and exist only in local checkouts. On another computer (a
+  fresh clone, or after `git pull` there deletes them), restore them from
+  the history, untracked: in the ggmira folder,
+  `git archive 69aaf25 dev tests | tar -x`. Changes to them are no longer
+  versioned or backed up by git.
 - So in "Next" below, step 3 is done except the tag and release; the
   testers no longer need a token. The editor's offline bundle is no longer
   needed for new people: point them to the site and `install_github()`.
