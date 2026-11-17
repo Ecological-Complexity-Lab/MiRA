@@ -351,6 +351,34 @@
       }
     }
 
+    /* Logos at the top right of the three step cards */
+    .rtrip .mode-card {
+      position: relative;
+    }
+
+    .rtrip .card-logo {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: auto;
+      height: 50px;
+    }
+
+    .rtrip .card-rbtn {
+      position: absolute;
+      top: 20px;
+      right: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 42px;
+      height: 42px;
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      border-radius: 8px;
+      background: #f9fafb;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, .06);
+    }
+
     .rfigs {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -372,6 +400,83 @@
       border: 1px solid #dbeafe;
       background: #fff;
       box-shadow: 0 10px 28px rgba(17, 12, 46, .12);
+    }
+
+    .rfigs a.zoomable {
+      display: block;
+      cursor: zoom-in;
+      border-radius: 12px;
+    }
+
+    .rfigs a.zoomable:hover img,
+    .rfigs a.zoomable:focus-visible img {
+      box-shadow: 0 14px 34px rgba(17, 12, 46, .22);
+      outline: 2px solid #276dc3;
+      outline-offset: 2px;
+    }
+
+    /* Enlarged screenshot */
+    .zoom-dialog {
+      margin: auto;
+      border: none;
+      padding: 0;
+      background: transparent;
+      max-width: 96vw;
+      max-height: 94vh;
+      overflow: visible;
+    }
+
+    .zoom-dialog::backdrop {
+      background: rgba(10, 10, 25, .82);
+    }
+
+    .zoom-dialog img {
+      display: block;
+      max-width: 96vw;
+      max-height: 86vh;
+      width: auto;
+      height: auto;
+      border-radius: 8px;
+      background: #fff;
+      cursor: zoom-in;
+    }
+
+    .zoom-dialog.actual {
+      overflow: auto;
+      width: 96vw;
+      height: 90vh;
+    }
+
+    .zoom-dialog.actual img {
+      max-width: none;
+      max-height: none;
+      cursor: zoom-out;
+    }
+
+    .zoom-cap {
+      margin: 10px 0 0;
+      text-align: center;
+      color: #e5e7eb;
+      font-size: 14px;
+    }
+
+    .zoom-close {
+      position: fixed;
+      top: 14px;
+      right: 18px;
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .14);
+      color: #fff;
+      font-size: 26px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .zoom-close:hover {
+      background: rgba(255, 255, 255, .28);
     }
 
     .rfigs figcaption {
@@ -891,6 +996,7 @@
               <polyline points="16 18 22 12 16 6" />
               <polyline points="8 6 2 12 8 18" />
             </svg></div>
+          <img class="card-logo" src="assets/ggmira-hex.png" alt="ggmira" width="42" height="48">
           <h3>1. Write it in R</h3>
           <p><code>mira(net)</code> plus components for the layout, nodes, links, layers, filters and view,
             in a ggplot2-like syntax.</p>
@@ -900,6 +1006,7 @@
               stroke-linecap="round" stroke-linejoin="round">
               <path d="M4 4l7 17 2.5-7.5L21 11z" />
             </svg></div>
+          <img class="card-logo" src="assets/MiRA_logo.svg" alt="MiRA" width="36" height="52">
           <h3>2. Explore it in MiRA</h3>
           <p>The plot opens in the browser or in RStudio's Viewer pane, with all seven modes: rotate,
             filter, recolor, switch views.</p>
@@ -910,6 +1017,13 @@
               <rect x="9" y="9" width="12" height="12" rx="2" />
               <path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1" />
             </svg></div>
+          <span class="card-rbtn" title="MiRA's R button (Copy as R code)" aria-label="MiRA's R button">
+            <svg width="26" height="20" viewBox="0 0 26 20" aria-hidden="true">
+              <ellipse cx="12" cy="9" rx="11" ry="7.5" fill="none" stroke="#9ca3af" stroke-width="2.5" />
+              <text x="15" y="18" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="700"
+                font-size="15" fill="#2165b6">R</text>
+            </svg>
+          </span>
           <h3>3. Copy it back as R code</h3>
           <p>The R button turns the current view, with what you changed by mouse, into ggmira code.
             <code>mira_save()</code> writes the figure from a script.</p>
@@ -917,16 +1031,46 @@
       </div>
       <div class="rfigs">
         <figure>
-          <img src="assets/ggmira-rstudio.jpg" width="1600" height="881" loading="lazy"
-            alt="RStudio with ggmira code in the script and the plot open in MiRA in the Viewer pane">
+          <a class="zoomable" href="assets/ggmira-rstudio-large.jpg" title="Click to enlarge">
+            <img src="assets/ggmira-rstudio.jpg" width="1600" height="881" loading="lazy"
+              alt="RStudio with ggmira code in the script and the plot open in MiRA in the Viewer pane">
+          </a>
           <figcaption>R &rarr; MiRA: ggmira code in RStudio, the plot in MiRA in the Viewer pane.</figcaption>
         </figure>
         <figure>
-          <img src="assets/ggmira-rcode.jpg" width="1200" height="750" loading="lazy"
-            alt="MiRA's R code window: the ggmira code for the current view, each element in its color, with a Copy button">
+          <a class="zoomable" href="assets/ggmira-rcode.jpg" title="Click to enlarge">
+            <img src="assets/ggmira-rcode.jpg" width="1200" height="750" loading="lazy"
+              alt="MiRA's R code window: the ggmira code for the current view, each element in its color, with a Copy button">
+          </a>
           <figcaption>MiRA &rarr; R: the R button gives the code for the current view.</figcaption>
         </figure>
       </div>
+      <dialog class="zoom-dialog" aria-label="Enlarged screenshot">
+        <button class="zoom-close" type="button" aria-label="Close">&times;</button>
+        <img alt="">
+        <p class="zoom-cap"></p>
+      </dialog>
+      <script>
+        // Click a screenshot to see it large; click the image to toggle full size, Esc or × to close
+        (function () {
+          const dlg = document.querySelector('.zoom-dialog');
+          if (!dlg || typeof dlg.showModal !== 'function') return; // the links still open the image
+          const big = dlg.querySelector('img');
+          const cap = dlg.querySelector('.zoom-cap');
+          document.querySelectorAll('a.zoomable').forEach(a => a.addEventListener('click', e => {
+            e.preventDefault();
+            const img = a.querySelector('img');
+            big.src = a.href;
+            big.alt = img.alt;
+            cap.textContent = a.closest('figure').querySelector('figcaption').textContent;
+            dlg.classList.remove('actual');
+            dlg.showModal();
+          }));
+          big.addEventListener('click', () => dlg.classList.toggle('actual'));
+          dlg.querySelector('.zoom-close').addEventListener('click', () => dlg.close());
+          dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
+        })();
+      </script>
       <div class="cta">
         <a class="btn btn-primary" style="background:#276dc3;color:#fff" href="https://ggmira.ecomplab.com">Get started with ggmira &rarr;</a>
       </div>
