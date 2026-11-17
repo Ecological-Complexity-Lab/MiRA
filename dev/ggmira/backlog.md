@@ -406,6 +406,34 @@ computer does not travel; everything needed is here and in the repos.
   testers no longer need a token. The editor's offline bundle is no longer
   needed for new people: point them to the site and `install_github()`.
 
+**Update, 2026-11-17: MiRA 1.2 released; MiRA presents ggmira.**
+- MiRA #104 (live): ggmira button in the app's top bar (R-blue pill, hex
+  logo); About page section "From R to MiRA and back" (MiRA ⇄ ggmira
+  banner with flowing arrows, three step cards with logos, the RStudio and
+  R-code screenshots, click to enlarge); comparison table: "No coding"
+  removed, "R package" added (MiRA, muxViz, BiMultiNetPlot full; Cytoscape
+  partial via RCy3; Gephi, pymnet, Arena3Dweb none); FAQ "Can I use MiRA
+  from R?"; manual: "Export from R with emln" and "Plot from R with ggmira"
+  right after Import, `plot_multilayer()` no longer documented (Shai);
+  README, llms.txt, data format guide, plant–pollinator tutorial mention
+  ggmira. Shai's framing: MiRA's innovation is interactive + R round trip,
+  bipartite, geographic and all modes in one place (not "no coding").
+- MiRA #105: version 1.2 everywhere; `CHANGELOG.md` (new, user-facing);
+  manual footer "v1.2 · What's new" links to it; `tests/version.test.js`
+  keeps every mention equal to `CITATION.cff` (to release: change
+  `CITATION.cff`, add a CHANGELOG section, follow the failures).
+- MiRA #106: new "MiRA at a glance" figure (Shai's, with the ggmira logo).
+- **Released:** tag `v1.2` (610c30c), GitHub release "MiRA 1.2" (text = the
+  changelog's 1.2 section); Zenodo archived it: v1.2 DOI
+  10.5281/zenodo.24305366 (concept DOI 10.5281/zenodo.22096810 unchanged).
+- ggmira #32 (main ab84cc1): bundles MiRA 1.2; NEWS 0.9.0 says so. The
+  bundle is 4.2 MB: `sync-ggmira.sh` copies all of MiRA's `assets`,
+  including About-only screenshots (~1.3 MB) the app does not use; trimming
+  is optional. The sync copies untracked files too: check
+  `inst/MiRA/assets` before committing.
+- Parked (Shai): increasing ggmira's exposure (R-universe, GitHub topics,
+  announcements; CRAN blocked by the non-commercial licence).
+
 **State (all merged, nothing open; branches deleted):**
 - MiRA `main` 5bef89b (live on mira.ecomplab.com): the QA fixes (#102).
 - ggmira `main` fdf62d1, version **0.9.0**, **repository private** (Shai's
