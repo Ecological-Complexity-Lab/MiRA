@@ -1108,6 +1108,11 @@ body {
   flex-shrink: 0;
 }
 
+/* RStudio's Viewer pane (html.rstudio-pane, set in index.html): the top bar keeps only the lab logo */
+.rstudio-pane #brandingGroup > :not(.branding-lab) {
+  display: none;
+}
+
 /* ggmira button — same pill, R blue tint; links to the ggmira R package site */
 .branding-r-btn {
   display: inline-flex;

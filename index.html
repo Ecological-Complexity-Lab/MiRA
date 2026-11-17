@@ -6,6 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="google-site-verification" content="pp-yUIKfQyCZxjzjX35Z81yxk0m0YTeWoUMKg7BoaOc">
   <title>MiRA — Interactive Multilayer Network Visualization</title>
+  <!-- In RStudio's Viewer pane (ggmira adds ?pane=rstudio) the top bar keeps only the lab logo;
+       set before the page is drawn, so the other buttons never flash -->
+  <script>if (new URLSearchParams(location.search).get('pane') === 'rstudio') document.documentElement.classList.add('rstudio-pane');</script>
   <meta name="description"
     content="MiRA (Multilayer Interactive Rendering Application) is a free, browser-based, installation-free tool for interactive visualization of multilayer networks in ecology and biology.">
   <link rel="canonical" href="https://mira.ecomplab.com/">
@@ -800,7 +803,7 @@
         </svg>
       </a>
       <a href="https://ecomplab.com" target="_blank" rel="noopener" title="Ecological Complexity Lab"
-        class="branding-link">
+        class="branding-link branding-lab">
         <img src="assets/ecomplab_logo.png" alt="ECompLab" class="branding-icon">
       </a>
     </div>
