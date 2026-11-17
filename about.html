@@ -279,6 +279,78 @@
       border-radius: 4px;
     }
 
+    /* MiRA ⇄ ggmira banner: flowing arrows between the two logos */
+    .rbanner {
+      display: grid;
+      grid-template-columns: minmax(64px, 130px) minmax(160px, 1fr) minmax(70px, 140px);
+      align-items: center;
+      gap: 6px;
+      max-width: 720px;
+      margin: 18px auto 30px;
+      container-type: inline-size;
+    }
+
+    .rbanner img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .rbanner .rb-mira {
+      padding: 0 6%;
+    }
+
+    .rbanner svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      overflow: visible;
+    }
+
+    .rbanner .rb-cap {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .rbanner .rb-code {
+      font: 500 12.5px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    .rb-flow {
+      fill: none;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-dasharray: 2 9;
+      animation: rb-flow 1.1s linear infinite;
+    }
+
+    @keyframes rb-flow {
+      to {
+        stroke-dashoffset: -11;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .rb-flow {
+        animation: none;
+      }
+    }
+
+    /* Phone width: the drawing shrinks, so its text is set larger and the middle captions go */
+    @container (max-width: 520px) {
+      .rbanner .rb-cap {
+        font-size: 26px;
+      }
+
+      .rbanner .rb-code {
+        font-size: 21px;
+      }
+
+      .rbanner .rb-mid {
+        display: none;
+      }
+    }
+
     .rfigs {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -778,11 +850,39 @@
     <div class="band-inner">
       <div class="kicker">Interactive + R</div>
       <h2>From R to MiRA and back</h2>
+      <div class="rbanner">
+        <img class="rb-mira" src="assets/MiRA_logo.svg" alt="MiRA" width="130" height="187">
+        <svg viewBox="0 -14 400 194" role="img"
+          aria-label="ggmira code opens a plot in MiRA; after changing it in MiRA, the R button copies it back as R code">
+          <defs>
+            <marker id="rbHeadBlue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7"
+              orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#276dc3" />
+            </marker>
+            <marker id="rbHeadViolet" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7"
+              orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#6d28d9" />
+            </marker>
+          </defs>
+          <!-- ggmira (right) to MiRA (left) -->
+          <path d="M385,70 C300,8 100,8 15,70" fill="none" stroke="#276dc3" stroke-opacity=".18" stroke-width="10"
+            stroke-linecap="round" />
+          <path class="rb-flow" d="M385,70 C300,8 100,8 15,70" stroke="#276dc3" marker-end="url(#rbHeadBlue)" />
+          <text class="rb-code" x="200" y="2" text-anchor="middle" fill="#1e3a8a">mira(net) + mira_node(…)</text>
+          <text class="rb-cap rb-mid" x="200" y="50" text-anchor="middle" fill="#276dc3">plot from R</text>
+          <!-- MiRA (left) back to ggmira (right) -->
+          <path d="M15,100 C100,162 300,162 385,100" fill="none" stroke="#6d28d9" stroke-opacity=".15" stroke-width="10"
+            stroke-linecap="round" />
+          <path class="rb-flow" d="M15,100 C100,162 300,162 385,100" stroke="#6d28d9" marker-end="url(#rbHeadViolet)" />
+          <text class="rb-cap rb-mid" x="200" y="128" text-anchor="middle" fill="#6d28d9">change it in MiRA, then</text>
+          <text class="rb-cap" x="200" y="174" text-anchor="middle" fill="#5b21b6">Copy as R code</text>
+        </svg>
+        <img src="assets/ggmira-hex.png" alt="ggmira" width="140" height="162">
+      </div>
       <p class="intro">
-        Exploring with the mouse and scripting in R are not a choice. With the
-        <a href="https://ggmira.ecomplab.com">ggmira</a> R package, a plot written in R opens in MiRA, fully interactive. Change
-        it there, then click MiRA's <strong>R</strong> button: it gives back the R code for exactly what
-        you see, ready for your script.
+        With the <a href="https://ggmira.ecomplab.com">ggmira</a> R package, you can write R code to
+        produce MiRA plots, which are also interactive. Change the plot, then click MiRA's
+        <strong>R</strong> button to get the R code for exactly what you see, ready for your script.
       </p>
       <div class="modes">
         <div class="mode-card" style="--c:#276dc3">
