@@ -1108,6 +1108,39 @@ body {
   flex-shrink: 0;
 }
 
+/* ggmira button — same pill, R blue tint; links to the ggmira R package site */
+.branding-r-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px 4px 7px;
+  background: linear-gradient(135deg, rgba(39, 109, 195, 0.10), rgba(30, 64, 175, 0.10));
+  border: 1px solid rgba(39, 109, 195, 0.30);
+  border-radius: 999px;
+  color: #1d4ed8;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  transition: background 0.18s ease, border-color 0.18s ease,
+              box-shadow 0.18s ease, transform 0.08s ease;
+}
+.branding-r-btn:hover {
+  background: linear-gradient(135deg, rgba(39, 109, 195, 0.22), rgba(30, 64, 175, 0.22));
+  border-color: rgba(39, 109, 195, 0.55);
+  color: #1e40af;
+  box-shadow: 0 4px 14px rgba(39, 109, 195, 0.18);
+}
+.branding-r-btn:active {
+  transform: translateY(1px);
+}
+.branding-r-btn img {
+  height: 16px;
+  width: auto;
+  flex-shrink: 0;
+}
+
 /* Feedback dialog form */
 #feedbackDialog .feedback-dialog-box {
   width: 460px;

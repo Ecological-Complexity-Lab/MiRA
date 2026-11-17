@@ -3,8 +3,10 @@
 > MiRA (Multilayer Interactive Rendering Application) is a free, browser-based, installation-free tool for interactive visualization of multilayer networks in ecology and biology.
 
 MiRA runs entirely in the browser with no installation, no account, and no server-side
-processing. Multilayer networks are uploaded as JSON or CSV, or passed directly from the
-emln R package. Sessions can be saved and restored; figures export as PNG, JPG, or PDF.
+processing. Multilayer networks are uploaded as JSON or CSV, or sent from R by the ggmira
+package, which also works in reverse: a plot written in R opens in MiRA, and MiRA's
+"Copy as R code" button turns the current view back into ggmira code. Sessions can be saved
+and restored; figures export as PNG, JPG, or PDF.
 MiRA is a visualization tool, not an analysis package: analytical results such as module
 affiliation or centrality should be computed upstream and uploaded as node, link, or layer
 attributes, where they become available for color mapping, node sizing, and filtering.
@@ -27,10 +29,11 @@ layer placement, temporal and multiplex networks, and directed links.
 - [Multilayer brain network visualization](https://mira.ecomplab.com/tutorial-brain-network.html): visualizing a multilayer human brain connectome.
 
 ## About
-- [About MiRA](https://mira.ecomplab.com/about.html): why MiRA is the browser-based, no-code tool for interactive multilayer network visualization, and how it relates to muxViz, Arena3Dweb, Gephi, and Cytoscape.
+- [About MiRA](https://mira.ecomplab.com/about.html): why MiRA is the tool for interactive multilayer network visualization (in the browser, linked to R in both directions), and how it relates to muxViz, Arena3Dweb, Gephi, and Cytoscape.
 
 ## Source and citation
 - [GitHub repository](https://github.com/Ecological-Complexity-Lab/MiRA): source code, issue tracker, CC BY-NC-SA 4.0.
 - [Preprint](https://arxiv.org/abs/2605.09597): Nehoray, Bloch & Pilosof, Interactively visualizing biological multilayer networks using MiRA.
 - [Software archive (Zenodo)](https://doi.org/10.5281/zenodo.22096810): citable DOI for the archived software release (concept DOI — always resolves to the latest version).
-- [emln R package](https://emln.ecomplab.com): data structures and `plot_multilayer()` integration.
+- [ggmira R package](https://ggmira.ecomplab.com): plot multilayer networks in MiRA from R with a ggplot2-like syntax; MiRA's view copied back as R code; `mira_save()` for figures.
+- [emln R package](https://emln.ecomplab.com): multilayer network data structures, and export to MiRA's JSON and CSV formats.

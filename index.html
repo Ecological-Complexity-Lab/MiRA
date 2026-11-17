@@ -15,7 +15,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="MiRA — Multilayer Network Visualization">
   <meta property="og:title" content="MiRA — Interactive Multilayer Network Visualization">
-  <meta property="og:description" content="Free, browser-based, installation-free visualization of multilayer networks. Upload JSON or CSV, or plot directly from the emln R package.">
+  <meta property="og:description" content="Free, browser-based, installation-free visualization of multilayer networks. Upload JSON or CSV, or plot from R with the ggmira package and copy the view back as R code.">
   <meta property="og:url" content="https://mira.ecomplab.com/">
   <meta property="og:image" content="https://mira.ecomplab.com/assets/social-card.png">
   <meta property="og:image:width" content="1200">
@@ -71,9 +71,10 @@
       "Grid View — small-multiples matrix layout, one panel per layer sharing color and selection state",
       "Meta-Network Mode — aggregated single-layer view of cross-layer connectivity",
       "Dashboard Mode — analytics panels: KPI cards, per-layer charts, presence matrix, Jaccard similarity heatmaps, degree and link-weight distributions",
-      "Data Mode — tabular inspection, filtering, and subsetting of nodes, links, and layer attributes"
+      "Data Mode — tabular inspection, filtering, and subsetting of nodes, links, and layer attributes",
+      "From R and back — plots written in R with the ggmira package open in MiRA; Copy as R code turns the current view back into ggmira code"
     ],
-    "keywords": "multilayer network, multiplex network, network visualization, ecological network, bipartite network, temporal network, interactive visualization, emln",
+    "keywords": "multilayer network, multiplex network, network visualization, ecological network, bipartite network, temporal network, interactive visualization, emln, ggmira, R",
     "author": [
       { "@type": "Person", "name": "Shir Miryam Nehoray", "identifier": "https://orcid.org/0009-0001-8453-4426" },
       { "@type": "Person", "name": "Yuval Bloch" },
@@ -785,6 +786,12 @@
           <path d="M12 2l2.4 6.9L21 11l-6.6 2.1L12 20l-2.4-6.9L3 11l6.6-2.1z"/>
         </svg>
         <span class="branding-cite-label">About</span>
+      </a>
+      <a href="https://ggmira.ecomplab.com" target="_blank" rel="noopener"
+        title="ggmira: plot multilayer networks in MiRA from R, and copy MiRA's view back as R code"
+        class="branding-link branding-r-btn">
+        <img src="assets/ggmira-logo.png" alt="" aria-hidden="true">
+        <span class="branding-cite-label">ggmira</span>
       </a>
       <a href="https://github.com/Ecological-Complexity-Lab/MiRA" target="_blank" rel="noopener"
         title="GitHub Repository" class="branding-link">
