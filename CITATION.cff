@@ -18,8 +18,8 @@ authors:
 repository-code: "https://github.com/Ecological-Complexity-Lab/MiRA"
 url: "https://mira.ecomplab.com"
 license: CC-BY-NC-SA-4.0
-version: "1.1"
-date-released: "2026-08-25"
+version: "1.2"
+date-released: "2026-11-17"
 doi: 10.5281/zenodo.22096810
 keywords:
   - multilayer network

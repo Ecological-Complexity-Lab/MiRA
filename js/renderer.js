@@ -542,7 +542,7 @@ export class Renderer {
         const HIT_PAD    = 11;    // half-height of a clickable text row
         const SEPARATOR  = '   ·   ';
 
-        const title = 'Welcome to MiRA (v1.1), the Multilayer Interactive Rendering App';
+        const title = 'Welcome to MiRA (v1.2), the Multilayer Interactive Rendering App';
         const hint  = 'Load a multilayer network via the Data panel to visualize';
         const actions = [
             { label: 'MiRA at a glance', key: '_glanceBounds' },
