@@ -29,6 +29,7 @@
         <a href="docs/manual.html">Manual</a>
         <a href="data-format.html">Data format</a>
         <a href="about.html">About</a>
+        <a href="https://ggmira.ecomplab.com">ggmira (R)</a>
         <a href="https://github.com/Ecological-Complexity-Lab/MiRA">GitHub</a>
         <a href="https://arxiv.org/abs/2605.09597">Preprint</a>
       </nav>
@@ -149,8 +150,9 @@
     <div class="callout">
       <strong>From R:</strong> the <a href="https://emln.ecomplab.com">emln</a>
       package writes both formats directly — <code>multilayer_to_json(net, bipartite = TRUE)</code>
-      and <code>multilayer_to_csv(net, path = "my_network/")</code> — or plots straight into MiRA
-      with <code>plot_multilayer()</code>.
+      and <code>multilayer_to_csv(net, dir = "my_network/")</code>. To skip the files, the
+      <a href="https://ggmira.ecomplab.com">ggmira</a> package opens an emln network in MiRA
+      straight from R: <code>mira(net, bipartite = TRUE)</code>.
     </div>
 
     <footer class="site">

@@ -6,14 +6,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The right tool for multilayer network visualization | MiRA (muxViz, Arena3Dweb, Gephi, Cytoscape)</title>
   <meta name="description"
-    content="Why MiRA is the tool for interactive multilayer network visualization in the browser — a no-install, no-code alternative to muxViz, Arena3Dweb, Gephi, and Cytoscape, with dedicated bipartite and geographic support.">
+    content="Why MiRA is the tool for multilayer network visualization: interactive in the browser and linked to R in both directions (the ggmira package), with bipartite and geographic support and seven linked modes — an alternative to muxViz, Arena3Dweb, Gephi, and Cytoscape.">
   <link rel="canonical" href="https://mira.ecomplab.com/about.html">
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="MiRA — Multilayer Network Visualization">
   <meta property="og:title" content="The right tool for multilayer network visualization">
   <meta property="og:description"
-    content="Why MiRA is the browser-based, no-code tool for interactive multilayer network visualization — an alternative to muxViz, Arena3Dweb, Gephi, and Cytoscape.">
+    content="Why MiRA is the tool for interactive multilayer network visualization: in the browser, linked to R in both directions, with bipartite and geographic support — an alternative to muxViz, Arena3Dweb, Gephi, and Cytoscape.">
   <meta property="og:url" content="https://mira.ecomplab.com/about.html">
   <meta property="og:image" content="https://mira.ecomplab.com/assets/social-card.png">
   <meta name="twitter:card" content="summary_large_image">
@@ -255,6 +255,62 @@
       font-size: 13.5px;
       color: #5b6474;
       line-height: 1.5;
+    }
+
+    /* From R and back (ggmira) */
+    section.band.rtrip {
+      background: #eff6ff;
+      border-top: 1px solid #dbeafe;
+      border-bottom: 1px solid #dbeafe;
+    }
+
+    .rtrip .kicker {
+      color: #276dc3;
+    }
+
+    .rtrip .intro a {
+      color: #276dc3;
+    }
+
+    .rtrip code {
+      font-size: 12.5px;
+      background: #f1f5f9;
+      padding: 1px 4px;
+      border-radius: 4px;
+    }
+
+    .rfigs {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 18px;
+      margin-top: 28px;
+    }
+
+    .rfigs figure {
+      margin: 0;
+    }
+
+    .rfigs img {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 1.7;
+      object-fit: cover;
+      display: block;
+      border-radius: 12px;
+      border: 1px solid #dbeafe;
+      background: #fff;
+      box-shadow: 0 10px 28px rgba(17, 12, 46, .12);
+    }
+
+    .rfigs figcaption {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #5b6474;
+      text-align: center;
+    }
+
+    .rtrip .cta {
+      margin-top: 26px;
     }
 
     /* Coverage matrix */
@@ -507,9 +563,10 @@
       "Grid View — small multiples, one panel per layer",
       "Meta-Network Mode — aggregated single-layer view",
       "Dashboard Mode — analytics panels and heatmaps",
-      "Data Mode — tabular inspection and subsetting"
+      "Data Mode — tabular inspection and subsetting",
+      "From R and back — the ggmira R package opens networks in MiRA; Copy as R code turns the view back into ggmira code"
     ],
-    "keywords": "multilayer network, multiplex network, temporal network, network visualization, ecological network, bipartite network, muxViz alternative, emln",
+    "keywords": "multilayer network, multiplex network, temporal network, network visualization, ecological network, bipartite network, muxViz alternative, emln, ggmira, R",
     "author": [
       { "@type": "Person", "name": "Shir Miryam Nehoray", "identifier": "https://orcid.org/0009-0001-8453-4426" },
       { "@type": "Person", "name": "Yuval Bloch" },
@@ -539,10 +596,11 @@
     "mainEntity": [
       { "@type": "Question", "name": "What is a multilayer network?", "acceptedAnswer": { "@type": "Answer", "text": "A multilayer network is composed of a set of layers (each is a network), which represent different states of the entire system, such as different kinds of interactions, spatial locations or temporal time points. The layers are a single linked structure via interlayer links, rather than collapsed into a single graph." } },
       { "@type": "Question", "name": "Is MiRA free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. MiRA is free and open source under the CC BY-NC-SA 4.0 license, runs in any modern web browser, and requires no account or sign-up." } },
-      { "@type": "Question", "name": "Do I need to know how to code to use MiRA?", "acceptedAnswer": { "@type": "Answer", "text": "No. MiRA is entirely point-and-click in the browser. If you work in R, you can also plot directly from the emln package \u2014 see emln integration in the manual \u2014 but coding is optional." } },
+      { "@type": "Question", "name": "Do I need to know how to code to use MiRA?", "acceptedAnswer": { "@type": "Answer", "text": "No. MiRA is entirely point-and-click in the browser. Coding is optional: if you work in R, the ggmira package opens your networks in MiRA from R and turns MiRA's view back into R code (see the next question)." } },
+      { "@type": "Question", "name": "Can I use MiRA from R?", "acceptedAnswer": { "@type": "Answer", "text": "Yes, in both directions. With the ggmira R package, mira(net) opens a multilayer network from the emln package in MiRA, and components added with + set the layout, colors, filters and view, in a ggplot2-like syntax. In the other direction, MiRA's R button (Copy as R code) gives the ggmira code for the current view, including changes made with the mouse. mira_save() writes the figure as a PNG, JPG or PDF from a script, so figures stay reproducible." } },
       { "@type": "Question", "name": "Can MiRA visualize bipartite networks such as plant\u2013pollinator or host\u2013parasite webs?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. MiRA has a dedicated bipartite layout that draws the two node sets — for example pollinators and plants — in separate rows. Mark a layer as bipartite in your data and MiRA lays it out automatically." } },
-      { "@type": "Question", "name": "What data formats does MiRA read?", "acceptedAnswer": { "@type": "Answer", "text": "MiRA reads JSON or CSV (an extended edge list plus optional layer, node, and state-node attribute files), or a network passed directly from the emln R package." } },
-      { "@type": "Question", "name": "How is MiRA different from other software?", "acceptedAnswer": { "@type": "Answer", "text": "Each of the existing tools covers part of what multilayer visualization needs. For example, muxViz and pymnet are focused on analysis, Arena3Dweb for biomedical 3D scenes, and Gephi and Cytoscape for general single-layer graphs. MiRA is the only browser-based, no-code tool that combines bipartite and geographic support with seven linked visualization modes." } },
+      { "@type": "Question", "name": "What data formats does MiRA read?", "acceptedAnswer": { "@type": "Answer", "text": "MiRA reads JSON or CSV (an extended edge list plus optional layer, node, and state-node attribute files), or a network sent directly from R by the ggmira package." } },
+      { "@type": "Question", "name": "How is MiRA different from other software?", "acceptedAnswer": { "@type": "Answer", "text": "Each of the existing tools covers part of what multilayer visualization needs. For example, muxViz and pymnet are focused on analysis, Arena3Dweb for biomedical 3D scenes, and Gephi and Cytoscape for general single-layer graphs. MiRA is the only tool that brings together interactive visualization in the browser, a two-way link with R (the ggmira package), bipartite and geographic support, and seven linked visualization modes." } },
       { "@type": "Question", "name": "How do I cite MiRA?", "acceptedAnswer": { "@type": "Answer", "text": "Cite the preprint: Nehoray, Bloch & Pilosof (2026), Interactively visualizing biological multilayer networks using MiRA, arXiv:2605.09597. To cite the software itself, use the Zenodo DOI 10.5281/zenodo.22096810." } }
     ]
   }
@@ -571,6 +629,7 @@
         <a href="docs/manual.html">Manual</a>
         <a href="data-format.html">Data format</a>
         <a href="about.html">About</a>
+        <a href="https://ggmira.ecomplab.com">ggmira (R)</a>
         <a href="https://github.com/Ecological-Complexity-Lab/MiRA">GitHub</a>
         <a href="https://arxiv.org/abs/2605.09597">Preprint</a>
       </nav>
@@ -584,8 +643,8 @@
       <p class="sub">
         MiRA (Multilayer Interactive Rendering Application) is a free, browser-based, installation-free
         tool for interactive visualization of multilayer networks in ecology and biology — multiplex,
-        temporal, spatial, and bipartite. Other tools each cover a piece; MiRA brings the whole picture
-        together.
+        temporal, spatial, and bipartite — and linked to R in both directions. Other tools each cover a
+        piece; MiRA brings the whole picture together.
       </p>
       <div class="cta">
         <a class="btn btn-primary" href="index.html">Open MiRA →</a>
@@ -600,7 +659,7 @@
         <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"
             stroke-linejoin="round">
             <polyline points="20 6 9 17 4 12" />
-          </svg> No coding</span>
+          </svg> Interactive &#8644; R</span>
         <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"
             stroke-linejoin="round">
             <polyline points="20 6 9 17 4 12" />
@@ -621,7 +680,8 @@
       <h2>Interact with your multilayer network and format it for publications</h2>
       <p class="intro">
         Load a multilayer network, explore it through seven linked modes, and save the result —
-        all in the browser, without installing anything or writing code.
+        all in the browser, without installing anything, or from R and back
+        (<a href="#r">see below</a>).
       </p>
       <img class="glance-fig" src="assets/mira-at-a-glance.png"
         alt="MiRA at a glance: (1) load multilayer data from the example datasets, the emln R package, a JSON file, or CSV files; (2) explore it in seven interactive modes — Network, Map, Layer, Grid, Meta-Network, Dashboard, and Data; (3) save the result as a PNG, JPG, or PDF image, or as a session file that reloads the full state including the data. MiRA is browser-based with no install, free and open source, requires no coding, offers coordinated mode transitions, and supports bipartite networks.">
@@ -713,6 +773,66 @@
     </div>
   </section>
 
+  <!-- ── FROM R AND BACK (ggmira) ─────────────────────────────────── -->
+  <section class="band rtrip" id="r">
+    <div class="band-inner">
+      <div class="kicker">Interactive + R</div>
+      <h2>From R to MiRA and back</h2>
+      <p class="intro">
+        Exploring with the mouse and scripting in R are not a choice. With the
+        <a href="https://ggmira.ecomplab.com">ggmira</a> R package, a plot written in R opens in MiRA, fully interactive. Change
+        it there, then click MiRA's <strong>R</strong> button: it gives back the R code for exactly what
+        you see, ready for your script.
+      </p>
+      <div class="modes">
+        <div class="mode-card" style="--c:#276dc3">
+          <div class="mode-ico"><svg viewBox="0 0 24 24" fill="none" stroke="#276dc3" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="16 18 22 12 16 6" />
+              <polyline points="8 6 2 12 8 18" />
+            </svg></div>
+          <h3>1. Write it in R</h3>
+          <p><code>mira(net)</code> plus components for the layout, nodes, links, layers, filters and view,
+            in a ggplot2-like syntax.</p>
+        </div>
+        <div class="mode-card" style="--c:var(--v)">
+          <div class="mode-ico"><svg viewBox="0 0 24 24" fill="none" stroke="var(--v)" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4l7 17 2.5-7.5L21 11z" />
+            </svg></div>
+          <h3>2. Explore it in MiRA</h3>
+          <p>The plot opens in the browser or in RStudio's Viewer pane, with all seven modes: rotate,
+            filter, recolor, switch views.</p>
+        </div>
+        <div class="mode-card" style="--c:#059669">
+          <div class="mode-ico"><svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="12" height="12" rx="2" />
+              <path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1" />
+            </svg></div>
+          <h3>3. Copy it back as R code</h3>
+          <p>The R button turns the current view, with what you changed by mouse, into ggmira code.
+            <code>mira_save()</code> writes the figure from a script.</p>
+        </div>
+      </div>
+      <div class="rfigs">
+        <figure>
+          <img src="assets/ggmira-rstudio.jpg" width="1600" height="881" loading="lazy"
+            alt="RStudio with ggmira code in the script and the plot open in MiRA in the Viewer pane">
+          <figcaption>R &rarr; MiRA: ggmira code in RStudio, the plot in MiRA in the Viewer pane.</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/ggmira-rcode.jpg" width="1200" height="750" loading="lazy"
+            alt="MiRA's R code window: the ggmira code for the current view, each element in its color, with a Copy button">
+          <figcaption>MiRA &rarr; R: the R button gives the code for the current view.</figcaption>
+        </figure>
+      </div>
+      <div class="cta">
+        <a class="btn btn-primary" style="background:#276dc3;color:#fff" href="https://ggmira.ecomplab.com">Get started with ggmira &rarr;</a>
+      </div>
+    </div>
+  </section>
+
   <!-- ── COVERAGE: fragments vs whole ─────────────────────────────── -->
   <section class="band tint">
     <div class="band-inner">
@@ -725,8 +845,8 @@
               <th></th>
               <th>Multilayer-native</th>
               <th>Runs in browser</th>
-              <th>No coding</th>
               <th>Interactive</th>
+              <th>R package</th>
               <th>Bipartite</th>
               <th>Geographic</th>
               <th>7 linked modes</th>
@@ -747,8 +867,8 @@
               <th>muxViz</th>
               <td><span class="dot full"></span></td>
               <td><span class="dot"></span></td>
-              <td><span class="dot"></span></td>
               <td><span class="dot part"></span></td>
+              <td><span class="dot full"></span></td>
               <td><span class="dot"></span></td>
               <td><span class="dot full"></span></td>
               <td><span class="dot"></span></td>
@@ -758,7 +878,7 @@
               <td><span class="dot full"></span></td>
               <td><span class="dot full"></span></td>
               <td><span class="dot full"></span></td>
-              <td><span class="dot full"></span></td>
+              <td><span class="dot"></span></td>
               <td><span class="dot"></span></td>
               <td><span class="dot"></span></td>
               <td><span class="dot"></span></td>
@@ -767,8 +887,8 @@
               <th>pymnet</th>
               <td><span class="dot full"></span></td>
               <td><span class="dot"></span></td>
-              <td><span class="dot"></span></td>
               <td><span class="dot part"></span></td>
+              <td><span class="dot"></span></td>
               <td><span class="dot"></span></td>
               <td><span class="dot"></span></td>
               <td><span class="dot"></span></td>
@@ -778,7 +898,7 @@
               <td><span class="dot full"></span></td>
               <td><span class="dot"></span></td>
               <td><span class="dot"></span></td>
-              <td><span class="dot"></span></td>
+              <td><span class="dot full"></span></td>
               <td><span class="dot full"></span></td>
               <td><span class="dot"></span></td>
               <td><span class="dot"></span></td>
@@ -788,7 +908,7 @@
               <td><span class="dot"></span></td>
               <td><span class="dot"></span></td>
               <td><span class="dot full"></span></td>
-              <td><span class="dot full"></span></td>
+              <td><span class="dot"></span></td>
               <td><span class="dot"></span></td>
               <td><span class="dot"></span></td>
               <td><span class="dot"></span></td>
@@ -798,7 +918,7 @@
               <td><span class="dot"></span></td>
               <td><span class="dot"></span></td>
               <td><span class="dot full"></span></td>
-              <td><span class="dot full"></span></td>
+              <td><span class="dot part"></span></td>
               <td><span class="dot"></span></td>
               <td><span class="dot"></span></td>
               <td><span class="dot"></span></td>
@@ -819,7 +939,10 @@
         offers polished interactive 3D, but was designed for biomedical networks — without bipartite or
         geographic layouts, or multiple linked views. General-purpose tools such as Gephi and Cytoscape
         are not multilayer-native. Each covers only a fragment of what ecological multilayer
-        visualization requires, which is the gap MiRA fills. See each tool's docs for current features.
+        visualization requires, which is the gap MiRA fills. MiRA is also the only one in which the
+        interactive view and R code feed each other: the <a href="https://ggmira.ecomplab.com">ggmira</a> R package opens a network in
+        MiRA from R, and MiRA's R button turns the view back into R code. See each tool's docs for
+        current features.
       </p>
     </div>
   </section>
@@ -877,10 +1000,18 @@
         </details>
         <details>
           <summary>Do I need to know how to code to use MiRA?</summary>
-          <p>No. MiRA is entirely point-and-click in the browser. If you work in R, you can also plot
-            directly from the <a href="https://emln.ecomplab.com">emln</a>
-            package — see <a href="docs/manual.html#emln">emln integration</a> in the manual — but coding is optional.
-          </p>
+          <p>No. MiRA is entirely point-and-click in the browser. Coding is optional: if you work in R, the
+            <a href="https://ggmira.ecomplab.com">ggmira</a> package opens your networks in MiRA from R and turns MiRA's view back into R code
+            (see the next question).</p>
+        </details>
+        <details>
+          <summary>Can I use MiRA from R?</summary>
+          <p>Yes, in both directions. With the <a href="https://ggmira.ecomplab.com">ggmira</a> R package, <code>mira(net)</code> opens a
+            multilayer network from the <a href="https://emln.ecomplab.com">emln</a> package in MiRA, and components
+            added with <code>+</code> set the layout, colors, filters and view, in a ggplot2-like syntax. In the other
+            direction, MiRA's <strong>R</strong> button (Copy as R code) gives the ggmira code for the current view,
+            including changes made with the mouse. <code>mira_save()</code> writes the figure as a PNG, JPG or PDF from
+            a script, so figures stay reproducible.</p>
         </details>
         <details>
           <summary>Can MiRA visualize bipartite networks such as plant–pollinator or host–parasite webs?</summary>
@@ -892,7 +1023,7 @@
         <details>
           <summary>What data formats does MiRA read?</summary>
           <p>MiRA reads JSON or CSV (an extended edge list plus optional layer, node, and state-node
-            attribute files), or a network passed directly from the emln R package. See the
+            attribute files), or a network sent directly from R by the <a href="https://ggmira.ecomplab.com">ggmira</a> package. See the
             <a href="data-format.html">data format guide</a> or the manual's
             <a href="docs/manual.html#data-import">import section</a>.
           </p>
@@ -901,8 +1032,9 @@
           <summary>How is MiRA different from other software?</summary>
           <p>Each of the existing tools covers part of what multilayer visualization needs. For example,
             muxViz and pymnet are focused on analysis, Arena3D<sup>web</sup> for biomedical 3D scenes, and
-            Gephi and Cytoscape for general single-layer graphs. MiRA is the only browser-based, no-code
-            tool that combines bipartite and geographic support with seven linked visualization modes.</p>
+            Gephi and Cytoscape for general single-layer graphs. MiRA is the only tool that brings together
+            interactive visualization in the browser, a two-way link with R (the ggmira package), bipartite and
+            geographic support, and seven linked visualization modes.</p>
         </details>
         <details>
           <summary>How do I cite MiRA?</summary>
@@ -920,8 +1052,8 @@
   <section class="band closer">
     <div class="band-inner">
       <h2>See your own network in MiRA</h2>
-      <p class="intro">Load a built-in example in seconds, or bring your own data as JSON or CSV — or plot straight from
-        the emln R package.</p>
+      <p class="intro">Load a built-in example in seconds, bring your own data as JSON or CSV, or plot straight from
+        R with <a href="https://ggmira.ecomplab.com">ggmira</a>.</p>
       <div class="cta">
         <a class="btn btn-primary" style="background:var(--v);color:#fff" href="index.html">Open MiRA →</a>
       </div>

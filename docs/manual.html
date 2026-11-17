@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MiRA Manual — Multilayer Network Visualization Documentation</title>
   <meta name="description"
-    content="Full documentation for MiRA (Multilayer Interactive Rendering Application): all seven visualization modes, the JSON schema, CSV import, session save/restore, figure export, and emln R-package integration.">
+    content="Full documentation for MiRA (Multilayer Interactive Rendering Application): all seven visualization modes, the JSON schema, CSV import, session save/restore, figure export, and using MiRA from R (ggmira and emln).">
   <link rel="canonical" href="https://mira.ecomplab.com/docs/manual.html">
   <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
 
@@ -13,7 +13,7 @@
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="MiRA — Multilayer Network Visualization">
   <meta property="og:title" content="MiRA Manual — Multilayer Network Visualization Documentation">
-  <meta property="og:description" content="Full documentation of MiRA's visualization modes, the JSON schema, CSV import, and emln R-package integration.">
+  <meta property="og:description" content="Full documentation of MiRA's visualization modes, the JSON schema, CSV import, and using MiRA from R (ggmira and emln).">
   <meta property="og:url" content="https://mira.ecomplab.com/docs/manual.html">
   <meta property="og:image" content="https://mira.ecomplab.com/assets/social-card.png">
   <meta property="og:image:alt" content="MiRA logo — stacked multilayer network">
@@ -21,7 +21,7 @@
   <!-- Twitter / X card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="MiRA Manual — Multilayer Network Visualization Documentation">
-  <meta name="twitter:description" content="Documentation for MiRA: modes, data formats, and emln integration.">
+  <meta name="twitter:description" content="Documentation for MiRA: modes, data formats, and using MiRA from R.">
   <meta name="twitter:image" content="https://mira.ecomplab.com/assets/social-card.png">
 
   <!-- JSON-LD structured data -->
@@ -30,7 +30,7 @@
     "@context": "https://schema.org",
     "@type": "TechArticle",
     "headline": "MiRA Manual — Multilayer Network Visualization Documentation",
-    "description": "Full documentation for MiRA (Multilayer Interactive Rendering Application): visualization modes, the JSON schema, CSV import, session save/restore, figure export, and emln R-package integration.",
+    "description": "Full documentation for MiRA (Multilayer Interactive Rendering Application): visualization modes, the JSON schema, CSV import, session save/restore, figure export, and using MiRA from R (ggmira and emln).",
     "url": "https://mira.ecomplab.com/docs/manual.html",
     "inLanguage": "en",
     "isPartOf": { "@type": "WebSite", "name": "MiRA — Multilayer Network Visualization", "url": "https://mira.ecomplab.com/" },
@@ -368,9 +368,12 @@
   <div class="toc-sep"></div>
 
   <div class="toc-group">
-    <a href="#emln" class="l1 toc-toggle" data-group="g-emln"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;vertical-align:middle;margin-right:4px"><path d="M12 22C11.1818 22 10.4002 21.6708 8.83693 21.0123C4.94564 19.3734 3 18.5539 3 17.1754V7.54234M12 22C12.8182 22 13.5998 21.6708 15.1631 21.0123C19.0544 19.3734 21 18.5539 21 17.1754V7.54234M12 22V12.0292M3 7.54234C3 8.15478 3.80157 8.54152 5.40472 9.315L8.32592 10.7244C10.1288 11.5943 11.0303 12.0292 12 12.0292M3 7.54234C3 6.9299 3.80157 6.54317 5.40472 5.76969L7 5M21 7.54234C21 8.15478 20.1984 8.54152 18.5953 9.315L15.6741 10.7244C13.8712 11.5943 12.9697 12.0292 12 12.0292M21 7.54234C21 6.9299 20.1984 6.54316 18.5953 5.76969L17.0446 5.02151"/><path d="M12 9L12 2M12 2C11.7332 1.99649 11.4737 2.18028 11.2822 2.40466L10 3.93826M12 2C12.2501 2.00348 12.5071 2.18632 12.7103 2.40466L14 3.93826"/></svg>Integration with emln <span class="toc-chevron">▾</span></a>
+    <a href="#ggmira" class="l1 toc-toggle" data-group="g-ggmira"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;vertical-align:middle;margin-right:4px"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>Plot from R with ggmira <span class="toc-chevron">▾</span></a>
+    <div class="toc-children" id="g-ggmira">
+      <a href="#ggmira-roundtrip" class="l2">Back from MiRA to R</a>
+    </div>
+    <a href="#emln" class="l1 toc-toggle" data-group="g-emln"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;vertical-align:middle;margin-right:4px"><path d="M12 22C11.1818 22 10.4002 21.6708 8.83693 21.0123C4.94564 19.3734 3 18.5539 3 17.1754V7.54234M12 22C12.8182 22 13.5998 21.6708 15.1631 21.0123C19.0544 19.3734 21 18.5539 21 17.1754V7.54234M12 22V12.0292M3 7.54234C3 8.15478 3.80157 8.54152 5.40472 9.315L8.32592 10.7244C10.1288 11.5943 11.0303 12.0292 12 12.0292M3 7.54234C3 6.9299 3.80157 6.54317 5.40472 5.76969L7 5M21 7.54234C21 8.15478 20.1984 8.54152 18.5953 9.315L15.6741 10.7244C13.8712 11.5943 12.9697 12.0292 12 12.0292M21 7.54234C21 6.9299 20.1984 6.54316 18.5953 5.76969L17.0446 5.02151"/><path d="M12 9L12 2M12 2C11.7332 1.99649 11.4737 2.18028 11.2822 2.40466L10 3.93826M12 2C12.2501 2.00348 12.5071 2.18632 12.7103 2.40466L14 3.93826"/></svg>Export from R with emln <span class="toc-chevron">▾</span></a>
     <div class="toc-children" id="g-emln">
-      <a href="#emln-plot" class="l2">plot_multilayer()</a>
       <a href="#emln-json" class="l2">multilayer_to_json()</a>
       <a href="#emln-csv" class="l2">multilayer_to_csv()</a>
     </div>
@@ -408,7 +411,8 @@
     <a href="../tutorial-spatial-map.html">Spatial map</a> ·
     <a href="../tutorial-temporal.html">Temporal</a> ·
     <a href="../tutorial-brain-network.html">Brain network</a> ·
-    <a href="../about.html">About</a>
+    <a href="../about.html">About</a> ·
+    <a href="https://ggmira.ecomplab.com">ggmira (R package)</a>
   </div>
 
   <hr>
@@ -1205,7 +1209,7 @@ Ixodes_ricinus,0.003</code></pre>
         <td style="padding:8px 10px;text-align:center;">
           <svg width="18" height="14" viewBox="0 0 26 20"><ellipse cx="12" cy="9" rx="11" ry="7.5" fill="none" stroke="#9ca3af" stroke-width="2.5"/><text x="15" y="18" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="15" fill="#2165b6">R</text></svg>
         </td>
-        <td style="padding:8px 10px;border-bottom:1px solid #f3f4f6;"><span class="key">Copy as R code</span> — shown only when MiRA is opened from R with the ggmira package. Shows the ggmira code that draws the current view, including changes made in MiRA, colored by element (nodes, intralayer links, interlayer links, layers), with a <strong>Copy</strong> button to paste it into a script. Settings R cannot set (a layer moved by hand, a layer filter, dragged legends) are listed as comments under the code.</td>
+        <td style="padding:8px 10px;border-bottom:1px solid #f3f4f6;"><span class="key">Copy as R code</span> — shown only when MiRA is opened from R with the <a href="#ggmira">ggmira</a> package. Shows the ggmira code that draws the current view, including changes made in MiRA, colored by element (nodes, intralayer links, interlayer links, layers), with a <strong>Copy</strong> button to paste it into a script. Settings R cannot set (a layer moved by hand, a layer filter, dragged legends) are listed as comments under the code.</td>
       </tr>
       <tr>
         <td style="padding:8px 10px;border-bottom:1px solid #f3f4f6;text-align:center;">
@@ -1387,35 +1391,37 @@ Ixodes_ricinus,0.003</code></pre>
 
   <hr>
 
-  <!-- ── EMLN INTEGRATION ──────────────────────────────────────────────── -->
-  <h2 class="sec mode-misc" id="emln"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#374151" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M12 22C11.1818 22 10.4002 21.6708 8.83693 21.0123C4.94564 19.3734 3 18.5539 3 17.1754V7.54234M12 22C12.8182 22 13.5998 21.6708 15.1631 21.0123C19.0544 19.3734 21 18.5539 21 17.1754V7.54234M12 22V12.0292M3 7.54234C3 8.15478 3.80157 8.54152 5.40472 9.315L8.32592 10.7244C10.1288 11.5943 11.0303 12.0292 12 12.0292M3 7.54234C3 6.9299 3.80157 6.54317 5.40472 5.76969L7 5M21 7.54234C21 8.15478 20.1984 8.54152 18.5953 9.315L15.6741 10.7244C13.8712 11.5943 12.9697 12.0292 12 12.0292M21 7.54234C21 6.9299 20.1984 6.54316 18.5953 5.76969L17.0446 5.02151M6 13.0263L8 14.0234"/><path d="M11.9963 9L11.9963 2.00005M11.9963 2.00005C11.7332 1.99649 11.4737 2.18028 11.2822 2.40466L10 3.93826M11.9963 2.00005C12.2501 2.00348 12.5071 2.18632 12.7103 2.40466L14 3.93826"/></svg> Integration with the emln R Package</h2>
-  <p>The <a href="https://ecological-complexity-lab.github.io/emln_package/" target="_blank">emln</a> R package provides three functions to load and export multilayer networks directly into MiRA — no manual file preparation required.</p>
+  <!-- ── GGMIRA ───────────────────────────────────────────────────────── -->
+  <h2 class="sec mode-misc" id="ggmira"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#374151" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg> Plot from R with ggmira</h2>
+  <p>The <a href="https://ggmira.ecomplab.com" target="_blank">ggmira</a> R package opens multilayer networks in MiRA from R, with the plot described in code: start from a network with <code>mira()</code> and add components with <code>+</code> for the layout, nodes, links, layers, filters, camera and view, in a ggplot2-like syntax. The plot opens in the browser (or in RStudio's Viewer pane) and stays fully interactive. Networks come from the <a href="https://emln.ecomplab.com" target="_blank">emln</a> package.</p>
+
+  <pre style="background:#f3f4f6;border:1px solid #e5e7eb;border-radius:6px;padding:14px;font-size:12px;line-height:1.7"><code style="background:none;border:none;padding:0;color:#1f2937">remotes::install_github("Ecological-Complexity-Lab/ggmira")
+
+library(emln)
+library(ggmira)
+net &lt;- load_emln(17)   # birds and plants on two Galápagos islands, 4 layers
+
+p &lt;- mira(net, bipartite = TRUE, setA_type = "bird") +
+  mira_layout("kamada_kawai", seed = 42) +
+  mira_node(color_by = "intra_degree_sum", color_palette = "magma") +
+  mira_interlayer(show = TRUE) +
+  mira_layer(labels = TRUE)
+p                            # opens in MiRA
+mira_save(p, "figure.pdf")   # writes the figure, without opening a window</code></pre>
+
+  <h3 id="ggmira-roundtrip">Back from MiRA to R</h3>
+  <p>When ggmira opens MiRA, the toolbar shows the <span class="key">Copy as R code</span> button (see <a href="#toolbar">Toolbar</a>). It gives the ggmira code for the current view, including what was changed in MiRA (colors, the camera, the mode), ready to paste into a script. Explore with the mouse, then keep the result as code. The full documentation, with a step-by-step introduction and a page per function, is at <a href="https://ggmira.ecomplab.com" target="_blank">ggmira.ecomplab.com</a>.</p>
+
+  <!-- ── EMLN EXPORT ───────────────────────────────────────────────────── -->
+  <h2 class="sec mode-misc" id="emln"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#374151" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M12 22C11.1818 22 10.4002 21.6708 8.83693 21.0123C4.94564 19.3734 3 18.5539 3 17.1754V7.54234M12 22C12.8182 22 13.5998 21.6708 15.1631 21.0123C19.0544 19.3734 21 18.5539 21 17.1754V7.54234M12 22V12.0292M3 7.54234C3 8.15478 3.80157 8.54152 5.40472 9.315L8.32592 10.7244C10.1288 11.5943 11.0303 12.0292 12 12.0292M3 7.54234C3 6.9299 3.80157 6.54317 5.40472 5.76969L7 5M21 7.54234C21 8.15478 20.1984 8.54152 18.5953 9.315L15.6741 10.7244C13.8712 11.5943 12.9697 12.0292 12 12.0292M21 7.54234C21 6.9299 20.1984 6.54316 18.5953 5.76969L17.0446 5.02151M6 13.0263L8 14.0234"/><path d="M11.9963 9L11.9963 2.00005M11.9963 2.00005C11.7332 1.99649 11.4737 2.18028 11.2822 2.40466L10 3.93826M11.9963 2.00005C12.2501 2.00348 12.5071 2.18632 12.7103 2.40466L14 3.93826"/></svg> Export from R with emln</h2>
+  <p>The <a href="https://emln.ecomplab.com" target="_blank">emln</a> R package exports multilayer networks to MiRA's file formats, ready to open with <strong>Load Data</strong>. To open a network in MiRA directly from R, use <a href="#ggmira">ggmira</a>.</p>
 
   <pre style="background:#f3f4f6;border:1px solid #e5e7eb;border-radius:6px;padding:14px;font-size:12px;line-height:1.7"><code style="background:none;border:none;padding:0;color:#1f2937">library(emln)
 net &lt;- load_emln(60)               # load a built-in dataset
 
-# Open directly in the browser
-srv &lt;- plot_multilayer(net, bipartite = TRUE)
-httpuv::stopServer(srv)            # stop server when done
-
-# Or export to JSON / CSV for manual upload
+# Export to JSON / CSV, then open the file in MiRA with Load Data
 multilayer_to_json(net, file = "network.json", bipartite = TRUE)
 multilayer_to_csv(net, dir = "out/", prefix = "net60", bipartite = TRUE)</code></pre>
-
-  <h3 id="emln-plot">plot_multilayer()</h3>
-  <p>Converts the multilayer object to JSON and opens MiRA in the default browser, served over a local HTTP server. The network loads automatically — no file selection needed.</p>
-  <table style="width:100%;border-collapse:collapse;font-size:13px;margin-top:8px">
-    <thead><tr style="background:#f3f4f6"><th style="padding:6px 10px;text-align:left;border:1px solid #e5e7eb">Argument</th><th style="padding:6px 10px;text-align:left;border:1px solid #e5e7eb">Default</th><th style="padding:6px 10px;text-align:left;border:1px solid #e5e7eb">Description</th></tr></thead>
-    <tbody>
-      <tr><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>multilayer</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb">—</td><td style="padding:6px 10px;border:1px solid #e5e7eb">A multilayer object from <code>create_multilayer_network()</code> or <code>load_emln()</code>.</td></tr>
-      <tr><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>bipartite</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>FALSE</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb">Set <code>TRUE</code> explicitly for bipartite networks. Requires a <code>node_type</code> (or legacy <code>node_group</code> / <code>type</code>) column with exactly two distinct values.</td></tr>
-      <tr><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>directed</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>NULL</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb">If <code>NULL</code>, auto-detected from edge symmetry. Set explicitly if auto-detection is wrong (e.g. pollinator networks store edges one-way but are ecologically undirected).</td></tr>
-      <tr><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>port</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>8080</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb">Starting port for the local HTTP server. Next available port is tried automatically if busy. Actual port printed to console; retrieve with <code>srv$getPort()</code>.</td></tr>
-      <tr><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>viz_path</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>NULL</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb">Path to the MiRA directory. If <code>NULL</code>, uses the copy bundled with the installed emln package. Pass explicitly to use a different version of the app.</td></tr>
-      <tr><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>browser</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>getOption("browser")</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb">Browser command. On macOS, <code>"chrome"</code> is automatically expanded to <code>open -a 'Google Chrome'</code>.</td></tr>
-    </tbody>
-  </table>
-  <p style="margin-top:8px"><strong>Returns:</strong> the httpuv server handle. Call <code>httpuv::stopServer(srv)</code> or close R to shut it down. To kill all app servers from the terminal: <code>lsof -ti TCP:8000-8200 | xargs kill -9</code></p>
 
   <h3 id="emln-json">multilayer_to_json()</h3>
   <p>Exports the network to the <a href="../data-format.html">JSON format</a> expected by MiRA. Returns the JSON string, or writes it to a file.</p>
@@ -1424,7 +1430,7 @@ multilayer_to_csv(net, dir = "out/", prefix = "net60", bipartite = TRUE)</code><
     <tbody>
       <tr><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>multilayer</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb">—</td><td style="padding:6px 10px;border:1px solid #e5e7eb">A multilayer object.</td></tr>
       <tr><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>file</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>NULL</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb">If provided, writes JSON to this file path. If <code>NULL</code>, returns the JSON string invisibly.</td></tr>
-      <tr><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>bipartite</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>FALSE</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb">Same as <code>plot_multilayer()</code>. Adds <code>bipartite: true</code> to every layer in the JSON.</td></tr>
+      <tr><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>bipartite</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>FALSE</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb">Set <code>TRUE</code> explicitly for bipartite networks. Requires a <code>node_type</code> (or legacy <code>node_group</code> / <code>type</code>) column with exactly two distinct values. Adds <code>bipartite: true</code> to every layer in the JSON.</td></tr>
       <tr><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>directed</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb"><code>NULL</code></td><td style="padding:6px 10px;border:1px solid #e5e7eb">Sets the top-level <code>directed</code> field in the JSON. Auto-detected if <code>NULL</code>.</td></tr>
     </tbody>
   </table>
