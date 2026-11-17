@@ -431,8 +431,13 @@ computer does not travel; everything needed is here and in the repos.
   including About-only screenshots (~1.3 MB) the app does not use; trimming
   is optional. The sync copies untracked files too: check
   `inst/MiRA/assets` before committing.
+- MiRA #107 (main 80798d5): in RStudio's Viewer pane (`?pane=rstudio`, set by
+  ggmira with `viewer = TRUE`) the top bar keeps only the lab logo
+  (`html.rstudio-pane`, set in `<head>`); CHANGELOG "Unreleased". ggmira #33
+  (main e44d1dd) bundles it; NEWS: MiRA 1.2 with this one later change.
 - Parked (Shai): increasing ggmira's exposure (R-universe, GitHub topics,
-  announcements; CRAN blocked by the non-commercial licence).
+  emln link, announcements, the paper; CRAN blocked by the non-commercial
+  licence). Shai may hand it to Geut.
 
 **State (all merged, nothing open; branches deleted):**
 - MiRA `main` 5bef89b (live on mira.ecomplab.com): the QA fixes (#102).
