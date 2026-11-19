@@ -5,11 +5,8 @@
  * squeezes its buttons and the menu panels run off the screen. A small
  * notice says so, on the website and when opened from R; it goes away when
  * the window is large enough, and once closed it stays closed for the
- * browser session. Not shown in ggmira's mira_save() (?save=true), which
- * draws in a headless window.
- *
- * ggmira adds ?pane=rstudio when it opens MiRA in RStudio's Viewer pane, for
- * a hint about the pane.
+ * browser session. Not shown in ggmira's mira_save() (?save=true) or
+ * RStudio's Viewer pane (?pane=rstudio).
  *
  * Exports:
  *   - initScreenSizeWarning()   call once during app init
@@ -31,8 +28,7 @@ const storage = {
 
 export function initScreenSizeWarning() {
     const params = new URLSearchParams(window.location.search);
-    if (params.get('save') === 'true') return;
-    const inRStudioPane = params.get('pane') === 'rstudio';
+    if (params.get('save') === 'true' || params.get('pane') === 'rstudio') return;
 
     let closed = storage.dismissed();
     const update = () => {
@@ -42,7 +38,7 @@ export function initScreenSizeWarning() {
             notice?.remove();
             return;
         }
-        (notice ?? showNotice(inRStudioPane, () => {
+        (notice ?? showNotice(() => {
             closed = true;
             storage.dismiss();
         })).querySelector('.screen-size-notice-size').textContent =
@@ -57,7 +53,7 @@ export function initScreenSizeWarning() {
     update();
 }
 
-function showNotice(inRStudioPane, onClose) {
+function showNotice(onClose) {
     const box = document.createElement('div');
     box.id = NOTICE_ID;
     box.className = 'screen-size-notice';
@@ -78,11 +74,8 @@ function showNotice(inRStudioPane, onClose) {
     const text = document.createElement('p');
     const size = document.createElement('span');
     size.className = 'screen-size-notice-size';
-    const fix = inRStudioPane
-        ? ' Maximize the Viewer pane, or open MiRA in the browser with the pane\'s "Show in new window" button.'
-        : ' Enlarge the window, or zoom out (Ctrl or ⌘ and −).';
     text.append(`MiRA needs at least ${MIN_WIDTH} × ${MIN_HEIGHT} pixels; this window is `, size,
-        '. Some buttons and panels may be cut off.' + fix);
+        '. Some buttons and panels may be cut off. Enlarge the window, or zoom out (Ctrl or ⌘ and −).');
 
     box.append(close, heading, text);
     document.body.appendChild(box);
