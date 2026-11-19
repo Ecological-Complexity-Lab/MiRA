@@ -15,7 +15,6 @@ import { DataMode, dataMode, layerColors, initLayerColors } from './dataMode.js'
 import { saveSession, loadSession, loadSessionFromUrl } from './sessionManager.js';
 import { startTour } from './tourManager.js';
 import { initDemoDatasets } from './demoDatasets.js';
-import { initFeedback } from './feedback.js';
 import { initExportManager } from './exportManager.js';
 import { GridView } from './gridView.js';
 import { buildNodeSetResolver, collectSetItems, SET_A, SET_B } from './nodeSets.js';
@@ -24,6 +23,7 @@ import { loadFromR, reportLoadFailure } from './rBridge.js';
 import { fitMapToCoords } from './mapFit.js';
 import { palettesFor } from './palettes.js';
 import { initScreenSizeWarning } from './screenSize.js';
+import { initFeedback } from './feedback.js';
 
 // ---- State ----
 let model = null;
@@ -333,7 +333,6 @@ const tooltip = document.getElementById('tooltip');
 
 // ---- Application State ----
 let appMode = 'network'; // 'network', 'map', 'layer', 'dashboard', 'metanetwork', 'data', or 'grid'
-let currentDatasetName = null; // name of the loaded dataset (demo payloads carry dataset.name); used by feedback diagnostics
 let gridView = null;
 let layerViewHandlers = null;
 let lvRAF  = null; // requestAnimationFrame id for layer-view animation
@@ -765,7 +764,6 @@ function resetVisualizationOptions() {
 function loadData(json, { warn = true } = {}) {
     try {
         model = parseMultilayerData(json);
-        currentDatasetName = json?.dataset?.name ?? null;
 
         if (warn && model.warnings && model.warnings.length) {
             alert('Data warnings:\n\n• ' + model.warnings.join('\n• '));
@@ -908,8 +906,7 @@ function loadData(json, { warn = true } = {}) {
 // ---- Demo datasets dialog ----
 initDemoDatasets(loadData);
 
-// ---- Feedback dialog ----
-initFeedback(() => ({ mode: appMode, model, datasetName: currentDatasetName }));
+initFeedback(() => ({ mode: appMode, model }));
 initScreenSizeWarning();
 
 
