@@ -784,7 +784,7 @@
         </svg>
         <span class="branding-cite-label">Docs</span>
       </a>
-      <a href="about.html" title="About MiRA" class="branding-link branding-why-btn">
+      <a href="https://mira.ecomplab.com/about.html" target="_blank" rel="noopener" title="About MiRA" class="branding-link branding-why-btn">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
           <path d="M12 2l2.4 6.9L21 11l-6.6 2.1L12 20l-2.4-6.9L3 11l6.6-2.1z"/>
         </svg>
@@ -979,62 +979,42 @@
     </div>
   </div>
 
-  <!-- Feedback dialog -->
   <div id="feedbackDialog" class="dialog-overlay" style="display:none;">
-    <div class="dialog-box feedback-dialog-box">
+    <div class="dialog-box feedback-dialog-box" role="dialog" aria-modal="true" aria-labelledby="feedbackTitle">
       <button id="feedbackDialogClose" class="cite-close-btn" aria-label="Close" title="Close">✕</button>
-      <h4 class="cite-title">Send feedback</h4>
-      <p class="cite-subtitle">
-        Found a bug, want a feature, or have a thought? We'd love to hear it. 💬
-      </p>
-
-      <form id="feedbackForm" novalidate>
+      <h4 id="feedbackTitle" class="cite-title">Send feedback</h4>
+      <form id="feedbackForm">
         <div class="feedback-field">
           <label class="feedback-label" for="feedbackType">Type</label>
           <select id="feedbackType" class="styled-select">
-            <option value="Bug">🐞 Bug</option>
-            <option value="Feature request">✨ Feature request</option>
-            <option value="General" selected>💭 General</option>
+            <option value="bug">Bug: wrong or broken</option>
+            <option value="unclear">Unclear: hard to follow</option>
+            <option value="missing">Missing: something to add</option>
+            <option value="idea">Idea</option>
           </select>
         </div>
-
         <div class="feedback-field">
-          <label class="feedback-label" for="feedbackEmail">Email <span class="feedback-req">*</span></label>
-          <input id="feedbackEmail" class="feedback-input" type="email" placeholder="you@example.com" autocomplete="email" required>
+          <label class="feedback-label" for="feedbackMessage">Comment <span class="feedback-req">*</span></label>
+          <textarea id="feedbackMessage" class="feedback-textarea" rows="5" maxlength="3000" required placeholder="What is wrong, confusing or missing? What did you expect?"></textarea>
         </div>
-
         <div class="feedback-field">
-          <label class="feedback-label" for="feedbackMessage">Message <span class="feedback-req">*</span></label>
-          <textarea id="feedbackMessage" class="feedback-textarea" rows="5"
-            placeholder="What happened, what you expected, or what you'd like to see…" required></textarea>
-          <div class="feedback-hint"><span id="feedbackCharCount">0</span> characters</div>
+          <label class="feedback-label" for="feedbackName">Your name</label>
+          <input id="feedbackName" class="feedback-input" type="text" autocomplete="name">
         </div>
-
         <label class="feedback-diag-toggle">
           <input id="feedbackIncludeDiag" type="checkbox" checked>
-          <span>Include technical details (mode, dataset, browser) to help us debug</span>
+          <span>Include technical details (mode and browser)</span>
         </label>
         <details class="feedback-diag-details">
           <summary>Preview technical details</summary>
           <pre id="feedbackDiagPreview" class="feedback-diag-pre"></pre>
         </details>
-
-        <div id="feedbackError" class="feedback-error" style="display:none;"></div>
-
+        <p class="feedback-hint">Review and submit the issue on GitHub. A GitHub account is required.</p>
         <div class="dialog-buttons cite-buttons">
-          <button type="submit" class="btn btn-primary" id="feedbackSendBtn">Send feedback</button>
+          <button type="submit" class="btn btn-primary">Open on GitHub</button>
           <button type="button" class="btn" id="feedbackCancelBtn">Cancel</button>
         </div>
       </form>
-
-      <div id="feedbackThanks" class="feedback-thanks" style="display:none;">
-        <div class="feedback-thanks-icon">✅</div>
-        <div class="feedback-thanks-title">Thanks for the feedback!</div>
-        <div class="feedback-thanks-sub">It really helps make MiRA better.</div>
-        <div class="dialog-buttons cite-buttons" style="margin-top:16px;">
-          <button type="button" class="btn" id="feedbackDoneBtn">Done</button>
-        </div>
-      </div>
     </div>
   </div>
 
