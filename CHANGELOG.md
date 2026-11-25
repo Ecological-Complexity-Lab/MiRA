@@ -14,6 +14,12 @@ Zenodo record (all versions: [10.5281/zenodo.22096810](https://doi.org/10.5281/z
   layer's density could be above 1, and edge similarity counted them while degree did not. Of the
   bundled datasets only kefi2016 has self-loops (2 in the Trophic layer, whose density goes from
   0.1224 to 0.1222).
+- **Feedback opens a GitHub issue.** The Feedback button fills in a new issue (type, comment,
+  optional name and technical details) for you to review and submit on GitHub; it replaces the
+  feedback form. From the website it goes to MiRA's issues, from ggmira to ggmira's.
+- **About** opens in a new tab.
+- In RStudio's Viewer pane there is no small-window warning.
+- In ggmira, the manual's links to the tutorials and the data format page open the MiRA website.
 
 ## 1.2 — 2026-11-17
 
