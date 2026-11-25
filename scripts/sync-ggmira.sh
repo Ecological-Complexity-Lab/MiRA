@@ -6,15 +6,21 @@
 # add them here. Anything not listed stays in the dev tree only.
 #
 # Usage: npm run sync:ggmira  (or: bash scripts/sync-ggmira.sh)
+#
+# ggmira's inst/MiRA is only ever changed by this script: fix MiRA, then
+# sync. The bundled commit is recorded in inst/MiRA/MIRA_COMMIT, and
+# ggmira's CI fails if the bundle differs from a fresh sync of it.
+# GGMIRA_DIR overrides where ggmira is (default: the sibling ../ggmira).
 
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
 
-DEST="../ggmira/inst/MiRA"
+GGMIRA_DIR="${GGMIRA_DIR:-../ggmira}"
+DEST="$GGMIRA_DIR/inst/MiRA"
 
-if [ ! -d "../ggmira" ]; then
-  echo "Error: ../ggmira not found. Run from a checkout that has ggmira as a sibling repo." >&2
+if [ ! -d "$GGMIRA_DIR" ]; then
+  echo "Error: $GGMIRA_DIR not found. Run from a checkout that has ggmira as a sibling repo, or set GGMIRA_DIR." >&2
   exit 1
 fi
 
@@ -46,6 +52,37 @@ cp docs/manual.html  "$DEST/docs/"
 
 # Strip OS noise that can sneak in via cp -R
 find "$DEST" -name '.DS_Store' -delete
+
+# --- Links to site pages that are not bundled ---
+# The app and the manual link to pages of the website (About, tutorials,
+# data format) with relative links, which work on the site. Those pages are
+# not bundled, so in ggmira the links point to the website instead, in a new
+# tab so the plot stays open. Links to bundled files stay relative.
+SITE="https://mira.ecomplab.com"
+for f in index.html docs/manual.html; do
+  DEST="$DEST" SITE="$SITE" DIR="$(dirname "$f")" perl -pi -e '
+    s{<a\b([^>]*?)\bhref="((?:\.\./)?)([A-Za-z0-9_-]+\.html)((?:#[^"]*)?)"([^>]*)>}{
+      my ($pre, $up, $page, $hash, $post) = ($1, $2, $3, $4, $5);
+      my $target = ($up || $ENV{DIR} eq ".") ? "$ENV{DEST}/$page" : "$ENV{DEST}/$ENV{DIR}/$page";
+      if (-e $target) { $& }
+      else {
+        my $attrs = "$pre$post";
+        my $extra = $attrs =~ /\btarget=/ ? "" : q{ target="_blank" rel="noopener"};
+        qq{<a${pre}href="$ENV{SITE}/$page$hash"$post$extra>}
+      }
+    }ge' "$DEST/$f"
+done
+
+# --- Record which MiRA commit was bundled ---
+# ggmira's CI re-syncs from this commit and fails if inst/MiRA differs, so
+# the bundle is only ever changed here, never edited by hand in ggmira.
+commit=$(git rev-parse HEAD)
+if [ -n "$(git status --porcelain -- index.html README.md css js assets docs/manual.html scripts/sync-ggmira.sh)" ]; then
+  echo "Warning: MiRA has uncommitted changes in bundled files; recording $commit-dirty." >&2
+  echo "         Commit them in MiRA and sync again before committing the bundle in ggmira." >&2
+  commit="$commit-dirty"
+fi
+echo "$commit" > "$DEST/MIRA_COMMIT"
 
 # Every image the bundled files refer to must have been copied
 missing=0
