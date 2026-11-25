@@ -1009,12 +1009,63 @@
           <summary>Preview technical details</summary>
           <pre id="feedbackDiagPreview" class="feedback-diag-pre"></pre>
         </details>
-        <p class="feedback-hint">Review and submit the issue on GitHub. A GitHub account is required.</p>
+        <p class="feedback-hint">On GitHub you review and submit the issue (a GitHub account is required). Or send it to us by email.</p>
         <div class="dialog-buttons cite-buttons">
           <button type="submit" class="btn btn-primary">Open on GitHub</button>
+          <button type="button" class="btn" id="feedbackEmailBtn">Send us an email</button>
           <button type="button" class="btn" id="feedbackCancelBtn">Cancel</button>
         </div>
       </form>
+      <div id="feedbackEmailPanel" style="display:none;">
+        <p class="feedback-email-intro">Copy these into a new email and send it to us.</p>
+      <div class="cite-section">
+        <div class="cite-section-label">To</div>
+        <div class="cite-block-wrap">
+          <pre class="cite-block" id="feedbackEmailTo"></pre>
+          <button type="button" class="cite-copy-btn" data-feedback-copy="To" title="Copy the address">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            <span class="cite-copy-label">Copy</span>
+          </button>
+        </div>
+      </div>
+      <div class="cite-section">
+        <div class="cite-section-label">Subject</div>
+        <div class="cite-block-wrap">
+          <pre class="cite-block" id="feedbackEmailSubject"></pre>
+          <button type="button" class="cite-copy-btn" data-feedback-copy="Subject" title="Copy the subject">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            <span class="cite-copy-label">Copy</span>
+          </button>
+        </div>
+      </div>
+      <div class="cite-section">
+        <div class="cite-section-label">Message</div>
+        <div class="cite-block-wrap">
+          <pre class="cite-block" id="feedbackEmailBody"></pre>
+          <button type="button" class="cite-copy-btn" data-feedback-copy="Body" title="Copy the message">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            <span class="cite-copy-label">Copy</span>
+          </button>
+        </div>
+      </div>
+        <p class="feedback-hint"><a id="feedbackMailtoLink" href="#">Or open it in your email app</a></p>
+        <div class="dialog-buttons cite-buttons">
+          <button type="button" class="btn" id="feedbackEmailBackBtn">Back</button>
+          <button type="button" class="btn btn-primary" id="feedbackEmailDoneBtn">Done</button>
+        </div>
+      </div>
     </div>
   </div>
 

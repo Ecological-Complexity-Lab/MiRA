@@ -3,6 +3,12 @@
 Changes between versions, newest first. To cite a specific version, use its
 Zenodo record (all versions: [10.5281/zenodo.22096810](https://doi.org/10.5281/zenodo.22096810)).
 
+## Unreleased
+
+- **Feedback by email.** Next to *Open on GitHub*, *Send us an email* shows the address, subject and
+  message (with the technical details, if included), each with a Copy button, to paste into a new
+  email; no GitHub account needed.
+
 ## 1.2.1 — 2026-11-25
 
 - In RStudio's Viewer pane (a plot opened by ggmira with `viewer = TRUE`), the top bar keeps only
