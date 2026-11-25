@@ -333,6 +333,7 @@ const tooltip = document.getElementById('tooltip');
 
 // ---- Application State ----
 let appMode = 'network'; // 'network', 'map', 'layer', 'dashboard', 'metanetwork', 'data', or 'grid'
+let currentDatasetName = null; // name of the loaded dataset (demo payloads carry dataset.name); used by feedback diagnostics
 let gridView = null;
 let layerViewHandlers = null;
 let lvRAF  = null; // requestAnimationFrame id for layer-view animation
@@ -764,6 +765,7 @@ function resetVisualizationOptions() {
 function loadData(json, { warn = true } = {}) {
     try {
         model = parseMultilayerData(json);
+        currentDatasetName = json?.dataset?.name ?? null;
 
         if (warn && model.warnings && model.warnings.length) {
             alert('Data warnings:\n\n• ' + model.warnings.join('\n• '));
@@ -906,7 +908,7 @@ function loadData(json, { warn = true } = {}) {
 // ---- Demo datasets dialog ----
 initDemoDatasets(loadData);
 
-initFeedback(() => ({ mode: appMode, model }));
+initFeedback(() => ({ mode: appMode, model, datasetName: currentDatasetName }));
 initScreenSizeWarning();
 
 
