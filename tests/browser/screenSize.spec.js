@@ -51,10 +51,10 @@ test('a closed warning stays closed for the browser session', async ({ page }) =
   await expect(page.locator(NOTICE)).toHaveCount(0)
 })
 
-test('in RStudio\'s Viewer pane the warning says how to get more room', async ({ page }) => {
+test('in RStudio\'s Viewer pane there is no warning', async ({ page }) => {
   await page.setViewportSize({ width: 640, height: 560 })
   await open(page, '?pane=rstudio')
-  await expect(page.locator(NOTICE)).toContainText('Maximize the Viewer pane')
+  await expect(page.locator(NOTICE)).toHaveCount(0)
 })
 
 test('mira_save() draws without the warning', async ({ page }) => {
