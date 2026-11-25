@@ -1230,6 +1230,21 @@ body {
   max-height: 140px;
   overflow-y: auto;
 }
+/* Feedback by email: the address, subject and message to copy */
+.feedback-email-intro {
+  font-size: 12.5px;
+  color: #4b5563;
+  margin: 0 0 12px;
+}
+#feedbackEmailPanel .cite-block {
+  max-height: 160px;
+  overflow-y: auto;
+}
+.feedback-hint a {
+  color: inherit;
+  text-decoration: underline;
+}
+
 #citeDialog .cite-dialog-box {
   width: 520px;
   max-width: calc(100vw - 32px);
