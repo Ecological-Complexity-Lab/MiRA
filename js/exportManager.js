@@ -21,6 +21,8 @@
  * All DOM refs are queried inside the module via document.getElementById().
  */
 
+import { MIRA_VERSION } from './version.js';
+
 // Quality label → multiplier mapping
 const QUALITY_LABELS = { '1': 'screen', '2': 'high', '4': 'print' };
 
@@ -430,9 +432,7 @@ export function initExportManager({ getRenderer, getAppMode }) {
         const padR     = 12 * scale;
         const fontSize = 12 * scale;
 
-        const versionEl = document.querySelector('.branding-version');
-        const version   = versionEl ? versionEl.textContent.trim() : '';
-        const text      = `Visualized with MiRA ${version}`;
+        const text     = `Visualized with MiRA v${MIRA_VERSION}`;
 
         ctx.font = `500 ${fontSize}px Inter, system-ui, sans-serif`;
         const textW = ctx.measureText(text).width;

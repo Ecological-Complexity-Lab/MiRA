@@ -6,6 +6,7 @@
  */
 
 import { traceNodeShape } from './nodeShapes.js';
+import { MIRA_VERSION } from './version.js';
 import { intraLinkWidthScale, intraLinkWidth } from './linkWidth.js';
 import { defaultColorMapper, BIPARTITE_SET_A_COLOR, BIPARTITE_SET_B_COLOR } from './colorMapper.js';
 import { dataMode } from './dataMode.js';
@@ -542,7 +543,7 @@ export class Renderer {
         const HIT_PAD    = 11;    // half-height of a clickable text row
         const SEPARATOR  = '   ·   ';
 
-        const title = 'Welcome to MiRA (v1.2), the Multilayer Interactive Rendering App';
+        const title = `Welcome to MiRA (v${MIRA_VERSION}), the Multilayer Interactive Rendering App`;
         const hint  = 'Load a multilayer network via the Data panel to visualize';
         const actions = [
             { label: 'MiRA at a glance', key: '_glanceBounds' },

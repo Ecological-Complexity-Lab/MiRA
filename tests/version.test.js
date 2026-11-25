@@ -23,7 +23,7 @@ const MENTIONS = [
   ['about.html', v => `"softwareVersion": "${v}"`],
   ['about.html', v => `Application (v${v}). <em>Zenodo</em>.`],
   ['index.html', v => `"softwareVersion": "${v}"`],
-  ['js/renderer.js', v => `Welcome to MiRA (v${v}), the`],
+  ['js/version.js', v => `export const MIRA_VERSION = '${v}';`],
   ['docs/manual.html', v => `>v${v} · What's new</a>`],
 ]
 

@@ -3,7 +3,7 @@
 Changes between versions, newest first. To cite a specific version, use its
 Zenodo record (all versions: [10.5281/zenodo.22096810](https://doi.org/10.5281/zenodo.22096810)).
 
-## Unreleased
+## 1.2.1 — 2026-11-25
 
 - In RStudio's Viewer pane (a plot opened by ggmira with `viewer = TRUE`), the top bar keeps only
   the lab logo: Feedback, Cite, Docs, About, ggmira and GitHub are hidden, leaving more room for the

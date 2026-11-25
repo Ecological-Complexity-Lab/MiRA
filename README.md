@@ -18,7 +18,7 @@ Nehoray SM, Bloch Y and Pilosof S (2026). **Interactively visualizing biological
 
 To cite the software itself (archived release), use the Zenodo DOI:
 
-Nehoray SM, Bloch Y and Pilosof S (2026). **MiRA — Multilayer Interactive Rendering Application** (v1.2). _Zenodo_. [https://doi.org/10.5281/zenodo.22096810](https://doi.org/10.5281/zenodo.22096810)
+Nehoray SM, Bloch Y and Pilosof S (2026). **MiRA — Multilayer Interactive Rendering Application** (v1.2.1). _Zenodo_. [https://doi.org/10.5281/zenodo.22096810](https://doi.org/10.5281/zenodo.22096810)
 
 > The DOI above is the **concept DOI** — it always resolves to the latest release. Each version also has its own DOI, listed on the [Zenodo record](https://doi.org/10.5281/zenodo.22096810); what changed between versions is in [CHANGELOG.md](CHANGELOG.md).
 
@@ -42,7 +42,7 @@ Nehoray SM, Bloch Y and Pilosof S (2026). **MiRA — Multilayer Interactive Rend
   title        = {MiRA — Multilayer Interactive Rendering Application},
   author       = {Nehoray, Shir Miryam and Bloch, Yuval and Pilosof, Shai},
   year         = {2026},
-  version      = {1.2},
+  version      = {1.2.1},
   publisher    = {Zenodo},
   doi          = {10.5281/zenodo.22096810},
   url          = {https://doi.org/10.5281/zenodo.22096810}

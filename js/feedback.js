@@ -17,6 +17,8 @@
  *         () => ({ mode, model, datasetName })
  */
 
+import { MIRA_VERSION } from './version.js';
+
 const FROM_R = new URLSearchParams(window.location.search).get('autoload') === 'true';
 const ISSUES_URL = FROM_R
     ? 'https://github.com/Ecological-Complexity-Lab/ggmira/issues/new'
@@ -37,7 +39,7 @@ export function initFeedback(getContext) {
     function diagnostics() {
         const { mode, model, datasetName } = getContext();
         return {
-            appVersion: document.querySelector('.branding-version')?.textContent?.trim() ?? 'unknown',
+            appVersion: MIRA_VERSION,
             mode,
             dataset: datasetName ?? '(user-loaded or none)',
             network: model ? `${model.layers.length} layers, ${model.nodes.length} nodes, ${model.extended.length} links` : 'none loaded',
