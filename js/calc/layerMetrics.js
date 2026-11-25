@@ -8,7 +8,9 @@
  * model.bipartiteInfo.
  *
  * Edges are deduplicated by sort-pair key (undirected) or `from→to` key
- * (directed) so duplicate listings in user data don't inflate E.
+ * (directed) so duplicate listings in user data don't inflate E. Self-loops
+ * are not edges here: the parser already drops them, and collectEdgeKeys
+ * skips any that reach it, so E matches the N(N−1) denominator.
  */
 
 /**
@@ -51,6 +53,7 @@ function collectEdgeKeys(intralayerLinks, layerName, isDir) {
   const out = new Set();
   for (const lk of intralayerLinks) {
     if (lk.layer_from !== layerName) continue;
+    if (lk.node_from === lk.node_to) continue; // self-loop: not an edge (density denominator is N(N−1))
     const key = isDir
       ? `${lk.node_from}→${lk.node_to}`
       : [lk.node_from, lk.node_to].sort().join('::');

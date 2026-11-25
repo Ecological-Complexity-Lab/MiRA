@@ -80,6 +80,7 @@ function collectEdges(model, directed) {
     const a = link.node_from, b = link.node_to, layer = link.layer_from;
     const w = link.weight ?? 1;
     if (!a || !b) continue;
+    if (a === b) continue; // self-loop: not counted (the parser drops these too)
 
     for (const n of [a, b]) {
       if (!nodeLayerMap.has(n)) nodeLayerMap.set(n, new Set());

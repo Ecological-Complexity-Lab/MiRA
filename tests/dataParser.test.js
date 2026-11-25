@@ -1058,3 +1058,60 @@ describe('Group 11 — Data-quality guards', () => {
     expect(m.warnings.some(w => w.toLowerCase().includes('mix'))).toBe(true)
   })
 })
+
+// ── Group 11b — Self-loops ──────────────────────────────────────────────────
+// Intralayer self-loops (A→A within a layer) are dropped at load time so no
+// calculation counts them; interlayer links between a node's replicas stay.
+
+describe('Group 11b — Self-loops', () => {
+  const twoLayers = (extended, directed = false) => ({
+    directed,
+    layers: [{ layer_id: 1, layer_name: 'L1' }, { layer_id: 2, layer_name: 'L2' }],
+    nodes: [{ node_id: 'A', node_name: 'A' }, { node_id: 'B', node_name: 'B' }],
+    state_nodes: [
+      { layer_name: 'L1', node_name: 'A' }, { layer_name: 'L1', node_name: 'B' },
+      { layer_name: 'L2', node_name: 'A' }, { layer_name: 'L2', node_name: 'B' },
+    ],
+    extended,
+  })
+
+  it('11b.1 intralayer self-loops are dropped and one warning names the count and layers', () => {
+    const m = parseMultilayerData(twoLayers([
+      { layer_from: 'L1', node_from: 'A', layer_to: 'L1', node_to: 'B', weight: 1 },
+      { layer_from: 'L1', node_from: 'A', layer_to: 'L1', node_to: 'A', weight: 3 },
+      { layer_from: 'L2', node_from: 'B', layer_to: 'L2', node_to: 'B', weight: 1 },
+    ]))
+    expect(m.intralayerLinks).toHaveLength(1)
+    expect(m.intralayerLinks.some(l => l.node_from === l.node_to)).toBe(false)
+    const w = m.warnings.filter(x => x.includes('self-loop'))
+    expect(w).toHaveLength(1)
+    expect(w[0]).toContain('Ignored 2 self-loops')
+    expect(w[0]).toContain('"L1", "L2"')
+  })
+
+  it('11b.2 directed self-loops are dropped too', () => {
+    const m = parseMultilayerData(twoLayers([
+      { layer_from: 'L1', node_from: 'A', layer_to: 'L1', node_to: 'B', weight: 1 },
+      { layer_from: 'L1', node_from: 'A', layer_to: 'L1', node_to: 'A', weight: 1 },
+    ], true))
+    expect(m.intralayerLinks).toHaveLength(1)
+    expect(m.stateNodeMap.get('L1::A').intra_out_degree).toBe(1)
+    expect(m.stateNodeMap.get('L1::A').intra_in_degree).toBe(0)
+  })
+
+  it('11b.3 interlayer links between replicas of a node are kept, with no warning', () => {
+    const m = parseMultilayerData(twoLayers([
+      { layer_from: 'L1', node_from: 'A', layer_to: 'L2', node_to: 'A', weight: 1 },
+    ]))
+    expect(m.interlayerLinks).toHaveLength(1)
+    expect(m.warnings.some(x => x.includes('self-loop'))).toBe(false)
+  })
+
+  it('11b.4 a zero-weight self-loop counts as zero-weight, not as a self-loop', () => {
+    const m = parseMultilayerData(twoLayers([
+      { layer_from: 'L1', node_from: 'A', layer_to: 'L1', node_to: 'A', weight: 0 },
+    ]))
+    expect(m.warnings.some(x => x.includes('weight 0'))).toBe(true)
+    expect(m.warnings.some(x => x.includes('self-loop'))).toBe(false)
+  })
+})
