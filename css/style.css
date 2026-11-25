@@ -419,13 +419,6 @@ body {
   margin-left: -4px;
 }
 
-.branding-version {
-  font-size: 13px;
-  font-weight: 500;
-  color: #1a1a2e;
-  margin-left: -4px;
-}
-
 .branding-link {
   display: flex;
   align-items: center;
