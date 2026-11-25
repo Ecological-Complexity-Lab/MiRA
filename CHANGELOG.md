@@ -8,6 +8,12 @@ Zenodo record (all versions: [10.5281/zenodo.22096810](https://doi.org/10.5281/z
 - In RStudio's Viewer pane (a plot opened by ggmira with `viewer = TRUE`), the top bar keeps only
   the lab logo: Feedback, Cite, Docs, About, ggmira and GitHub are hidden, leaving more room for the
   plot. In the browser nothing changes.
+- **Self-loops are ignored.** A node linked to itself within a layer is dropped when the data are
+  loaded, with a warning: it is not drawn and not counted in degree, strength, density or layer
+  similarity. Before, density counted self-loops against a maximum that has no room for them, so a
+  layer's density could be above 1, and edge similarity counted them while degree did not. Of the
+  bundled datasets only kefi2016 has self-loops (2 in the Trophic layer, whose density goes from
+  0.1224 to 0.1222).
 
 ## 1.2 — 2026-11-17
 

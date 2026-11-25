@@ -64,7 +64,13 @@ export function parseMultilayerData(json) {
 
   // ---- Clean & classify links ----
   // (1) Drop rows with weight === 0 — zero weight means "no link".
-  // (2) Dedupe duplicate edges. For undirected networks, A→B and B→A are the same
+  // (2) Drop intralayer self-loops (A→A within a layer). No MiRA calculation
+  //     counts them: degree and strength sum over j ≠ i, and density's
+  //     maximum edge count N(N−1) has no room for them. Dropping them here
+  //     keeps every calculation (and edge similarity) on the same edge set.
+  //     Interlayer links from a node to itself in another layer are kept:
+  //     those are couplings between replicas, not loops.
+  // (3) Dedupe duplicate edges. For undirected networks, A→B and B→A are the same
   //     edge and degree/density calculations break if both rows are kept.
   //     For directed networks, A→B and B→A are distinct, but exact-duplicate rows
   //     are still dropped.
@@ -74,6 +80,8 @@ export function parseMultilayerData(json) {
   const interSeen = new Set();
   let droppedZeroWeight = 0;
   let droppedDuplicates = 0;
+  const selfLoopLayers = new Set();
+  let droppedSelfLoops = 0;
 
   for (const link of json.extended) {
     if (link.weight !== undefined && link.weight !== null && Number(link.weight) === 0) {
@@ -82,6 +90,11 @@ export function parseMultilayerData(json) {
     }
 
     const isIntra = link.layer_from === link.layer_to;
+    if (isIntra && link.node_from === link.node_to) {
+      droppedSelfLoops++;
+      selfLoopLayers.add(link.layer_from);
+      continue;
+    }
     const isDir = isIntra ? directed : directedInterlayer;
     const key = edgeDedupKey(link, isIntra, isDir);
     const seen = isIntra ? intraSeen : interSeen;
@@ -106,6 +119,15 @@ export function parseMultilayerData(json) {
     warnings.push(
       `Dropped ${droppedDuplicates} duplicate edge${droppedDuplicates === 1 ? '' : 's'}` +
       (directed ? '.' : ' (e.g. both A→B and B→A in an undirected network).')
+    );
+  }
+  if (droppedSelfLoops > 0) {
+    const layerList = [...selfLoopLayers].map(l => `"${l}"`).join(', ');
+    warnings.push(
+      `Ignored ${droppedSelfLoops} self-loop${droppedSelfLoops === 1 ? '' : 's'} ` +
+      `(a node linked to itself within a layer) in layer${selfLoopLayers.size === 1 ? '' : 's'} ` +
+      `${layerList}. Self-loops are not drawn and not counted in any calculation ` +
+      `(degree, strength, density, layer similarity).`
     );
   }
 

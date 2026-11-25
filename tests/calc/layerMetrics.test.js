@@ -99,3 +99,36 @@ describe('Group calc/layerMetrics — per-layer density and counts', () => {
     expect(edgeKeySets.get('L1').size).toBe(1)
   })
 })
+
+describe('Group calc/layerMetrics — self-loops', () => {
+  const pairWithLoop = (directed) => ({
+    directed,
+    layers: [{ layer_id: 1, layer_name: 'L1' }],
+    nodes: [{ node_id: 'A', node_name: 'A' }, { node_id: 'B', node_name: 'B' }],
+    state_nodes: [{ layer_name: 'L1', node_name: 'A' }, { layer_name: 'L1', node_name: 'B' }],
+    extended: [
+      { layer_from: 'L1', node_from: 'A', layer_to: 'L1', node_to: 'B', weight: 1 },
+      { layer_from: 'L1', node_from: 'A', layer_to: 'L1', node_to: 'A', weight: 1 },
+    ],
+  })
+
+  it('undirected: A–B plus A–A gives E = 1 and density = 1 (was 2)', () => {
+    const { perLayer } = computePerLayerStats(parseMultilayerData(pairWithLoop(false)))
+    expect(perLayer[0].E).toBe(1)
+    expect(perLayer[0].density).toBe(1)
+  })
+
+  it('directed: A→B plus A→A gives E = 1 and density = 1/2', () => {
+    const { perLayer } = computePerLayerStats(parseMultilayerData(pairWithLoop(true)))
+    expect(perLayer[0].E).toBe(1)
+    expect(perLayer[0].density).toBeCloseTo(0.5, 10)
+  })
+
+  it('a self-loop that bypasses the parser is still not an edge', () => {
+    const m = parseMultilayerData(pairWithLoop(false))
+    m.intralayerLinks.push({ layer_from: 'L1', node_from: 'B', layer_to: 'L1', node_to: 'B', weight: 1 })
+    const { perLayer, edgeKeySets } = computePerLayerStats(m)
+    expect(perLayer[0].E).toBe(1)
+    expect([...edgeKeySets.get('L1')]).toEqual(['A::B'])
+  })
+})

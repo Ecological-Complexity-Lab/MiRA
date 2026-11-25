@@ -88,3 +88,26 @@ describe('Group calc/similarity — Jaccard', () => {
     expect(sim.setA[0][1]).toBe(1) // both layers have pollinator p1
   })
 })
+
+describe('Group calc/similarity — self-loops', () => {
+  it('edge Jaccard ignores self-loops: same A–B edge, loops in one layer only, J = 1', () => {
+    const m = parseMultilayerData({
+      directed: false,
+      layers: [{ layer_id: 1, layer_name: 'L1' }, { layer_id: 2, layer_name: 'L2' }],
+      nodes: [{ node_id: 'A', node_name: 'A' }, { node_id: 'B', node_name: 'B' }],
+      state_nodes: [
+        { layer_name: 'L1', node_name: 'A' }, { layer_name: 'L1', node_name: 'B' },
+        { layer_name: 'L2', node_name: 'A' }, { layer_name: 'L2', node_name: 'B' },
+      ],
+      extended: [
+        { layer_from: 'L1', node_from: 'A', layer_to: 'L1', node_to: 'B', weight: 1 },
+        { layer_from: 'L1', node_from: 'A', layer_to: 'L1', node_to: 'A', weight: 1 },
+        { layer_from: 'L1', node_from: 'B', layer_to: 'L1', node_to: 'B', weight: 1 },
+        { layer_from: 'L2', node_from: 'A', layer_to: 'L2', node_to: 'B', weight: 1 },
+      ],
+    })
+    const { edgeKeySets } = computePerLayerStats(m)
+    const { edge } = computeLayerSimilarity(m, edgeKeySets)
+    expect(edge[0][1]).toBe(1)
+  })
+})
